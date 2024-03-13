@@ -30,7 +30,8 @@ class Artifact:
         print(self)
         for i in self.substats:
             is_percentage = '%' in i
-            print(f"{i}: {str(round(self.substats[i], 1))+'%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+            print(
+                f"{i}: {str(round(self.substats[i], 1)) + '%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
         print()
 
     def upgrade(self):
@@ -90,10 +91,10 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 def take_input():
     ok1 = False
     ok2 = False
-    print("\nPlease input the conditions. Leave blank to use defaults (1 simulation, 50 CV).\n")
+    print("\nPlease input conditions.\nLeave blank to use defaults (1 test, 50 CV).\n")
 
     while not ok1:
-        size = input("Amount of tests to run: ")
+        size = input("Number of tests to run: ")
         if size:
             try:
                 if int(size) > 0:
@@ -120,7 +121,7 @@ def take_input():
             ok2 = True
             cv = 50
 
-    print(f'Running {int(size)} simulations, looking for at least {float(cv)} CV.')
+    print(f'Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.')
     return int(size), float(cv)
 
 
@@ -190,12 +191,37 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
     return fastest, slowest, days_list, flag_break
 
 
+def print_controls():
+    print('\n' +
+          '=' * 19 + ' CONTROLS ' + '=' * 19 + '\n'
+                                               '\nhelp = send this message\n'
+                                               '\n'
+                                               '+ = upgrade to next tier\n'
+                                               '++ = upgrade to +20\n'
+                                               'r = re-roll\n'
+                                               'r++ = re-roll and upgrade to +20\n'
+                                               's = save to inventory\n'
+                                               'inv = show inventory\n'
+                                               '\n'
+                                               'domain = change artifact source to domain (default)\n'
+                                               'strongbox = change artifact source to strongbox\n\n'
+                                               'artifact = show current artifact\n'
+                                               'exit = go back to menu\n'
+                                               '\n'
+                                               '================================================\n'
+          )
+
+
+help = ['help', "'help'", '"help"']
+artifact_list = []
 while True:
-    print('\n'+'='*21+" MENU "+'='*21+'\n')
-    print("1 = roll artifacts until a certain CV is reached\n"
-          "2 = roll one artifact at a time")
+    print('\n' + '=' * 21 + " MENU " + '=' * 21 + '\n')
+    print("0 = exit the simulator\n"
+          "1 = roll artifacts until a certain CV is reached\n"
+          "2 = roll one artifact at a time\n")
     automate = input('Your pick: ')
-    print('\n'+'-'*50)
+    print(f'{'For the list of commands, type "help"\n' if automate == '2' else ''}')
+    print('=' * 48)
     if automate == "1":
         sample_size, cv_desired = take_input()
         days_it_took_to_reach_50_cv = []
@@ -256,22 +282,6 @@ while True:
     elif automate == "2":
         source = "domain"
         print()
-        print(
-            'Controls:\n'
-            '\n'
-            '+ = upgrade to next tier\n'
-            '++ = upgrade to +20\n'
-            'r = re-roll\n'
-            'r++ = re-roll and upgrade to +20\n'
-            's = save to inventory\n'
-            '\n'
-            'domain = change artifact source to domain (default)\n'
-            'strongbox = change artifact source to strongbox\n\n'
-            'artifact = show current artifact\n'
-            'exit = go back to menu\n'
-            '\n'
-            '--------------------------------------------------\n'
-        )
         art = create_artifact(source)
         art.print_stats()
         while True:
@@ -299,7 +309,15 @@ while True:
                 print('Re-rolling and upgrading...\n')
                 art, _ = create_and_roll_artifact(source)
             elif user_command.lower() == 's':
-                print('Currently under construction\n')
+                if art not in artifact_list:
+                    artifact_list.append(art)
+                    print(f'{len(artifact_list)} artifacts in inventory\n')
+                else:
+                    print('Already saved this artifact\n')
+            elif user_command.lower() == 'inv':
+                for i in artifact_list:
+                    print(f'{i} - {i.subs()}')
+                print()
             elif user_command.lower() == 'domain':
                 source = 'domain'
                 print('Source set to domain\n')
@@ -307,8 +325,17 @@ while True:
                 source = 'strongbox'
                 print('Source set to strongbox\n')
             elif user_command.lower() == 'artifact':
+                print()
                 art.print_stats()
             elif user_command.lower() == 'exit' or user_command.lower() == 'menu':
-                print('Exiting...\n')
+                print('Exiting...')
+                break
+            elif user_command.lower() in help:
+                print_controls()
             else:
-                print('Not a command, try again\n')
+                print("Try 'help'")
+    elif automate == '0' or automate.lower() == 'exit':
+        break
+    else:
+        print('\nNot a valid choice, go again')
+print('\nThank you for using Artifact Simulator')
