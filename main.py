@@ -137,7 +137,7 @@ for i in range(sample_size):
             if art.cv() > highest:
                 highest = art.cv()
                 print(f'Day {day}: {art.cv()}CV ({art})')
-                if art.cv() >= min(54.4, cv_desired):
+                if art.cv() >= min(54.5, cv_desired):
                     days_it_took_to_reach_50_cv.append(day_float)
                     if low[0] == 0 or day_float < low[0]:
                         low = (round(day_float, 2), art)
@@ -148,6 +148,6 @@ for i in range(sample_size):
                     break
 
 print()
-print(f'Out of {sample_size} simulations, it took {round(sum(days_it_took_to_reach_50_cv)/sample_size, 2)} days to reach {cv_desired} CV on average.')
+print(f'Out of {sample_size} simulations, it took an average of {round(sum(days_it_took_to_reach_50_cv)/sample_size, 2)} days to reach {cv_desired} CV.')
 print(f'Fastest - {low[0]} days: {low[1].subs()}')
 print(f'Slowest - {high[0]} days ({round(high[0]/365.25, 2)} years): {high[1].subs()}')
