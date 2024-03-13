@@ -261,8 +261,8 @@ while True:
             '\n'
             '+ = upgrade to next tier\n'
             '++ = upgrade to +20\n'
-            'r = reroll\n'
-            'r++ = reroll and upgrade to +20\n'
+            'r = re-roll\n'
+            'r++ = re-roll and upgrade to +20\n'
             's = save to inventory\n'
             '\n'
             'domain = change artifact source to domain (default)\n'
@@ -292,11 +292,11 @@ while True:
                         art.upgrade()
                         art.print_stats()
             elif user_command.lower() == 'r':
-                print('Rerolling...\n')
+                print('Re-rolling...\n')
                 art = create_artifact(source)
                 art.print_stats()
             elif user_command.lower() == 'r++':
-                print('Rerolling and upgrading...\n')
+                print('Re-rolling and upgrading...\n')
                 art, _ = create_and_roll_artifact(source)
             elif user_command.lower() == 's':
                 print('Currently under construction\n')
