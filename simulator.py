@@ -191,9 +191,9 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
 
 
 while True:
-    print('\n'+'='*21+" MENU "+'='*21)
-    print("1 - roll artifacts until a certain CV is reached\n"
-          "2 - roll one artifact at a time")
+    print('\n'+'='*21+" MENU "+'='*21+'\n')
+    print("1 = roll artifacts until a certain CV is reached\n"
+          "2 = roll one artifact at a time")
     automate = input('Your pick: ')
     print('\n'+'-'*50)
     if automate == "1":
