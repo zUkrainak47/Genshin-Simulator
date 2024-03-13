@@ -90,7 +90,7 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 def take_input():
     ok1 = False
     ok2 = False
-    print("\nPlease input the conditions. Leave blank to use defaults (25 simulations, 50 CV).\n")
+    print("\nPlease input the conditions. Leave blank to use defaults (1 simulation, 50 CV).\n")
 
     while not ok1:
         size = input("Amount of tests to run: ")
@@ -104,7 +104,7 @@ def take_input():
                 print("Needs to be an integer. Try again.\n")
         else:
             ok1 = True
-            size = 25
+            size = 1
 
     while not ok2:
         cv = input("Desired Crit Value: ")
@@ -246,11 +246,13 @@ while True:
 
         print()
         days = round(sum(days_it_took_to_reach_50_cv) / sample_size, 2)
-        print(
-            f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
-        print(f'Fastest - {low[0]} days: {low[1].subs()}')
-        print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
-
+        if sample_size > 1:
+            print(
+                f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+            print(f'Fastest - {low[0]} days: {low[1].subs()}')
+            print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
+        else:
+            print(f'It took {low[0]} days!')
     elif automate == "2":
         source = "domain"
         print()
