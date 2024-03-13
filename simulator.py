@@ -1,20 +1,22 @@
 from random import choice, choices
 import time
 
+
 class Artifact:
 
-    def __init__(self, type, mainstat, threeliner, substats, level):
+    def __init__(self, type, mainstat, threeliner, substats, level, last_upgrade=""):
         self.type = type
         self.mainstat = mainstat
         self.threeliner = threeliner
         self.substats = substats
         self.level = level
+        self.last_upgrade = last_upgrade
         if "Crit RATE%" in self.substats:
             if self.substats["Crit RATE%"] == 23.0:
                 self.substats["Crit RATE%"] = 22.9
 
     def __str__(self):
-        return f"+{self.level} {self.mainstat} {self.type}"
+        return f"{self.mainstat} {self.type} (+{self.level})"
 
     def subs(self):
         sub_stats = {
@@ -24,15 +26,24 @@ class Artifact:
         }
         return sub_stats
 
+    def print_stats(self):
+        print(self)
+        for i in self.substats:
+            is_percentage = '%' in i
+            print(f"{i}: {str(round(self.substats[i], 1))+'%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+        print()
+
     def upgrade(self):
         if self.level != 20:
             if self.threeliner:
                 self.substats[self.threeliner] = max_rolls[
-                    self.threeliner] * choice(possible_rolls)
+                                                     self.threeliner] * choice(possible_rolls)
+                self.last_upgrade = self.threeliner
                 self.threeliner = 0
             else:
                 sub = choice(list(self.substats.keys()))
                 self.substats[sub] += max_rolls[sub] * choice(possible_rolls)
+                self.last_upgrade = sub
             self.level += 4
 
     def cv(self):
@@ -151,13 +162,18 @@ def create_artifact(source):
     return Artifact(type, mainstat, threeliner, subs, 0)
 
 
-def create_and_roll_artifact(source, highest_cv):
-    artifact = create_artifact(source)
+def create_and_roll_artifact(arti_source, highest_cv=0):
+    artifact = create_artifact(arti_source)
+    if not highest_cv:
+        artifact.print_stats()
     for j in range(5):
         artifact.upgrade()
-        if artifact.cv() > highest_cv:
-            highest_cv = artifact.cv()
-            print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+        if highest_cv:
+            if artifact.cv() > highest_cv:
+                highest_cv = artifact.cv()
+                print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+        else:
+            artifact.print_stats()
     return artifact, highest_cv
 
 
@@ -174,52 +190,123 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
     return fastest, slowest, days_list, flag_break
 
 
-sample_size, cv_desired = take_input()
-days_it_took_to_reach_50_cv = []
-low = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
-high = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
-for i in range(sample_size):
-    c = 0
-    day = 0
-    highest = 0
-    inventory = 0
-    flag = False
-    print(f'\nSimulation {i + 1}:')
-    while not flag:
-        day += 1
-        # print(f'new day {day}')
-        if day % 10000 == 0:
-            print(f'Day {day} - still going')
-        resin = 180
-        if day % 7 == 1:
-            resin += 60
-        while resin:
-            # print('domain run')
-            resin -= 20
-            amount = choices((1, 2), weights=(93, 7))
-            # if amount[0] == 2:
-            #     print('lucky!')
-            inventory += amount[0]
-            for k in range(amount[0]):
-                art, highest = create_and_roll_artifact("domain", highest)
-                low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high, days_it_took_to_reach_50_cv, day, cv_desired)
-                if flag:
-                    break
-            if flag:
-                break
-        else:
-            while inventory >= 3:
-                # print(f'strongbox {inventory}')
-                inventory -= 2
-                art, highest = create_and_roll_artifact("strongbox", highest)
-                low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high, days_it_took_to_reach_50_cv, day, cv_desired)
-                if flag:
-                    break
-            # print(f'{inventory} left in inventory')
+while True:
+    print('\n'+'='*21+" MENU "+'='*21)
+    print("1 - roll artifacts until a certain CV is reached\n"
+          "2 - roll one artifact at a time")
+    automate = input('Your pick: ')
+    print('\n'+'-'*50)
+    if automate == "1":
+        sample_size, cv_desired = take_input()
+        days_it_took_to_reach_50_cv = []
+        low = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
+        high = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
+        for i in range(sample_size):
+            c = 0
+            day = 0
+            highest = 0.1
+            inventory = 0
+            flag = False
+            print(f'\nSimulation {i + 1}:')
+            while not flag:
+                day += 1
+                # print(f'new day {day}')
+                if day % 10000 == 0:
+                    print(f'Day {day} - still going')
+                resin = 180
+                if day % 7 == 1:
+                    resin += 60
+                while resin:
+                    # print('domain run')
+                    resin -= 20
+                    amount = choices((1, 2), weights=(93, 7))
+                    # if amount[0] == 2:
+                    #     print('lucky!')
+                    inventory += amount[0]
+                    for k in range(amount[0]):
+                        art, highest = create_and_roll_artifact("domain", highest)
+                        low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high,
+                                                                                             days_it_took_to_reach_50_cv,
+                                                                                             day, cv_desired)
+                        if flag:
+                            break
+                    if flag:
+                        break
+                else:
+                    while inventory >= 3:
+                        # print(f'strongbox {inventory}')
+                        inventory -= 2
+                        art, highest = create_and_roll_artifact("strongbox", highest)
+                        low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high,
+                                                                                             days_it_took_to_reach_50_cv,
+                                                                                             day, cv_desired)
+                        if flag:
+                            break
+                    # print(f'{inventory} left in inventory')
 
+        print()
+        days = round(sum(days_it_took_to_reach_50_cv) / sample_size, 2)
+        print(
+            f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+        print(f'Fastest - {low[0]} days: {low[1].subs()}')
+        print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
 
-print()
-days = round(sum(days_it_took_to_reach_50_cv)/sample_size, 2)
-print(f'Out of {sample_size} simulations, it took an average of {days} days ({round(days/365.25, 2)} years) to reach {cv_desired} CV.')
-print(f'Fastest - {low[0]} days: {low[1].subs()}')
-print(f'Slowest - {high[0]} days ({round(high[0]/365.25, 2)} years): {high[1].subs()}')
+    elif automate == "2":
+        source = "domain"
+        print()
+        print(
+            'Controls:\n'
+            '\n'
+            '+ = upgrade to next tier\n'
+            '++ = upgrade to +20\n'
+            'r = reroll\n'
+            'r++ = reroll and upgrade to +20\n'
+            's = save to inventory\n'
+            '\n'
+            'domain = change artifact source to domain (default)\n'
+            'strongbox = change artifact source to strongbox\n\n'
+            'artifact = show current artifact\n'
+            'exit = go back to menu\n'
+            '\n'
+            '--------------------------------------------------\n'
+        )
+        art = create_artifact(source)
+        art.print_stats()
+        while True:
+            user_command = input('Command: ')
+            if user_command == '+':
+                if art.level == 20:
+                    print("Artifact already at +20\n")
+                else:
+                    print('Upgrading...\n')
+                    art.upgrade()
+                    art.print_stats()
+            elif user_command == '++':
+                if art.level == 20:
+                    print("Artifact already at +20\n")
+                else:
+                    print('Upgrading to +20...\n')
+                    while art.level < 20:
+                        art.upgrade()
+                        art.print_stats()
+            elif user_command.lower() == 'r':
+                print('Rerolling...\n')
+                art = create_artifact(source)
+                art.print_stats()
+            elif user_command.lower() == 'r++':
+                print('Rerolling and upgrading...\n')
+                art, _ = create_and_roll_artifact(source)
+            elif user_command.lower() == 's':
+                print('Currently under construction\n')
+            elif user_command.lower() == 'domain':
+                source = 'domain'
+                print('Source set to domain\n')
+            elif user_command.lower() == 'strongbox':
+                source = 'strongbox'
+                print('Source set to strongbox\n')
+            elif user_command.lower() == 'artifact':
+                art.print_stats()
+            elif user_command.lower() == 'exit' or user_command.lower() == 'menu':
+                print('Exiting...\n')
+            else:
+                print('Not a command, try again\n')
