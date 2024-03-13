@@ -6,8 +6,8 @@ Are you out of resin but crave that lovely RNG?
 This artifact simulator can help you with that.
 ## Usage
 ### Mode 1: 
-- The program will continuously generate artifacts until your desired Crit Value was reached.
-- When that value is reached, the program will tell you how many days (or years) of resin it took.
+- The program will continuously generate artifacts until your desired Crit Value is reached.
+- It will tell you how many days (or years) of resin that took.
 - You can choose to run multiple tests, the program will show the average time.
 - It will use 1 Transient Resin per week, assumes unlimited fodder and throws all artifacts in the Strongbox.
 
