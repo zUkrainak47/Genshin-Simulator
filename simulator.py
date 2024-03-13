@@ -121,7 +121,7 @@ def take_input():
             ok2 = True
             cv = 50
 
-    print(f'Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.')
+    print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.")
     return int(size), float(cv)
 
 
@@ -220,7 +220,7 @@ while True:
           "1 = roll artifacts until a certain CV is reached\n"
           "2 = roll one artifact at a time\n")
     automate = input('Your pick: ')
-    print(f'{'For the list of commands, type "help"\n' if automate == '2' else ''}')
+    print('For the list of commands, type "help"\n' if automate == '2' else '')
     print('=' * 48)
     if automate == "1":
         sample_size, cv_desired = take_input()
