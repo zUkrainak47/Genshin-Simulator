@@ -31,7 +31,7 @@ class Artifact:
         for i in self.substats:
             is_percentage = '%' in i
             print(
-                f"{i}: {str(round(self.substats[i], 1)) + '%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+                f"- {i}: {str(round(self.substats[i], 1)) + '%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
         print()
 
     def upgrade(self):
