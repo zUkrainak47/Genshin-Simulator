@@ -333,7 +333,7 @@ while True:
             elif user_command.lower() in help:
                 print_controls()
             else:
-                print("Try 'help'")
+                print("Try 'help'\n")
     elif automate == '0' or automate.lower() == 'exit':
         break
     else:
