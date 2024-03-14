@@ -327,7 +327,7 @@ while True:
             elif user_command.lower() == 'artifact':
                 print()
                 art.print_stats()
-            elif user_command.lower() == 'exit' or user_command.lower() == 'menu':
+            elif user_command.lower() in ('exit', 'menu', '0'):
                 print('Exiting...')
                 break
             elif user_command.lower() in help:
