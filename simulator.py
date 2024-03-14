@@ -322,8 +322,11 @@ while True:
                 else:
                     print('Already saved this artifact\n')
             elif user_command.lower() == 'inv':
-                for i in artifact_list:
-                    print(f'{i} - {i.subs()}')
+                if len(artifact_list) == 0:
+                    print('No artifacts yet')
+                else:
+                    for i in artifact_list:
+                        print(f'{i} - {i.subs()}')
                 print()
             elif user_command.lower() == 'domain':
                 source = 'domain'
