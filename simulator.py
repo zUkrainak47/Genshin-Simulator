@@ -169,12 +169,12 @@ def create_and_roll_artifact(arti_source, highest_cv=0):
         artifact.print_stats()
     for j in range(5):
         artifact.upgrade()
-        if highest_cv:
-            if artifact.cv() > highest_cv:
-                highest_cv = artifact.cv()
-                print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
-        else:
+        if not highest_cv:
             artifact.print_stats()
+    if highest_cv:
+        if artifact.cv() > highest_cv:
+            highest_cv = artifact.cv()
+            print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
     return artifact, highest_cv
 
 
@@ -227,6 +227,7 @@ while True:
         days_it_took_to_reach_50_cv = []
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
+        start = time.perf_counter()
         for i in range(sample_size):
             c = 0
             day = 0
@@ -279,6 +280,12 @@ while True:
             print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
         else:
             print(f'It took {low[0]} days!')
+        end = time.perf_counter()
+        run_time = end - start
+        to_hours = time.strftime("%T", time.gmtime(run_time))
+        decimals = f'{(run_time % 1):.3f}'
+        print()
+        print(f'The simulation took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
     elif automate == "2":
         source = "domain"
         print()
