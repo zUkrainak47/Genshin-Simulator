@@ -4,10 +4,10 @@ from operator import itemgetter
 
 
 class Artifact:
-
-    def __init__(self, type, mainstat, threeliner, substats, level, last_upgrade="", roll_value=0):
+    def __init__(self, type, mainstat, mainstat_value, threeliner, substats, level, last_upgrade="", roll_value=0):
         self.type = type
         self.mainstat = mainstat
+        self.mainstat_value = mainstat_value
         self.threeliner = threeliner
         self.substats = substats
         self.level = level
@@ -18,7 +18,9 @@ class Artifact:
                 self.substats["Crit RATE%"] = 22.9
 
     def __str__(self):
-        return f"{self.mainstat} {self.type} (+{self.level})"
+        val = (self.mainstat_value[0])[self.mainstat_value[1]]
+
+        return f"{val} {self.mainstat} {self.type} (+{self.level})"
 
     def subs(self):
         sub_stats = {
@@ -50,6 +52,7 @@ class Artifact:
                 self.substats[sub] += max_rolls[sub] * roll
                 self.last_upgrade = sub
             self.level += 4
+            self.mainstat_value[1] += 1
             self.roll_value += roll * 100
 
     def cv(self):
@@ -74,7 +77,15 @@ circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'Crit DMG%', 'Crit RATE%',
                       'Healing Bonus')
 substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
             'Crit RATE%', 'Crit DMG%')
-
+flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
+feather_stats = (47, 100, 152, 205, 258, 311)
+hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
+def_stats = (8.7, 18.6, 28.6, 38.5, 48.4, 58.3)
+em_stats = (28, 60, 91, 123, 155, 187)
+er_stats = (7.8, 16.6, 25.4, 34.2, 43.0, 51.8)
+healing_bonus_stats = (5.4, 11.5, 17.6, 23.7, 29.8, 35.9)
+crit_rate_stats = (4.7, 9.9, 15.2, 20.5, 25.8, 31.1)
+crit_dmg_stats = (9.3, 19.9, 30.5, 41.0, 51.6, 62.2)
 max_rolls = {
     'HP': 298.75,
     'ATK': 19.4500007629394,
@@ -155,6 +166,28 @@ def create_artifact(source):
         mainstat = choices(circlet_main_stats,
                            weights=circlet_main_stats_weights)[0]
 
+    if mainstat == 'HP':
+        mainstat_value = [flower_stats, 0]
+    elif mainstat == 'ATK':
+        mainstat_value = [feather_stats, 0]
+    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
+                     'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                     'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                     'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+        mainstat_value = [hp_atk_dmg_stats, 0]
+    elif mainstat == 'DEF%':
+        mainstat_value = [def_stats, 0]
+    elif mainstat == 'ER%':
+        mainstat_value = [er_stats, 0]
+    elif mainstat == 'EM':
+        mainstat_value = [em_stats, 0]
+    elif mainstat == 'Healing Bonus%':
+        mainstat_value = [healing_bonus_stats, 0]
+    elif mainstat == 'CRIT Rate%':
+        mainstat_value = [crit_rate_stats, 0]
+    else:
+        mainstat_value = [crit_dmg_stats, 0]
+
     fourliner_weights = (2, 8) if source == 'domain' else (34, 66)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
@@ -176,7 +209,7 @@ def create_artifact(source):
     threeliner = choices(subs_pool,
                          weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(type, mainstat, threeliner, subs, 0, "", rv)
+    return Artifact(type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
 
 def create_and_roll_artifact(arti_source, highest_cv=0):
@@ -231,13 +264,14 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
 
 def print_inventory(list_of_artifacts):
     print("Inventory:\n")
-    print('-' * 30, f'{list_of_artifacts[0].type}s', '-' * 30)
+    t1 = list_of_artifacts[0].type
+    print('-' * 43, f'{t1}{"s" if t1 != "Sands" else ""}', '-' * 43)
     for i in range(len(list_of_artifacts)):
         print(f'{i + 1}) {list_of_artifacts[i]} - {list_of_artifacts[i].subs()}')
         if i + 1 < len(list_of_artifacts):
-            t = list_of_artifacts[i + 1].type
-            if t != list_of_artifacts[i].type:
-                print('\n' + '-' * 30, f'{t}{"s" if t != "Sands" else ""}', '-' * 30)
+            t2 = list_of_artifacts[i + 1].type
+            if t2 != list_of_artifacts[i].type:
+                print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
 def print_controls():
@@ -255,14 +289,16 @@ def print_controls():
                                                'del = remove from inventory\n'
                                                '\n'
                                                'r = re-roll\n'
-                                               'r++ = re-roll and upgrade to +20'
-                                               '\n\n'
+                                               'r++ = re-roll and upgrade to +20\n'
+                                               '\n'
                                                '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
                                                'inv = show inventory\n'
+                                               'inv cv = show artifact with highest crit value\n'
+                                               'inv rv = show inventory with highest roll value\n'
                                                'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
                                                'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
-                                               'inv c = clear inventory'
-                                               '\n\n'
+                                               'inv c = clear inventory\n'
+                                               '\n'
                                                '------------------------ OTHER COMMANDS -----------------------\n\n'
                                                'domain = change artifact source to domain (default)\n'
                                                'strongbox = change artifact source to strongbox\n'
@@ -315,8 +351,8 @@ while True:
         else:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
         days_it_took_to_reach_50_cv = []
-        low = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
-        high = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
+        low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
+        high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
         for i in range(sample_size):
             c = 0
@@ -449,7 +485,7 @@ while True:
                                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
                                 elif cmd == '++':
-                                    upgrade_to_max_tier(art, False)
+                                    upgrade_to_max_tier(art, len(indexes) == 1)
                                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
                                 elif cmd == 'rv':
@@ -466,7 +502,10 @@ while True:
 
                             if cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
                                 print('Artifacts removed\n')
-                                print_inventory(artifact_list)
+                                if len(artifact_list) == 0:
+                                    print('Inventory is empty')
+                                else:
+                                    print_inventory(artifact_list)
                                 print()
 
                     elif len(user_command) == 2:
@@ -480,6 +519,16 @@ while True:
                         elif cmd in ('clear', 'clr', 'c'):
                             artifact_list = []
                             print('Inventory cleared\n')
+                        elif cmd == 'cv':
+                            big_cv = max(artifact_list, key=lambda x: x.cv())
+                            print(f'{big_cv} - {big_cv.subs()}')
+                            print(f'CV: {big_cv.cv()}')
+                            print()
+                        elif cmd == 'rv':
+                            big_rv = max(artifact_list, key=lambda x: x.rv())
+                            print(f'{big_rv} - {big_rv.subs()}')
+                            print(f'RV: {big_rv.rv()}%')
+                            print()
                         else:
                             print('Invalid command\n')
                     else:
