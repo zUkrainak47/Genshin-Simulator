@@ -1,5 +1,5 @@
 from random import choice, choices
-import time
+import time, json
 from operator import itemgetter
 
 
@@ -65,6 +65,11 @@ class Artifact:
 
     def rv(self):
         return int(self.roll_value)
+
+
+class ArtifactEncoder(json.JSONEncoder):
+    def default(self, art):
+        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade, art.roll_value]
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -332,7 +337,11 @@ sort_order_mainstat = {'ATK': 0,
                        }
 valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
-artifact_list = []
+with open('.\\inventory.txt') as file:
+    data = file.read()
+artifact_list = json.loads(data)
+artifact_list = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in artifact_list]
+print(artifact_list)
 while True:
     print_menu()
     while True:
@@ -416,6 +425,7 @@ while True:
         source = "domain"
         print()
         art = create_artifact(source)
+
         art.print_stats()
         while True:
             user_command = input('Command: ').lower()
@@ -424,12 +434,14 @@ while True:
                 upgrade_to_next_tier(art)
                 if art in artifact_list:
                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-
+                    with open(r'.\inventory.txt', 'w') as file:
+                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command in ('++', 'a++', 'a ++'):
                 upgrade_to_max_tier(art)
                 if art in artifact_list:
                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-
+                    with open(r'.\inventory.txt', 'w') as file:
+                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command == 'r':
                 print('Re-rolling...\n')
                 art = create_artifact(source)
@@ -443,6 +455,8 @@ while True:
                 if art not in artifact_list:
                     artifact_list.append(art)
                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    with open(r'.\inventory.txt', 'w') as file:
+                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                     print(f'Saved - {len(artifact_list)} artifact{"s" if len(artifact_list) > 1 else ""} in inventory\n')
                 else:
                     print('Already saved this artifact\n')
@@ -450,6 +464,8 @@ while True:
             elif user_command in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
                 if art in artifact_list:
                     artifact_list.remove(art)
+                    with open(r'.\inventory.txt', 'w') as file:
+                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                     print(f'Removed - {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory\n')
                 else:
                     print('This artifact is not in your inventory\n')
@@ -483,11 +499,13 @@ while True:
                                 if cmd == '+':
                                     upgrade_to_next_tier(art)
                                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-
+                                    with open(r'.\inventory.txt', 'w') as file:
+                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                                 elif cmd == '++':
                                     upgrade_to_max_tier(art, len(indexes) == 1)
                                     artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-
+                                    with open(r'.\inventory.txt', 'w') as file:
+                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                                 elif cmd == 'rv':
                                     print(f'RV: {art.rv()}%\n')
 
@@ -496,7 +514,8 @@ while True:
 
                                 elif cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
                                     artifact_list.remove(art)
-
+                                    with open(r'.\inventory.txt', 'w') as file:
+                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                                 else:
                                     print('Invalid command\n')
 
@@ -519,6 +538,8 @@ while True:
                                 print(f'Index "{cmd}" is not valid\n')
                         elif cmd in ('clear', 'clr', 'c'):
                             artifact_list = []
+                            with open(r'.\inventory.txt', 'w') as file:
+                                file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print('Inventory cleared\n')
                         elif cmd == 'cv':
                             big_cv = max(artifact_list, key=lambda x: x.cv())
