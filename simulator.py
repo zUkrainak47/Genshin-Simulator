@@ -1,16 +1,18 @@
 from random import choice, choices
 import time
+from operator import itemgetter
 
 
 class Artifact:
 
-    def __init__(self, type, mainstat, threeliner, substats, level, last_upgrade=""):
+    def __init__(self, type, mainstat, threeliner, substats, level, last_upgrade="", roll_value=0):
         self.type = type
         self.mainstat = mainstat
         self.threeliner = threeliner
         self.substats = substats
         self.level = level
         self.last_upgrade = last_upgrade
+        self.roll_value = roll_value
         if "Crit RATE%" in self.substats:
             if self.substats["Crit RATE%"] == 23.0:
                 self.substats["Crit RATE%"] = 22.9
@@ -32,20 +34,23 @@ class Artifact:
             is_percentage = '%' in i
             print(
                 f"- {i}: {str(round(self.substats[i], 1)) + '%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+        self.last_upgrade = ""
         print()
 
     def upgrade(self):
         if self.level != 20:
+            roll = choice(possible_rolls)
             if self.threeliner:
                 self.substats[self.threeliner] = max_rolls[
-                                                     self.threeliner] * choice(possible_rolls)
+                                                     self.threeliner] * roll
                 self.last_upgrade = self.threeliner
                 self.threeliner = 0
             else:
                 sub = choice(list(self.substats.keys()))
-                self.substats[sub] += max_rolls[sub] * choice(possible_rolls)
+                self.substats[sub] += max_rolls[sub] * roll
                 self.last_upgrade = sub
             self.level += 4
+            self.roll_value += roll * 100
 
     def cv(self):
         crit_value = 0
@@ -54,6 +59,9 @@ class Artifact:
         if "Crit RATE%" in self.substats:
             crit_value += round(self.substats["Crit RATE%"], 1) * 2
         return round(crit_value, 1)
+
+    def rv(self):
+        return int(self.roll_value)
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -89,13 +97,16 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 
 
 def take_input():
+    valid_exit = ('exit', "'exit'", '"exit"')
     ok1 = False
     ok2 = False
-    print("\nPlease input conditions.\nLeave blank to use defaults (1 test, 50 CV).\n")
+    print("\nPlease input conditions. Type 'exit' to go back to menu.\nLeave blank to use defaults (1 test, 50 CV).\n")
 
     while not ok1:
         size = input("Number of tests to run: ")
         if size:
+            if size.lower() in valid_exit:
+                return 'exit', 0
             try:
                 if int(size) > 0:
                     ok1 = True
@@ -110,6 +121,8 @@ def take_input():
     while not ok2:
         cv = input("Desired Crit Value: ")
         if cv:
+            if cv.lower() in valid_exit:
+                return 0, 'exit'
             try:
                 if float(cv) > 0:
                     ok2 = True
@@ -122,11 +135,12 @@ def take_input():
             cv = 50
 
     print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.")
-    return int(size), float(cv)
+    return size, cv
 
 
 def create_artifact(source):
     type = choice(artifact_types)
+    rv = 0
     if type == 'Flower':
         mainstat = 'HP'
     elif type == 'Feather':
@@ -152,15 +166,17 @@ def create_artifact(source):
         subs_pool.remove(mainstat)
 
     for _i in range(3 + fourliner):
+        roll = choice(possible_rolls)
         sub = choices(subs_pool, weights=subs_weights)[0]
         subs_weights.remove(subs_weights[subs_pool.index(sub)])
         subs_pool.remove(sub)
-        subs[sub] = max_rolls[sub] * choice(possible_rolls)
+        subs[sub] = max_rolls[sub] * roll
+        rv += roll * 100
 
     threeliner = choices(subs_pool,
                          weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(type, mainstat, threeliner, subs, 0)
+    return Artifact(type, mainstat, threeliner, subs, 0, "", rv)
 
 
 def create_and_roll_artifact(arti_source, highest_cv=0):
@@ -178,6 +194,28 @@ def create_and_roll_artifact(arti_source, highest_cv=0):
     return artifact, highest_cv
 
 
+def upgrade_to_next_tier(artifact):
+    if artifact.level == 20:
+        print("Artifact already at +20\n")
+    else:
+        print('Upgrading...\n')
+        artifact.upgrade()
+        artifact.print_stats()
+
+
+def upgrade_to_max_tier(artifact, do_we_print=True):
+    if artifact.level == 20:
+        print("Artifact already at +20\n")
+    else:
+        print('Upgrading to +20...\n')
+        while artifact.level < 20:
+            artifact.upgrade()
+            if do_we_print:
+                artifact.print_stats()
+        if not do_we_print:
+            artifact.print_stats()
+
+
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_want):
     flag_break = False
     if artifact.cv() >= min(54.5, cv_want):
@@ -191,39 +229,91 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
     return fastest, slowest, days_list, flag_break
 
 
+def print_inventory(list_of_artifacts):
+    print("Inventory:\n")
+    print('-' * 30, f'{list_of_artifacts[0].type}s', '-' * 30)
+    for i in range(len(list_of_artifacts)):
+        print(f'{i + 1}) {list_of_artifacts[i]} - {list_of_artifacts[i].subs()}')
+        if i + 1 < len(list_of_artifacts):
+            t = list_of_artifacts[i + 1].type
+            if t != list_of_artifacts[i].type:
+                print('\n' + '-' * 30, f'{t}{"s" if t != "Sands" else ""}', '-' * 30)
+
+
 def print_controls():
     print('\n' +
-          '=' * 19 + ' CONTROLS ' + '=' * 19 + '\n'
-                                               '\nhelp = send this message\n'
+          '=' * 27 + ' CONTROLS ' + '=' * 27 + '\n\n'
+                                               '---------------- ACTIONS WITH GENERATED ARTIFACT ---------------\n\n'
+                                               'a = show generated artifact\n'
                                                '\n'
+                                               'a rv = show its roll value\n'
+                                               'a cv = show crit value\n'
                                                '+ = upgrade to next tier\n'
                                                '++ = upgrade to +20\n'
-                                               'r = re-roll\n'
-                                               'r++ = re-roll and upgrade to +20\n'
-                                               's = save to inventory\n'
-                                               'inv = show inventory\n'
                                                '\n'
+                                               's = save to inventory\n'
+                                               'del = remove from inventory\n'
+                                               '\n'
+                                               'r = re-roll\n'
+                                               'r++ = re-roll and upgrade to +20'
+                                               '\n\n'
+                                               '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
+                                               'inv = show inventory\n'
+                                               'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
+                                               'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
+                                               'inv c = clear inventory'
+                                               '\n\n'
+                                               '------------------------ OTHER COMMANDS -----------------------\n\n'
                                                'domain = change artifact source to domain (default)\n'
-                                               'strongbox = change artifact source to strongbox\n\n'
-                                               'artifact = show current artifact\n'
+                                               'strongbox = change artifact source to strongbox\n'
+                                               'source = view current source\n'
+                                               '\n'
                                                'exit = go back to menu\n'
                                                '\n'
-                                               '================================================\n'
+                                               '================================================================\n'
           )
 
 
-help = ['help', "'help'", '"help"']
-artifact_list = []
-while True:
-    print('\n' + '=' * 21 + " MENU " + '=' * 21 + '\n')
+def print_menu():
+    print('\n' + '=' * 29 + " MENU " + '=' * 29 + '\n')
     print("0 = exit the simulator\n"
           "1 = roll artifacts until a certain CV is reached\n"
           "2 = roll one artifact at a time\n")
-    automate = input('Your pick: ')
-    print('For the list of commands, type "help"\n' if automate == '2' else '')
-    print('=' * 48)
+
+
+sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
+sort_order_mainstat = {'ATK': 0,
+                       'HP': 1,
+                       'Crit DMG%': 2, 'Crit RATE%': 3,
+                       'EM': 4,
+                       'Pyro DMG% Bonus': 5, 'Hydro DMG% Bonus': 6, 'Cryo DMG% Bonus': 7, 'Electro DMG% Bonus': 8,
+                       'Anemo DMG% Bonus': 9, 'Dendro DMG% Bonus': 10, 'Geo DMG% Bonus': 11, 'Physical DMG% Bonus': 12,
+                       'ER%': 13,
+                       'Healing Bonus': 14,
+                       'ATK%': 15,
+                       'HP%': 16,
+                       'DEF%': 17,
+                       }
+valid_help = ['help', "'help'", '"help"']
+valid_picks = ['0', 'exit', '1', '2']
+artifact_list = []
+while True:
+    print_menu()
+    while True:
+        automate = input('Your pick: ')
+        if automate.lower() in valid_picks:
+            break
+        else:
+            print('Commands are 0, 1 or 2\n')
+    print("For the list of commands, type 'help'\n" if automate == '2' else "")
+    print('=' * 64)
     if automate == "1":
         sample_size, cv_desired = take_input()
+        if sample_size == 'exit' or cv_desired == 'exit':
+            print("Going back to menu")
+            continue
+        else:
+            sample_size, cv_desired = int(sample_size), float(cv_desired)
         days_it_took_to_reach_50_cv = []
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done'))
@@ -234,7 +324,7 @@ while True:
             highest = 0.1
             inventory = 0
             flag = False
-            print(f'\nSimulation {i + 1}:')
+            print(f'\nSimulation {i + 1}:' if sample_size > 1 else '')
             while not flag:
                 day += 1
                 # print(f'new day {day}')
@@ -292,60 +382,139 @@ while True:
         art = create_artifact(source)
         art.print_stats()
         while True:
-            user_command = input('Command: ')
-            if user_command == '+':
-                if art.level == 20:
-                    print("Artifact already at +20\n")
-                else:
-                    print('Upgrading...\n')
-                    art.upgrade()
-                    art.print_stats()
-            elif user_command == '++':
-                if art.level == 20:
-                    print("Artifact already at +20\n")
-                else:
-                    print('Upgrading to +20...\n')
-                    while art.level < 20:
-                        art.upgrade()
-                        art.print_stats()
-            elif user_command.lower() == 'r':
+            user_command = input('Command: ').lower()
+
+            if user_command in ('+', 'a+', 'a +'):
+                upgrade_to_next_tier(art)
+                if art in artifact_list:
+                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+
+            elif user_command in ('++', 'a++', 'a ++'):
+                upgrade_to_max_tier(art)
+                if art in artifact_list:
+                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+
+            elif user_command == 'r':
                 print('Re-rolling...\n')
                 art = create_artifact(source)
                 art.print_stats()
-            elif user_command.lower() == 'r++':
+
+            elif user_command in ('r++', 'r ++'):
                 print('Re-rolling and upgrading...\n')
                 art, _ = create_and_roll_artifact(source)
-            elif user_command.lower() == 's':
+
+            elif user_command in ('s', 'save'):
                 if art not in artifact_list:
                     artifact_list.append(art)
-                    print(f'{len(artifact_list)} artifacts in inventory\n')
+                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    print(f'Saved - {len(artifact_list)} artifact{"s" if len(artifact_list) > 1 else ""} in inventory\n')
                 else:
                     print('Already saved this artifact\n')
-            elif user_command.lower() == 'inv':
-                if len(artifact_list) == 0:
-                    print('No artifacts yet')
+
+            elif user_command in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
+                if art in artifact_list:
+                    artifact_list.remove(art)
+                    print(f'Removed - {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory\n')
                 else:
-                    for i in artifact_list:
-                        print(f'{i} - {i.subs()}')
-                print()
-            elif user_command.lower() == 'domain':
+                    print('This artifact is not in your inventory\n')
+
+            elif 'inv' in user_command:
+                if user_command in ('inv', 'inventory'):
+                    if len(artifact_list) == 0:
+                        print('Inventory is empty')
+                    else:
+                        print_inventory(artifact_list)
+                    print()
+
+                else:
+                    user_command = user_command.split(' ')
+                    if len(user_command) == 3:
+                        _, indexes, cmd = user_command
+                        indexes = indexes.split(',')
+                        flag = True
+                        for i in indexes:
+                            if not i.isnumeric() or int(i) > len(artifact_list) or int(i) == 0:
+                                flag = False
+                                print(f'Index "{i}" is not valid\n')
+                                break
+                        if flag:  # if all given indexes are valid
+                            indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
+                            if len(indexes) > 1:                                     # if there's more than 1 index
+                                arti_list = itemgetter(*indexes)(artifact_list)      # make a new list containing all the artifacts in question
+                            else:                                        # otherwise, make a list containing 1 artifact
+                                arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
+                            for art in arti_list:                        # then iterate this list and execute command
+                                if cmd == '+':
+                                    upgrade_to_next_tier(art)
+                                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+
+                                elif cmd == '++':
+                                    upgrade_to_max_tier(art, False)
+                                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+
+                                elif cmd == 'rv':
+                                    print(f'RV: {art.rv()}%\n')
+
+                                elif cmd == 'cv':
+                                    print(f'CV: {art.cv()}\n')
+
+                                elif cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
+                                    artifact_list.remove(art)
+
+                                else:
+                                    print('Invalid command\n')
+
+                            if cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
+                                print('Artifacts removed\n')
+                                print_inventory(artifact_list)
+                                print()
+
+                    elif len(user_command) == 2:
+                        _, cmd = user_command
+                        if cmd.isnumeric():
+                            cmd = int(cmd)
+                            if cmd <= len(artifact_list) and cmd != 0:
+                                artifact_list[int(cmd) - 1].print_stats()
+                            else:
+                                print(f'Index "{cmd}" is not valid\n')
+                        elif cmd in ('clear', 'clr', 'c'):
+                            artifact_list = []
+                            print('Inventory cleared\n')
+                        else:
+                            print('Invalid command\n')
+                    else:
+                        print('U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
+
+            elif user_command == 'domain':
                 source = 'domain'
                 print('Source set to domain\n')
-            elif user_command.lower() == 'strongbox':
+
+            elif user_command == 'strongbox':
                 source = 'strongbox'
                 print('Source set to strongbox\n')
-            elif user_command.lower() == 'artifact':
+
+            elif user_command == 'source':
+                print(f'Current source: {source}\n')
+
+            elif user_command in ('a rv', 'rv'):
+                print(f'RV: {art.rv()}%\n')
+
+            elif user_command in ('a cv', 'cv'):
+                print(f'CV: {art.cv()}\n')
+
+            elif user_command in ('artifact', 'a'):
                 print()
                 art.print_stats()
-            elif user_command.lower() in ('exit', 'menu', '0'):
+
+            elif user_command in ('exit', 'menu', '0'):
                 print('Exiting...')
                 break
-            elif user_command.lower() in help:
+
+            elif user_command in valid_help:
                 print_controls()
+
             else:
                 print("Try 'help'\n")
-    elif automate == '0' or automate.lower() == 'exit':
-        break
     else:
-        print('\nNot a valid choice, go again')
+        break
 print('\nThank you for using Artifact Simulator')
