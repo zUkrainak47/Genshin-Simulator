@@ -35,7 +35,7 @@ class Artifact:
         for i in self.substats:
             is_percentage = '%' in i
             print(
-                f"- {i}: {str(round(self.substats[i], 1)) + '%' if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+                f"- {i}: {str(round(self.substats[i], 1)) if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
         self.last_upgrade = ""
         print()
 
@@ -513,6 +513,7 @@ while True:
                         if cmd.isnumeric():
                             cmd = int(cmd)
                             if cmd <= len(artifact_list) and cmd != 0:
+                                print()
                                 artifact_list[int(cmd) - 1].print_stats()
                             else:
                                 print(f'Index "{cmd}" is not valid\n')
