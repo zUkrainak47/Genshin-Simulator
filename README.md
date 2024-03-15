@@ -12,12 +12,10 @@ This artifact simulator can help you with that.
 - It will use 1 Transient Resin per week, assumes unlimited fodder and throws all artifacts in the Strongbox.
 
 ### Mode 2:
-- Level and re-roll artifacts one by one. Basically like running domains, but you have unlimited resin.
+- Allows you to level and re-roll artifacts one by one. Basically like running domains, but you have unlimited resin.
+- If there's an artifact that you like, you can add it to your inventory. It also carries over sessions.
 - Commands include:
   - leveling artifact (to next tier or to +20)
   - re-rolling artifact
-  - saving artifact to inventory
+  - viewing inventory
   - etc
-
-# TODO
-- allow saving artifacts to text file
