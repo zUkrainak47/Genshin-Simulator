@@ -341,7 +341,6 @@ with open('.\\inventory.txt') as file:
     data = file.read()
 artifact_list = json.loads(data)
 artifact_list = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in artifact_list]
-print(artifact_list)
 while True:
     print_menu()
     while True:
