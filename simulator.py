@@ -257,7 +257,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_
             fastest = (day_number, artifact)
         if day_number > slowest[0]:
             slowest = (day_number, artifact)
-        print(artifact.subs())
+        # print(artifact.subs())
         flag_break = True
     return fastest, slowest, days_list, flag_break
 
@@ -405,7 +405,7 @@ while True:
             print(f'Fastest - {low[0]} days: {low[1].subs()}')
             print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
         else:
-            print(f'It took {low[0]} days!')
+            print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
         end = time.perf_counter()
         run_time = end - start
         to_hours = time.strftime("%T", time.gmtime(run_time))
