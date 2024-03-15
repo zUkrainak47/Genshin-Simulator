@@ -501,7 +501,7 @@ while True:
                                     print('Invalid command\n')
 
                             if cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
-                                print('Artifacts removed\n')
+                                print(f'\nArtifact{"s" if len(indexes) > 1 else ""} removed')
                                 if len(artifact_list) == 0:
                                     print('Inventory is empty')
                                 else:
