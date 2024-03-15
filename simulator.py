@@ -576,10 +576,11 @@ while True:
                         elif cmd == 'load':
                             try:
                                 artifact_list = load_data()
-                                print('Loading successful\n')
+                                print('Loading successful')
                                 if len(artifact_list) == 0:
                                     print('Inventory is empty')
                                 else:
+                                    print()
                                     print_inventory(artifact_list)
                                 print()
                             except json.decoder.JSONDecodeError:
