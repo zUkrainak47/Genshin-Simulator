@@ -154,6 +154,19 @@ def take_input():
     return size, cv
 
 
+def load_data():
+    try:
+        with open('.\\inventory.txt') as file:
+            data = file.read()
+        d = json.loads(data)
+        d = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in d]
+        return d
+    except FileNotFoundError:
+        with open('.\\inventory.txt', 'w') as file:
+            file.write('[]')
+        return []
+
+
 def create_artifact(source):
     type = choice(artifact_types)
     rv = 0
@@ -302,6 +315,7 @@ def print_controls():
                                                'inv rv = show inventory with highest roll value\n'
                                                'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
                                                'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
+                                               'inv load = load updates made to inventory.txt\n'
                                                'inv c = clear inventory\n'
                                                '\n'
                                                '------------------------ OTHER COMMANDS -----------------------\n\n'
@@ -337,10 +351,19 @@ sort_order_mainstat = {'ATK': 0,
                        }
 valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
-with open('.\\inventory.txt') as file:
-    data = file.read()
-artifact_list = json.loads(data)
-artifact_list = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in artifact_list]
+
+try:
+    artifact_list = load_data()
+    print('Loading successful')
+    # print_inventory(artifact_list)
+    # print()
+except json.decoder.JSONDecodeError:
+    print('Something off with inventory file. Clearing inventory.txt')
+    artifact_list = []
+    with open(r'.\inventory.txt', 'w') as file:
+        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+    print('Inventory cleared')
+
 while True:
     print_menu()
     while True:
@@ -550,6 +573,21 @@ while True:
                             print(f'{big_rv} - {big_rv.subs()}')
                             print(f'RV: {big_rv.rv()}%')
                             print()
+                        elif cmd == 'load':
+                            try:
+                                artifact_list = load_data()
+                                print('Loading successful\n')
+                                if len(artifact_list) == 0:
+                                    print('Inventory is empty')
+                                else:
+                                    print_inventory(artifact_list)
+                                print()
+                            except json.decoder.JSONDecodeError:
+                                print('Something off with inventory file. Clearing inventory.txt')
+                                artifact_list = []
+                                with open(r'.\inventory.txt', 'w') as file:
+                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                                print('Inventory cleared\n')
                         else:
                             print('Invalid command\n')
                     else:
