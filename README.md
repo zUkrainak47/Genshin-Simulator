@@ -16,9 +16,8 @@ This artifact simulator can help you with that.
 - Commands include:
   - leveling artifact (to next tier or to +20)
   - re-rolling artifact
-  - changing artifact source (domain/strongbox) 
-    - this affects how likely the artifact is to have 4 sub stats
-  - etc.
+  - saving artifact to inventory
+  - etc
 
 # TODO
 - allow saving artifacts to text file
