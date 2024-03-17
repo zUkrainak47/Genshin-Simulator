@@ -8,6 +8,7 @@ from pathlib import Path
 dict_of_days_total = {0.0: 1.0}
 dict_of_days_average = {0.0: 1.0}
 
+
 class Artifact:
     def __init__(self, type, mainstat, mainstat_value, threeliner, substats, level, last_upgrade="", roll_value=0):
         self.type = type
@@ -74,7 +75,8 @@ class Artifact:
 
 class ArtifactEncoder(json.JSONEncoder):
     def default(self, art):
-        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade, art.roll_value]
+        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade,
+                art.roll_value]
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -121,7 +123,8 @@ def take_input():
     valid_exit = ('exit', "'exit'", '"exit"')
     ok1 = False
     ok2 = False
-    print("\nPlease input conditions. Type 'exit' to exit the program.\nLeave blank to use defaults (100 tests, 50 CV).\n")
+    print(
+        "\nPlease input conditions. Type 'exit' to exit the program.\nLeave blank to use defaults (100 tests, 50 CV).\n")
 
     while not ok1:
         size = input("Number of tests to run: ")
@@ -194,9 +197,9 @@ def create_artifact(source):
     elif mainstat == 'ATK':
         mainstat_value = [feather_stats, 0]
     elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                     'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                     'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                     'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
         mainstat_value = [hp_atk_dmg_stats, 0]
     elif mainstat == 'DEF%':
         mainstat_value = [def_stats, 0]
@@ -241,11 +244,11 @@ def create_and_roll_artifact(arti_source, highest_cv, cv_want, day):
         artifact.upgrade()
     a_cv = artifact.cv()
     if artifact.cv() > highest_cv:
-        for q in range(int(highest_cv*10)+1, int(min(a_cv * 10, cv_want * 10))+1):
-            if q/10 in dict_of_days_total:
-                dict_of_days_total[q/10] += day
+        for q in range(int(highest_cv * 10) + 1, int(min(a_cv * 10, cv_want * 10)) + 1):
+            if q / 10 in dict_of_days_total:
+                dict_of_days_total[q / 10] += day
             else:
-                dict_of_days_total[q/10] = day
+                dict_of_days_total[q / 10] = day
         highest_cv = artifact.cv()
         # print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
     return artifact, highest_cv
@@ -335,6 +338,22 @@ def print_controls():
           )
 
 
+def plot_this(cv_plot, days_plot, cv_range, sample_size):
+    plt.plot(cv_plot, days_plot)
+
+    plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
+    # plt.yticks(np.arange(0, 100, 250))
+
+    plt.xlabel("Crit Value")
+    plt.ylabel("Days to reach CV")
+    plt.title("Average time to reach Crit Value")
+    plt.tight_layout()
+    plt.grid()
+    Path(".\\plots").mkdir(parents=True, exist_ok=True)
+    plt.savefig(f'.\\plots\\Plot of {cv_range[0]}CV to {cv_range[1]}CV (sample size - {sample_size}).png', dpi=1200)
+    plt.show()
+
+
 def print_menu():
     print('\n' + '=' * 29 + " MENU " + '=' * 29 + '\n')
     print("0 = exit the simulator\n"
@@ -384,10 +403,10 @@ for i in range(sample_size):
     highest = 0
     inventory = 0
     flag = False
-    if (i+1)%25 == 0:
+    if (i + 1) % 25 == 0:
         print("\nResults so far:")
         for dd in dict_of_days_total:
-            dict_of_days_average[dd] = round(dict_of_days_total[dd]/i, 2)
+            dict_of_days_average[dd] = round(dict_of_days_total[dd] / i, 2)
             # print(f'{dd}: {dict_of_days_total[dd]/i}')
         print('Dict:', dict_of_days_average)
         print('List:', list(dict_of_days_average.values()))
@@ -461,11 +480,15 @@ for i in dict_of_days_total:
     dict_of_days_average[i] = round(dict_of_days_total[i] / sample_size, 2)
 
 days_for_plotting = list(dict_of_days_average.values())
-cv_for_plotting = np.arange(cv_desired * 10 + 1)/10
+cv_for_plotting = np.arange(cv_desired * 10 + 1) / 10
 
 print('Dict:', dict_of_days_average)
 print('List:', days_for_plotting)
 print()
+
+plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
+print("Here you go. This was also saved as a .png file.\n"
+      "You can plot another graph now if you want.\n")
 
 first_time = True
 while True:
@@ -480,27 +503,19 @@ while True:
             break
         try:
             cv_range = list(map(float, user_cmd.split(':')))
+            if cv_range[0] > cv_desired or cv_range[1] < 0 or cv_range[0] < 0 or cv_range[1] < cv_range[0]:
+                print('Invalid range, try again\n')
+                continue
         except:
-            print('Invalid, try again')
+            print('Invalid, try again\n')
             continue
     else:
         cv_range = [0.0, cv_desired]
     days_plot = days_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
     cv_plot = cv_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
 
-    plt.plot(cv_plot, days_plot)
+    plot_this(cv_plot, days_plot, cv_range, sample_size)
 
-    plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
-    # plt.yticks(np.arange(0, 100, 250))
-
-    plt.xlabel("Crit Value")
-    plt.ylabel("Days to reach CV")
-    plt.title("Average time to reach Crit Value")
-    plt.tight_layout()
-    plt.grid()
-    Path(".\\plots").mkdir(parents=True, exist_ok=True)
-    plt.savefig(f'.\\plots\\Plot for {cv_range[0]}CV to {cv_range[1]}CV (sample size - {sample_size}).png', dpi=1200)
-    plt.show()
     print("Ok, here you go. This was also saved as a .png file.\n"
           "You can plot another graph now if you want.\n")
 
