@@ -346,11 +346,11 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
 
     plt.xlabel("Crit Value")
     plt.ylabel("Days to reach CV")
-    plt.title("Average time to reach Crit Value")
+    plt.title(f"Average time to reach Crit Value (sample size = {sample_size})")
     plt.tight_layout()
     plt.grid()
     Path(".\\plots").mkdir(parents=True, exist_ok=True)
-    plt.savefig(f'.\\plots\\Plot of {cv_range[0]}CV to {cv_range[1]}CV (sample size - {sample_size}).png', dpi=1200)
+    plt.savefig(f'.\\plots\\Plot of {cv_range[0]}CV to {cv_range[1]}CV (sample size = {sample_size}).png', dpi=1200)
     plt.show()
 
 
