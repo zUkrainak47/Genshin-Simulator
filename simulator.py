@@ -69,7 +69,8 @@ class Artifact:
 
 class ArtifactEncoder(json.JSONEncoder):
     def default(self, art):
-        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade, art.roll_value]
+        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade,
+                art.roll_value]
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -189,9 +190,9 @@ def create_artifact(source):
     elif mainstat == 'ATK':
         mainstat_value = [feather_stats, 0]
     elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                     'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                     'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                     'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
         mainstat_value = [hp_atk_dmg_stats, 0]
     elif mainstat == 'DEF%':
         mainstat_value = [def_stats, 0]
@@ -205,7 +206,6 @@ def create_artifact(source):
         mainstat_value = [crit_rate_stats, 0]
     else:
         mainstat_value = [crit_dmg_stats, 0]
-
     fourliner_weights = (2, 8) if source == 'domain' else (34, 66)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
@@ -381,7 +381,7 @@ while True:
             continue
         else:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
-        days_it_took_to_reach_50_cv = []
+        days_it_took_to_reach_desired_cv = []
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
@@ -397,10 +397,21 @@ while True:
                 # print(f'new day {day}')
                 if day % 10000 == 0:
                     print(f'Day {day} - still going')
+                if day % 15 == 1:  # 4 artifacts from abyss every 15 days
+                    inventory += 4
+                    for k in range(4):
+                        art, highest = create_and_roll_artifact("abyss", highest)
+                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
+                                                                                             days_it_took_to_reach_desired_cv,
+                                                                                             day, cv_desired)
+                        if flag:
+                            break
+                    if flag:
+                        break
                 resin = 180
-                if day % 7 == 1:
+                if day % 7 == 1:  # 1 transient resin from tubby every monday
                     resin += 60
-                while resin:
+                while resin and not flag:
                     # print('domain run')
                     resin -= 20
                     amount = choices((1, 2), weights=(93, 7))
@@ -409,8 +420,8 @@ while True:
                     inventory += amount[0]
                     for k in range(amount[0]):
                         art, highest = create_and_roll_artifact("domain", highest)
-                        low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high,
-                                                                                             days_it_took_to_reach_50_cv,
+                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
+                                                                                             days_it_took_to_reach_desired_cv,
                                                                                              day, cv_desired)
                         if flag:
                             break
@@ -421,15 +432,15 @@ while True:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
                         art, highest = create_and_roll_artifact("strongbox", highest)
-                        low, high, days_it_took_to_reach_50_cv, flag = compare_to_highest_cv(art, low, high,
-                                                                                             days_it_took_to_reach_50_cv,
+                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
+                                                                                             days_it_took_to_reach_desired_cv,
                                                                                              day, cv_desired)
                         if flag:
                             break
                     # print(f'{inventory} left in inventory')
 
         print()
-        days = round(sum(days_it_took_to_reach_50_cv) / sample_size, 2)
+        days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
         if sample_size > 1:
             print(
                 f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
@@ -455,13 +466,15 @@ while True:
             if user_command in ('+', 'a+', 'a +'):
                 upgrade_to_next_tier(art)
                 if art in artifact_list:
-                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    artifact_list.sort(
+                        key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command in ('++', 'a++', 'a ++'):
                 upgrade_to_max_tier(art)
                 if art in artifact_list:
-                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    artifact_list.sort(
+                        key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command == 'r':
@@ -476,10 +489,12 @@ while True:
             elif user_command in ('s', 'save'):
                 if art not in artifact_list:
                     artifact_list.append(art)
-                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    artifact_list.sort(
+                        key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                    print(f'Saved - {len(artifact_list)} artifact{"s" if len(artifact_list) > 1 else ""} in inventory\n')
+                    print(
+                        f'Saved - {len(artifact_list)} artifact{"s" if len(artifact_list) > 1 else ""} in inventory\n')
                 else:
                     print('Already saved this artifact\n')
 
@@ -488,7 +503,8 @@ while True:
                     artifact_list.remove(art)
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                    print(f'Removed - {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory\n')
+                    print(
+                        f'Removed - {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory\n')
                 else:
                     print('This artifact is not in your inventory\n')
 
@@ -513,19 +529,22 @@ while True:
                                 break
                         if flag:  # if all given indexes are valid
                             indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
-                            if len(indexes) > 1:                                     # if there's more than 1 index
-                                arti_list = itemgetter(*indexes)(artifact_list)      # make a new list containing all the artifacts in question
-                            else:                                        # otherwise, make a list containing 1 artifact
+                            if len(indexes) > 1:  # if there's more than 1 index
+                                arti_list = itemgetter(*indexes)(
+                                    artifact_list)  # make a new list containing all the artifacts in question
+                            else:  # otherwise, make a list containing 1 artifact
                                 arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
-                            for art in arti_list:                        # then iterate this list and execute command
+                            for art in arti_list:  # then iterate this list and execute command
                                 if cmd == '+':
                                     upgrade_to_next_tier(art)
-                                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                    artifact_list.sort(key=lambda x: (
+                                    sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                     with open(r'.\inventory.txt', 'w') as file:
                                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                                 elif cmd == '++':
                                     upgrade_to_max_tier(art, len(indexes) == 1)
-                                    artifact_list.sort(key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                    artifact_list.sort(key=lambda x: (
+                                    sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                     with open(r'.\inventory.txt', 'w') as file:
                                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                                 elif cmd == 'rv':
@@ -592,7 +611,8 @@ while True:
                         else:
                             print('Invalid command\n')
                     else:
-                        print('U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
+                        print(
+                            'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
 
             elif user_command == 'domain':
                 source = 'domain'
