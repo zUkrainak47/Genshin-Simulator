@@ -513,7 +513,9 @@ while True:
         cv_range = [0.0, cv_desired]
     days_plot = days_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
     cv_plot = cv_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
-
+    print()
+    print('Values:', days_plot)
+    print()
     plot_this(cv_plot, days_plot, cv_range, sample_size)
 
     print("Ok, here you go. This was also saved as a .png file.\n"
