@@ -312,7 +312,7 @@ def print_controls():
                                                '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
                                                'inv = show inventory\n'
                                                'inv cv = show artifact with highest crit value\n'
-                                               'inv rv = show inventory with highest roll value\n'
+                                               'inv rv = show artifact with highest roll value\n'
                                                'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
                                                'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
                                                'inv load = load updates made to inventory.txt\n'
