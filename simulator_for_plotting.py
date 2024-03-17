@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-dict_of_days_total = {0.0: 1.0}
-dict_of_days_average = {0.0: 1.0}
+dict_of_days_total = {0.0: 0.0}
+dict_of_days_average = {0.0: 0.0}
 
 
 class Artifact:
