@@ -244,6 +244,8 @@ def create_and_roll_artifact(arti_source, highest_cv, cv_want, day):
         artifact.upgrade()
     a_cv = artifact.cv()
     if artifact.cv() > highest_cv:
+        if highest_cv == 0:
+            dict_of_days_total[0] += 1
         for q in range(int(highest_cv * 10) + 1, int(min(a_cv * 10, cv_want * 10)) + 1):
             if q / 10 in dict_of_days_total:
                 dict_of_days_total[q / 10] += day
