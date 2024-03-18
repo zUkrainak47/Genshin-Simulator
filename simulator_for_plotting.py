@@ -361,27 +361,46 @@ def insert_average(arr, num):
 
 
 def plot_this(cv_plot, days_plot, cv_range, sample_size):
-    fig, ax = plt.subplots()
-    if len(cv_plot) == 1:
-        ax.scatter(cv_plot, days_plot, color='red', label='Single Point')
-    else:
-        ax.plot(cv_plot, days_plot, label='Data')
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 
-    ax.set_xticks(insert_average(ax.get_xticks(), 12))
-    ax.set_yticks(insert_average(ax.get_yticks(), 10))
+    if len(cv_plot) == 1:
+        ax[0].scatter(cv_plot, days_plot, color='red', label='Single Point')
+        ax[1].scatter(cv_plot, days_plot, color='red', label='Single Point')
+    else:
+        ax[0].plot(cv_plot, days_plot, label='Data')
+        ax[1].plot(cv_plot, days_plot, label='Data')
+
+    # Plot for the False value (left subplot)
+    ax[0].set_title('Regular')
+    ax[0].set_xlabel("Crit Value")
+    ax[0].set_ylabel("Days to reach CV")
+    ax[0].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+
+    # Plot for the True value (right subplot)
+    ax[1].set_title('Logarithmic')
+    ax[1].set_xlabel("Crit Value")
+    ax[1].set_yscale('log')
+    ax[1].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+
+    for a in ax:
+        a.grid(True)
+
+    ax[0].set_xticks(insert_average(ax[0].get_xticks(), 12))
+    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 10))
+    ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
     # if len(ax.get_xticks()) > 12:
-    plt.xticks(rotation=60)
+    # plt.xticks(rotation=60)
 
     # plt.plot(cv_plot, days_plot)
     # plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
     # plt.yticks(np.arange(0, 100, 250))
 
-    plt.xlabel("Crit Value")
-    plt.ylabel("Days to reach CV")
-    plt.title(f"Average time to reach Crit Value (sample size = {sample_size})")
+    # plt.xlabel("Crit Value")
+    # plt.ylabel("Days to reach CV")
+    fig.suptitle(f"Average time to reach Crit Value (sample size = {sample_size})")
     plt.tight_layout()
-    plt.grid()
+    # plt.grid()
     Path(".\\plots").mkdir(parents=True, exist_ok=True)
     Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
 
@@ -535,6 +554,7 @@ print('List:', days_for_plotting)
 print()
 
 plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
+
 print("Here you go. This was also saved as a .png file.\n"
       "You can plot another graph now if you want.\n")
 
@@ -567,6 +587,7 @@ while True:
     print('Values:', days_plot)
     print()
     plot_this(cv_plot, days_plot, cv_range, sample_size)
+
 
     print("Ok, here you go. This was also saved as a .png file.\n"
           "You can plot another graph now if you want.\n")
