@@ -386,16 +386,19 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
 
     if int(cv_range[0]) == cv_range[0]:
-        from_cv = int(cv_range[0])
+        from_cv = max(int(cv_range[0]), 0)
     else:
-        from_cv = cv_range[0]
+        from_cv = max(cv_range[0], 0)
 
+    is_int = int(cv_desired) if int(cv_desired) == cv_desired else cv_desired
     if int(cv_range[1]) == cv_range[1]:
-        to_cv = int(cv_range[1])
+        to_cv = min(int(cv_range[1]), is_int)
     else:
-        to_cv = cv_range[1]
+        to_cv = min(cv_range[1], is_int)
 
-    plt.savefig(f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (sample size = {sample_size}).png', dpi=1200)
+    plt.savefig(
+        f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (sample size = {sample_size}).png',
+        dpi=1200)
     plt.show()
 
 
@@ -548,7 +551,9 @@ while True:
             break
         try:
             cv_range = list(map(float, user_cmd.split(':')))
-            if cv_range[0] > cv_desired or cv_range[1] < 0 or cv_range[0] < 0 or cv_range[1] < cv_range[0]:
+            if (cv_range[0] > cv_desired or
+                    cv_range[1] < 0 or
+                    cv_range[1] < cv_range[0]):
                 print('Invalid range, try again\n')
                 continue
         except:
@@ -556,8 +561,8 @@ while True:
             continue
     else:
         cv_range = [0.0, cv_desired]
-    days_plot = days_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
-    cv_plot = cv_for_plotting[int(cv_range[0] * 10):int(cv_range[1] * 10 + 1)]
+    days_plot = days_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+    cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
     print()
     print('Values:', days_plot)
     print()
