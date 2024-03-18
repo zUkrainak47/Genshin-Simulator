@@ -1,7 +1,5 @@
-# I did not properly document nor format this so use if u understand what you're doing.
-# I tried leaving hints using comments though.
-# This file can be used to plot graphs the same way you would in simulator_for_plotting.py,
-# but using a list of values instead of calculating those values
+# Add your list of CV values and change sample_size, from_cv, to_cv and set days to the name of your list
+# do not touch anything below that :)
 
 
 import matplotlib.pyplot as plt
@@ -22,13 +20,9 @@ days = days_52_10000  # set this to your array of values
 
 def insert_average(arr, num):
     arr = arr[arr >= 0]
-    # Calculate the number of elements in the output array
     n = arr.shape[0]
-    # Create an array to hold the result, initially twice the size of the input array
     result = np.empty(2 * n - 1)
-    # Fill the odd indices with the original elements of the array
     result[::2] = arr
-    # Fill the even indices with the average of adjacent elements
 
     result[1::2] = (arr[:-1] + arr[1:]) / 2
     if num == 12:  # yes this is spaghetti code
@@ -51,17 +45,15 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired):
         ax[0].plot(cv_plot, days_plot, label='Data')
         ax[1].plot(cv_plot, days_plot, label='Data')
 
-    # Plot for the False value (left subplot)
     ax[0].set_title('Regular')
     ax[0].set_xlabel("Crit Value")
     ax[0].set_ylabel("Days to reach CV")
-    ax[0].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+    ax[0].tick_params(axis='x', rotation=60)
 
-    # Plot for the True value (right subplot)
     ax[1].set_title('Logarithmic')
     ax[1].set_xlabel("Crit Value")
     ax[1].set_yscale('log')
-    ax[1].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+    ax[1].tick_params(axis='x', rotation=60)
 
     for a in ax:
         a.grid(True)
@@ -70,18 +62,8 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired):
     ax[0].set_yticks(insert_average(ax[0].get_yticks(), 10))
     ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
-    # if len(ax.get_xticks()) > 12:
-    # plt.xticks(rotation=60)
-
-    # plt.plot(cv_plot, days_plot)
-    # plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
-    # plt.yticks(np.arange(0, 100, 250))
-
-    # plt.xlabel("Crit Value")
-    # plt.ylabel("Days to reach CV")
     fig.suptitle(f"Average time to reach Crit Value (sample size = {sample_size})")
     plt.tight_layout()
-    # plt.grid()
     Path(".\\plots").mkdir(parents=True, exist_ok=True)
     Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
 
@@ -116,7 +98,6 @@ except:
     sys.exit()
 
 cv = np.arange(len(days))/10
-# print(cv)
 
 cv_for_plotting = np.arange(len(days)) / 10
 
@@ -125,8 +106,5 @@ cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10
 print()
 print('Values:', days_plot)
 print()
-
-# print(cv_for_plotting)
-# plot_this(cv_for_plotting, days, [0.0, cv_desired], sample_size)
 
 plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired)
