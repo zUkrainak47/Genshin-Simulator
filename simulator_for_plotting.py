@@ -340,35 +340,38 @@ def print_controls():
           )
 
 
-def insert_average_x(arr):
-    result = []
-    for i in range(len(arr) - 1):
-        result.append(arr[i])
-        result.append((arr[i] + arr[i+1]) / 2)
-    result.append(arr[-1])  # Append the last element of the original array
-    if len(result) <= 10:
-        return insert_average_x(result)
-    return result
+def insert_average(arr, num):
+    arr = arr[arr >= 0]
+    # Calculate the number of elements in the output array
+    n = arr.shape[0]
+    # Create an array to hold the result, initially twice the size of the input array
+    result = np.empty(2 * n - 1)
+    # Fill the odd indices with the original elements of the array
+    result[::2] = arr
+    # Fill the even indices with the average of adjacent elements
 
-
-def insert_average_y(arr):
-    result = []
-    for i in range(len(arr) - 1):
-        result.append(arr[i])
-        result.append((arr[i] + arr[i+1]) / 2)
-    result.append(arr[-1])  # Append the last element of the original array
-    if len(result) <= 8:
-        return insert_average_y(result)
-    return result
+    result[1::2] = (arr[:-1] + arr[1:]) / 2
+    if num == 12:  # yes this is spaghetti code.
+        if len(result[result <= 55]) <= num:
+            return insert_average(result, num)
+    else:
+        if len(result) <= num:
+            return insert_average(result, num)
+    return result[result <= 55] if num == 12 else result
 
 
 def plot_this(cv_plot, days_plot, cv_range, sample_size):
     fig, ax = plt.subplots()
-    ax.plot(cv_plot, days_plot)
-    ax.set_xticks(insert_average_x(ax.get_xticks())[2:-1])
-    ax.set_yticks(insert_average_y(ax.get_yticks())[2:])
-    if len(ax.get_xticks()) > 12:
-        plt.xticks(rotation=60)
+    if len(cv_plot) == 1:
+        ax.scatter(cv_plot, days_plot, color='red', label='Single Point')
+    else:
+        ax.plot(cv_plot, days_plot, label='Data')
+
+    ax.set_xticks(insert_average(ax.get_xticks(), 12))
+    ax.set_yticks(insert_average(ax.get_yticks(), 10))
+
+    # if len(ax.get_xticks()) > 12:
+    plt.xticks(rotation=60)
 
     # plt.plot(cv_plot, days_plot)
     # plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
