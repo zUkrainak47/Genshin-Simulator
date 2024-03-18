@@ -97,7 +97,7 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired):
         to_cv = min(cv_range[1], is_int)
 
     plt.savefig(
-        f'.\\plots\\sample size = {sample_size}\\Plot OF {from_cv}CV to {to_cv}CV (size = {sample_size}).png',
+        f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (size = {sample_size}).png',
         dpi=1200)
     plt.show()
 
