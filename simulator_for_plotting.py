@@ -340,10 +340,38 @@ def print_controls():
           )
 
 
-def plot_this(cv_plot, days_plot, cv_range, sample_size):
-    plt.plot(cv_plot, days_plot)
+def insert_average_x(arr):
+    result = []
+    for i in range(len(arr) - 1):
+        result.append(arr[i])
+        result.append((arr[i] + arr[i+1]) / 2)
+    result.append(arr[-1])  # Append the last element of the original array
+    if len(result) <= 10:
+        return insert_average_x(result)
+    return result
 
-    plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
+
+def insert_average_y(arr):
+    result = []
+    for i in range(len(arr) - 1):
+        result.append(arr[i])
+        result.append((arr[i] + arr[i+1]) / 2)
+    result.append(arr[-1])  # Append the last element of the original array
+    if len(result) <= 8:
+        return insert_average_y(result)
+    return result
+
+
+def plot_this(cv_plot, days_plot, cv_range, sample_size):
+    fig, ax = plt.subplots()
+    ax.plot(cv_plot, days_plot)
+    ax.set_xticks(insert_average_x(ax.get_xticks())[2:-1])
+    ax.set_yticks(insert_average_y(ax.get_yticks())[2:])
+    if len(ax.get_xticks()) > 12:
+        plt.xticks(rotation=60)
+
+    # plt.plot(cv_plot, days_plot)
+    # plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
     # plt.yticks(np.arange(0, 100, 250))
 
     plt.xlabel("Crit Value")
@@ -352,7 +380,19 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     plt.tight_layout()
     plt.grid()
     Path(".\\plots").mkdir(parents=True, exist_ok=True)
-    plt.savefig(f'.\\plots\\Plot of {cv_range[0]}CV to {cv_range[1]}CV (sample size = {sample_size}).png', dpi=1200)
+    Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
+
+    if int(cv_range[0]) == cv_range[0]:
+        from_cv = int(cv_range[0])
+    else:
+        from_cv = cv_range[0]
+
+    if int(cv_range[1]) == cv_range[1]:
+        to_cv = int(cv_range[1])
+    else:
+        to_cv = cv_range[1]
+
+    plt.savefig(f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (sample size = {sample_size}).png', dpi=1200)
     plt.show()
 
 
