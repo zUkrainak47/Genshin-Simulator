@@ -16,13 +16,13 @@ This artifact simulator can help you with that.
   - Personally, despite these values coming from the wiki, I'm pretty sure they aren't entirely right, but should do for a very close estimate nonetheless.
 
 ## Mode 2:
-- Allows you to level and re-roll artifacts one by one. Basically like running domains, but you have unlimited resin.
+- Allows you to level and re-roll artifacts one by one. Basically like running domains or using the strongbox, but you have unlimited resin.
 - If there's an artifact that you like, you can add it to your inventory. It also carries over sessions.
 - Commands include:
   - leveling artifact (to next tier or to +20)
   - re-rolling artifact
   - viewing inventory
-  - etc
+  - etc.
 
 # Plotting with `simulator_for_plotting.py`
 This program will run Mode 1 of `simulator.py`, but will create a graph to visualize the results. \
