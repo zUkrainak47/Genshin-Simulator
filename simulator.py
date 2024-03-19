@@ -249,7 +249,7 @@ def upgrade_to_next_tier(artifact):
     if artifact.level == 20:
         print("Artifact already at +20\n")
     else:
-        print('Upgrading...\n')
+        print('Upgrading...')
         artifact.upgrade()
         artifact.print_stats()
 
@@ -258,7 +258,7 @@ def upgrade_to_max_tier(artifact, do_we_print=True):
     if artifact.level == 20:
         print("Artifact already at +20\n")
     else:
-        print('Upgrading to +20...\n')
+        print('Upgrading to +20...')
         while artifact.level < 20:
             artifact.upgrade()
             if do_we_print:
@@ -294,36 +294,39 @@ def print_inventory(list_of_artifacts):
 
 def print_controls():
     print('\n' +
-          '=' * 27 + ' CONTROLS ' + '=' * 27 + '\n\n'
+          '=' * 27 + ' CONTROLS ' + '=' * 27 + '\n\n'  # aliases included next to each command
                                                '---------------- ACTIONS WITH GENERATED ARTIFACT ---------------\n\n'
-                                               'a = show generated artifact\n'
+                                               'a = show generated artifact\n'  # artifact
                                                '\n'
-                                               'a rv = show its roll value\n'
-                                               'a cv = show crit value\n'
-                                               '+ = upgrade to next tier\n'
-                                               '++ = upgrade to +20\n'
+                                               'a rv = show its roll value\n'   # rv
+                                               'a cv = show crit value\n'       # cv
+                                               '+ = upgrade to next tier\n'     # a+, a +
+                                               '++ = upgrade to +20\n'          # a++, a ++
                                                '\n'
-                                               's = save to inventory\n'
-                                               'del = remove from inventory\n'
+                                               's = save to inventory\n'        # save
+                                               'del = remove/delete from inventory\n'  # d, delete, rm, remove
                                                '\n'
                                                'r = re-roll\n'
-                                               'r++ = re-roll and upgrade to +20\n'
+                                               'r++ = re-roll and upgrade to +20\n'    # r ++
                                                '\n'
                                                '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
-                                               'inv = show inventory\n'
+                                               'inv = show inventory\n'  # any string with 'inv' in it
+                                               # this is true for every other command too.
+                                               # the program will treat any string containing 'inv' as inv.
                                                'inv cv = show artifact with highest crit value\n'
                                                'inv rv = show artifact with highest roll value\n'
                                                'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
                                                'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
                                                'inv load = load updates made to inventory.txt\n'
-                                               'inv c = clear inventory\n'
+                                               'inv c = clear inventory\n'  # aliases for 'c': clear, clr
                                                '\n'
                                                '------------------------ OTHER COMMANDS -----------------------\n\n'
                                                'domain = change artifact source to domain (default)\n'
                                                'strongbox = change artifact source to strongbox\n'
+                                               'abyss = change artifact source to abyss (same rate as strongbox)\n'
                                                'source = view current source\n'
                                                '\n'
-                                               'exit = go back to menu\n'
+                                               'exit = go back to menu\n'  # 0, menu
                                                '\n'
                                                '================================================================\n'
           )
@@ -461,7 +464,7 @@ while True:
 
         art.print_stats()
         while True:
-            user_command = input('Command: ').lower()
+            user_command = input('Command: ').lower().strip()
 
             if user_command in ('+', 'a+', 'a +'):
                 upgrade_to_next_tier(art)
@@ -498,7 +501,7 @@ while True:
                 else:
                     print('Already saved this artifact\n')
 
-            elif user_command in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
+            elif user_command in ('d', 'del', 'delete', 'rm', 'remove'):
                 if art in artifact_list:
                     artifact_list.remove(art)
                     with open(r'.\inventory.txt', 'w') as file:
@@ -509,118 +512,124 @@ while True:
                     print('This artifact is not in your inventory\n')
 
             elif 'inv' in user_command:
-                if user_command in ('inv', 'inventory'):
+                # if user_command in ('inv', 'inventory'):
+                user_command = user_command.split()
+                if len(user_command) == 1:
                     if len(artifact_list) == 0:
                         print('Inventory is empty')
                     else:
                         print_inventory(artifact_list)
                     print()
 
-                else:
-                    user_command = user_command.split(' ')
-                    if len(user_command) == 3:
-                        _, indexes, cmd = user_command
-                        indexes = indexes.split(',')
-                        flag = True
-                        for i in indexes:
-                            if not i.isnumeric() or int(i) > len(artifact_list) or int(i) == 0:
-                                flag = False
-                                print(f'Index "{i}" is not valid\n')
-                                break
-                        if flag:  # if all given indexes are valid
-                            indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
-                            if len(indexes) > 1:  # if there's more than 1 index
-                                arti_list = itemgetter(*indexes)(
-                                    artifact_list)  # make a new list containing all the artifacts in question
-                            else:  # otherwise, make a list containing 1 artifact
-                                arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
-                            for art in arti_list:  # then iterate this list and execute command
-                                if cmd == '+':
-                                    upgrade_to_next_tier(art)
-                                    artifact_list.sort(key=lambda x: (
-                                    sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-                                    with open(r'.\inventory.txt', 'w') as file:
-                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                                elif cmd == '++':
-                                    upgrade_to_max_tier(art, len(indexes) == 1)
-                                    artifact_list.sort(key=lambda x: (
-                                    sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-                                    with open(r'.\inventory.txt', 'w') as file:
-                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                                elif cmd == 'rv':
-                                    print(f'RV: {art.rv()}%\n')
+                elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +"
+                    _, indexes, cmd = user_command
+                    indexes = indexes.split(',')
+                    flag = True
+                    for i in indexes:
+                        if not i.isnumeric() or int(i) > len(artifact_list) or int(i) == 0:
+                            flag = False
+                            print(f'Index "{i}" is not valid\n')
+                            break
+                    if flag:  # if all given indexes are valid
+                        print()
+                        indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
+                        if len(indexes) > 1:  # if there's more than 1 index
+                            arti_list = itemgetter(*indexes)(
+                                artifact_list)  # make a new list containing all the artifacts in question
+                        else:  # otherwise, make a list containing 1 artifact
+                            arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
+                        for art in range(len(indexes)):  # then iterate this list and execute command
+                            if cmd == '+':
+                                print(f'{indexes[art] + 1}) ', end='')
+                                upgrade_to_next_tier(arti_list[art])
+                                artifact_list.sort(key=lambda x: (
+                                sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                with open(r'.\inventory.txt', 'w') as file:
+                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                            elif cmd == '++':
+                                print(f'{indexes[art] + 1}) ', end='')
+                                upgrade_to_max_tier(arti_list[art], len(indexes) == 1)
+                                artifact_list.sort(key=lambda x: (
+                                sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                with open(r'.\inventory.txt', 'w') as file:
+                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                            elif cmd == 'rv':
+                                print(f'{indexes[art] + 1}) RV: {arti_list[art].rv()}%')
 
-                                elif cmd == 'cv':
-                                    print(f'CV: {art.cv()}\n')
+                            elif cmd == 'cv':
+                                print(f'{indexes[art] + 1}) CV: {arti_list[art].cv()}')
 
-                                elif cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
-                                    artifact_list.remove(art)
-                                    with open(r'.\inventory.txt', 'w') as file:
-                                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                                else:
-                                    print('Invalid command\n')
-
-                            if cmd in ('d', 'del', 'delete', 'r', 'rm', 'remove'):
-                                print(f'\nArtifact{"s" if len(indexes) > 1 else ""} removed')
-                                if len(artifact_list) == 0:
-                                    print('Inventory is empty')
-                                else:
-                                    print_inventory(artifact_list)
-                                print()
-
-                    elif len(user_command) == 2:
-                        _, cmd = user_command
-                        if cmd.isnumeric():
-                            cmd = int(cmd)
-                            if cmd <= len(artifact_list) and cmd != 0:
-                                print()
-                                artifact_list[int(cmd) - 1].print_stats()
+                            elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
+                                artifact_list.remove(arti_list[art])
+                                with open(r'.\inventory.txt', 'w') as file:
+                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             else:
-                                print(f'Index "{cmd}" is not valid\n')
-                        elif cmd in ('clear', 'clr', 'c'):
+                                print('Invalid command\n')
+
+                        if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
+                            print(f'\nArtifact{"s" if len(indexes) > 1 else ""} removed')
+                        if cmd in ('d', 'del', 'delete', 'rm', 'remove', '+', '++'):
+                            if len(artifact_list) == 0:
+                                print('Inventory is empty')
+                            else:
+                                print_inventory(artifact_list)
+                            print()
+                        if cmd in ('cv', 'rv'):
+                            print()
+
+                elif len(user_command) == 2:  # e.g. "inv 2"
+                    _, cmd = user_command
+                    if cmd.isnumeric():
+                        cmd = int(cmd)
+                        if cmd <= len(artifact_list) and cmd != 0:
+                            print()
+                            artifact_list[int(cmd) - 1].print_stats()
+                        else:
+                            print(f'Index "{cmd}" is not valid\n')
+                    elif cmd in ('clear', 'clr', 'c'):
+                        artifact_list = []
+                        with open(r'.\inventory.txt', 'w') as file:
+                            file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                        print('Inventory cleared\n')
+                    elif cmd == 'cv':
+                        big_cv = max(artifact_list, key=lambda x: x.cv())
+                        print(f'{big_cv} - {big_cv.subs()}')
+                        print(f'CV: {big_cv.cv()}')
+                        print()
+                    elif cmd == 'rv':
+                        big_rv = max(artifact_list, key=lambda x: x.rv())
+                        print(f'{big_rv} - {big_rv.subs()}')
+                        print(f'RV: {big_rv.rv()}%')
+                        print()
+                    elif cmd == 'load':
+                        try:
+                            artifact_list = load_data()
+                            print('Loading successful')
+                            if len(artifact_list) == 0:
+                                print('Inventory is empty')
+                            else:
+                                print()
+                                print_inventory(artifact_list)
+                            print()
+                        except json.decoder.JSONDecodeError:
+                            print('Something off with inventory file. Clearing inventory.txt')
                             artifact_list = []
                             with open(r'.\inventory.txt', 'w') as file:
                                 file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print('Inventory cleared\n')
-                        elif cmd == 'cv':
-                            big_cv = max(artifact_list, key=lambda x: x.cv())
-                            print(f'{big_cv} - {big_cv.subs()}')
-                            print(f'CV: {big_cv.cv()}')
-                            print()
-                        elif cmd == 'rv':
-                            big_rv = max(artifact_list, key=lambda x: x.rv())
-                            print(f'{big_rv} - {big_rv.subs()}')
-                            print(f'RV: {big_rv.rv()}%')
-                            print()
-                        elif cmd == 'load':
-                            try:
-                                artifact_list = load_data()
-                                print('Loading successful')
-                                if len(artifact_list) == 0:
-                                    print('Inventory is empty')
-                                else:
-                                    print()
-                                    print_inventory(artifact_list)
-                                print()
-                            except json.decoder.JSONDecodeError:
-                                print('Something off with inventory file. Clearing inventory.txt')
-                                artifact_list = []
-                                with open(r'.\inventory.txt', 'w') as file:
-                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                                print('Inventory cleared\n')
-                        else:
-                            print('Invalid command\n')
                     else:
-                        print(
-                            'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
+                        print('Invalid command\n')
+                else:
+                    print(
+                        'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
 
             elif user_command == 'domain':
                 source = 'domain'
                 print('Source set to domain\n')
 
-            elif user_command == 'strongbox':
-                source = 'strongbox'
-                print('Source set to strongbox\n')
+            elif user_command in ('strongbox', 'abyss'):
+                source = user_command
+                print(f'Source set to {source}\n')
 
             elif user_command == 'source':
                 print(f'Current source: {source}\n')
