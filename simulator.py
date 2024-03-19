@@ -538,29 +538,29 @@ while True:
                                 artifact_list)  # make a new list containing all the artifacts in question
                         else:  # otherwise, make a list containing 1 artifact
                             arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
-                        for art in range(len(indexes)):  # then iterate this list and execute command
+                        for index in range(len(indexes)):  # then iterate this list and execute command
                             if cmd == '+':
-                                print(f'{indexes[art] + 1}) ', end='')
-                                upgrade_to_next_tier(arti_list[art])
+                                print(f'{indexes[index] + 1}) ', end='')
+                                upgrade_to_next_tier(arti_list[index])
                                 artifact_list.sort(key=lambda x: (
                                 sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == '++':
-                                print(f'{indexes[art] + 1}) ', end='')
-                                upgrade_to_max_tier(arti_list[art], len(indexes) == 1)
+                                print(f'{indexes[index] + 1}) ', end='')
+                                upgrade_to_max_tier(arti_list[index], len(indexes) == 1)
                                 artifact_list.sort(key=lambda x: (
                                 sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == 'rv':
-                                print(f'{indexes[art] + 1}) RV: {arti_list[art].rv()}%')
+                                print(f'{indexes[index] + 1}) RV: {arti_list[index].rv()}%')
 
                             elif cmd == 'cv':
-                                print(f'{indexes[art] + 1}) CV: {arti_list[art].cv()}')
+                                print(f'{indexes[index] + 1}) CV: {arti_list[index].cv()}')
 
                             elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
-                                artifact_list.remove(arti_list[art])
+                                artifact_list.remove(arti_list[index])
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             else:
