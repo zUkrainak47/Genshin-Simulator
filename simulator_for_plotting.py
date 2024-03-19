@@ -555,7 +555,7 @@ while True:
         first_time = False
     user_cmd = input('Range: ')
     if user_cmd:
-        if user_cmd in ('exit', "'exit'", '"exit"'):
+        if user_cmd in ('exit', "'exit'", '"exit"', '0'):
             break
         try:
             cv_range = list(map(float, user_cmd.split(':')))
