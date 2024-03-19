@@ -21,6 +21,8 @@ to_cv = 50
 
 
 def insert_average(arr, num):
+    if (num != 12) and (arr[-1] - arr[-2] <= 1):
+        return arr
     arr = arr[arr >= 0]
     n = arr.shape[0]
     result = np.empty(2 * n - 1)

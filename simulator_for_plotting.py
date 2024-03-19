@@ -304,6 +304,8 @@ def print_inventory(list_of_artifacts):
 
 
 def insert_average(arr, num):
+    if (num != 12) and (arr[-1] - arr[-2] <= 1):
+        return arr
     arr = arr[arr >= 0]
     # Calculate the number of elements in the output array
     n = arr.shape[0]
