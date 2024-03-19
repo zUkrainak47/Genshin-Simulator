@@ -446,7 +446,7 @@ while True:
         days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
         if sample_size > 1:
             print(
-                f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+                f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
             print(f'Fastest - {low[0]} days: {low[1].subs()}')
             print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
         else:
