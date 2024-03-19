@@ -271,17 +271,20 @@ def upgrade_to_max_tier(artifact, do_we_print=True, extra_space=False):
             artifact.print_stats()
 
 
-def compare_to_highest_cv(artifact, fastest, slowest, days_list, day_number, cv_want):
-    flag_break = False
+def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, day_number, artifact_number, cv_want, only_one):
+    flag_break = False  # I'm incredibly sorry, this is absolutely unreadable
     if artifact.cv() >= min(54.5, cv_want):
         days_list.append(day_number)
+        artifact_list.append(artifact_number)
         if fastest[0] == 0 or day_number < fastest[0]:
             fastest = (day_number, artifact)
         if day_number > slowest[0]:
             slowest = (day_number, artifact)
         # print(artifact.subs())
+        if not only_one:
+            print(f'Artifacts generated: {artifact_number}')
         flag_break = True
-    return fastest, slowest, days_list, flag_break
+    return fastest, slowest, days_list, artifact_list, flag_break
 
 
 def print_inventory(list_of_artifacts):
@@ -389,13 +392,16 @@ while True:
         else:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
         days_it_took_to_reach_desired_cv = []
+        artifacts_generated = []
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
+        sample_size_is_one = sample_size == 1
         for i in range(sample_size):
             c = 0
             day = 0
             highest = 0.1
+            total_generated = 0
             inventory = 0
             flag = False
             print(f'\nSimulation {i + 1}:' if sample_size > 1 else '')
@@ -405,12 +411,13 @@ while True:
                 if day % 10000 == 0:
                     print(f'Day {day} - still going')
                 if day % 15 == 1:  # 4 artifacts from abyss every 15 days
-                    inventory += 4
                     for k in range(4):
+                        inventory += 1
+                        total_generated += 1
                         art, highest = create_and_roll_artifact("abyss", highest)
-                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
-                                                                                             days_it_took_to_reach_desired_cv,
-                                                                                             day, cv_desired)
+                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low, high,
+                                                                                                                       days_it_took_to_reach_desired_cv, artifacts_generated,
+                                                                                                                       day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
                             break
                     if flag:
@@ -424,12 +431,13 @@ while True:
                     amount = choices((1, 2), weights=(93, 7))
                     # if amount[0] == 2:
                     #     print('lucky!')
+                    total_generated += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
                         art, highest = create_and_roll_artifact("domain", highest)
-                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
-                                                                                             days_it_took_to_reach_desired_cv,
-                                                                                             day, cv_desired)
+                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low, high,
+                                                                                                                       days_it_took_to_reach_desired_cv, artifacts_generated,
+                                                                                                                       day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
                             break
                     if flag:
@@ -439,9 +447,9 @@ while True:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
                         art, highest = create_and_roll_artifact("strongbox", highest)
-                        low, high, days_it_took_to_reach_desired_cv, flag = compare_to_highest_cv(art, low, high,
-                                                                                             days_it_took_to_reach_desired_cv,
-                                                                                             day, cv_desired)
+                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low, high,
+                                                                                                                       days_it_took_to_reach_desired_cv, artifacts_generated,
+                                                                                                                       day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
                             break
                     # print(f'{inventory} left in inventory')
@@ -455,12 +463,13 @@ while True:
             print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
         else:
             print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
+        print(f'Total artifacts generated: {sum(artifacts_generated)}')
         end = time.perf_counter()
         run_time = end - start
         to_hours = time.strftime("%T", time.gmtime(run_time))
         decimals = f'{(run_time % 1):.3f}'
         print()
-        print(f'The simulation took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
+        print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
     elif automate == "2":
         source = "domain"
         print()
