@@ -245,20 +245,24 @@ def create_and_roll_artifact(arti_source, highest_cv=0):
     return artifact, highest_cv
 
 
-def upgrade_to_next_tier(artifact):
+def upgrade_to_next_tier(artifact, extra_space=False):
     if artifact.level == 20:
         print("Artifact already at +20\n")
     else:
         print('Upgrading...')
+        if extra_space:
+            print()
         artifact.upgrade()
         artifact.print_stats()
 
 
-def upgrade_to_max_tier(artifact, do_we_print=True):
+def upgrade_to_max_tier(artifact, do_we_print=True, extra_space=False):
     if artifact.level == 20:
         print("Artifact already at +20\n")
     else:
         print('Upgrading to +20...')
+        if extra_space:
+            print()
         while artifact.level < 20:
             artifact.upgrade()
             if do_we_print:
@@ -467,14 +471,14 @@ while True:
             user_command = input('Command: ').lower().strip()
 
             if user_command in ('+', 'a+', 'a +'):
-                upgrade_to_next_tier(art)
+                upgrade_to_next_tier(art, True)
                 if art in artifact_list:
                     artifact_list.sort(
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command in ('++', 'a++', 'a ++'):
-                upgrade_to_max_tier(art)
+                upgrade_to_max_tier(art, True, True)
                 if art in artifact_list:
                     artifact_list.sort(
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
