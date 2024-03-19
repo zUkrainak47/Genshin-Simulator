@@ -61,7 +61,7 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired):
         a.grid(True)
 
     ax[0].set_xticks(insert_average(ax[0].get_xticks(), 12))
-    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 10))
+    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 11))
     ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
     fig.suptitle(f"Average time to reach Crit Value (sample size = {sample_size})")

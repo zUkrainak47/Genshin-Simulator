@@ -303,43 +303,6 @@ def print_inventory(list_of_artifacts):
                 print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
-def print_controls():
-    print('\n' +
-          '=' * 27 + ' CONTROLS ' + '=' * 27 + '\n\n'
-                                               '---------------- ACTIONS WITH GENERATED ARTIFACT ---------------\n\n'
-                                               'a = show generated artifact\n'
-                                               '\n'
-                                               'a rv = show its roll value\n'
-                                               'a cv = show crit value\n'
-                                               '+ = upgrade to next tier\n'
-                                               '++ = upgrade to +20\n'
-                                               '\n'
-                                               's = save to inventory\n'
-                                               'del = remove from inventory\n'
-                                               '\n'
-                                               'r = re-roll\n'
-                                               'r++ = re-roll and upgrade to +20\n'
-                                               '\n'
-                                               '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
-                                               'inv = show inventory\n'
-                                               'inv cv = show artifact with highest crit value\n'
-                                               'inv rv = show inventory with highest roll value\n'
-                                               'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
-                                               'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
-                                               'inv load = load updates made to inventory.txt\n'
-                                               'inv c = clear inventory\n'
-                                               '\n'
-                                               '------------------------ OTHER COMMANDS -----------------------\n\n'
-                                               'domain = change artifact source to domain (default)\n'
-                                               'strongbox = change artifact source to strongbox\n'
-                                               'source = view current source\n'
-                                               '\n'
-                                               'exit = go back to menu\n'
-                                               '\n'
-                                               '================================================================\n'
-          )
-
-
 def insert_average(arr, num):
     arr = arr[arr >= 0]
     # Calculate the number of elements in the output array
@@ -386,7 +349,7 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
         a.grid(True)
 
     ax[0].set_xticks(insert_average(ax[0].get_xticks(), 12))
-    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 10))
+    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 11))
     ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
     # if len(ax.get_xticks()) > 12:
