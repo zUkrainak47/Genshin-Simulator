@@ -386,7 +386,10 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     plt.savefig(
         f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (size = {sample_size}).png',
         dpi=900)
+    print("Here you go. This was also saved as a .png file.\n"
+          "(To continue, close the graph if this is the last line you see).")
     plt.show()
+    print("\nYou can plot another graph now if you want.\n")
 
 
 def print_menu():
@@ -543,9 +546,6 @@ print()
 
 plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
 
-print("Here you go. This was also saved as a .png file.\n"
-      "You can plot another graph now if you want.\n")
-
 first_time = True
 while True:
     print('What CV range would you like to see the plot for?')
@@ -575,9 +575,5 @@ while True:
     print('Values:', days_plot)
     print()
     plot_this(cv_plot, days_plot, cv_range, sample_size)
-
-
-    print("Ok, here you go. This was also saved as a .png file.\n"
-          "You can plot another graph now if you want.\n")
 
 print('\nThank you for using Artifact Simulator (plotting edition)')
