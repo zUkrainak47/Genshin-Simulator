@@ -289,7 +289,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, 
             slowest = (day_number, artifact)
         # print(artifact.subs())
         if not only_one:
-            print(f'Artifacts generated: {artifact_number}\n')
+            print(f'Artifacts generated: {artifact_number}')
         flag_break = True
     return fastest, slowest, days_list, artifact_list, flag_break
 
@@ -452,7 +452,7 @@ for i in range(sample_size):
         print('Dict:', dict_of_days_average)
         print('List:', list(dict_of_days_average.values()))
         print()
-    print(f'Now running simulation {i + 1}...')
+    print(f'Now running simulation {i + 1}...', end=' ')
     while not flag:
         day += 1
         # print(f'new day {day}')
@@ -520,7 +520,7 @@ for i in range(sample_size):
 days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
 if sample_size > 1:
     print(
-        f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+        f'\nOut of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
     print(f'Fastest - {low[0]} days: {low[1].subs()}')
     print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
 else:
