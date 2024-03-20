@@ -544,9 +544,10 @@ while True:
                             print(f'Index "{i}" is not valid\n')
                             break
                     if flag:  # if all given indexes are valid
-                        print()
                         indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
                         if len(indexes) > 1:  # if there's more than 1 index
+                            if cmd in ('+', '++'):
+                                print()
                             arti_list = itemgetter(*indexes)(
                                 artifact_list)  # make a new list containing all the artifacts in question
                         else:  # otherwise, make a list containing 1 artifact
@@ -580,7 +581,7 @@ while True:
                                 print('Invalid command\n')
 
                         if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
-                            print(f'\nArtifact{"s" if len(indexes) > 1 else ""} removed')
+                            print(f'Artifact{"s" if len(indexes) > 1 else ""} removed\n')
                         if cmd in ('d', 'del', 'delete', 'rm', 'remove', '+', '++'):
                             if len(artifact_list) == 0:
                                 print('Inventory is empty')
