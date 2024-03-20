@@ -4,6 +4,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
+import datetime
 
 dict_of_days_total = {0.0: 0.0}
 dict_of_days_average = {0.0: 0.0}
@@ -369,8 +370,6 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     fig.suptitle(f"Average time to reach Crit Value (sample size = {sample_size})")
     plt.tight_layout()
     # plt.grid()
-    Path(".\\plots").mkdir(parents=True, exist_ok=True)
-    Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
 
     if int(cv_range[0]) == cv_range[0]:
         from_cv = max(int(cv_range[0]), 0)
@@ -543,6 +542,12 @@ cv_for_plotting = np.arange(cv_desired * 10 + 1) / 10
 print('Dict:', dict_of_days_average)
 print('List:', days_for_plotting)
 print()
+
+Path(".\\plots").mkdir(parents=True, exist_ok=True)
+Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
+
+with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(':', '-')}.txt', 'w') as file:
+    file.write(json.dumps(days_for_plotting))
 
 plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
 
