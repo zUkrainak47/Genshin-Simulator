@@ -387,7 +387,7 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
         f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (size = {sample_size}).png',
         dpi=900)
     print("Here you go. This was also saved as a .png file.\n"
-          "(To continue, close the graph if this is the last line you see).")
+          "(To continue, close the graph if this is the last line you see)")
     plt.show()
     print("\nYou can plot another graph now if you want.\n")
 
