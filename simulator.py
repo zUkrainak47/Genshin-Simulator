@@ -587,9 +587,7 @@ while True:
                                 print('Inventory is empty')
                             else:
                                 print_inventory(artifact_list)
-                            print()
-                        if cmd in ('cv', 'rv'):
-                            print()
+                        print()
 
                 elif len(user_command) == 2:  # e.g. "inv 2"
                     _, cmd = user_command
