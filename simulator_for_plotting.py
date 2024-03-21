@@ -503,6 +503,7 @@ for i in range(sample_size):
             while inventory >= 3:
                 # print(f'strongbox {inventory}')
                 inventory -= 2
+                total_generated += 1
                 art, highest = create_and_roll_artifact("strongbox", highest, cv_desired, day)
                 low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low,
                                                                                                                high,
