@@ -516,7 +516,7 @@ for i in range(sample_size):
                 if flag:
                     break
             # print(f'{inventory} left in inventory')
-
+end = time.perf_counter()
 days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
 if sample_size > 1:
     print(
@@ -526,12 +526,12 @@ if sample_size > 1:
 else:
     print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
 print(f'Total artifacts generated: {sum(artifacts_generated)}')
-end = time.perf_counter()
 run_time = end - start
 to_hours = time.strftime("%T", time.gmtime(run_time))
 decimals = f'{(run_time % 1):.3f}'
 print()
 print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
+print(f'Performance: {round(sum(artifacts_generated) / run_time * 1000, 2)} artifacts per ms')
 print()
 
 for i in dict_of_days_total:
