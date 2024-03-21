@@ -393,6 +393,7 @@ while True:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
+        absolute_generated = 0
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
@@ -414,6 +415,7 @@ while True:
                     for k in range(4):
                         inventory += 1
                         total_generated += 1
+                        absolute_generated += 1
                         art, highest = create_and_roll_artifact("abyss", highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low, high,
                                                                                                                        days_it_took_to_reach_desired_cv, artifacts_generated,
@@ -432,6 +434,7 @@ while True:
                     # if amount[0] == 2:
                     #     print('lucky!')
                     total_generated += amount[0]
+                    absolute_generated += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
                         art, highest = create_and_roll_artifact("domain", highest)
@@ -446,6 +449,8 @@ while True:
                     while inventory >= 3:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
+                        total_generated += 1
+                        absolute_generated += 1
                         art, highest = create_and_roll_artifact("strongbox", highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low, high,
                                                                                                                        days_it_took_to_reach_desired_cv, artifacts_generated,
