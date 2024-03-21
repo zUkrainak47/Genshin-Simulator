@@ -505,22 +505,24 @@ while True:
             elif user_command in ('s', 'save'):
                 if art not in artifact_list:
                     artifact_list.append(art)
+                    len_artifact_list = len(artifact_list)
                     artifact_list.sort(
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                     print(
-                        f'Saved - {len(artifact_list)} artifact{"s" if len(artifact_list) > 1 else ""} in inventory\n')
+                        f'Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory\n')
                 else:
                     print('Already saved this artifact\n')
 
             elif user_command in ('d', 'del', 'delete', 'rm', 'remove'):
                 if art in artifact_list:
                     artifact_list.remove(art)
+                    len_artifact_list = len(artifact_list)
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                     print(
-                        f'Removed - {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory\n')
+                        f'Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory\n')
                 else:
                     print('This artifact is not in your inventory\n')
 
