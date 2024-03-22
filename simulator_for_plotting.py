@@ -516,6 +516,7 @@ for i in range(sample_size):
                 if flag:
                     break
             # print(f'{inventory} left in inventory')
+
 end = time.perf_counter()
 days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
 if sample_size > 1:
