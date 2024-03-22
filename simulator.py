@@ -230,18 +230,20 @@ def create_artifact(source):
     return Artifact(type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
 
-def create_and_roll_artifact(arti_source, highest_cv=0):
+def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     artifact = create_artifact(arti_source)
     if not highest_cv:
-        artifact.print_stats()
+        if not silent:
+            artifact.print_stats()
     for j in range(5):
         artifact.upgrade()
-        if not highest_cv:
+        if not highest_cv and not silent:
             artifact.print_stats()
     if highest_cv:
         if artifact.cv() > highest_cv:
             highest_cv = artifact.cv()
-            print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+            if not silent:
+                print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
     return artifact, highest_cv
 
 
@@ -301,41 +303,48 @@ def print_inventory(list_of_artifacts):
 
 def print_controls():
     print('\n' +
-          '=' * 27 + ' CONTROLS ' + '=' * 27 + '\n\n'  # aliases included next to each command
-                                               '---------------- ACTIONS WITH GENERATED ARTIFACT ---------------\n\n'
-                                               'a = show generated artifact\n'  # artifact
-                                               '\n'
-                                               'a rv = show its roll value\n'   # rv
-                                               'a cv = show crit value\n'       # cv
-                                               '+ = upgrade to next tier\n'     # a+, a +
-                                               '++ = upgrade to +20\n'          # a++, a ++
-                                               '\n'
-                                               's = save to inventory\n'        # save
-                                               'del = remove/delete from inventory\n'  # d, delete, rm, remove
-                                               '\n'
-                                               'r = re-roll\n'
-                                               'r++ = re-roll and upgrade to +20\n'    # r ++
-                                               '\n'
-                                               '-------------------- ACTIONS WITH INVENTORY --------------------\n\n'
-                                               'inv = show inventory\n'  # any string with 'inv' in it
-                                               # this is true for every other command too.
-                                               # the program will treat any string containing 'inv' as inv.
-                                               'inv cv = show artifact with highest crit value\n'
-                                               'inv rv = show artifact with highest roll value\n'
-                                               'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
-                                               'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
-                                               'inv load = load updates made to inventory.txt\n'
-                                               'inv c = clear inventory\n'  # aliases for 'c': clear, clr
-                                               '\n'
-                                               '------------------------ OTHER COMMANDS -----------------------\n\n'
-                                               'domain = change artifact source to domain (default)\n'
-                                               'strongbox = change artifact source to strongbox\n'
-                                               'abyss = change artifact source to abyss (same rate as strongbox)\n'
-                                               'source = view current source\n'
-                                               '\n'
-                                               'exit = go back to menu\n'  # 0, menu
-                                               '\n'
-                                               '================================================================\n'
+          '=' * 32 + ' CONTROLS ' + '=' * 32 + '\n\n'  # aliases included next to each command
+                                    '--------------------- ACTIONS WITH GENERATED ARTIFACT --------------------\n'
+                                    '\n'
+                                    'a = show generated artifact\n'  # artifact
+                                    '\n'
+                                    'a rv = show its roll value\n'   # rv
+                                    'a cv = show crit value\n'       # cv
+                                    '+ = upgrade to next tier\n'     # a+, a +
+                                    '++ = upgrade to +20\n'          # a++, a ++
+                                    '\n'
+                                    's = save to inventory\n'        # save
+                                    'del = remove/delete from inventory\n'  # d, delete, rm, remove
+                                    '\n'
+                                    'r = re-roll\n'
+                                    'r++ = re-roll and upgrade to +20\n'
+                                    '\n'    # r ++
+                                    'r [number] = re-roll and save a given number of artifacts to inventory\n'
+                                    'r++ [number] = re-roll, +20, and save a given number of artifacts to inv\n'
+                                    '\n'
+                                    '------------------------- ACTIONS WITH INVENTORY -------------------------\n'
+                                    '\n'
+                                    'inv = show inventory\n'  # any string with 'inv' in it
+                                    # this is true for every other command too.
+                                    # the program will treat any string containing 'inv' as inv.
+                                    'inv cv = show artifact with highest crit value\n'
+                                    'inv rv = show artifact with highest roll value\n'
+                                    'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
+                                    'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
+                                    'inv [index1-index2] +/++/cv/rv/del = perform action on a range of artifacts\n'
+                                    'inv load = load updates made to inventory.txt\n'
+                                    'inv c = clear inventory\n'  # aliases for 'c': clear, clr
+                                    '\n'
+                                    '----------------------------- OTHER COMMANDS ----------------------------\n'
+                                    '\n'
+                                    'domain = change artifact source to domain (default)\n'
+                                    'strongbox = change artifact source to strongbox\n'
+                                    'abyss = change artifact source to abyss (same rate as strongbox)\n'
+                                    'source = view current source\n'
+                                    '\n'
+                                    'exit = go back to menu\n'  # 0, menu
+                                    '\n'
+                                    '==========================================================================\n'
           )
 
 
@@ -498,14 +507,71 @@ while True:
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+
+            elif user_command[:3] == 'r++' or user_command[:4] == 'r ++':
+                if user_command in ('r++', 'r ++'):
+                    print('Re-rolling and upgrading...\n')
+                    art, _ = create_and_roll_artifact(source)
+                    continue
+                else:
+                    if 'r++' in user_command:
+                        if len(user_command.split()) == 2:
+                            _, cmd = user_command.split()
+                        else:
+                            print('Nuh uh. Only put one number after r++\n')
+                            continue
+                    else:
+                        if len(user_command.split()) == 3:
+                            _, _, cmd = user_command.split()
+                        else:
+                            print('Nuh uh. Only put one number after r ++\n')
+                            continue
+
+                    if cmd.isnumeric():
+                        cmd = int(cmd)
+                        for i in range(cmd):
+                            art, _ = create_and_roll_artifact(source, 0, True)
+                            artifact_list.append(art)
+                        artifact_list.sort(
+                            key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                        with open(r'.\inventory.txt', 'w') as file:
+                            file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                        print(f'{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory\n')
+                        continue
+                        # print_inventory(artifact_list)
+                        # print()
+                    else:
+                        print(f'{cmd} is not a valid number\n')
+                        continue
+
             elif user_command == 'r':
                 print('Re-rolling...\n')
                 art = create_artifact(source)
                 art.print_stats()
 
-            elif user_command in ('r++', 'r ++'):
-                print('Re-rolling and upgrading...\n')
-                art, _ = create_and_roll_artifact(source)
+            elif user_command[:2] == 'r ':
+                if len(user_command.split()) == 2:
+                    _, cmd = user_command.split()
+                else:
+                    print('Nuh uh. Only put one number after r\n')
+                    continue
+
+                if cmd.isnumeric():
+                    cmd = int(cmd)
+                    for i in range(cmd):
+                        art = create_artifact(source)
+                        artifact_list.append(art)
+                    artifact_list.sort(
+                        key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                    with open(r'.\inventory.txt', 'w') as file:
+                        file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                    print(f'{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory\n')
+                    continue
+                    # print_inventory(artifact_list)
+                    # print()
+                else:
+                    print(f'{cmd} is not a valid number\n')
+                    continue
 
             elif user_command in ('s', 'save'):
                 if art not in artifact_list:
@@ -541,9 +607,21 @@ while True:
                         print_inventory(artifact_list)
                     print()
 
-                elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +"
-                    _, indexes, cmd = user_command
-                    indexes = indexes.split(',')
+                elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +" or "inv 2-5 d"
+                    _, chosen_numbers, cmd = user_command
+                    if ',' in chosen_numbers:
+                        indexes = chosen_numbers.split(',')
+                        operation = 'comma'
+                    elif '-' in chosen_numbers:
+                        indexes = chosen_numbers.split('-')
+                        operation = 'range'
+                        if len(indexes) != 2:
+                            print("That's not a valid range\n")
+                            continue
+                    else:
+                        operation = 'index'
+                        indexes = list(chosen_numbers)
+
                     flag = True
                     for i in indexes:
                         if not i.isnumeric() or int(i) > len(artifact_list) or int(i) == 0:
@@ -551,13 +629,25 @@ while True:
                             print(f'Index "{i}" is not valid\n')
                             break
                     if flag:  # if all given indexes are valid
+                        if operation == 'range' and indexes[0] > indexes[1]:
+                            print('You know what you did.\n')
+                            continue
                         indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
                         if len(indexes) > 1:  # if there's more than 1 index
                             if cmd in ('+', '++'):
                                 print()
-                            arti_list = itemgetter(*indexes)(
-                                artifact_list)  # make a new list containing all the artifacts in question
+                                print()
+                            if cmd in ('cv', 'rv'):
+                                print()
+                            if operation == 'comma':  # so as I said, if there's more than 1 index
+                                arti_list = itemgetter(*indexes)(
+                                    artifact_list)  # make a new list containing all the artifacts in question
+                            elif operation == 'range':
+                                arti_list = artifact_list[indexes[0]:indexes[1]+1]
+                                indexes = list(range(indexes[0], indexes[1]+1))
                         else:  # otherwise, make a list containing 1 artifact
+                            if cmd not in ('rv', 'cv'):
+                                print()
                             arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
                         for index in range(len(indexes)):  # then iterate this list and execute command
                             if cmd == '+':
@@ -589,12 +679,17 @@ while True:
 
                         if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                             print(f'Artifact{"s" if len(indexes) > 1 else ""} removed\n')
-                        if cmd in ('d', 'del', 'delete', 'rm', 'remove', '+', '++'):
-                            if len(artifact_list) == 0:
-                                print('Inventory is empty')
-                            else:
-                                print_inventory(artifact_list)
-                        print()
+                        # if cmd in ('d', 'del', 'delete', 'rm', 'remove', '+', '++'):
+                        #     if len(artifact_list) == 0:
+                        #         print('Inventory is empty')
+                        #     if len(artifact_list) > 30:
+                        #         pass
+                        #     else:
+                        #         print_inventory(artifact_list)
+                        if cmd in ('+', '++') and len(indexes) > 1:
+                            print()
+                        if cmd in ('cv', 'rv'):
+                            print()
 
                 elif len(user_command) == 2:  # e.g. "inv 2"
                     _, cmd = user_command
@@ -612,12 +707,12 @@ while True:
                         print('Inventory cleared\n')
                     elif cmd == 'cv':
                         big_cv = max(artifact_list, key=lambda x: x.cv())
-                        print(f'{big_cv} - {big_cv.subs()}')
+                        print(f'{artifact_list.index(big_cv) + 1}) {big_cv} - {big_cv.subs()}')
                         print(f'CV: {big_cv.cv()}')
                         print()
                     elif cmd == 'rv':
                         big_rv = max(artifact_list, key=lambda x: x.rv())
-                        print(f'{big_rv} - {big_rv.subs()}')
+                        print(f'{artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
                         print(f'RV: {big_rv.rv()}%')
                         print()
                     elif cmd == 'load':
@@ -637,7 +732,7 @@ while True:
                                 file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print('Inventory cleared\n')
                     else:
-                        print('Invalid command\n')
+                        print('Not a valid inventory command\n')
                 else:
                     print(
                         'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
