@@ -709,39 +709,39 @@ while True:
                             if cmd in ('cv', 'rv'):
                                 print()
                             # if operation == 'comma':  # so as I said, if there's more than 1 index
-                            #     arti_list = itemgetter(*indexes)(
-                            #         artifact_list)  # make a new list containing all the artifacts in question
+                            arti_list = itemgetter(*indexes)(
+                                artifact_list)  # make a new list containing all the artifacts in question
                             # elif operation == 'range':
                             #     arti_list = artifact_list[indexes[0]:indexes[1]+1]
                             #     indexes = list(range(indexes[0], indexes[1]+1))
                         else:  # otherwise, make a list containing 1 artifact
                             if cmd not in ('rv', 'cv'):
                                 print()
-                            # arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
-                        for index in indexes:  # then iterate this list and execute command
+                            arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
+                        for index, new_index in zip(indexes, range(len(arti_list))):  # then iterate this list and execute command
                             if cmd == '+':
                                 print(f'{index + 1}) ', end='')
-                                upgrade_to_next_tier(artifact_list[index])
-                                artifact_list.sort(key=lambda x: (
-                                sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                upgrade_to_next_tier(arti_list[new_index])
+                                # artifact_list.sort(key=lambda x: (
+                                # sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == '++':
                                 print(f'{index + 1}) ', end='')
-                                upgrade_to_max_tier(artifact_list[index], len(indexes) == 1)
-                                artifact_list.sort(key=lambda x: (
-                                sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                                upgrade_to_max_tier(arti_list[new_index], len(indexes) == 1)
+                                # artifact_list.sort(key=lambda x: (
+                                # sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == 'rv':
-                                print(f'{index + 1}) RV: {artifact_list[index].rv()}%')
+                                print(f'{index + 1}) RV: {arti_list[new_index].rv()}%')
 
                             elif cmd == 'cv':
-                                print(f'{index + 1}) CV: {artifact_list[index].cv()}')
+                                print(f'{index + 1}) CV: {arti_list[new_index].cv()}')
 
                             elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
-                                if artifact_list[index] in artifact_list:
-                                    artifact_list.remove(artifact_list[index])
+                                if arti_list[new_index] in artifact_list:
+                                    artifact_list.remove(arti_list[new_index])
                             else:
                                 print('Invalid command\n')
 
@@ -756,8 +756,11 @@ while True:
                         #         pass
                         #     else:
                         #         print_inventory(artifact_list)
-                        if cmd in ('+', '++') and len(indexes) > 1:
-                            print()
+                        if cmd in ('+', '++'):
+                            if len(indexes) > 1:
+                                print()
+                            artifact_list.sort(key=lambda x: (
+                                sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                         if cmd in ('cv', 'rv'):
                             print()
 
