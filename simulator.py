@@ -301,12 +301,12 @@ def print_inventory(list_of_artifacts):
                 print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
-def get_indexes(chosen_numbers):
-    if ',' in chosen_numbers:  # if , in input
-        indexes = chosen_numbers.split(',')  # split by commas
-        operation = 'comma'
-        for i in range(len(indexes)):  # for every part separated by ,
-            this_index = indexes[i]
+def get_indexes(user_input):
+    if ',' in user_input:  # if , in input
+        idxs = user_input.split(',')  # split by commas
+        case = 'comma'
+        for i in range(len(idxs)):  # for every part separated by ,
+            this_index = idxs[i]
             if '-' in this_index:  # if it has -
                 if len(this_index.split('-')) == 2:  # and there's only one -
                     this_index = this_index.split('-')  # split by -
@@ -314,7 +314,7 @@ def get_indexes(chosen_numbers):
                             this_index[1]):  # if the range is correct
                         this_index[0] = int(this_index[0])
                         this_index[1] = int(this_index[1])
-                        indexes[i] = [ind for ind in range(this_index[0], this_index[
+                        idxs[i] = [ind for ind in range(this_index[0], this_index[
                             1] + 1)]  # replace the part with the range instead
                     else:
                         print(f"\"{this_index}\" doesn't seem like a correct range\n")
@@ -322,20 +322,20 @@ def get_indexes(chosen_numbers):
                 else:
                     print(f"\"{this_index}\" is incorrect, try again\n")
                     raise StopIteration
-        indexes = flatten_list(indexes)
+        idxs = flatten_list(idxs)
 
-    elif '-' in chosen_numbers:
-        indexes = chosen_numbers.split('-')
-        operation = 'range'
-        if len(indexes) != 2:
+    elif '-' in user_input:
+        idxs = user_input.split('-')
+        case = 'range'
+        if len(idxs) != 2:
             print("That's not a valid range\n")
             raise StopIteration
 
     else:
-        indexes = list(chosen_numbers)
-        operation = 'index'
+        idxs = list(user_input)
+        case = 'index'
 
-    return indexes, operation
+    return idxs, case
 
 def print_controls():
     print('\n' +
