@@ -698,9 +698,9 @@ while True:
                             break
 
                     if flag:  # if all given indexes are valid
-                        if operation == 'range' and indexes[0] > indexes[1]:
-                            print('You know what you did.\n')
-                            continue
+                        # if operation == 'range' and indexes[0] > indexes[1]:
+                        #     print('You know what you did.\n')
+                        #     continue
                         indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
                         if len(indexes) > 1:  # if there's more than 1 index
                             if cmd in ('+', '++'):
@@ -727,17 +727,17 @@ while True:
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == '++':
-                                print(f'{indexes[index] + 1}) ', end='')
+                                print(f'{index + 1}) ', end='')
                                 upgrade_to_max_tier(artifact_list[index], len(indexes) == 1)
                                 artifact_list.sort(key=lambda x: (
                                 sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                                 with open(r'.\inventory.txt', 'w') as file:
                                     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == 'rv':
-                                print(f'{indexes[index] + 1}) RV: {artifact_list[index].rv()}%')
+                                print(f'{index + 1}) RV: {artifact_list[index].rv()}%')
 
                             elif cmd == 'cv':
-                                print(f'{indexes[index] + 1}) CV: {artifact_list[index].cv()}')
+                                print(f'{index + 1}) CV: {artifact_list[index].cv()}')
 
                             elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                                 if artifact_list[index] in artifact_list:
