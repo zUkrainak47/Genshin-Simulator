@@ -301,6 +301,42 @@ def print_inventory(list_of_artifacts):
                 print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
+def get_indexes(chosen_numbers):
+    if ',' in chosen_numbers:  # if , in input
+        indexes = chosen_numbers.split(',')  # split by commas
+        operation = 'comma'
+        for i in range(len(indexes)):  # for every part separated by ,
+            this_index = indexes[i]
+            if '-' in this_index:  # if it has -
+                if len(this_index.split('-')) == 2:  # and there's only one -
+                    this_index = this_index.split('-')  # split by -
+                    if this_index[0].isnumeric() and this_index[1].isnumeric() and int(this_index[0]) <= int(
+                            this_index[1]):  # if the range is correct
+                        this_index[0] = int(this_index[0])
+                        this_index[1] = int(this_index[1])
+                        indexes[i] = [ind for ind in range(this_index[0], this_index[
+                            1] + 1)]  # replace the part with the range instead
+                    else:
+                        print(f"\"{this_index}\" doesn't seem like a correct range\n")
+                        raise StopIteration
+                else:
+                    print(f"\"{this_index}\" is incorrect, try again\n")
+                    raise StopIteration
+        indexes = flatten_list(indexes)
+
+    elif '-' in chosen_numbers:
+        indexes = chosen_numbers.split('-')
+        operation = 'range'
+        if len(indexes) != 2:
+            print("That's not a valid range\n")
+            raise StopIteration
+
+    else:
+        indexes = list(chosen_numbers)
+        operation = 'index'
+
+    return indexes, operation
+
 def print_controls():
     print('\n' +
           '=' * 32 + ' CONTROLS ' + '=' * 32 + '\n\n'  # aliases included next to each command
@@ -622,38 +658,10 @@ while True:
 
                 elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +" or "inv 2-5 d"
                     _, chosen_numbers, cmd = user_command
-                    if ',' in chosen_numbers:  # if , in input
-                        indexes = chosen_numbers.split(',')  # split by commas
-                        operation = 'comma'
-                        try:
-                            for i in range(len(indexes)):        # for every part separated by ,
-                                this_index = indexes[i]
-                                if '-' in this_index:            # if it has -
-                                    if len(this_index.split('-')) == 2:  # and there's only one -
-                                        this_index = this_index.split('-')  # split by -
-                                        if this_index[0].isnumeric() and this_index[1].isnumeric() and int(this_index[0]) <= int(this_index[1]):  # if the range is correct
-                                            this_index[0] = int(this_index[0])
-                                            this_index[1] = int(this_index[1])
-                                            indexes[i] = [ind for ind in range(this_index[0], this_index[1] + 1)]  # replace the part with the range instead
-                                        else:
-                                            print(f"\"{this_index}\" doesn't seem like a correct range\n")
-                                            raise StopIteration
-                                    else:
-                                        print(f"\"{this_index}\" is incorrect, try again\n")
-                                        raise StopIteration
-                            indexes = flatten_list(indexes)
-                        except StopIteration:
-                            continue
-                    elif '-' in chosen_numbers:
-                        indexes = chosen_numbers.split('-')
-                        operation = 'range'
-                        if len(indexes) != 2:
-                            print("That's not a valid range\n")
-                            continue
-                    else:
-                        operation = 'index'
-                        indexes = list(chosen_numbers)
-
+                    try:
+                        indexes, operation = get_indexes(chosen_numbers)
+                    except StopIteration:
+                        continue
                     flag = True
                     for i in indexes:
                         # print(i, type(i))
