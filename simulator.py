@@ -348,6 +348,19 @@ def print_controls():
           )
 
 
+def flatten_list(nested_list):  # thanks saturncloud.io
+    def flatten(lst):
+        for item in lst:
+            if isinstance(item, list):
+                flatten(item)
+            else:
+                flat_list.append(item)
+
+    flat_list = []
+    flatten(nested_list)
+    return flat_list
+
+
 def print_menu():
     print('\n' + '=' * 29 + " MENU " + '=' * 29 + '\n')
     print("0 = exit the simulator\n"
@@ -473,8 +486,8 @@ while True:
         if sample_size > 1:
             print(
                 f'Out of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
-            print(f'Fastest - {low[0]} days: {low[1].subs()}')
-            print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
+            print(f'Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].subs()}')
+            print(f'Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
         else:
             print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
         print(f'Total artifacts generated: {sum(artifacts_generated)}')
@@ -609,9 +622,28 @@ while True:
 
                 elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +" or "inv 2-5 d"
                     _, chosen_numbers, cmd = user_command
-                    if ',' in chosen_numbers:
-                        indexes = chosen_numbers.split(',')
+                    if ',' in chosen_numbers:  # if , in input
+                        indexes = chosen_numbers.split(',')  # split by commas
                         operation = 'comma'
+                        try:
+                            for i in range(len(indexes)):        # for every part separated by ,
+                                this_index = indexes[i]
+                                if '-' in this_index:            # if it has -
+                                    if len(this_index.split('-')) == 2:  # and there's only one -
+                                        this_index = this_index.split('-')  # split by -
+                                        if this_index[0].isnumeric() and this_index[1].isnumeric() and int(this_index[0]) <= int(this_index[1]):  # if the range is correct
+                                            this_index[0] = int(this_index[0])
+                                            this_index[1] = int(this_index[1])
+                                            indexes[i] = [ind for ind in range(this_index[0], this_index[1] + 1)]  # replace the part with the range instead
+                                        else:
+                                            print(f"\"{this_index}\" doesn't seem like a correct range\n")
+                                            raise StopIteration
+                                    else:
+                                        print(f"\"{this_index}\" is incorrect, try again\n")
+                                        raise StopIteration
+                            indexes = flatten_list(indexes)
+                        except StopIteration:
+                            continue
                     elif '-' in chosen_numbers:
                         indexes = chosen_numbers.split('-')
                         operation = 'range'
@@ -624,10 +656,17 @@ while True:
 
                     flag = True
                     for i in indexes:
-                        if not i.isnumeric() or int(i) > len(artifact_list) or int(i) == 0:
+                        # print(i, type(i))
+                        if isinstance(i, str):
+                            if not i.isnumeric():
+                                flag = False
+                                print(f'Index "{i}" is not numeric\n')
+                                break
+                        if int(i) > len(artifact_list) or int(i) == 0:
                             flag = False
-                            print(f'Index "{i}" is not valid\n')
+                            print(f'Index "{i}" is not in your inventory\n')
                             break
+
                     if flag:  # if all given indexes are valid
                         if operation == 'range' and indexes[0] > indexes[1]:
                             print('You know what you did.\n')
@@ -671,13 +710,14 @@ while True:
                                 print(f'{indexes[index] + 1}) CV: {arti_list[index].cv()}')
 
                             elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
-                                artifact_list.remove(arti_list[index])
-                                with open(r'.\inventory.txt', 'w') as file:
-                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                                if arti_list[index] in artifact_list:
+                                    artifact_list.remove(arti_list[index])
                             else:
                                 print('Invalid command\n')
 
                         if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
+                            with open(r'.\inventory.txt', 'w') as file:
+                                file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print(f'Artifact{"s" if len(indexes) > 1 else ""} removed\n')
                         # if cmd in ('d', 'del', 'delete', 'rm', 'remove', '+', '++'):
                         #     if len(artifact_list) == 0:
