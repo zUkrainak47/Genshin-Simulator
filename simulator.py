@@ -304,7 +304,7 @@ def print_inventory(list_of_artifacts, which='all'):
             if i == -1 or i >= len(artifact_list):
                 print(f'No artifact with index "{i + 1}" in your inventory. ', end='')
                 if len(artifact_list) > 0:
-                    print(f'Indexes go up to {len(artifact_list)}\n')
+                    print(f'Indexes go from 1 to {len(artifact_list)}\n')
                 else:
                     print_empty_inv()
                 raise StopIteration
@@ -736,7 +736,7 @@ while True:
                             flag = False
                             print(f'No artifact with index "{i}" in your inventory. ', end='')
                             if len(artifact_list) > 0:
-                                print(f'Indexes go up to {len(artifact_list)}\n')
+                                print(f'Indexes go from 1 to {len(artifact_list)}\n')
                             else:
                                 print_empty_inv()
                             break
@@ -850,7 +850,7 @@ while True:
                         else:
                             print(f'No artifact with index "{cmd}" in your inventory. ', end='')
                             if len(artifact_list) > 0:
-                                print(f'Indexes go up to {len(artifact_list)}\n')
+                                print(f'Indexes go from 1 to {len(artifact_list)}\n')
                             else:
                                 print_empty_inv()
                     elif cmd in ('clear', 'clr', 'c'):
