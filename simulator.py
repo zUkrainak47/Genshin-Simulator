@@ -354,7 +354,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
 
         if this_index != 0:
             t_last = list_of_artifacts[needed_indexes[this_index - 1]].type
-            t_now = list_of_artifacts[i].type
+            t_now = list_of_artifacts[this_index].type
 
             if t_now != t_last:
                 print('\n' + '-' * 43, f'{t_now}{"s" if t_now != "Sands" else ""}', '-' * 43)
