@@ -396,8 +396,8 @@ def print_empty_inv():
 
 def print_controls():
     print('\n' +
-          '=' * 32 + ' CONTROLS ' + '=' * 32 + '\n\n'  # aliases included next to each command
-                                    '--------------------- ACTIONS WITH GENERATED ARTIFACT --------------------\n'
+          '=' * 43 + ' CONTROLS ' + '=' * 43 + '\n\n'  # aliases included next to each command
+                                    '-------------------------------- ACTIONS WITH GENERATED ARTIFACT -------------------------------\n'
                                     '\n'
                                     'a = show generated artifact\n'  # artifact
                                     '\n'
@@ -414,7 +414,7 @@ def print_controls():
                                     'r [number] = re-roll and save a given number of artifacts to inventory\n'
                                     'r++ [number] = re-roll, +20, and save a given number of artifacts to inv\n'
                                     '\n'
-                                    '------------------------- ACTIONS WITH INVENTORY -------------------------\n'
+                                    '------------------------------------ ACTIONS WITH INVENTORY ------------------------------------\n'
                                     '\n'
                                     'inv = show inventory\n'  # any string with 'inv' in it
                                     # this is true for every other command too.
@@ -423,14 +423,17 @@ def print_controls():
                                     'inv [index(es)] = view artifact(s) from inventory (use indexes from \'inv\' view)\n'
                                     'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifacts in inv\n'
                                     'inv [index1-index2] +/++/cv/rv/del = perform action on a range of artifacts\n'
-                                    'examples: "inv 3", "inv 4,7,1 +", "inv 3-10 cv" or even "inv 1,4,7-15 del"\n'
                                     '\n'
+                                    'EXAMPLES: "inv 3", "inv 1-4", "inv 1,5 +", "inv 9,2-6 cv", "inv 5-35 del"\n'
+                                    'NOTE: Indexes may change after deletion or upgrading of artifacts due to inventory sorting\n'
+                                    '\n'
+                                    'inv size = view amount of artifacts in inventory\n'
                                     'inv cv = show artifact with highest crit value\n'
                                     'inv rv = show artifact with highest roll value\n'
                                     'inv load = load updates made to inventory.txt\n'
                                     'inv c = clear inventory\n'  # aliases for 'c': clear, clr
                                     '\n'
-                                    '----------------------------- OTHER COMMANDS ----------------------------\n'
+                                    '---------------------------------------- OTHER COMMANDS ---------------------------------------\n'
                                     '\n'
                                     'domain = change artifact source to domain (default)\n'
                                     'strongbox = change artifact source to strongbox\n'
@@ -439,7 +442,7 @@ def print_controls():
                                     '\n'
                                     'exit = go back to menu\n'  # 0, menu
                                     '\n'
-                                    '==========================================================================\n'
+                                    '================================================================================================\n'
           )
 
 
@@ -870,6 +873,17 @@ while True:
                         print(f'{artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
                         print(f'RV: {big_rv.rv()}%')
                         print()
+                    elif cmd == 'size':
+                        print(f'Currently {len(artifact_list)} artifacts in inventory', end='')
+                        if len(artifact_list) > 0:
+                            print(':')
+                            print(f'{sum(i.type == 'Flower' for i in artifact_list)} Flowers\n'
+                                  f'{sum(i.type == 'Feather' for i in artifact_list)} Feathers\n'
+                                  f'{sum(i.type == 'Sands' for i in artifact_list)} Sands\n'
+                                  f'{sum(i.type == 'Goblet' for i in artifact_list)} Goblets\n'
+                                  f'{sum(i.type == 'Circlet' for i in artifact_list)} Circlets\n')
+                        else:
+                            print('\n')
                     elif cmd == 'load':
                         try:
                             artifact_list = load_data()
@@ -887,7 +901,7 @@ while True:
                                 file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print('Inventory cleared\n')
                     else:
-                        print(f'"{cmd}" is not a valid inventory command\n')
+                        print(f'"{cmd}" is not a valid inventory command or index\n')
                 else:
                     print(
                         'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
