@@ -244,6 +244,8 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
             highest_cv = artifact.cv()
             if not silent:
                 print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+    if silent:
+        artifact.last_upgrade = ""
     return artifact, highest_cv
 
 
