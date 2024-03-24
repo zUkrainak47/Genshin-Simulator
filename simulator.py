@@ -180,7 +180,7 @@ def load_data():
         return []
 
 
-def create_artifact(source):
+def create_artifact(from_where):
     type = choice(artifact_types)
     rv = 0
 
@@ -219,7 +219,8 @@ def create_artifact(source):
         mainstat_value = [crit_rate_stats, 0]
     else:
         mainstat_value = [crit_dmg_stats, 0]
-    fourliner_weights = (2, 8) if source == 'domain' else (34, 66)
+
+    fourliner_weights = (2, 8) if from_where == 'domain' else (34, 66)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
 
@@ -238,8 +239,7 @@ def create_artifact(source):
         subs[sub] = max_rolls[sub] * roll
         rv += roll * 100
 
-    threeliner = choices(subs_pool,
-                         weights=subs_weights)[0] if not fourliner else 0
+    threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
     return Artifact(type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
@@ -314,10 +314,10 @@ def sort_inventory(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
 
-def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, day_number, artifact_number, cv_want, only_one):
+def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want, only_one):
     if artifact.cv() >= min(54.5, cv_want):
         days_list.append(day_number)
-        artifact_list.append(artifact_number)
+        artifacts.append(artifact_number)
 
         if fastest[0] == 0 or day_number < fastest[0]:
             fastest = (day_number, artifact)
@@ -329,7 +329,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, 
         if not only_one:
             print(f'Artifacts generated: {artifact_number}')
 
-    return fastest, slowest, days_list, artifact_list, artifact.cv() >= min(54.5, cv_want)
+    return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
 
 
 def print_inventory(list_of_artifacts, which='all'):
