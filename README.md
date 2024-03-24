@@ -7,7 +7,7 @@ This artifact simulator can help you with that.
 # Using `simulator.py`
 
 ## Mode 1:
-- Allows you to level and re-roll artifacts one by one. Basically like running domains or using the strongbox, but you have unlimited resin.
+- Allows you to generate and upgrade artifacts one by one. Basically like running domains or using the strongbox, but you have unlimited resin.
 - If there's an artifact that you like, you can add it to your inventory. It also carries over sessions.
 - Commands include:
   - leveling artifact (to next tier or to +20)
