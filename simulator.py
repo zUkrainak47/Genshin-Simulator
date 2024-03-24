@@ -151,7 +151,7 @@ def take_input():
             ok2 = True
             cv = 50
 
-    print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.")
+    print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {min(54.5, float(cv))} CV.")
     return size, cv
 
 
