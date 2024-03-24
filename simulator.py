@@ -877,11 +877,16 @@ while True:
                         print(f'Currently {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory', end='')
                         if len(artifact_list) > 0:
                             print(':')
-                            print(f'{sum(i.type == 'Flower' for i in artifact_list)} Flowers\n'
-                                  f'{sum(i.type == 'Feather' for i in artifact_list)} Feathers\n'
-                                  f'{sum(i.type == 'Sands' for i in artifact_list)} Sands\n'
-                                  f'{sum(i.type == 'Goblet' for i in artifact_list)} Goblets\n'
-                                  f'{sum(i.type == 'Circlet' for i in artifact_list)} Circlets\n')
+                            flower_count = sum(i.type == 'Flower' for i in artifact_list)
+                            feather_count = sum(i.type == 'Feather' for i in artifact_list)
+                            sands_count = sum(i.type == 'Sands' for i in artifact_list)
+                            goblet_count = sum(i.type == 'Goblet' for i in artifact_list)
+                            circlet_count = sum(i.type == 'Circlet' for i in artifact_list)
+                            print(f'{flower_count} Flower{"s" if flower_count != 1 else ""}\n'
+                                  f'{feather_count} Feather{"s" if feather_count != 1 else ""}\n'
+                                  f'{sands_count} Sands\n'
+                                  f'{goblet_count} Goblet{"s" if goblet_count != 1 else ""}\n'
+                                  f'{circlet_count} Circlet{"s" if circlet_count != 1 else ""}\n')
                         else:
                             print('\n')
                     elif cmd == 'load':
