@@ -247,30 +247,37 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     return artifact, highest_cv
 
 
-def upgrade_to_next_tier(artifact, extra_space=False):
+def upgrade_to_next_tier(artifact, do_we_print=True, extra_space=False):
     if artifact.level == 20:
-        print("Artifact already at +20\n")
+        if do_we_print:
+            print("Artifact already at +20\n")
     else:
-        print('Upgrading...')
-        if extra_space:
+        if do_we_print:
+            print('Upgrading...')
+        if extra_space and do_we_print:
             print()
         artifact.upgrade()
-        artifact.print_stats()
+        if do_we_print:
+            artifact.print_stats()
+        else:
+            artifact.last_upgrade = ''
 
 
-def upgrade_to_max_tier(artifact, do_we_print=True, extra_space=False):
-    if artifact.level == 20:
-        print("Artifact already at +20\n")
+def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):    # 2 - print everything
+    if artifact.level == 20 and do_we_print >= 1:                       # 1 - print only status and last upgrade
+        print("Artifact already at +20\n")                              # 0 - dont print
     else:
-        print('Upgrading to +20...')
-        if extra_space:
-            print()
+        if do_we_print >= 1:
+            print('Upgrading to +20...')
+            if extra_space:
+                print()
         while artifact.level < 20:
             artifact.upgrade()
-            if do_we_print:
+            if do_we_print == 2:
                 artifact.print_stats()
-        if not do_we_print:
+        if do_we_print == 1:
             artifact.print_stats()
+        artifact.last_upgrade = ''
 
 
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, day_number, artifact_number, cv_want, only_one):
@@ -289,29 +296,42 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, 
     return fastest, slowest, days_list, artifact_list, flag_break
 
 
-def print_inventory(list_of_artifacts, which=['all']):
+def print_inventory(list_of_artifacts, which='all'):
+    if which == 'all':
+        needed_indexes = range(len(list_of_artifacts))
+    else:
+        for i in which:
+            if i == -1 or i >= len(artifact_list):
+                print(f'No artifact with index "{i + 1}" in your inventory. ', end='')
+                if len(artifact_list) > 0:
+                    print(f'Indexes go up to {len(artifact_list)}\n')
+                else:
+                    print_empty_inv()
+                raise StopIteration
+        needed_indexes = which
     print("Inventory:\n")
     t1 = list_of_artifacts[0].type
     print('-' * 43, f'{t1}{"s" if t1 != "Sands" else ""}', '-' * 43)
-    if which[0] == 'all':
-        needed_indexes = range(len(list_of_artifacts))
-    else:
-        needed_indexes = which
-    for this_index in needed_indexes:
-        i = int(this_index)
+    for this_index in range(len(needed_indexes)):
+        i = int(needed_indexes[this_index])
+        if this_index != 0:
+            t_last = list_of_artifacts[needed_indexes[this_index - 1]].type
+            t_now = list_of_artifacts[i].type
+            if t_now != t_last:
+                print('\n' + '-' * 43, f'{t_now}{"s" if t_now != "Sands" else ""}', '-' * 43)
         print(f'{i + 1}) {list_of_artifacts[i]} - {list_of_artifacts[i].subs()}')
-        if i + 1 < len(list_of_artifacts):
-            t2 = list_of_artifacts[i + 1].type
-            if t2 != list_of_artifacts[i].type:
-                print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
 def get_indexes(user_input):
     if ',' in user_input:  # if , in input
         idxs = user_input.split(',')  # split by commas
+        # print(idxs)
         case = 'comma'
         for i in range(len(idxs)):  # for every part separated by ,
             this_index = idxs[i]
+            if this_index == '':
+                print('Try removing the space between the indexes (if applicable)\n')
+                raise StopIteration
             if '-' in this_index:  # if it has -
                 if len(this_index.split('-')) == 2:  # and there's only one -
                     this_index = this_index.split('-')  # split by -
@@ -325,8 +345,15 @@ def get_indexes(user_input):
                         print(f"\"{this_index}\" doesn't seem like a correct range\n")
                         raise StopIteration
                 else:
-                    print(f"\"{this_index}\" is incorrect, try again\n")
+                    print(f"Index \"{this_index}\" is incorrect, try again\n")
                     raise StopIteration
+            elif not this_index.isnumeric():
+                print(f"Index \"{this_index}\" is incorrect", end='')
+                if '[' in this_index:
+                    print(f'. Remove the parentheses\n')
+                else:
+                    print('\n')
+                raise StopIteration
         idxs = flatten_list(idxs)
 
     elif '-' in user_input:
@@ -356,8 +383,14 @@ def get_indexes(user_input):
             print(f'{user_input} is not numeric\n')
             raise StopIteration
         case = 'index'
-    list(map(int, idxs))
+    # print(list(map(int, idxs)))
     return list(map(int, idxs)), case
+
+
+def print_empty_inv():
+    print('Inventory is empty\n'
+          'Try "r 5" to save 5 random artifacts\n')
+
 
 def print_controls():
     print('\n' +
@@ -370,13 +403,12 @@ def print_controls():
                                     'a cv = show crit value\n'       # cv
                                     '+ = upgrade to next tier\n'     # a+, a +
                                     '++ = upgrade to +20\n'          # a++, a ++
+                                    'r = re-roll\n'
+                                    'r++ = re-roll and upgrade to +20\n'  # r ++
                                     '\n'
                                     's = save to inventory\n'        # save
                                     'del = remove/delete from inventory\n'  # d, delete, rm, remove
                                     '\n'
-                                    'r = re-roll\n'
-                                    'r++ = re-roll and upgrade to +20\n'
-                                    '\n'    # r ++
                                     'r [number] = re-roll and save a given number of artifacts to inventory\n'
                                     'r++ [number] = re-roll, +20, and save a given number of artifacts to inv\n'
                                     '\n'
@@ -385,11 +417,14 @@ def print_controls():
                                     'inv = show inventory\n'  # any string with 'inv' in it
                                     # this is true for every other command too.
                                     # the program will treat any string containing 'inv' as inv.
+                                    '\n'
+                                    'inv [index(es)] = view artifact(s) from inventory (use indexes from \'inv\' view)\n'
+                                    'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifacts in inv\n'
+                                    'inv [index1-index2] +/++/cv/rv/del = perform action on a range of artifacts\n'
+                                    'examples: "inv 3", "inv 4,7,1 +", "inv 3-10 cv" or even "inv 1,4,7-15 del"\n'
+                                    '\n'
                                     'inv cv = show artifact with highest crit value\n'
                                     'inv rv = show artifact with highest roll value\n'
-                                    'inv [index] = show artifact from inventory (use index from \'inv\' view)\n'
-                                    'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifact in inv\n'
-                                    'inv [index1-index2] +/++/cv/rv/del = perform action on a range of artifacts\n'
                                     'inv load = load updates made to inventory.txt\n'
                                     'inv c = clear inventory\n'  # aliases for 'c': clear, clr
                                     '\n'
@@ -563,16 +598,20 @@ while True:
         art.print_stats()
         while True:
             user_command = input('Command: ').lower().strip()
-
-            if user_command in ('+', 'a+', 'a +'):
-                upgrade_to_next_tier(art, True)
+            if user_command in valid_help:
+                print_controls()
+            elif '"' in user_command or "'" in user_command:
+                print('Remove the quotation marks\n')
+                continue
+            elif user_command in ('+', 'a+', 'a +'):
+                upgrade_to_next_tier(art, True, True)
                 if art in artifact_list:
                     artifact_list.sort(
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                     with open(r'.\inventory.txt', 'w') as file:
                         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
             elif user_command in ('++', 'a++', 'a ++'):
-                upgrade_to_max_tier(art, True, True)
+                upgrade_to_max_tier(art, 2, True)
                 if art in artifact_list:
                     artifact_list.sort(
                         key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
@@ -673,10 +712,11 @@ while True:
                 user_command = user_command.split()
                 if len(user_command) == 1:
                     if len(artifact_list) == 0:
-                        print('Inventory is empty')
+                        print_empty_inv()
+
                     else:
                         print_inventory(artifact_list)
-                    print()
+                        print()
 
                 elif len(user_command) == 3:  # e.g. "inv 1 +" or "inv 1,2,4 +" or "inv 2-5 d"
                     _, chosen_numbers, cmd = user_command
@@ -694,7 +734,11 @@ while True:
                         #         break
                         if int(i) > len(artifact_list) or int(i) == 0:
                             flag = False
-                            print(f'Index "{i}" is not in your inventory\n')
+                            print(f'No artifact with index "{i}" in your inventory. ', end='')
+                            if len(artifact_list) > 0:
+                                print(f'Indexes go up to {len(artifact_list)}\n')
+                            else:
+                                print_empty_inv()
                             break
 
                     if flag:  # if all given indexes are valid
@@ -702,12 +746,19 @@ while True:
                         #     print('You know what you did.\n')
                         #     continue
                         indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
-                        if len(indexes) > 1:  # if there's more than 1 index
-                            if cmd in ('+', '++'):
-                                print()
-                                print()
-                            if cmd in ('cv', 'rv'):
-                                print()
+                        if len(indexes) == 1:
+                            do_print = 2
+                        elif len(indexes) <= 25:
+                            do_print = 1
+                        else:
+                            do_print = 0
+                        if 1 < len(indexes):  # if there's more than 1 index
+                            if len(indexes) <= 25:
+                                if cmd in ('+', '++'):
+                                    print()
+                                    print()
+                                if cmd in ('cv', 'rv'):
+                                    print()
                             # if operation == 'comma':  # so as I said, if there's more than 1 index
                             arti_list = itemgetter(*indexes)(
                                 artifact_list)  # make a new list containing all the artifacts in question
@@ -715,24 +766,28 @@ while True:
                             #     arti_list = artifact_list[indexes[0]:indexes[1]+1]
                             #     indexes = list(range(indexes[0], indexes[1]+1))
                         else:  # otherwise, make a list containing 1 artifact
-                            if cmd not in ('rv', 'cv'):
+                            if cmd in ('+', '++') and len(indexes) > 25:
+                                pass
+                            elif cmd in ('+', '++', 'd', 'del', 'rm', 'remove'):
                                 print()
                             arti_list = [artifact_list[indexes[0]]]  # because we need a list object to iterate
                         for index, new_index in zip(indexes, range(len(arti_list))):  # then iterate this list and execute command
                             if cmd == '+':
-                                print(f'{index + 1}) ', end='')
-                                upgrade_to_next_tier(arti_list[new_index])
+                                if do_print:
+                                    print(f'{index + 1}) ', end='')
+                                upgrade_to_next_tier(arti_list[new_index], do_print)
                                 # artifact_list.sort(key=lambda x: (
                                 # sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-                                with open(r'.\inventory.txt', 'w') as file:
-                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                                # with open(r'.\inventory.txt', 'w') as file:
+                                #     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == '++':
-                                print(f'{index + 1}) ', end='')
-                                upgrade_to_max_tier(arti_list[new_index], len(indexes) == 1)
+                                if do_print:
+                                    print(f'{index + 1}) ', end='')
+                                upgrade_to_max_tier(arti_list[new_index], do_print)
                                 # artifact_list.sort(key=lambda x: (
                                 # sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
-                                with open(r'.\inventory.txt', 'w') as file:
-                                    file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                                # with open(r'.\inventory.txt', 'w') as file:
+                                #     file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             elif cmd == 'rv':
                                 print(f'{index + 1}) RV: {arti_list[new_index].rv()}%')
 
@@ -743,7 +798,7 @@ while True:
                                 if arti_list[new_index] in artifact_list:
                                     artifact_list.remove(arti_list[new_index])
                             else:
-                                print('Invalid command\n')
+                                print(f'"{cmd}" is not a valid command\n')
 
                         if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                             with open(r'.\inventory.txt', 'w') as file:
@@ -761,10 +816,14 @@ while True:
                                 print()
                             artifact_list.sort(key=lambda x: (
                                 sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+                            with open(r'.\inventory.txt', 'w') as file:
+                                file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
+                            if not do_print:
+                                print("Done! Artifacts upgraded\n")
                         if cmd in ('cv', 'rv'):
                             print()
 
-                elif len(user_command) == 2:  # e.g. "inv 2"
+                elif len(user_command) == 2:  # e.g. "inv 2" or "inv 1-5,7"
                     _, cmd = user_command
                     if ',' in cmd or '-' in cmd:
                         try:
@@ -774,15 +833,26 @@ while True:
                         indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
                         # print(indexes)
                         indexes = sorted(list(set(indexes)))
-                        print_inventory(artifact_list, indexes)
-                        print()
+                        if len(artifact_list) > 0:
+                            try:
+                                print_inventory(artifact_list, indexes)
+                                print()
+                            except StopIteration:
+                                continue
+                        else:
+                            print_empty_inv()
+
                     elif cmd.isnumeric():
                         cmd = int(cmd)
                         if cmd <= len(artifact_list) and cmd != 0:
                             print()
                             artifact_list[int(cmd) - 1].print_stats()
                         else:
-                            print(f'Index "{cmd}" is not valid\n')
+                            print(f'No artifact with index "{cmd}" in your inventory. ', end='')
+                            if len(artifact_list) > 0:
+                                print(f'Indexes go up to {len(artifact_list)}\n')
+                            else:
+                                print_empty_inv()
                     elif cmd in ('clear', 'clr', 'c'):
                         artifact_list = []
                         with open(r'.\inventory.txt', 'w') as file:
@@ -815,7 +885,7 @@ while True:
                                 file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
                             print('Inventory cleared\n')
                     else:
-                        print('Not a valid inventory command\n')
+                        print(f'"{cmd}" is not a valid inventory command\n')
                 else:
                     print(
                         'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
@@ -845,11 +915,9 @@ while True:
                 print('Exiting...')
                 break
 
-            elif user_command in valid_help:
-                print_controls()
-
             else:
                 print("Try 'help'\n")
+
     else:
         break
 print('\nThank you for using Artifact Simulator')
