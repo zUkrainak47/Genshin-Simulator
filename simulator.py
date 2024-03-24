@@ -524,8 +524,8 @@ def flatten_list(nested_list):  # thanks saturncloud.io
 def print_menu():
     print('\n' + '=' * 29 + " MENU " + '=' * 29 + '\n')
     print("0 = exit the simulator\n"
-          "1 = roll artifacts until a certain CV is reached\n"
-          "2 = roll one artifact at a time\n")
+          "1 = roll one artifact at a time\n"
+          "2 = roll artifacts until a certain CV is reached\n")
 
 
 sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
@@ -570,7 +570,7 @@ while True:
     print("For the list of commands, type 'help'\n" if automate == '2' else "")
     print('=' * 64)
 
-    if automate == "1":
+    if automate == "2":
         sample_size, cv_desired = take_input()
 
         if sample_size == 'exit' or cv_desired == 'exit':
@@ -673,7 +673,7 @@ while True:
         print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f'Performance: {round(sum(artifacts_generated)/run_time/1000, 2)} artifacts per ms')
 
-    elif automate == "2":
+    elif automate == "1":
         source = "domain"
         print()
         art = create_artifact(source)
