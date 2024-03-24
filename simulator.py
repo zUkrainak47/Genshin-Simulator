@@ -874,7 +874,7 @@ while True:
                         print(f'RV: {big_rv.rv()}%')
                         print()
                     elif cmd == 'size':
-                        print(f'Currently {len(artifact_list)} artifacts in inventory', end='')
+                        print(f'Currently {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory', end='')
                         if len(artifact_list) > 0:
                             print(':')
                             print(f'{sum(i.type == 'Flower' for i in artifact_list)} Flowers\n'
