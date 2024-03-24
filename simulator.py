@@ -812,14 +812,14 @@ while True:
                         #     else:
                         #         print_inventory(artifact_list)
                         if cmd in ('+', '++'):
-                            if len(indexes) > 1:
+                            if not do_print:
+                                print("Done! Artifacts upgraded\n")
+                            elif len(indexes) > 1:
                                 print()
                             artifact_list.sort(key=lambda x: (
                                 sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
                             with open(r'.\inventory.txt', 'w') as file:
                                 file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-                            if not do_print:
-                                print("Done! Artifacts upgraded\n")
                         if cmd in ('cv', 'rv'):
                             print()
 
