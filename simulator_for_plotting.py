@@ -163,19 +163,6 @@ def take_input():
     return size, cv
 
 
-def load_data():
-    try:
-        with open('.\\inventory.txt') as file:
-            data = file.read()
-        d = json.loads(data)
-        d = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in d]
-        return d
-    except FileNotFoundError:
-        with open('.\\inventory.txt', 'w') as file:
-            file.write('[]')
-        return []
-
-
 def create_artifact(source):
     type = choice(artifact_types)
     rv = 0
@@ -257,28 +244,6 @@ def create_and_roll_artifact(arti_source, highest_cv, cv_want, day):
     return artifact, highest_cv
 
 
-def upgrade_to_next_tier(artifact):
-    if artifact.level == 20:
-        print("Artifact already at +20\n")
-    else:
-        print('Upgrading...\n')
-        artifact.upgrade()
-        artifact.print_stats()
-
-
-def upgrade_to_max_tier(artifact, do_we_print=True):
-    if artifact.level == 20:
-        print("Artifact already at +20\n")
-    else:
-        print('Upgrading to +20...\n')
-        while artifact.level < 20:
-            artifact.upgrade()
-            if do_we_print:
-                artifact.print_stats()
-        if not do_we_print:
-            artifact.print_stats()
-
-
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, day_number, artifact_number, cv_want, only_one):
     flag_break = False  # I'm incredibly sorry, this is absolutely unreadable
     if artifact.cv() >= min(54.5, cv_want):
@@ -293,18 +258,6 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, 
             print(f'Artifacts generated: {artifact_number}')
         flag_break = True
     return fastest, slowest, days_list, artifact_list, flag_break
-
-
-def print_inventory(list_of_artifacts):
-    print("Inventory:\n")
-    t1 = list_of_artifacts[0].type
-    print('-' * 43, f'{t1}{"s" if t1 != "Sands" else ""}', '-' * 43)
-    for i in range(len(list_of_artifacts)):
-        print(f'{i + 1}) {list_of_artifacts[i]} - {list_of_artifacts[i].subs()}')
-        if i + 1 < len(list_of_artifacts):
-            t2 = list_of_artifacts[i + 1].type
-            if t2 != list_of_artifacts[i].type:
-                print('\n' + '-' * 43, f'{t2}{"s" if t2 != "Sands" else ""}', '-' * 43)
 
 
 def insert_average(arr, num):
@@ -414,17 +367,6 @@ sort_order_mainstat = {'ATK': 0,
 valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
 
-# try:
-#     artifact_list = load_data()
-#     print('Loading successful')
-#     # print_inventory(artifact_list)
-#     # print()
-# except json.decoder.JSONDecodeError:
-#     print('Something off with inventory file. Clearing inventory.txt')
-#     artifact_list = []
-#     with open(r'.\inventory.txt', 'w') as file:
-#         file.write(str(json.dumps(artifact_list, cls=ArtifactEncoder)))
-#     print('Inventory cleared')
 sample_size, cv_desired = take_input()
 if sample_size == 'exit' or cv_desired == 'exit':
     print("Exiting program")
