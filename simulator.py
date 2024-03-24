@@ -332,25 +332,25 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
     return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
 
 
-def print_inventory(list_of_artifacts, which='all'):
-    if which == 'all':
+def print_inventory(list_of_artifacts, indexes_to_print=None):
+    if indexes_to_print is None:
         needed_indexes = range(len(list_of_artifacts))
 
     else:
-        for i in which:
-            if i == -1 or i >= len(artifact_list):
-                print(f'No artifact with index "{i + 1}" in your inventory. ', end='')
+        for current_index in indexes_to_print:
+            if current_index == -1 or current_index >= len(artifact_list):
+                print(f'No artifact with index "{current_index + 1}" in your inventory. ', end='')
                 print(f'Indexes go from 1 to {len(artifact_list)}\n') if len(artifact_list) > 1 else print_empty_inv()
                 raise StopIteration
 
-        needed_indexes = which
+        needed_indexes = indexes_to_print
 
     print("Inventory:\n")
     t1 = list_of_artifacts[0].type
     print('-' * 43, f'{t1}{"s" if t1 != "Sands" else ""}', '-' * 43)
 
     for this_index in range(len(needed_indexes)):
-        i = int(needed_indexes[this_index])
+        current_index = int(needed_indexes[this_index])
 
         if this_index != 0:
             t_last = list_of_artifacts[needed_indexes[this_index - 1]].type
@@ -359,7 +359,7 @@ def print_inventory(list_of_artifacts, which='all'):
             if t_now != t_last:
                 print('\n' + '-' * 43, f'{t_now}{"s" if t_now != "Sands" else ""}', '-' * 43)
 
-        print(f'{i + 1}) {list_of_artifacts[i]} - {list_of_artifacts[i].subs()}')
+        print(f'{current_index + 1}) {list_of_artifacts[current_index]} - {list_of_artifacts[current_index].subs()}')
 
 
 def get_indexes(user_input):
