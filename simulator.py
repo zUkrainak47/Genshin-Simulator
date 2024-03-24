@@ -1,15 +1,16 @@
-from random import choice, choices
-import time, json
+import json
+import time
 from operator import itemgetter
+from random import choice, choices
 
 
 class Artifact:
-    def __init__(self, type, mainstat, mainstat_value, threeliner, substats, level, last_upgrade="", roll_value=0):
-        self.type = type
+    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, last_upgrade="", roll_value=0):
+        self.type = artifact_type
         self.mainstat = mainstat
         self.mainstat_value = mainstat_value
         self.threeliner = threeliner
-        self.substats = substats
+        self.substats = sub_stats
         self.level = level
         self.last_upgrade = last_upgrade
         self.roll_value = roll_value
@@ -30,12 +31,19 @@ class Artifact:
         }
 
     def print_stats(self):
+
+        # 311 ATK Feather (+20)
+        # - HP: 418
+        # - Crit DMG%: 14.8
+        # - HP%: 14.6
+        # - DEF%: 5.8
+
         print(self)
 
-        for i in self.substats:
-            is_percentage = '%' in i
+        for sub in self.substats:
+            is_percentage = '%' in sub
             print(
-                f"- {i}: {str(round(self.substats[i], 1)) if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
+                f"- {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{' (+)' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
         print()
@@ -72,9 +80,9 @@ class Artifact:
 
 
 class ArtifactEncoder(json.JSONEncoder):
-    def default(self, art):
-        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade,
-                art.roll_value]
+    def default(self, artifact):
+        return [artifact.type, artifact.mainstat, artifact.mainstat_value, artifact.threeliner, artifact.substats,
+                artifact.level, artifact.last_upgrade, artifact.roll_value]
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -169,10 +177,10 @@ def load_data():
     try:
         with open('.\\inventory.txt') as file:
             data = file.read()
-        d = json.loads(data)
-        d = [Artifact(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7]) for i in d]
-        d = sort_inventory(d)
-        return d
+        inv = json.loads(data)
+        inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]) for a in inv]
+        inv = sort_inventory(inv)
+        return inv
 
     except FileNotFoundError:
         with open('.\\inventory.txt', 'w') as file:
@@ -181,17 +189,17 @@ def load_data():
 
 
 def create_artifact(from_where):
-    type = choice(artifact_types)
+    art_type = choice(artifact_types)
     rv = 0
 
-    if type == 'Flower':
+    if art_type == 'Flower':
         mainstat = 'HP'
-    elif type == 'Feather':
+    elif art_type == 'Feather':
         mainstat = 'ATK'
-    elif type == 'Sands':
+    elif art_type == 'Sands':
         mainstat = choices(sands_main_stats,
                            weights=sands_main_stats_weights)[0]
-    elif type == 'Goblet':
+    elif art_type == 'Goblet':
         mainstat = choices(goblet_main_stats,
                            weights=goblet_main_stats_weights)[0]
     else:
@@ -241,7 +249,7 @@ def create_artifact(from_where):
 
     threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
+    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
 
 def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
@@ -368,8 +376,8 @@ def get_indexes(user_input):
         # print(idxs)
         case = 'comma'
 
-        for i in range(len(idxs)):  # for every part separated by ,
-            this_index = idxs[i]
+        for idx in range(len(idxs)):  # for every part separated by ,
+            this_index = idxs[idx]
 
             if this_index == '':
                 print('Try removing the space between the indexes (if applicable)\n')
@@ -383,8 +391,8 @@ def get_indexes(user_input):
                             this_index[1]):  # if the range is correct
                         this_index[0] = int(this_index[0])
                         this_index[1] = int(this_index[1])
-                        idxs[i] = [ind for ind in range(this_index[0], this_index[
-                            1] + 1)]  # replace the part with the range instead
+                        # replace the part with the range instead
+                        idxs[idx] = [_ for _ in range(this_index[0], this_index[1] + 1)]
 
                     else:
                         print(f"\"{this_index}\" doesn't seem like a correct range\n")
@@ -465,8 +473,8 @@ def print_controls():
         's = save to inventory\n'        # save
         'del = remove/delete from inventory\n'  # d, delete, rm, remove
         '\n'
-        'r [number] = re-roll and save a given number of artifacts to inventory\n'
-        'r++ [number] = re-roll, +20, and save a given number of artifacts to inv\n'
+        'r [number] = re-roll and save a given number of artifacts to the inventory\n'
+        'r++ [number] = re-roll, +20, and save a given number of artifacts to the inventory\n'
         '\n'
         '------------------------------------ ACTIONS WITH INVENTORY ------------------------------------\n'
         '\n'
@@ -474,11 +482,11 @@ def print_controls():
         # this is true for every other command too.
         # the program will treat any string containing 'inv' as inv.
         '\n'
-        'inv [index(es)] = view artifact(s) from inventory (use indexes from \'inv\' view)\n'
-        'inv [index1,index2,...] +/++/cv/rv/del = perform action with artifacts in inv\n'
-        'inv [index1-index2] +/++/cv/rv/del = perform action on a range of artifacts\n'
+        'inv [indexes] = view artifacts from inventory (use indexes from \'inv\' view)\n'
+        'inv [indexes] +/++/cv/rv/del = perform action with artifacts from the inventory (pick one)\n'
         '\n'
-        'EXAMPLES: "inv 3", "inv 1-4", "inv 1,5 +", "inv 9,2-6 cv", "inv 5-35 del"\n'
+        'VALID INDEXING: inv 3 | inv 1,4 | inv 1-5 | inv 9,2-6 | inv 5-35\n'
+        'INVALID INDEXING: inv [8,9] | inv 7.9 | inv 3, 2 | inv 3 - 8 | inv 4,6-2\n'
         'NOTE: Indexes may change after deletion or upgrading of artifacts due to inventory sorting\n'
         '\n'
         'inv size = view amount of artifacts in inventory\n'
@@ -590,7 +598,6 @@ while True:
 
             while not flag:
                 day += 1
-                # print(f'new day {day}')
 
                 if day % 10000 == 0:
                     print(f'Day {day} - still going')
@@ -602,7 +609,7 @@ while True:
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("abyss", highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high,days_it_took_to_reach_desired_cv, artifacts_generated,
+                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
                             break
@@ -625,7 +632,7 @@ while True:
                     for k in range(amount[0]):
                         art, highest = create_and_roll_artifact("domain", highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high,days_it_took_to_reach_desired_cv, artifacts_generated,
+                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
                             break
@@ -640,7 +647,7 @@ while True:
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("strongbox", highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high,days_it_took_to_reach_desired_cv, artifacts_generated,
+                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
                             break
