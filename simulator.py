@@ -567,7 +567,7 @@ while True:
         else:
             print('Commands are 0, 1 or 2\n')
 
-    print("For the list of commands, type 'help'\n" if automate == '2' else "")
+    print("For the list of commands, type 'help'\n" if automate == '1' else "")
     print('=' * 64)
 
     if automate == "2":
