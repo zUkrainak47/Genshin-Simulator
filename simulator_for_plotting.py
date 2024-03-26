@@ -459,8 +459,8 @@ to_hours = time.strftime("%T", time.gmtime(run_time))
 decimals = f'{(run_time % 1):.3f}'
 print()
 print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
-print(f'Performance: {round(sum(artifacts_generated) / run_time * 1000, 2)} artifacts per ms')
-print()
+print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
+print(run_time)
 
 for i in dict_of_days_total:
     dict_of_days_average[i] = round(dict_of_days_total[i] / sample_size, 2)

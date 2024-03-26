@@ -670,7 +670,7 @@ while True:
 
         print(f'Total artifacts generated: {sum(artifacts_generated)}\n')
         print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
-        print(f'Performance: {round(sum(artifacts_generated)/run_time/1000, 2)} artifacts per ms')
+        print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
 
     elif automate == "1":
         source = "domain"
