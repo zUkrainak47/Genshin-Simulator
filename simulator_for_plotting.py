@@ -404,14 +404,9 @@ for i in range(sample_size):
                 inventory += 1
                 total_generated += 1
                 art, highest = create_and_roll_artifact("abyss", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low,
-                                                                                                               high,
-                                                                                                               days_it_took_to_reach_desired_cv,
-                                                                                                               artifacts_generated,
-                                                                                                               day,
-                                                                                                               total_generated,
-                                                                                                               cv_desired,
-                                                                                                               sample_size_is_one)
+                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                          day, total_generated, cv_desired, sample_size_is_one))
                 if flag:
                     break
             if flag:
@@ -429,14 +424,9 @@ for i in range(sample_size):
             inventory += amount[0]
             for k in range(amount[0]):
                 art, highest = create_and_roll_artifact("domain", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low,
-                                                                                                               high,
-                                                                                                               days_it_took_to_reach_desired_cv,
-                                                                                                               artifacts_generated,
-                                                                                                               day,
-                                                                                                               total_generated,
-                                                                                                               cv_desired,
-                                                                                                               sample_size_is_one)
+                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                          day, total_generated, cv_desired, sample_size_is_one))
                 if flag:
                     break
             if flag:
@@ -447,14 +437,9 @@ for i in range(sample_size):
                 inventory -= 2
                 total_generated += 1
                 art, highest = create_and_roll_artifact("strongbox", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = compare_to_highest_cv(art, low,
-                                                                                                               high,
-                                                                                                               days_it_took_to_reach_desired_cv,
-                                                                                                               artifacts_generated,
-                                                                                                               day,
-                                                                                                               total_generated,
-                                                                                                               cv_desired,
-                                                                                                               sample_size_is_one)
+                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                          day, total_generated, cv_desired, sample_size_is_one))
                 if flag:
                     break
             # print(f'{inventory} left in inventory')
@@ -490,7 +475,7 @@ print()
 Path(".\\plots").mkdir(parents=True, exist_ok=True)
 Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
 
-with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(':', '-')}.txt', 'w') as file:
+with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
     file.write(json.dumps(days_for_plotting))
 
 plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
