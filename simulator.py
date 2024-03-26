@@ -953,11 +953,22 @@ while True:
                         print(f'{len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory', end='')
                         if len(artifact_list) > 0:
                             print(':')
-                            flower_count = sum(i.type == 'Flower' for i in artifact_list)
-                            feather_count = sum(i.type == 'Feather' for i in artifact_list)
-                            sands_count = sum(i.type == 'Sands' for i in artifact_list)
-                            goblet_count = sum(i.type == 'Goblet' for i in artifact_list)
-                            circlet_count = sum(i.type == 'Circlet' for i in artifact_list)
+                            flower_count = 0
+                            feather_count = 0
+                            sands_count = 0
+                            goblet_count = 0
+                            circlet_count = 0
+                            for i in artifact_list:
+                                if i.type == 'Flower':
+                                    flower_count += 1
+                                elif i.type == 'Feather':
+                                    feather_count += 1
+                                elif i.type == 'Sands':
+                                    sands_count += 1
+                                elif i.type == 'Goblet':
+                                    goblet_count += 1
+                                else:
+                                    circlet_count += 1
                             print(f'{flower_count} Flower{"s" if flower_count != 1 else ""}\n'
                                   f'{feather_count} Feather{"s" if feather_count != 1 else ""}\n'
                                   f'{sands_count} Sands\n'
