@@ -560,7 +560,7 @@ while True:
     print_menu()
 
     while True:
-        automate = input('Your pick: ')
+        automate = input('Your pick: ').strip()
         if automate.lower() in valid_picks:
             break
         else:
