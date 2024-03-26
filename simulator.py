@@ -478,9 +478,8 @@ def print_controls():
         '\n'
         '------------------------------------ ACTIONS WITH INVENTORY ------------------------------------\n'
         '\n'
-        'inv = show inventory\n'  # any string with 'inv' in it
-        # this is true for every other command too.
-        # the program will treat any string containing 'inv' as inv.
+        'inv = show inventory\n'  # inventory
+        # this is true for every other inventory command too
         '\n'
         'inv [indexes] = view artifacts from inventory (use indexes from \'inv\' view)\n'
         'inv [indexes] +/++/cv/rv/del = perform action with artifacts from the inventory (pick one)\n'
@@ -797,8 +796,13 @@ while True:
                     print('This artifact is not in your inventory\n')
 
             elif 'inv' in user_command:
-                # if user_command in ('inv', 'inventory'):
                 user_command = user_command.split()
+                if user_command[0] in ('inv', 'inventory'):
+                    pass
+                else:
+                    print('Inventory commands must start with "inv".\n'
+                          'If you want to pass any arguments, you must put a space after "inv".\n')
+                    continue
 
                 if len(user_command) == 1:
                     if len(artifact_list) == 0:
