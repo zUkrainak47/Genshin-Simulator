@@ -933,7 +933,7 @@ while True:
                                 print_empty_inv()
 
                     elif cmd in ('clear', 'clr', 'c'):
-                        artifact_list = []
+                        artifact_list.clear()
                         save_inventory_to_file(artifact_list)
                         print('Inventory cleared\n')
 
