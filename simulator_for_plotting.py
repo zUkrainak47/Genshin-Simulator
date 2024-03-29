@@ -5,259 +5,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 import datetime
+from simulator import Artifact, take_input, create_artifact, compare_to_highest_cv
 
 dict_of_days_total = {0.0: 0.0}
 dict_of_days_average = {0.0: 0.0}
 
 
-class Artifact:
-    def __init__(self, type, mainstat, mainstat_value, threeliner, substats, level, last_upgrade="", roll_value=0):
-        self.type = type
-        self.mainstat = mainstat
-        self.mainstat_value = mainstat_value
-        self.threeliner = threeliner
-        self.substats = substats
-        self.level = level
-        self.last_upgrade = last_upgrade
-        self.roll_value = roll_value
-        if "Crit RATE%" in self.substats:
-            if self.substats["Crit RATE%"] == 23.0:
-                self.substats["Crit RATE%"] = 22.9
-
-    def __str__(self):
-        val = (self.mainstat_value[0])[self.mainstat_value[1]]
-
-        return f"{val} {self.mainstat} {self.type} (+{self.level})"
-
-    def subs(self):
-        sub_stats = {
-            sub: round(self.substats[sub], 1)
-            if "%" in sub else round(self.substats[sub])
-            for sub in self.substats
-        }
-        return sub_stats
-
-    def print_stats(self):
-        print(self)
-        for i in self.substats:
-            is_percentage = '%' in i
-            print(
-                f"- {i}: {str(round(self.substats[i], 1)) if is_percentage else round(self.substats[i])}{' (+)' if i == self.last_upgrade else ''}")
-        self.last_upgrade = ""
-        print()
-
-    def upgrade(self):
-        if self.level != 20:
-            roll = choice(possible_rolls)
-            if self.threeliner:
-                self.substats[self.threeliner] = max_rolls[
-                                                     self.threeliner] * roll
-                self.last_upgrade = self.threeliner
-                self.threeliner = 0
-            else:
-                sub = choice(list(self.substats.keys()))
-                self.substats[sub] += max_rolls[sub] * roll
-                self.last_upgrade = sub
-            self.level += 4
-            self.mainstat_value[1] += 1
-            self.roll_value += roll * 100
-
-    def cv(self):
-        crit_value = 0
-        if "Crit DMG%" in self.substats:
-            crit_value += round(self.substats["Crit DMG%"], 1)
-        if "Crit RATE%" in self.substats:
-            crit_value += round(self.substats["Crit RATE%"], 1) * 2
-        return round(crit_value, 1)
-
-    def rv(self):
-        return int(self.roll_value)
-
-
-class ArtifactEncoder(json.JSONEncoder):
-    def default(self, art):
-        return [art.type, art.mainstat, art.mainstat_value, art.threeliner, art.substats, art.level, art.last_upgrade,
-                art.roll_value]
-
-
-artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
-sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
-goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                     'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                     'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                     'Dendro DMG% Bonus', 'HP%', 'ATK%', 'DEF%', 'EM')
-circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'Crit DMG%', 'Crit RATE%',
-                      'Healing Bonus')
-substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
-            'Crit RATE%', 'Crit DMG%')
-flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
-feather_stats = (47, 100, 152, 205, 258, 311)
-hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
-def_stats = (8.7, 18.6, 28.6, 38.5, 48.4, 58.3)
-em_stats = (28, 60, 91, 123, 155, 187)
-er_stats = (7.8, 16.6, 25.4, 34.2, 43.0, 51.8)
-healing_bonus_stats = (5.4, 11.5, 17.6, 23.7, 29.8, 35.9)
-crit_rate_stats = (4.7, 9.9, 15.2, 20.5, 25.8, 31.1)
-crit_dmg_stats = (9.3, 19.9, 30.5, 41.0, 51.6, 62.2)
-max_rolls = {
-    'HP': 298.75,
-    'ATK': 19.4500007629394,
-    'DEF': 23.1499996185302,
-    'HP%': 5.8335,
-    'ATK%': 5.8335,
-    'DEF%': 7.28999972343444,
-    'EM': 23.3099994659423,
-    'ER%': 6.48000016808509,
-    'Crit RATE%': 3.88999991118907,
-    'Crit DMG%': 7.76999965310096
-}
-possible_rolls = (0.7, 0.8, 0.9, 1.0)
-
-sands_main_stats_weights = (26.68, 26.66, 26.66, 10.0, 10.0)
-goblet_main_stats_weights = (5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 19.25,
-                             19.25, 19.0, 2.5)
-circlet_main_stats_weights = (22.0, 22.0, 22.0, 4.0, 10.0, 10.0, 10.0)
-substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
-
-
-def take_input():
-    valid_exit = ('exit', "'exit'", '"exit"')
-    ok1 = False
-    ok2 = False
-    print(
-        "\nPlease input conditions. Type 'exit' to exit the program.\nLeave blank to use defaults (100 tests, 50 CV).\n")
-
-    while not ok1:
-        size = input("Number of tests to run: ")
-        if size:
-            if size.lower() in valid_exit:
-                return 'exit', 0
-            try:
-                if int(size) > 0:
-                    ok1 = True
-                else:
-                    print("Needs to be positive. Try again.\n")
-            except ValueError:
-                print("Needs to be an integer. Try again.\n")
-        else:
-            ok1 = True
-            size = 100
-
-    while not ok2:
-        cv = input("Desired Crit Value: ")
-        if cv:
-            if cv.lower() in valid_exit:
-                return 0, 'exit'
-            try:
-                if float(cv) > 0:
-                    ok2 = True
-                else:
-                    print("Needs to be positive. Try again.\n")
-            except ValueError:
-                print("Needs to be a number. Try again.\n")
-        else:
-            ok2 = True
-            cv = 50
-
-    print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {float(cv)} CV.\n")
-    return size, cv
-
-
-def create_artifact(source):
-    type = choice(artifact_types)
-    rv = 0
-    if type == 'Flower':
-        mainstat = 'HP'
-    elif type == 'Feather':
-        mainstat = 'ATK'
-    elif type == 'Sands':
-        mainstat = choices(sands_main_stats,
-                           weights=sands_main_stats_weights)[0]
-    elif type == 'Goblet':
-        mainstat = choices(goblet_main_stats,
-                           weights=goblet_main_stats_weights)[0]
-    else:
-        mainstat = choices(circlet_main_stats,
-                           weights=circlet_main_stats_weights)[0]
-
-    if mainstat == 'HP':
-        mainstat_value = [flower_stats, 0]
-    elif mainstat == 'ATK':
-        mainstat_value = [feather_stats, 0]
-    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
-        mainstat_value = [hp_atk_dmg_stats, 0]
-    elif mainstat == 'DEF%':
-        mainstat_value = [def_stats, 0]
-    elif mainstat == 'ER%':
-        mainstat_value = [er_stats, 0]
-    elif mainstat == 'EM':
-        mainstat_value = [em_stats, 0]
-    elif mainstat == 'Healing Bonus%':
-        mainstat_value = [healing_bonus_stats, 0]
-    elif mainstat == 'CRIT Rate%':
-        mainstat_value = [crit_rate_stats, 0]
-    else:
-        mainstat_value = [crit_dmg_stats, 0]
-
-    fourliner_weights = (2, 8) if source == 'domain' else (34, 66)
-    fourliner = choices((1, 0), weights=fourliner_weights)[0]
-    subs = {}
-
-    subs_pool = list(substats)
-    subs_weights = list(substats_weights)
-    if mainstat in subs_pool:
-        subs_weights.remove(subs_weights[subs_pool.index(mainstat)])
-        subs_pool.remove(mainstat)
-
-    for _i in range(3 + fourliner):
-        roll = choice(possible_rolls)
-        sub = choices(subs_pool, weights=subs_weights)[0]
-        subs_weights.remove(subs_weights[subs_pool.index(sub)])
-        subs_pool.remove(sub)
-        subs[sub] = max_rolls[sub] * roll
-        rv += roll * 100
-
-    threeliner = choices(subs_pool,
-                         weights=subs_weights)[0] if not fourliner else 0
-
-    return Artifact(type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
-
-
-def create_and_roll_artifact(arti_source, highest_cv, cv_want, day):
+def create_and_roll_artifact(arti_source, highest_cv, cv_want, d):
     artifact = create_artifact(arti_source)
+
     for j in range(5):
         artifact.upgrade()
+
     a_cv = artifact.cv()
-    if artifact.cv() > highest_cv:
+
+    if a_cv > highest_cv:
         if highest_cv == 0:
             dict_of_days_total[0] += 1
+
         for q in range(int(highest_cv * 10) + 1, int(min(a_cv * 10, cv_want * 10)) + 1):
             if q / 10 in dict_of_days_total:
-                dict_of_days_total[q / 10] += day
+                dict_of_days_total[q / 10] += d
             else:
-                dict_of_days_total[q / 10] = day
-        highest_cv = artifact.cv()
-        # print(f'Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+                dict_of_days_total[q / 10] = d
+
+        highest_cv = a_cv
+
     return artifact, highest_cv
-
-
-def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifact_list, day_number, artifact_number, cv_want, only_one):
-    flag_break = False  # I'm incredibly sorry, this is absolutely unreadable
-    if artifact.cv() >= min(54.5, cv_want):
-        days_list.append(day_number)
-        artifact_list.append(artifact_number)
-        if fastest[0] == 0 or day_number < fastest[0]:
-            fastest = (day_number, artifact)
-        if day_number > slowest[0]:
-            slowest = (day_number, artifact)
-        # print(artifact.subs())
-        if not only_one:
-            print(f'Artifacts generated: {artifact_number}')
-        flag_break = True
-    return fastest, slowest, days_list, artifact_list, flag_break
 
 
 def insert_average(arr, num):
@@ -282,15 +56,15 @@ def insert_average(arr, num):
     return result[result <= 55] if num == 12 else result
 
 
-def plot_this(cv_plot, days_plot, cv_range, sample_size):
+def plot_this(plot_cv, plot_days, range_cv, amount_of_tests):
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 
-    if len(cv_plot) == 1:
-        ax[0].scatter(cv_plot, days_plot, color='red', label='Single Point')
-        ax[1].scatter(cv_plot, days_plot, color='red', label='Single Point')
+    if len(plot_cv) == 1:
+        ax[0].scatter(plot_cv, plot_days, color='red', label='Single Point')
+        ax[1].scatter(plot_cv, plot_days, color='red', label='Single Point')
     else:
-        ax[0].plot(cv_plot, days_plot, label='Data')
-        ax[1].plot(cv_plot, days_plot, label='Data')
+        ax[0].plot(plot_cv, plot_days, label='Data')
+        ax[1].plot(plot_cv, plot_days, label='Data')
 
     # Plot for the False value (left subplot)
     ax[0].set_title('Regular')
@@ -311,32 +85,23 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     ax[0].set_yticks(insert_average(ax[0].get_yticks(), 11))
     ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
-    # if len(ax.get_xticks()) > 12:
-    # plt.xticks(rotation=60)
-
-    # plt.plot(cv_plot, days_plot)
-    # plt.xticks(np.arange(min(cv_plot), max(cv_plot) + 1, 2.5), rotation=60)
-    # plt.yticks(np.arange(0, 100, 250))
-
-    # plt.xlabel("Crit Value")
-    # plt.ylabel("Days to reach CV")
-    fig.suptitle(f"Average time to reach Crit Value (sample size = {sample_size})")
+    fig.suptitle(f"Average time to reach Crit Value (sample size = {amount_of_tests})")
     plt.tight_layout()
     # plt.grid()
 
-    if int(cv_range[0]) == cv_range[0]:
-        from_cv = max(int(cv_range[0]), 0)
+    if int(range_cv[0]) == range_cv[0]:
+        from_cv = max(int(range_cv[0]), 0)
     else:
-        from_cv = max(cv_range[0], 0)
+        from_cv = max(range_cv[0], 0)
 
     is_int = int(cv_desired) if int(cv_desired) == cv_desired else cv_desired
-    if int(cv_range[1]) == cv_range[1]:
-        to_cv = min(int(cv_range[1]), is_int)
+    if int(range_cv[1]) == range_cv[1]:
+        to_cv = min(int(range_cv[1]), is_int)
     else:
-        to_cv = min(cv_range[1], is_int)
+        to_cv = min(range_cv[1], is_int)
 
     plt.savefig(
-        f'.\\plots\\sample size = {sample_size}\\Plot of {from_cv}CV to {to_cv}CV (size = {sample_size}).png',
+        f'.\\plots\\sample size = {amount_of_tests}\\Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png',
         dpi=900)
     print("Here you go. This was also saved as a .png file.\n"
           "(To continue, close the graph if this is the last line you see)")
@@ -344,30 +109,7 @@ def plot_this(cv_plot, days_plot, cv_range, sample_size):
     print("\nYou can plot another graph now if you want.\n")
 
 
-def print_menu():
-    print('\n' + '=' * 29 + " MENU " + '=' * 29 + '\n')
-    print("0 = exit the simulator\n"
-          "1 = roll artifacts until a certain CV is reached\n"
-          "2 = roll one artifact at a time\n")
-
-
-sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
-sort_order_mainstat = {'ATK': 0,
-                       'HP': 1,
-                       'Crit DMG%': 2, 'Crit RATE%': 3,
-                       'EM': 4,
-                       'Pyro DMG% Bonus': 5, 'Hydro DMG% Bonus': 6, 'Cryo DMG% Bonus': 7, 'Electro DMG% Bonus': 8,
-                       'Anemo DMG% Bonus': 9, 'Dendro DMG% Bonus': 10, 'Geo DMG% Bonus': 11, 'Physical DMG% Bonus': 12,
-                       'ER%': 13,
-                       'Healing Bonus': 14,
-                       'ATK%': 15,
-                       'HP%': 16,
-                       'DEF%': 17,
-                       }
-valid_help = ['help', "'help'", '"help"']
-valid_picks = ['0', 'exit', '1', '2']
-
-sample_size, cv_desired = take_input()
+sample_size, cv_desired = take_input((100, 50))
 if sample_size == 'exit' or cv_desired == 'exit':
     print("Exiting program")
     sys.exit()

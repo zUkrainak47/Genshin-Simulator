@@ -2,3 +2,4 @@
 /.idea/
 /plots/
 /inventory.txt
+*.pyc
