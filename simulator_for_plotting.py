@@ -59,7 +59,7 @@ def insert_average(arr, num):
     return result[result <= 55] if num == 12 else result
 
 
-def plot_this(plot_cv, plot_days, range_cv, amount_of_tests):
+def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless=True):
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 
     if len(plot_cv) == 1:
@@ -97,7 +97,7 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests):
     else:
         from_cv = max(range_cv[0], 0)
 
-    is_int = int(cv_desired) if int(cv_desired) == cv_desired else cv_desired
+    is_int = int(desired_cv) if int(desired_cv) == desired_cv else desired_cv
     if int(range_cv[1]) == range_cv[1]:
         to_cv = min(int(range_cv[1]), is_int)
     else:
@@ -106,153 +106,157 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests):
     plt.savefig(
         f'.\\plots\\sample size = {amount_of_tests}\\Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png',
         dpi=900)
-    print("Here you go. This was also saved as a .png file.\n"
-          "(To continue, close the graph if this is the last line you see)")
+    print("Here you go. This was also saved as a .png file.")
+    if endless:
+        print("(To continue, close the graph if this is the last line you see)")
     plt.show()
-    print("\nYou can plot another graph now if you want.\n")
+    if endless:
+        print("\nYou can plot another graph now if you want.\n")
 
 
-sample_size, cv_desired = take_input((100, 50))
-if sample_size == 'exit' or cv_desired == 'exit':
-    print("Exiting program")
-    sys.exit()
-sample_size, cv_desired = int(sample_size), float(cv_desired)
-days_it_took_to_reach_desired_cv = []
-artifacts_generated = []
-low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
-high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
-start = time.perf_counter()
-sample_size_is_one = sample_size == 1
-for i in range(sample_size):
-    c = 0
-    day = 0
-    highest = 0
-    total_generated = 0
-    inventory = 0
-    flag = False
-    if (i + 1) % 25 == 0:
-        print("\nResults so far:")
-        for dd in dict_of_days_total:
-            dict_of_days_average[dd] = round(dict_of_days_total[dd] / i, 2)
-            # print(f'{dd}: {dict_of_days_total[dd]/i}')
-        print('Dict:', dict_of_days_average)
-        print('List:', list(dict_of_days_average.values()))
-        print()
-    print(f'Now running simulation {i + 1}...', end=' ')
-    while not flag:
-        day += 1
-        # print(f'new day {day}')
-        if day % 10000 == 0:
-            print(f'Day {day} - still going')
-        if day % 15 == 1:  # 4 artifacts from abyss every 15 days
-            for k in range(4):
-                inventory += 1
-                total_generated += 1
-                art, highest = create_and_roll_artifact("abyss", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
-                                          day, total_generated, cv_desired, sample_size_is_one))
+if __name__ == "__main__":
+    sample_size, cv_desired = take_input((100, 50))
+    if sample_size == 'exit' or cv_desired == 'exit':
+        print("Exiting program")
+        sys.exit()
+    sample_size, cv_desired = int(sample_size), float(cv_desired)
+    days_it_took_to_reach_desired_cv = []
+    artifacts_generated = []
+    low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
+    high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
+    start = time.perf_counter()
+    sample_size_is_one = sample_size == 1
+    for i in range(sample_size):
+        c = 0
+        day = 0
+        highest = 0
+        total_generated = 0
+        inventory = 0
+        flag = False
+        if (i + 1) % 25 == 0:
+            print("\nResults so far:")
+            for dd in dict_of_days_total:
+                dict_of_days_average[dd] = round(dict_of_days_total[dd] / i, 2)
+                # print(f'{dd}: {dict_of_days_total[dd]/i}')
+            print('Dict:', dict_of_days_average)
+            print('List:', list(dict_of_days_average.values()))
+            print()
+        print(f'Now running simulation {i + 1}...', end=' ')
+        while not flag:
+            day += 1
+            # print(f'new day {day}')
+            if day % 10000 == 0:
+                print(f'Day {day} - still going')
+            if day % 15 == 1:  # 4 artifacts from abyss every 15 days
+                for k in range(4):
+                    inventory += 1
+                    total_generated += 1
+                    art, highest = create_and_roll_artifact("abyss", highest, cv_desired, day)
+                    low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                              day, total_generated, cv_desired, sample_size_is_one))
+                    if flag:
+                        break
                 if flag:
                     break
-            if flag:
-                break
-        resin = 180
-        if day % 7 == 1:  # 1 transient resin from tubby every monday
-            resin += 60
-        while resin and not flag:
-            # print('domain run')
-            resin -= 20
-            amount = choices((1, 2), weights=(93, 7))
-            # if amount[0] == 2:
-            #     print('lucky!')
-            total_generated += amount[0]
-            inventory += amount[0]
-            for k in range(amount[0]):
-                art, highest = create_and_roll_artifact("domain", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
-                                          day, total_generated, cv_desired, sample_size_is_one))
+            resin = 180
+            if day % 7 == 1:  # 1 transient resin from tubby every monday
+                resin += 60
+            while resin and not flag:
+                # print('domain run')
+                resin -= 20
+                amount = choices((1, 2), weights=(93, 7))
+                # if amount[0] == 2:
+                #     print('lucky!')
+                total_generated += amount[0]
+                inventory += amount[0]
+                for k in range(amount[0]):
+                    art, highest = create_and_roll_artifact("domain", highest, cv_desired, day)
+                    low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                              day, total_generated, cv_desired, sample_size_is_one))
+                    if flag:
+                        break
                 if flag:
                     break
-            if flag:
-                break
-        else:
-            while inventory >= 3:
-                # print(f'strongbox {inventory}')
-                inventory -= 2
-                total_generated += 1
-                art, highest = create_and_roll_artifact("strongbox", highest, cv_desired, day)
-                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
-                                          day, total_generated, cv_desired, sample_size_is_one))
-                if flag:
-                    break
-            # print(f'{inventory} left in inventory')
+            else:
+                while inventory >= 3:
+                    # print(f'strongbox {inventory}')
+                    inventory -= 2
+                    total_generated += 1
+                    art, highest = create_and_roll_artifact("strongbox", highest, cv_desired, day)
+                    low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
+                                              day, total_generated, cv_desired, sample_size_is_one))
+                    if flag:
+                        break
+                # print(f'{inventory} left in inventory')
 
-end = time.perf_counter()
-days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
-if sample_size > 1:
-    print(
-        f'\nOut of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
-    print(f'Fastest - {low[0]} days: {low[1].subs()}')
-    print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
-else:
-    print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
-print(f'Total artifacts generated: {sum(artifacts_generated)}')
-run_time = end - start
-to_hours = time.strftime("%T", time.gmtime(run_time))
-decimals = f'{(run_time % 1):.3f}'
-print()
-print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
-print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
-# print(run_time)
-
-for i in dict_of_days_total:
-    dict_of_days_average[i] = round(dict_of_days_total[i] / sample_size, 2)
-
-days_for_plotting = list(dict_of_days_average.values())
-cv_for_plotting = np.arange(cv_desired * 10 + 1) / 10
-
-print('Dict:', dict_of_days_average)
-print('List:', days_for_plotting)
-print()
-
-Path(".\\plots").mkdir(parents=True, exist_ok=True)
-Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
-
-with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
-    file.write(json.dumps(days_for_plotting))
-
-plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size)
-
-first_time = True
-while True:
-    print('What CV range would you like to see the plot for?')
-    if first_time:
-        print('Leave blank to use the entire range. Type "exit" to quit.')
-        print('Example: 20.5:45')
-        first_time = False
-    user_cmd = input('Range: ')
-    if user_cmd:
-        if user_cmd in ('exit', "'exit'", '"exit"', '0'):
-            break
-        try:
-            cv_range = list(map(float, user_cmd.split(':')))
-            if (cv_range[0] > cv_desired or
-                    cv_range[1] < 0 or
-                    cv_range[1] < cv_range[0]):
-                print('Invalid range, try again\n')
-                continue
-        except:
-            print('Invalid, try again\n')
-            continue
+    end = time.perf_counter()
+    days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
+    if sample_size > 1:
+        print(
+            f'\nOut of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+        print(f'Fastest - {low[0]} days: {low[1].subs()}')
+        print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
     else:
-        cv_range = [0.0, cv_desired]
-    days_plot = days_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
-    cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+        print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
+    print(f'Total artifacts generated: {sum(artifacts_generated)}')
+    run_time = end - start
+    to_hours = time.strftime("%T", time.gmtime(run_time))
+    decimals = f'{(run_time % 1):.3f}'
     print()
-    print('Values:', days_plot)
-    print()
-    plot_this(cv_plot, days_plot, cv_range, sample_size)
+    print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
+    print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
+    # print(run_time)
 
-print('\nThank you for using Artifact Simulator (plotting edition)')
+    for i in dict_of_days_total:
+        dict_of_days_average[i] = round(dict_of_days_total[i] / sample_size, 2)
+
+    days_for_plotting = list(dict_of_days_average.values())
+    cv_for_plotting = np.arange(cv_desired * 10 + 1) / 10
+
+    print('Dict:', dict_of_days_average)
+    print('List:', days_for_plotting)
+    print()
+
+    Path(".\\plots").mkdir(parents=True, exist_ok=True)
+    Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
+
+    with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
+        file.write(json.dumps(days_for_plotting))
+
+    plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size, cv_desired)
+
+    first_time = True
+    while True:
+        print('What CV range would you like to see the plot for?')
+        if first_time:
+            print('Leave blank to use the entire range. Type "exit" to quit.')
+            print('Example: 20.5:45')
+            first_time = False
+        user_cmd = input('Range: ')
+        if user_cmd:
+            if user_cmd in ('exit', "'exit'", '"exit"', '0'):
+                break
+            try:
+                cv_range = list(map(float, user_cmd.split(':')))
+                if (cv_range[0] > cv_desired or
+                        cv_range[1] < 0 or
+                        cv_range[1] < cv_range[0]):
+                    print('Invalid range, try again\n')
+                    continue
+            except:
+                print('Invalid, try again\n')
+                continue
+        else:
+            cv_range = [0.0, cv_desired]
+        days_plot = days_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+        cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+        print()
+        print('Values:', days_plot)
+        print()
+
+        plot_this(cv_plot, days_plot, cv_range, sample_size, cv_desired)
+
+    print('\nThank you for using Artifact Simulator (plotting edition)')
