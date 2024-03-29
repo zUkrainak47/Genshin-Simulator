@@ -129,7 +129,8 @@ def take_input(defaults=(1, 50)):
     valid_exit = ('exit', "'exit'", '"exit"')
     ok1 = False
     ok2 = False
-    print("\nPlease input conditions. Type 'exit' to go back to menu.\nLeave blank to use defaults (1 test, 50 CV).\n")
+    print("\nPlease input conditions. Type 'exit' to go back to menu.\n"
+          f"Leave blank to use defaults ({defaults[0]} test{'s' if defaults[0] != 1 else ''}, {defaults[1]} CV).\n")
 
     while not ok1:
         size = input("Number of tests to run: ")
