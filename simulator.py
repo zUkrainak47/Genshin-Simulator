@@ -70,9 +70,15 @@ class Artifact:
     def cv(self):
         crit_value = 0
         if "Crit DMG%" in self.substats:
+            # for eyeball:
             crit_value += round(self.substats["Crit DMG%"], 1)
+            # for cv like in akasha:
+            # crit_value += self.substats["Crit DMG%"]
         if "Crit RATE%" in self.substats:
+            # for eyeball:
             crit_value += round(self.substats["Crit RATE%"], 1) * 2
+            # for cv like in akasha:
+            # crit_value += self.substats["Crit RATE%"] * 2
         return round(crit_value, 1)
 
     def rv(self):
@@ -106,15 +112,15 @@ crit_rate_stats = (4.7, 9.9, 15.2, 20.5, 25.8, 31.1)
 crit_dmg_stats = (9.3, 19.9, 30.5, 41.0, 51.6, 62.2)
 max_rolls = {
     'HP': 298.75,
-    'ATK': 19.4500007629394,
-    'DEF': 23.1499996185302,
+    'ATK': 19.45000076,
+    'DEF': 23.149999,
     'HP%': 5.8335,
     'ATK%': 5.8335,
-    'DEF%': 7.28999972343444,
-    'EM': 23.3099994659423,
-    'ER%': 6.48000016808509,
-    'Crit RATE%': 3.88999991118907,
-    'Crit DMG%': 7.76999965310096
+    'DEF%': 7.289999,
+    'EM': 23.309999,
+    'ER%': 6.4800001,
+    'Crit RATE%': 3.889999,
+    'Crit DMG%': 7.769999
 }
 possible_rolls = (0.7, 0.8, 0.9, 1.0)
 
