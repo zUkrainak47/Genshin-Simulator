@@ -991,8 +991,9 @@ if __name__ == '__main__':
                                 if len(artifact_list) == 0:
                                     print('Inventory is empty')
                                 else:
-                                    print()
-                                    print_inventory(artifact_list)
+                                    if len(artifact_list) <= 25:
+                                        print()
+                                        print_inventory(artifact_list)
                                 print()
 
                             except json.decoder.JSONDecodeError:
