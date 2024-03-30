@@ -20,8 +20,7 @@ This artifact simulator can help you with that.
 - It will tell you how many days (or years) of continuous farming that took.
 - You can choose to run multiple tests, the program will show the average time.
 - It will use 1 Transient Resin per week, assumes unlimited fodder and throws all artifacts in the Strongbox.
-- It also assumes 34% to get a 4 liner from strongbox and 20% from domains, as well as a 7% chance to get double artifact drops from a domain run. 
-  - Personally, despite these values coming from the wiki, I'm pretty sure they aren't entirely right, but should do for a very close estimate nonetheless.
+- It also assumes a 33.3% (1/3) chance to get a 4-liner from strongbox and 20% from domains, as well as a 6.66% (2/30) chance to get double artifact drops from a domain run. 
 
 # Plotting with `simulator_for_plotting.py`
 This program will run Mode 2 of `simulator.py`, but will create a graph to visualize the results. \

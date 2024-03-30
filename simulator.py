@@ -244,7 +244,7 @@ def create_artifact(from_where):
     else:
         mainstat_value = [crit_dmg_stats, 0]
 
-    fourliner_weights = (2, 8) if from_where == 'domain' else (34, 66)
+    fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
 
@@ -652,7 +652,7 @@ if __name__ == '__main__':
                     while resin and not flag:
                         # print('domain run')
                         resin -= 20
-                        amount = choices((1, 2), weights=(93, 7))
+                        amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                         # if amount[0] == 2:
                         #     print('lucky!')
                         total_generated += amount[0]

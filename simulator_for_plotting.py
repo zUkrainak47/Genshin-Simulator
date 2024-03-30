@@ -192,7 +192,7 @@ if __name__ == "__main__":
             while resin and not flag:
                 # print('domain run')
                 resin -= 20
-                amount = choices((1, 2), weights=(93, 7))
+                amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                 # if amount[0] == 2:
                 #     print('lucky!')
                 total_generated += amount[0]
