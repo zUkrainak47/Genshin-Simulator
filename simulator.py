@@ -394,23 +394,27 @@ def get_indexes(user_input):
                 if len(this_index.split('-')) == 2:  # and there's only one -
                     this_index = this_index.split('-')  # split by -
 
-                    if this_index[0].isnumeric() and this_index[1].isnumeric() and int(this_index[0]) <= int(
-                            this_index[1]):  # if the range is correct
+                    if this_index[0].isnumeric() and this_index[1].isnumeric():  # if the range is correct
                         this_index[0] = int(this_index[0])
                         this_index[1] = int(this_index[1])
-                        # replace the part with the range instead
-                        idxs[idx] = [_ for _ in range(this_index[0], this_index[1] + 1)]
+                        if this_index[0] <= this_index[1]:
+                            # replace the part with the range instead
+                            idxs[idx] = [_ for _ in range(this_index[0], this_index[1] + 1)]
+
+                        else:
+                            print(f"\"{this_index}\" doesn't seem like a correct range\n")
+                            raise StopIteration
 
                     else:
-                        print(f"\"{this_index}\" doesn't seem like a correct range\n")
+                        print(f"Index \"{this_index[0] if not this_index[0].isnumeric() else this_index[1]}\" is non-numeric\n")
                         raise StopIteration
 
                 else:
-                    print(f"Index \"{this_index}\" is incorrect, try again\n")
+                    print(f"Index \"{this_index}\" is incorrect, the range must consist of two numbers separated by \"-\"\n")
                     raise StopIteration
 
             elif not this_index.isnumeric():
-                print(f"Index \"{this_index}\" is incorrect", end='')
+                print(f"Index \"{this_index}\" is non-numeric", end='')
 
                 if '[' in this_index:
                     print(f'. Remove the parentheses\n')
@@ -426,18 +430,29 @@ def get_indexes(user_input):
             this_index = user_input.split('-')
 
             # if the range is correct
-            if this_index[0].isnumeric() and this_index[1].isnumeric() and int(this_index[0]) <= int(this_index[1]):
+            if this_index[0].isnumeric() and this_index[1].isnumeric():  # if the range is correct
                 this_index[0] = int(this_index[0])
                 this_index[1] = int(this_index[1])
-                # replace that part with the range instead
-                idxs = [ind for ind in range(this_index[0], this_index[1] + 1)]
+                if this_index[0] <= this_index[1]:
+                    # replace the part with the range instead
+                    idxs = [_ for _ in range(this_index[0], this_index[1] + 1)]
+
+                else:
+                    print(f'"{this_index}" doesn\'t seem like a correct range\n')
+                    raise StopIteration
 
             else:
-                print(f"\"{this_index}\" doesn't seem like a correct range\n")
+                print(f'Index "{this_index[0] if not this_index[0].isnumeric() else this_index[1]}" is non-numeric', end='')
+
+                if '[' in this_index[0]:
+                    print(f'. Remove the parentheses\n')
+                else:
+                    print('\n')
+
                 raise StopIteration
 
         else:
-            print(f"\"{user_input}\" is incorrect, try again\n")
+            print(f'Index "{user_input}" is incorrect, the range must consist of two numbers separated by "-"\n')
             raise StopIteration
         # print('flatten?', idxs)
         # idxs = flatten_list(idxs)
@@ -449,7 +464,7 @@ def get_indexes(user_input):
             idxs = [user_input]
 
         else:
-            print(f'{user_input} is not numeric\n')
+            print(f'{user_input} is non-numeric\n')
             raise StopIteration
 
         case = 'index'
