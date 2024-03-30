@@ -50,12 +50,14 @@ def insert_average(arr, num):
     # Fill the even indices with the average of adjacent elements
 
     result[1::2] = (arr[:-1] + arr[1:]) / 2
+
     if num == 12:  # yes this is spaghetti code.
         if len(result[result <= 55]) <= num:
             return insert_average(result, num)
     else:
         if len(result) <= num:
             return insert_average(result, num)
+
     return result[result <= 55] if num == 12 else result
 
 
@@ -98,6 +100,7 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless
         from_cv = max(range_cv[0], 0)
 
     is_int = int(desired_cv) if int(desired_cv) == desired_cv else desired_cv
+
     if int(range_cv[1]) == range_cv[1]:
         to_cv = min(int(range_cv[1]), is_int)
     else:
@@ -106,26 +109,33 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless
     plt.savefig(
         f'.\\plots\\sample size = {amount_of_tests}\\Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png',
         dpi=900)
+
     print("Here you go. This was also saved as a .png file.")
     if endless:
         print("(To continue, close the graph if this is the last line you see)")
     plt.show()
+
     if endless:
         print("\nYou can plot another graph now if you want.\n")
 
 
 if __name__ == "__main__":
     sample_size, cv_desired = take_input((100, 50))
+
     if sample_size == 'exit' or cv_desired == 'exit':
         print("Exiting program")
         sys.exit()
+
     sample_size, cv_desired = int(sample_size), float(cv_desired)
     days_it_took_to_reach_desired_cv = []
     artifacts_generated = []
+
     low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
     high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
-    start = time.perf_counter()
+
     sample_size_is_one = sample_size == 1
+    start = time.perf_counter()
+
     for i in range(sample_size):
         c = 0
         day = 0
@@ -133,20 +143,25 @@ if __name__ == "__main__":
         total_generated = 0
         inventory = 0
         flag = False
+
         if (i + 1) % 25 == 0:
             print("\nResults so far:")
+
             for dd in dict_of_days_total:
                 dict_of_days_average[dd] = round(dict_of_days_total[dd] / i, 2)
-                # print(f'{dd}: {dict_of_days_total[dd]/i}')
+
             print('Dict:', dict_of_days_average)
             print('List:', list(dict_of_days_average.values()))
             print()
+
         print(f'Now running simulation {i + 1}...', end=' ')
         while not flag:
             day += 1
             # print(f'new day {day}')
+
             if day % 10000 == 0:
                 print(f'Day {day} - still going')
+
             if day % 15 == 1:  # 4 artifacts from abyss every 15 days
                 for k in range(4):
                     inventory += 1
@@ -159,9 +174,11 @@ if __name__ == "__main__":
                         break
                 if flag:
                     break
+
             resin = 180
             if day % 7 == 1:  # 1 transient resin from tubby every monday
                 resin += 60
+
             while resin and not flag:
                 # print('domain run')
                 resin -= 20
@@ -170,6 +187,7 @@ if __name__ == "__main__":
                 #     print('lucky!')
                 total_generated += amount[0]
                 inventory += amount[0]
+
                 for k in range(amount[0]):
                     art, highest = create_and_roll_artifact("domain", highest, cv_desired, day)
                     low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
@@ -179,6 +197,7 @@ if __name__ == "__main__":
                         break
                 if flag:
                     break
+
             else:
                 while inventory >= 3:
                     # print(f'strongbox {inventory}')
@@ -194,19 +213,21 @@ if __name__ == "__main__":
 
     end = time.perf_counter()
     days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
+
     if sample_size > 1:
-        print(
-            f'\nOut of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
+        print(f'\nOut of {sample_size} simulations, it took an average of {days} days ({round(days / 365.25, 2)} years) to reach {cv_desired} CV.')
         print(f'Fastest - {low[0]} days: {low[1].subs()}')
         print(f'Slowest - {high[0]} days ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
     else:
         print(f'It took {low[0]} days (or {round(high[0] / 365.25, 2)} years)!')
+
     print(f'Total artifacts generated: {sum(artifacts_generated)}')
+
     run_time = end - start
     to_hours = time.strftime("%T", time.gmtime(run_time))
     decimals = f'{(run_time % 1):.3f}'
-    print()
-    print(f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
+
+    print(f'\nThe simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
     print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
     # print(run_time)
 
@@ -231,14 +252,17 @@ if __name__ == "__main__":
     first_time = True
     while True:
         print('What CV range would you like to see the plot for?')
+
         if first_time:
             print('Leave blank to use the entire range. Type "exit" to quit.')
             print('Example: 20.5:45')
             first_time = False
+
         user_cmd = input('Range: ')
         if user_cmd:
             if user_cmd in ('exit', "'exit'", '"exit"', '0'):
                 break
+
             try:
                 cv_range = list(map(float, user_cmd.split(':')))
                 if (cv_range[0] > cv_desired or
@@ -246,13 +270,17 @@ if __name__ == "__main__":
                         cv_range[1] < cv_range[0]):
                     print('Invalid range, try again\n')
                     continue
+
             except:
                 print('Invalid, try again\n')
                 continue
+
         else:
             cv_range = [0.0, cv_desired]
+
         days_plot = days_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
         cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+
         print()
         print('Values:', days_plot)
         print()
