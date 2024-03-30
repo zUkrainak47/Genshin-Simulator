@@ -1,3 +1,12 @@
+# This program is essentially an advanced version of mode 2 in simulator.py
+
+# The additional functionality is as follows:
+# You're not only getting the result for the requested Crit Value, but every value below that, too.
+# Basically, you get info on how long every Crit Value took to get on average.
+# This allows for a Crit Value vs. Time graph to be made - that's the purpose of this program.
+# The list of values that this program prints out can be copied and used in plot.py (it can replicate the graph)
+
+
 import datetime
 import json
 import sys
@@ -9,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from simulator import Artifact, take_input, create_artifact, compare_to_highest_cv
+
 
 dict_of_days_total = {0.0: 0.0}
 dict_of_days_average = {0.0: 0.0}
