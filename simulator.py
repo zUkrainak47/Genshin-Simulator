@@ -1005,8 +1005,7 @@ if __name__ == '__main__':
                         else:
                             print(f'"{cmd}" is not a valid inventory command or index\n')
                     else:
-                        print(
-                            'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
+                        print('U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
 
                 elif user_command == 'domain':
                     source = 'domain'
