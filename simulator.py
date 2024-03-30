@@ -473,7 +473,7 @@ def get_indexes(user_input):
             idxs = [user_input]
 
         else:
-            print(f'{user_input} is non-numeric\n')
+            print(f'Index "{user_input}" is non-numeric\n')
             raise StopIteration
 
         case = 'index'
