@@ -1,3 +1,12 @@
+# This program is an artifact simulator!
+
+# You can
+# 1 - Roll artifacts one-by-one as if you have unlimited resin, upgrade them, save them to your inventory etc.
+# 2 - Set a Crit Value requirement and roll artifacts automatically until an artifact with enough CV is found
+#     to find out how long that takes - in days and years (assuming all of your resin goes into artifact farming)
+#     You can also run multiple tests and find out the average amount of time that took!
+
+
 import json
 import time
 from operator import itemgetter
