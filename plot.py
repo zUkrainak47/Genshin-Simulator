@@ -45,6 +45,7 @@ cv_for_plotting = np.arange(len(days)) / 10
 
 days_plot = days[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
 cv_plot = cv_for_plotting[max(int(cv_range[0] * 10), 0):min(int(cv_range[1] * 10 + 1), int(cv_desired * 10 + 1))]
+
 print()
 print('Values:', days_plot)
 print()
