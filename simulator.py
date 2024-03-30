@@ -483,8 +483,7 @@ def get_indexes(user_input):
 
 
 def print_empty_inv():
-    print('Inventory is empty\n'
-          'Try "r 5" to save 5 random artifacts\n')
+    print('Inventory is empty - try "r 5" to save 5 random artifacts\n')
 
 
 def print_controls():
