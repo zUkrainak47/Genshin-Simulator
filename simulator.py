@@ -574,7 +574,7 @@ def show_index_changes(old_list, new_list):
             print(f'{old + 1} -> {new + 1}', end='')
             if counter >= 25:
                 print('...')
-                print('Check your inventory for the other changes')
+                print('Check your inventory for the rest of the changes')
                 break
             print()
         print()
