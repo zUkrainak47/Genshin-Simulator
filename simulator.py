@@ -518,7 +518,7 @@ def print_controls():
         'INVALID INDEXING: inv [8,9] | inv 7.9 | inv 3, 2 | inv 3 - 8 | inv 4,6-2\n'
         'NOTE: Indexes may change after deletion or upgrading of artifacts due to inventory sorting\n'
         '\n'
-        'inv size = view amount of artifacts in inventory\n'  # inv len
+        'inv size = view amount of artifacts in inventory\n'  # inv len/inv length
         'inv cv = show artifact with highest crit value\n'
         'inv rv = show artifact with highest roll value\n'
         'inv load = load updates made to inventory.txt\n'
@@ -979,7 +979,7 @@ if __name__ == '__main__':
                             print(f'RV: {big_rv.rv()}%')
                             print()
 
-                        elif cmd in ('size', 'len'):
+                        elif cmd in ('size', 'len', 'length'):
                             print(f'{len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory', end='')
                             if len(artifact_list) > 0:
                                 print(':')
