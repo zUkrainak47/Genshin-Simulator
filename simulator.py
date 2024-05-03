@@ -557,6 +557,29 @@ def print_menu():
           "2 = roll artifacts until a certain CV is reached\n")
 
 
+def show_index_changes(old_list, new_list):
+    # ty chatgpt this is actually a cool approach
+    index_differences = []
+    artifact_map = {artifact: i for i, artifact in enumerate(old_list)}
+
+    for i, artifact in enumerate(new_list):
+        if artifact != old_list[i]:
+            index_differences.append((artifact_map.get(artifact, -1), i))
+
+    if index_differences:
+        counter = 0
+        print('SOME INVENTORY INDEXES CHANGED:')
+        for old, new in index_differences:
+            counter += 1
+            print(f'{old + 1} -> {new + 1}', end='')
+            if counter >= 25:
+                print('...')
+                print('Check your inventory for the other changes')
+                break
+            print()
+        print()
+
+
 sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
 sort_order_mainstat = {'ATK': 0,
                        'HP': 1,
@@ -860,7 +883,6 @@ if __name__ == '__main__':
 
                         if flag:  # if all given indexes are valid
                             indexes = list(map(lambda x: x - 1, map(int, indexes)))  # transform them
-
                             if len(indexes) == 1:  # if one index, we print every upgrade
                                 do_print = 2
                             elif len(indexes) <= 25:  # if no more than 25, we print the results for every one
@@ -883,27 +905,30 @@ if __name__ == '__main__':
                                 if cmd in ('+', '++'):
                                     print()
 
+                            if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
+                                artifact_list_old = artifact_list.copy()
+
                             # then iterate this list and execute command
-                            for index, new_index in zip(indexes, range(len(arti_list))):
+                            for index, iterative_index in zip(indexes, range(len(arti_list))):
                                 if cmd == '+':
                                     if do_print:
                                         print(f'{index + 1}) ', end='')
-                                    upgrade_to_next_tier(arti_list[new_index], do_print)
+                                    upgrade_to_next_tier(arti_list[iterative_index], do_print)
 
                                 elif cmd == '++':
                                     if do_print:
                                         print(f'{index + 1}) ', end='')
-                                    upgrade_to_max_tier(arti_list[new_index], do_print)
+                                    upgrade_to_max_tier(arti_list[iterative_index], do_print)
 
                                 elif cmd == 'rv':
-                                    print(f'{index + 1}) RV: {arti_list[new_index].rv()}%')
+                                    print(f'{index + 1}) RV: {arti_list[iterative_index].rv()}%')
 
                                 elif cmd == 'cv':
-                                    print(f'{index + 1}) CV: {arti_list[new_index].cv()}')
+                                    print(f'{index + 1}) CV: {arti_list[iterative_index].cv()}')
 
                                 elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
-                                    if arti_list[new_index] in artifact_list:
-                                        artifact_list.remove(arti_list[new_index])
+                                    if arti_list[iterative_index] in artifact_list:
+                                        artifact_list.remove(arti_list[iterative_index])
 
                                 else:
                                     print(f'"{cmd}" is not a valid command\n')
@@ -911,6 +936,7 @@ if __name__ == '__main__':
                             if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                                 save_inventory_to_file(artifact_list)
                                 print(f'Artifact{"s" if len(indexes) > 1 else ""} removed\n')
+                                show_index_changes(artifact_list_old, artifact_list)
 
                             if cmd in ('+', '++'):
                                 if not do_print:
@@ -918,7 +944,10 @@ if __name__ == '__main__':
                                 elif len(indexes) > 1:
                                     print()
 
-                                artifact_list = sort_inventory(artifact_list)
+                                artifact_list_new = sort_inventory(artifact_list)
+                                show_index_changes(artifact_list, artifact_list_new)
+
+                                artifact_list = artifact_list_new
                                 save_inventory_to_file(artifact_list)
 
                             if cmd in ('cv', 'rv'):
