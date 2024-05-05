@@ -610,6 +610,7 @@ def print_pity(counter, p):
     print(f'4* pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
     print()
 
+
 sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
 sort_order_mainstat = {'ATK': 0,
                        'HP': 1,
