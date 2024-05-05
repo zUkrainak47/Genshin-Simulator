@@ -680,7 +680,7 @@ characters_dict = {
     "Kamisato Ayaka": Character("Ayaka", "Inazuma", "Cryo", "Sword", 2.0, 5),
     "Sayu": Character("Sayu", "Inazuma", "Anemo", "Claymore", 2.0, 4),
     "Yoimiya": Character("Yoimiya", "Inazuma", "Pyro", "Bow", 2.0, 5),
-    "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 5),
+    # "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 5),
     "Kujou Sara": Character("Kujou Sara", "Inazuma", "Electro", "Bow", 2.1, 4),
     "Raiden Shogun": Character("Raiden Shogun", "Inazuma", "Electro", "Polearm", 2.1, 5),
     "Sangonomiya Kokomi": Character("Kokomi", "Inazuma", "Hydro", "Catalyst", 2.1, 5),
@@ -724,9 +724,9 @@ characters_dict = {
     "Xianyun": Character("Xianyun", "Liyue", "Anemo", "Catalyst", 4.4, 5),
     "Chiori": Character("Chiori", "Inazuma", "Geo", "Sword", 4.5, 5),
     "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5),
-    "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5),
-    "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5),
-    "Sethos": Character("Sethos", "idk", "idk", "idk", 4.7, 4)
+    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5),
+    # "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5),
+    # "Sethos": Character("Sethos", "idk", "idk", "idk", 4.7, 4)
 }
 
 amount_of_five_stars = sum([i.rarity == 5 for i in characters_dict.values()])
@@ -1510,7 +1510,7 @@ if __name__ == '__main__':
                         result = [choice(featured_four_stars), pity[1] + 1]
                         pity[-1] = False
                     else:
-                        result = [choice(choice((featured_four_stars, standard_4_star_characters))), pity[1] + 1]
+                        result = [choice(choices((featured_four_stars, standard_4_star_characters, standard_4_star_weapons), [50, 25, 25])[0]), pity[1] + 1]
                         if result[0] not in featured_four_stars:
                             pity[-1] = True
                     pity[0] += 1
@@ -1541,6 +1541,7 @@ if __name__ == '__main__':
 
         pity_info = [0, 0, False, False]
         constellations = {}
+        refinements = {}
         count = 0
         five_count = 0
         four_count = 0
@@ -1567,10 +1568,16 @@ if __name__ == '__main__':
                     print("--- CHARACTER ARCHIVE ---")
                     print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
                           f"({unique_five_count}/{amount_of_five_stars} 5* and {len(constellations) - unique_five_count}/{amount_of_four_stars} 4*)\n")
-                    sorted_output = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    for a in sorted_output:
+                    sorted_constellations = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                    sorted_refinements = sorted(list(refinements.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                    for a in sorted_constellations:
                         print(f'c{a[1]} {a[0].name}')
                     print()
+                    print("--- WEAPON ARCHIVE ---")
+                    for a in sorted_refinements:
+                        print(f'r{a[1]} {a[0].name}')
+                    print()
+
                 else:
                     print('Roll a character first to see character archive\n')
                 continue
@@ -1578,6 +1585,7 @@ if __name__ == '__main__':
             if a == 'clear':
                 pity_info = [0, 0, False, False]
                 constellations = {}
+                refinements = {}
                 count = 0
                 five_count = 0
                 four_count = 0
@@ -1593,26 +1601,37 @@ if __name__ == '__main__':
             if a >= 0:
                 if a == 0:
                     print_pity(count, pity_info)
-                    sorted_output = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    if sorted_output:
+                    sorted_constellations = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                    sorted_refinements = sorted(list(refinements.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                    if sorted_constellations:
                         print()
                         print("--- CHARACTER ARCHIVE ---")
                         print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
                               f"({unique_five_count}/{amount_of_five_stars} 5* and {len(constellations) - unique_five_count}/{amount_of_four_stars} 4*)\n")
-                    for a in sorted_output:
-                        print(f'c{a[1]} {a[0].name}')
+                        for a in sorted_constellations:
+                            print(f'c{a[1]} {a[0].name}')
+                    if sorted_refinements:
+                        print()
+                        print("--- WEAPON ARCHIVE ---")
+                        for a in sorted_refinements:
+                            print(f'r{a[1]} {a[0].name}')
                     break
                 count += a
                 for i in range(a):
                     res, pity = make_pull(banner_of_choice, pity_info)
-
-                    if res in constellations:
-                        if constellations[res] < 6:
-                            constellations[res] += 1
-                    elif res.rarity != 3:
-                        constellations[res] = 0
-                        if res.rarity == 5:
-                            unique_five_count += 1
+                    if isinstance(res, Character):
+                        if res in constellations:
+                            if constellations[res] < 6:
+                                constellations[res] += 1
+                        else:
+                            constellations[res] = 0
+                            if res.rarity == 5:
+                                unique_five_count += 1
+                    else:
+                        if res in refinements:
+                            refinements[res] += 1
+                        else:
+                            refinements[res] = 1
 
                     if res.rarity == 4:
                         four_count += 1
@@ -1621,6 +1640,8 @@ if __name__ == '__main__':
 
                     if res.rarity >= verbose_threshold:
                         print(f'( {print_map[res.rarity]} )   {res.name}{f", {pity} pity" if res.rarity >= 4 else ""}')
+                    if pity_info[1] == 10:
+                        print("10 PULLS WITHOUT A 4-STAR!")
 
             else:
                 print('what are u doing bro')
