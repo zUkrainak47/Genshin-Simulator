@@ -599,18 +599,6 @@ def show_index_changes(old_list, new_list):
         print()
 
 
-def print_pity(counter, p):
-    print(f'{counter} wish{"es" if counter != 1 else ""} done so far')
-    if p[0] < 10 and p[1] < 10:
-        insert1, insert2 = '', ''
-    else:
-        insert1 = ' ' * (p[0] < 10)
-        insert2 = ' ' * (p[1] < 10)
-    print(f'5* pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
-    print(f'4* pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
-    print()
-
-
 sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
 sort_order_mainstat = {'ATK': 0,
                        'HP': 1,
@@ -963,6 +951,65 @@ for i in range(len(three_star_weapons)):
 
 standard_characters = standard_5_star_characters + standard_4_star_characters
 standard_weapons = standard_5_star_weapons + standard_4_star_weapons
+
+
+def print_pity(counter, p, c5, c4):
+    print('\n========== PITY INFORMATION ==========')
+    print(f'{counter} wish{"es" if counter != 1 else ""} done so far')
+    print(f'Out of them {c5} five-star{"s" if c5 != 1 else ""} and {c4} four-star{"s" if c4 != 1 else ""}')
+    if p[0] < 10 and p[1] < 10:
+        insert1, insert2 = '', ''
+    else:
+        insert1 = ' ' * (p[0] < 10)
+        insert2 = ' ' * (p[1] < 10)
+    print(f'5* pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
+    print(f'4* pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
+
+
+def print_character_archive():
+    global sorted_constellations, a
+    sorted_constellations = sorted(list(constellations.items()),
+                                   key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    if sorted_constellations:
+        last_rarity = 0
+        print("\n========== CHARACTER ARCHIVE ==========")
+        print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
+              f"({unique_five_count}/{amount_of_five_stars} 5* and {len(constellations) - unique_five_count}/{amount_of_four_stars} 4*)\n")
+        for a in sorted_constellations:
+            if a[0].rarity != last_rarity:
+                print(f'--- {a[0].rarity} STARS ---')
+                last_rarity = a[0].rarity
+            print(f'c{a[1]} {a[0].name}')
+        print()
+        return True
+    return False
+
+
+def print_weapon_archive():
+    global sorted_refinements, a
+    sorted_refinements = sorted(list(refinements.items()),
+                                key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    if sorted_refinements:
+        last_rarity = 0
+        print("\n========== WEAPON ARCHIVE ==========")
+        for a in sorted_refinements:
+            if a[0].rarity != last_rarity:
+                print(f'--- {a[0].rarity} STARS ---')
+                last_rarity = a[0].rarity
+            print(f'r{a[1]} {a[0].name}')
+        print()
+        return True
+    return False
+
+
+def show_full_inventory():
+    print()
+    if not print_character_archive():
+        if not print_weapon_archive():
+            print('Do a wish first to see your character/weapon archive!')
+    else:
+        print_weapon_archive()
+    print()
 
 
 if __name__ == '__main__':
@@ -1555,31 +1602,16 @@ if __name__ == '__main__':
 
         while True:
             a = input('Command: ').lower().strip()
-            print()
             if a == 'pity':
-                print_pity(count, pity_info)
+                print_pity(count, pity_info, five_count, four_count)
+                print()
                 continue
 
             if a == 'info':
-                print_pity(count, pity_info)
+                print_pity(count, pity_info, five_count, four_count)
 
             if a in ('inv', 'info'):
-                if constellations:
-                    print("--- CHARACTER ARCHIVE ---")
-                    print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
-                          f"({unique_five_count}/{amount_of_five_stars} 5* and {len(constellations) - unique_five_count}/{amount_of_four_stars} 4*)\n")
-                    sorted_constellations = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    sorted_refinements = sorted(list(refinements.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    for a in sorted_constellations:
-                        print(f'c{a[1]} {a[0].name}')
-                    print()
-                    print("--- WEAPON ARCHIVE ---")
-                    for a in sorted_refinements:
-                        print(f'r{a[1]} {a[0].name}')
-                    print()
-
-                else:
-                    print('Roll a character first to see character archive\n')
+                show_full_inventory()
                 continue
 
             if a == 'clear':
@@ -1596,25 +1628,13 @@ if __name__ == '__main__':
             try:
                 a = int(a)
             except ValueError:
-                print('not a command\n')
+                print('Try "help"\n')
                 continue
-            if a >= 0:
+            if 0 <= a <= 1000000:
+                print()
                 if a == 0:
-                    print_pity(count, pity_info)
-                    sorted_constellations = sorted(list(constellations.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    sorted_refinements = sorted(list(refinements.items()), key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
-                    if sorted_constellations:
-                        print()
-                        print("--- CHARACTER ARCHIVE ---")
-                        print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
-                              f"({unique_five_count}/{amount_of_five_stars} 5* and {len(constellations) - unique_five_count}/{amount_of_four_stars} 4*)\n")
-                        for a in sorted_constellations:
-                            print(f'c{a[1]} {a[0].name}')
-                    if sorted_refinements:
-                        print()
-                        print("--- WEAPON ARCHIVE ---")
-                        for a in sorted_refinements:
-                            print(f'r{a[1]} {a[0].name}')
+                    print_pity(count, pity_info, five_count, four_count)
+                    show_full_inventory()
                     break
                 count += a
                 for i in range(a):
@@ -1643,9 +1663,11 @@ if __name__ == '__main__':
                     if pity_info[1] == 10:
                         print("10 PULLS WITHOUT A 4-STAR!")
 
-            else:
+            elif a < 0:
                 print('what are u doing bro')
 
+            else:
+                print('alright lets slow down no more than 1 million wishes at once')
             print()
 
     print('\nThank you for using Artifact Simulator')
