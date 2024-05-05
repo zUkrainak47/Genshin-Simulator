@@ -218,6 +218,18 @@ def load_history():
             file.write('')
         return []
 
+def load_archive():
+    try:
+        with open('.\\archive.txt') as file:
+            data = file.read()
+        archive = json.loads(data)
+        return archive
+
+    except FileNotFoundError:
+        with open('.\\archive.txt', 'w') as file:
+            file.write('')
+        return [{}, {}]
+
 
 def create_artifact(from_where):
     art_type = choice(artifact_types)
@@ -1586,7 +1598,7 @@ if __name__ == '__main__':
 
         banner_of_choice = ('character', character_banner_list["arlecchino-1"])
 
-        pity_info = [0, 0, False, False]
+        pity_info = pities['character']
         constellations = {}
         refinements = {}
         count = 0
@@ -1615,6 +1627,7 @@ if __name__ == '__main__':
                 continue
 
             if a == 'clear':
+                pities['character'] = [0, 0, False, False]
                 pity_info = [0, 0, False, False]
                 constellations = {}
                 refinements = {}
