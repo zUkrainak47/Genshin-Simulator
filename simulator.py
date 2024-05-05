@@ -215,8 +215,9 @@ def load_history():
 
     except FileNotFoundError:
         with open('.\\wish.txt', 'w') as file:
-            file.write('')
-        return []
+            file.write('{"character": [], "weapon": [], "standard": [], "chronicled": []}')
+        return {"character": [], "weapon": [], "standard": [], "chronicled": []}
+
 
 def load_archive():
     try:
@@ -358,7 +359,12 @@ def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):  # 2 - prin
 
 def save_inventory_to_file(artifacts):
     with open(r'.\inventory.txt', 'w') as f:
-        f.write(str(json.dumps(artifacts, cls=ArtifactEncoder)))
+        f.write(json.dumps(artifacts, cls=ArtifactEncoder, separators=(',', ':')))
+
+
+def save_history_to_file(data):
+    with open(r'.\wish.txt', 'w') as f:
+        f.write(json.dumps(data, separators=(',', ':')))
 
 
 def sort_inventory(artifacts):
@@ -629,105 +635,233 @@ valid_picks = ['0', 'exit', '1', '2']
 
 
 class Character:
-    def __init__(self, name, region, vision, weapon, version, rarity):
+    def __init__(self, name, region, vision, weapon, version, rarity, unique_number):
         self.name = name
         self.region = region
         self.vision = vision
         self.weapon = weapon
         self.version = version
         self.rarity = rarity
+        self.num = unique_number
+
 
 class Weapon:
-    def __init__(self, name, rarity):
+    def __init__(self, name, weapon_type, rarity, unique_number):
         self.name = name
+        self.weapon_type = weapon_type
         self.rarity = rarity
+        self.num = unique_number
 
 
 characters_dict = {
-    "Amber": Character("Amber", "Mondstadt", "Pyro", "Bow", 1.0, 4),
-    "Barbara": Character("Barbara", "Mondstadt", "Hydro", "Catalyst", 1.0, 4),
-    "Beidou": Character("Beidou", "Liyue", "Electro", "Claymore", 1.0, 4),
-    "Bennett": Character("Bennett", "Mondstadt", "Pyro", "Sword", 1.0, 4),
-    "Chongyun": Character("Chongyun", "Liyue", "Cryo", "Claymore", 1.0, 4),
-    "Diluc": Character("Diluc", "Mondstadt", "Pyro", "Claymore", 1.0, 5),
-    "Fischl": Character("Fischl", "Mondstadt", "Electro", "Bow", 1.0, 4),
-    "Jean": Character("Jean", "Mondstadt", "Anemo", "Sword", 1.0, 5),
-    "Kaeya": Character("Kaeya", "Mondstadt", "Cryo", "Sword", 1.0, 4),
-    "Keqing": Character("Keqing", "Liyue", "Electro", "Sword", 1.0, 5),
-    "Klee": Character("Klee", "Mondstadt", "Pyro", "Catalyst", 1.0, 5),
-    "Lisa": Character("Lisa", "Mondstadt", "Electro", "Catalyst", 1.0, 4),
-    "Mona": Character("Mona", "Mondstadt", "Hydro", "Catalyst", 1.0, 5),
-    "Ningguang": Character("Ningguang", "Liyue", "Geo", "Catalyst", 1.0, 4),
-    "Noelle": Character("Noelle", "Mondstadt", "Geo", "Claymore", 1.0, 4),
-    "Qiqi": Character("Qiqi", "Liyue", "Cryo", "Sword", 1.0, 5),
-    "Razor": Character("Razor", "Mondstadt", "Electro", "Claymore", 1.0, 4),
-    "Sucrose": Character("Sucrose", "Mondstadt", "Anemo", "Catalyst", 1.0, 4),
-    "Venti": Character("Venti", "Mondstadt", "Anemo", "Bow", 1.0, 5),
-    "Xiangling": Character("Xiangling", "Liyue", "Pyro", "Polearm", 1.0, 4),
-    "Xingqiu": Character("Xingqiu", "Liyue", "Hydro", "Sword", 1.0, 4),
-    "Diona": Character("Diona", "Mondstadt", "Cryo", "Bow", 1.1, 4),
-    "Tartaglia": Character("Tartaglia", "Snezhnaya", "Hydro", "Bow", 1.1, 5),
-    "Xinyan": Character("Xinyan", "Liyue", "Pyro", "Claymore", 1.1, 4),
-    "Zhongli": Character("Zhongli", "Liyue", "Geo", "Polearm", 1.1, 5),
-    "Albedo": Character("Albedo", "Mondstadt", "Geo", "Sword", 1.2, 5),
-    "Ganyu": Character("Ganyu", "Liyue", "Cryo", "Bow", 1.2, 5),
-    "Hu Tao": Character("Hu Tao", "Liyue", "Pyro", "Polearm", 1.3, 5),
-    "Xiao": Character("Xiao", "Liyue", "Anemo", "Polearm", 1.3, 5),
-    "Rosaria": Character("Rosaria", "Mondstadt", "Cryo", "Polearm", 1.4, 4),
-    "Eula": Character("Eula", "Mondstadt", "Cryo", "Claymore", 1.5, 5),
-    "Yanfei": Character("Yanfei", "Liyue", "Pyro", "Catalyst", 1.5, 4),
-    "Kaedehara Kazuha": Character("Kazuha", "Inazuma", "Anemo", "Sword", 1.6, 5),
-    "Kamisato Ayaka": Character("Ayaka", "Inazuma", "Cryo", "Sword", 2.0, 5),
-    "Sayu": Character("Sayu", "Inazuma", "Anemo", "Claymore", 2.0, 4),
-    "Yoimiya": Character("Yoimiya", "Inazuma", "Pyro", "Bow", 2.0, 5),
-    # "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 5),
-    "Kujou Sara": Character("Kujou Sara", "Inazuma", "Electro", "Bow", 2.1, 4),
-    "Raiden Shogun": Character("Raiden Shogun", "Inazuma", "Electro", "Polearm", 2.1, 5),
-    "Sangonomiya Kokomi": Character("Kokomi", "Inazuma", "Hydro", "Catalyst", 2.1, 5),
-    "Thoma": Character("Thoma", "Inazuma", "Pyro", "Polearm", 2.2, 4),
-    "Arataki Itto": Character("Itto", "Inazuma", "Geo", "Claymore", 2.3, 5),
-    "Gorou": Character("Gorou", "Inazuma", "Geo", "Bow", 2.3, 4),
-    "Shenhe": Character("Shenhe", "Liyue", "Cryo", "Polearm", 2.4, 5),
-    "Yun Jin": Character("Yun Jin", "Liyue", "Geo", "Polearm", 2.4, 4),
-    "Yae Miko": Character("Yae Miko", "Inazuma", "Electro", "Catalyst", 2.5, 5),
-    "Kamisato Ayato": Character("Ayato", "Inazuma", "Hydro", "Sword", 2.6, 5),
-    "Kuki Shinobu": Character("Kuki Shinobu", "Inazuma", "Electro", "Sword", 2.7, 4),
-    "Yelan": Character("Yelan", "Liyue", "Hydro", "Bow", 2.7, 5),
-    "Shikanoin Heizou": Character("Heizou", "Inazuma", "Anemo", "Catalyst", 2.8, 4),
-    "Collei": Character("Collei", "Sumeru", "Dendro", "Bow", 3.0, 4),
-    "Dori": Character("Dori", "Sumeru", "Electro", "Claymore", 3.0, 4),
-    "Tighnari": Character("Tighnari", "Sumeru", "Dendro", "Bow", 3.0, 5),
-    "Candace": Character("Candace", "Sumeru", "Hydro", "Polearm", 3.1, 4),
-    "Cyno": Character("Cyno", "Sumeru", "Electro", "Polearm", 3.1, 5),
-    "Nilou": Character("Nilou", "Sumeru", "Hydro", "Sword", 3.1, 5),
-    "Layla": Character("Layla", "Sumeru", "Cryo", "Sword", 3.2, 4),
-    "Nahida": Character("Nahida", "Sumeru", "Dendro", "Catalyst", 3.2, 5),
-    "Faruzan": Character("Faruzan", "Sumeru", "Anemo", "Bow", 3.3, 4),
-    "Wanderer": Character("Wanderer", "Sumeru", "Anemo", "Catalyst", 3.3, 5),
-    "Alhaitham": Character("Alhaitham", "Sumeru", "Dendro", "Sword", 3.4, 5),
-    "Yaoyao": Character("Yaoyao", "Liyue", "Dendro", "Polearm", 3.4, 4),
-    "Dehya": Character("Dehya", "Sumeru", "Pyro", "Claymore", 3.5, 5),
-    "Mika": Character("Mika", "Mondstadt", "Cryo", "Polearm", 3.5, 4),
-    "Baizhu": Character("Baizhu", "Liyue", "Dendro", "Catalyst", 3.6, 5),
-    "Kaveh": Character("Kaveh", "Sumeru", "Dendro", "Claymore", 3.6, 4),
-    "Kirara": Character("Kirara", "Inazuma", "Dendro", "Sword", 3.7, 4),
-    "Freminet": Character("Freminet", "Fontaine", "Cryo", "Claymore", 4.0, 4),
-    "Lynette": Character("Lynette", "Fontaine", "Anemo", "Sword", 4.0, 4),
-    "Lyney": Character("Lyney", "Fontaine", "Pyro", "Bow", 4.0, 5),
-    "Neuvillette": Character("Neuvillette", "Fontaine", "Hydro", "Catalyst", 4.1, 5),
-    "Wriothesley": Character("Wriothesley", "Fontaine", "Cryo", "Catalyst", 4.1, 5),
-    "Charlotte": Character("Charlotte", "Fontaine", "Cryo", "Catalyst", 4.2, 4),
-    "Furina": Character("Furina", "Fontaine", "Hydro", "Sword", 4.2, 5),
-    "Chevreuse": Character("Chevreuse", "Fontaine", "Pyro", "Polearm", 4.3, 4),
-    "Navia": Character("Navia", "Fontaine", "Geo", "Claymore", 4.3, 5),
-    "Gaming": Character("Gaming", "Liyue", "Pyro", "Claymore", 4.4, 4),
-    "Xianyun": Character("Xianyun", "Liyue", "Anemo", "Catalyst", 4.4, 5),
-    "Chiori": Character("Chiori", "Inazuma", "Geo", "Sword", 4.5, 5),
-    "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5),
-    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5),
-    # "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5),
-    # "Sethos": Character("Sethos", "idk", "idk", "idk", 4.7, 4)
+    "Amber": Character("Amber", "Mondstadt", "Pyro", "Bow", 1.0, 4, 1),
+    "Barbara": Character("Barbara", "Mondstadt", "Hydro", "Catalyst", 1.0, 4, 2),
+    "Beidou": Character("Beidou", "Liyue", "Electro", "Claymore", 1.0, 4, 3),
+    "Bennett": Character("Bennett", "Mondstadt", "Pyro", "Sword", 1.0, 4, 4),
+    "Chongyun": Character("Chongyun", "Liyue", "Cryo", "Claymore", 1.0, 4, 5),
+    "Diluc": Character("Diluc", "Mondstadt", "Pyro", "Claymore", 1.0, 5, 6),
+    "Fischl": Character("Fischl", "Mondstadt", "Electro", "Bow", 1.0, 4, 7),
+    "Jean": Character("Jean", "Mondstadt", "Anemo", "Sword", 1.0, 5, 8),
+    "Kaeya": Character("Kaeya", "Mondstadt", "Cryo", "Sword", 1.0, 4, 9),
+    "Keqing": Character("Keqing", "Liyue", "Electro", "Sword", 1.0, 5, 10),
+    "Klee": Character("Klee", "Mondstadt", "Pyro", "Catalyst", 1.0, 5, 11),
+    "Lisa": Character("Lisa", "Mondstadt", "Electro", "Catalyst", 1.0, 4, 12),
+    "Mona": Character("Mona", "Mondstadt", "Hydro", "Catalyst", 1.0, 5, 13),
+    "Ningguang": Character("Ningguang", "Liyue", "Geo", "Catalyst", 1.0, 4, 14),
+    "Noelle": Character("Noelle", "Mondstadt", "Geo", "Claymore", 1.0, 4, 15),
+    "Qiqi": Character("Qiqi", "Liyue", "Cryo", "Sword", 1.0, 5, 16),
+    "Razor": Character("Razor", "Mondstadt", "Electro", "Claymore", 1.0, 4, 17),
+    "Sucrose": Character("Sucrose", "Mondstadt", "Anemo", "Catalyst", 1.0, 4, 18),
+    "Venti": Character("Venti", "Mondstadt", "Anemo", "Bow", 1.0, 5, 19),
+    "Xiangling": Character("Xiangling", "Liyue", "Pyro", "Polearm", 1.0, 4, 20),
+    "Xingqiu": Character("Xingqiu", "Liyue", "Hydro", "Sword", 1.0, 4, 21),
+    "Diona": Character("Diona", "Mondstadt", "Cryo", "Bow", 1.1, 4, 22),
+    "Tartaglia": Character("Tartaglia", "Snezhnaya", "Hydro", "Bow", 1.1, 5, 23),
+    "Xinyan": Character("Xinyan", "Liyue", "Pyro", "Claymore", 1.1, 4, 24),
+    "Zhongli": Character("Zhongli", "Liyue", "Geo", "Polearm", 1.1, 5, 25),
+    "Albedo": Character("Albedo", "Mondstadt", "Geo", "Sword", 1.2, 5, 26),
+    "Ganyu": Character("Ganyu", "Liyue", "Cryo", "Bow", 1.2, 5, 27),
+    "Hu Tao": Character("Hu Tao", "Liyue", "Pyro", "Polearm", 1.3, 5, 28),
+    "Xiao": Character("Xiao", "Liyue", "Anemo", "Polearm", 1.3, 5, 29),
+    "Rosaria": Character("Rosaria", "Mondstadt", "Cryo", "Polearm", 1.4, 4, 30),
+    "Eula": Character("Eula", "Mondstadt", "Cryo", "Claymore", 1.5, 5, 31),
+    "Yanfei": Character("Yanfei", "Liyue", "Pyro", "Catalyst", 1.5, 4, 32),
+    "Kaedehara Kazuha": Character("Kazuha", "Inazuma", "Anemo", "Sword", 1.6, 5, 33),
+    "Kamisato Ayaka": Character("Ayaka", "Inazuma", "Cryo", "Sword", 2.0, 5, 34),
+    "Sayu": Character("Sayu", "Inazuma", "Anemo", "Claymore", 2.0, 4, 35),
+    "Yoimiya": Character("Yoimiya", "Inazuma", "Pyro", "Bow", 2.0, 5, 36),
+    # "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 5, 37),
+    "Kujou Sara": Character("Kujou Sara", "Inazuma", "Electro", "Bow", 2.1, 4, 38),
+    "Raiden Shogun": Character("Raiden Shogun", "Inazuma", "Electro", "Polearm", 2.1, 5, 39),
+    "Sangonomiya Kokomi": Character("Kokomi", "Inazuma", "Hydro", "Catalyst", 2.1, 5, 40),
+    "Thoma": Character("Thoma", "Inazuma", "Pyro", "Polearm", 2.2, 4, 41),
+    "Arataki Itto": Character("Itto", "Inazuma", "Geo", "Claymore", 2.3, 5, 42),
+    "Gorou": Character("Gorou", "Inazuma", "Geo", "Bow", 2.3, 4, 43),
+    "Shenhe": Character("Shenhe", "Liyue", "Cryo", "Polearm", 2.4, 5, 44),
+    "Yun Jin": Character("Yun Jin", "Liyue", "Geo", "Polearm", 2.4, 4, 45),
+    "Yae Miko": Character("Yae Miko", "Inazuma", "Electro", "Catalyst", 2.5, 5, 46),
+    "Kamisato Ayato": Character("Ayato", "Inazuma", "Hydro", "Sword", 2.6, 5, 47),
+    "Kuki Shinobu": Character("Kuki Shinobu", "Inazuma", "Electro", "Sword", 2.7, 4, 48),
+    "Yelan": Character("Yelan", "Liyue", "Hydro", "Bow", 2.7, 5, 49),
+    "Shikanoin Heizou": Character("Heizou", "Inazuma", "Anemo", "Catalyst", 2.8, 4, 50),
+    "Collei": Character("Collei", "Sumeru", "Dendro", "Bow", 3.0, 4, 51),
+    "Dori": Character("Dori", "Sumeru", "Electro", "Claymore", 3.0, 4, 52),
+    "Tighnari": Character("Tighnari", "Sumeru", "Dendro", "Bow", 3.0, 5, 53),
+    "Candace": Character("Candace", "Sumeru", "Hydro", "Polearm", 3.1, 4, 54),
+    "Cyno": Character("Cyno", "Sumeru", "Electro", "Polearm", 3.1, 5, 55),
+    "Nilou": Character("Nilou", "Sumeru", "Hydro", "Sword", 3.1, 5, 56),
+    "Layla": Character("Layla", "Sumeru", "Cryo", "Sword", 3.2, 4, 57),
+    "Nahida": Character("Nahida", "Sumeru", "Dendro", "Catalyst", 3.2, 5, 58),
+    "Faruzan": Character("Faruzan", "Sumeru", "Anemo", "Bow", 3.3, 4, 59),
+    "Wanderer": Character("Wanderer", "Sumeru", "Anemo", "Catalyst", 3.3, 5, 60),
+    "Alhaitham": Character("Alhaitham", "Sumeru", "Dendro", "Sword", 3.4, 5, 61),
+    "Yaoyao": Character("Yaoyao", "Liyue", "Dendro", "Polearm", 3.4, 4, 62),
+    "Dehya": Character("Dehya", "Sumeru", "Pyro", "Claymore", 3.5, 5, 63),
+    "Mika": Character("Mika", "Mondstadt", "Cryo", "Polearm", 3.5, 4, 64),
+    "Baizhu": Character("Baizhu", "Liyue", "Dendro", "Catalyst", 3.6, 5, 65),
+    "Kaveh": Character("Kaveh", "Sumeru", "Dendro", "Claymore", 3.6, 4, 66),
+    "Kirara": Character("Kirara", "Inazuma", "Dendro", "Sword", 3.7, 4, 67),
+    "Freminet": Character("Freminet", "Fontaine", "Cryo", "Claymore", 4.0, 4, 68),
+    "Lynette": Character("Lynette", "Fontaine", "Anemo", "Sword", 4.0, 4, 69),
+    "Lyney": Character("Lyney", "Fontaine", "Pyro", "Bow", 4.0, 5, 70),
+    "Neuvillette": Character("Neuvillette", "Fontaine", "Hydro", "Catalyst", 4.1, 5, 71),
+    "Wriothesley": Character("Wriothesley", "Fontaine", "Cryo", "Catalyst", 4.1, 5, 72),
+    "Charlotte": Character("Charlotte", "Fontaine", "Cryo", "Catalyst", 4.2, 4, 73),
+    "Furina": Character("Furina", "Fontaine", "Hydro", "Sword", 4.2, 5, 74),
+    "Chevreuse": Character("Chevreuse", "Fontaine", "Pyro", "Polearm", 4.3, 4, 75),
+    "Navia": Character("Navia", "Fontaine", "Geo", "Claymore", 4.3, 5, 76),
+    "Gaming": Character("Gaming", "Liyue", "Pyro", "Claymore", 4.4, 4, 77),
+    "Xianyun": Character("Xianyun", "Liyue", "Anemo", "Catalyst", 4.4, 5, 78),
+    "Chiori": Character("Chiori", "Inazuma", "Geo", "Sword", 4.5, 5, 79),
+    "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5, 80),
+    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 81),
+    # "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 82),
+    # "Sethos": Character("Sethos", "idk", "idk", "idk", 4.7, 4, 83)
 }
+
+weapons_dict = {
+    "A Thousand Floating Dreams": Weapon("A Thousand Floating Dreams", "Catalyst", 5, 300),
+    "Akuoumaru": Weapon("Akuoumaru", "Claymore", 4, 301),
+    "Alley Hunter": Weapon("Alley Hunter", "Bow", 4, 302),
+    "Amos' Bow": Weapon("Amos' Bow", "Bow", 5, 303),
+    "Aqua Simulacra": Weapon("Aqua Simulacra", "Bow", 5, 304),
+    "Aquila Favonia": Weapon("Aquila Favonia", "Sword", 5, 305),
+
+    "Beacon of the Reed Sea": Weapon("Beacon of the Reed Sea", "Claymore", 5, 330),
+    "Black Tassel": Weapon("Black Tassel", "Polearm", 3, 331),
+    "Bloodtainted Greatsword": Weapon("Bloodtainted Greatsword", "Claymore", 3, 332),
+
+    "Calamity Queller": Weapon("Calamity Queller", "Polearm", 5, 360),
+    "Cashflow Supervision": Weapon("Cashflow Supervision", "Catalyst", 5, 361),
+    "Cool Steel": Weapon("Cool Steel", "Sword", 3, 362),
+    "Crane's Echoing Call": Weapon("Crane's Echoing Call", "Catalyst", 5, 363),
+    "Crimson Moon's Semblance": Weapon("Crimson Moon's Semblance", "Polearm", 5, 364),
+
+    "Debate Club": Weapon("Debate Club", "Claymore", 3, 390),
+    "Dragon's Bane": Weapon("Dragon's Bane", "Polearm", 4, 391),
+
+    "Elegy for the End": Weapon("Elegy for the End", "Bow", 5, 420),
+    "Emerald Orb": Weapon("Emerald Orb", "Catalyst", 3, 421),
+    "Engulfing Lightning": Weapon("Engulfing Lightning", "Polearm", 5, 422),
+    "Everlasting Moonglow": Weapon("Everlasting Moonglow", "Catalyst", 5, 423),
+    "Eye of Perception": Weapon("Eye of Perception", "Catalyst", 4, 424),
+
+    "Favonius Codex": Weapon("Favonius Codex", "Catalyst", 4, 450),
+    "Favonius Greatsword": Weapon("Favonius Greatsword", "Claymore", 4, 451),
+    "Favonius Lance": Weapon("Favonius Lance", "Polearm", 4, 452),
+    "Favonius Sword": Weapon("Favonius Sword", "Sword", 4, 453),
+    "Favonius Warbow": Weapon("Favonius Warbow", "Bow", 4, 454),
+    "Ferrous Shadow": Weapon("Ferrous Shadow", "Claymore", 3, 455),
+    "Freedom-Sworn": Weapon("Freedom-Sworn", "Sword", 5, 456),
+
+    "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
+    "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 511),
+    "Hunter's Path": Weapon("Hunter's Path", "Bow", 4, 512),
+
+    "Jadefall's Splendor": Weapon("Jadefall's Splendor", "Catalyst", 5, 570),
+
+    "Kagura's Verity": Weapon("Kagura's Verity", "Catalyst", 5, 600),
+    "Key of Khaj-Nisut": Weapon("Key of Khaj-Nisut", "Sword", 5, 601),
+
+    "Light of Foliar Incision": Weapon("Light of Foliar Incision", "Sword", 5, 630),
+    "Lion's Roar": Weapon("Lion's Roar", "Sword", 4, 631),
+    "Lithic Blade": Weapon("Lithic Blade", "Claymore", 4, 632),
+    "Lithic Spear": Weapon("Lithic Spear", "Polearm", 4, 633),
+    "Lost Prayer to the Sacred Winds": Weapon("Lost Prayer to the Sacred Winds", "Catalyst", 5, 634),
+
+    "Magic Guide": Weapon("Magic Guide", "Catalyst", 3, 660),
+    "Makhaira Aquamarine": Weapon("Makhaira Aquamarine", "Claymore", 4, 661),
+    "Memory of Dust": Weapon("Memory of Dust", "Catalyst", 5, 662),
+    "Mistsplitter Reforged": Weapon("Mistsplitter Reforged", "Sword", 5, 663),
+    "Mitternachts Waltz": Weapon("Mitternachts Waltz", "Bow", 4, 664),
+    "Mouun's Moon": Weapon("Mouun's Moon", "Bow", 4, 665),
+
+    "Polar Star": Weapon("Polar Star", "Bow", 5, 750),
+    "Portable Power Saw": Weapon("Portable Power Saw", "Claymore", 4, 751),
+    "Primordial Jade Cutter": Weapon("Primordial Jade Cutter", "Sword", 5, 752),
+    "Primordial Jade Winged-Spear": Weapon("Primordial Jade Winged-Spear", "Polearm", 5, 753),
+    "Prospector's Drill": Weapon("Prospector's Drill", "Polearm", 4, 754),
+
+    "Rainslasher": Weapon("Rainslasher", "Claymore", 4, 810),
+    "Range Gauge": Weapon("Range Gauge", "Bow", 3, 811),
+    "Raven Bow": Weapon("Raven Bow", "Bow", 3, 812),
+    "Redhorn Stonethresher": Weapon("Redhorn Stonethresher", "Claymore", 5, 813),
+    "Rust": Weapon("Rust", "Bow", 4, 814),
+
+    "Sacrificial Bow": Weapon("Sacrificial Bow", "Bow", 4, 840),
+    "Sacrificial Fragments": Weapon("Sacrificial Fragments", "Catalyst", 4, 841),
+    "Sacrificial Greatsword": Weapon("Sacrificial Greatsword", "Claymore", 4, 842),
+    "Sacrificial Sword": Weapon("Sacrificial Sword", "Sword", 4, 843),
+    "Sharpshooter's Oath": Weapon("Sharpshooter's Oath", "Bow", 3, 844),
+    "Skyrider Sword": Weapon("Skyrider Sword", "Sword", 3, 845),
+    "Skyward Atlas": Weapon("Skyward Atlas", "Catalyst", 5, 846),
+    "Skyward Blade": Weapon("Skyward Blade", "Sword", 5, 847),
+    "Skyward Harp": Weapon("Skyward Harp", "Bow", 5, 848),
+    "Skyward Pride": Weapon("Skyward Pride", "Claymore", 5, 849),
+    "Skyward Spine": Weapon("Skyward Spine", "Polearm", 5, 850),
+    "Slingshot": Weapon("Slingshot", "Bow", 3, 851),
+    "Song of Broken Pines": Weapon("Song of Broken Pines", "Polearm", 5, 852),
+    "Splendor of Tranquil Waters": Weapon("Splendor of Tranquil Waters", "Sword", 5, 853),
+    "Staff of Homa": Weapon("Staff of Homa", "Polearm", 5, 854),
+    "Staff of the Scarlet Sands": Weapon("Staff of the Scarlet Sands", "Polearm", 5, 855),
+    "Summit Shaper": Weapon("Summit Shaper", "Sword", 5, 856),
+
+    "The Alley Flash": Weapon("The Alley Flash", "Sword", 4, 870),
+    "The Bell": Weapon("The Bell", "Claymore", 4, 871),
+    "The Dockhand's Assistant": Weapon("The Dockhand's Assistant", "Sword", 4, 872),
+    "The First Great Magic": Weapon("The First Great Magic", "Bow", 5, 873),
+    "The Flute": Weapon("The Flute", "Sword", 4, 874),
+    "The Stringless": Weapon("The Stringless", "Bow", 4, 875),
+    "The Unforged": Weapon("The Unforged", "Claymore", 5, 876),
+    "The Widsith": Weapon("The Widsith", "Catalyst", 4, 877),
+    "Thrilling Tales of Dragon Slayers": Weapon("Thrilling Tales of Dragon Slayers", "Catalyst", 3, 878),
+    "Thundering Pulse": Weapon("Thundering Pulse", "Bow", 5, 879),
+    "Tome of the Eternal Flow": Weapon("Tome of the Eternal Flow", "Catalyst", 5, 880),
+    "Tulaytullah's Remembrance": Weapon("Tulaytullah's Remembrance", "Catalyst", 5, 881),
+
+    "Uraku Misugiri": Weapon("Uraku Misugiri", "Sword", 5, 900),
+
+    "Verdict": Weapon("Verdict", "Claymore", 5, 930),
+    "Vortex Vanquisher": Weapon("Vortex Vanquisher", "Polearm", 5, 587),
+
+    "Wandering Evenstar": Weapon("Wandering Evenstar", "Catalyst", 4, 960),
+    "Wavebreaker's Fin": Weapon("Wavebreaker's Fin", "Polearm", 4, 961),
+    "Wine and Song": Weapon("Wine and Song", "Catalyst", 4, 962),
+    "Wolf's Gravestone": Weapon("Wolf's Gravestone", "Claymore", 5, 963),
+
+    "Xiphos' Moonlight": Weapon("Xiphos' Moonlight", "Sword", 4, 990)
+}
+
+
+def number_to_item():
+    result = {}
+    for item in list(characters_dict.values()) + list(weapons_dict.values()):
+        result[item.num] = item
+    return result
+
+
+number_to_item_dict = number_to_item()
+
 
 amount_of_five_stars = sum([i.rarity == 5 for i in characters_dict.values()])
 amount_of_four_stars = len(characters_dict) - amount_of_five_stars
@@ -938,27 +1072,31 @@ weapon_banner_list = {
     "Crimson Moon's Semblance - The First Great Magic": ["Crimson Moon's Semblance", "The First Great Magic",  "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"]
 }
 
-
-def get_from_dict(name):
-    return characters_dict[name]
-
-
+# replace strings with objects in lists of banners
 for banner in character_banner_list:
     for i in range(len(character_banner_list[banner])):
-        character_banner_list[banner][i] = get_from_dict(character_banner_list[banner][i])
+        character_banner_list[banner][i] = characters_dict[character_banner_list[banner][i]]
 
+for banner in weapon_banner_list:
+    for i in range(len(weapon_banner_list[banner])):
+        weapon_banner_list[banner][i] = weapons_dict[weapon_banner_list[banner][i]]
+
+
+# replace strings with objects in lists of standard characters
 for chars in (standard_5_star_characters, standard_4_star_characters):
     for i in range(len(chars)):
-        chars[i] = get_from_dict(chars[i])
+        chars[i] = characters_dict[chars[i]]
 
+
+# replace strings with objects in lists of weapons
 for i in range(len(standard_5_star_weapons)):
-    standard_5_star_weapons[i] = Weapon(standard_5_star_weapons[i], 5)
+    standard_5_star_weapons[i] = weapons_dict[standard_5_star_weapons[i]]
 
 for i in range(len(standard_4_star_weapons)):
-    standard_4_star_weapons[i] = Weapon(standard_4_star_weapons[i], 4)
+    standard_4_star_weapons[i] = weapons_dict[standard_4_star_weapons[i]]
 
 for i in range(len(three_star_weapons)):
-    three_star_weapons[i] = Weapon(three_star_weapons[i], 3)
+    three_star_weapons[i] = weapons_dict[three_star_weapons[i]]
 
 
 standard_characters = standard_5_star_characters + standard_4_star_characters
@@ -1531,7 +1669,15 @@ if __name__ == '__main__':
                 break
 
     elif mode == 'banner':
-        # wish_history = load_history()
+
+        try:
+            wish_history = load_history()
+            print('Loading successful\n')
+        except json.decoder.JSONDecodeError:
+            print('Something off with wish history file. Clearing wish.txt')
+            wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
+            save_history_to_file(wish_history)
+            print('Wish history cleared\n')
 
         banner_types = ["character", "weapon", "standard", "chronicled"]
 
@@ -1540,12 +1686,11 @@ if __name__ == '__main__':
         pities = {'character': [0, 0, False, False],  # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
                   'weapon': [0, 0, 0, False, False],  # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
                   'standard': [0, 0, 0, 0],  # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
-                  'chronicled': [0, 0, 0, False]  # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+                  'chronicled': [0, 0, True, False]  # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
                   }
 
 
         def make_pull(banner_info, pity):
-            result = [0, 0]
             five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
             rarity = 5 if choices((True, False), (five_star_chance, 100-five_star_chance))[0] \
                 else 4 if choices((True, False), (four_star_chance, 100-four_star_chance))[0] else 3
@@ -1580,9 +1725,10 @@ if __name__ == '__main__':
                     pity[0] += 1
                     pity[1] += 1
 
-            elif banner_info[0] == 'weapon':
-                result = [0, 0]
+            # elif banner_info[0] == 'weapon':
+            #     result = [0, 0]
 
+            wish_history[banner_info[0]].insert(0, result[0].num)
             return result
 
         def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star)
@@ -1626,6 +1772,100 @@ if __name__ == '__main__':
                 show_full_inventory()
                 continue
 
+            if a == 'h':
+                if len(wish_history[banner_of_choice[0]]):
+                    num_of_pages = len(wish_history[banner_of_choice[0]])//25 + 1
+                    print('\n=========== WISH HISTORY ============\n')
+
+                    page = 1
+                    print_from = (page - 1) * 25
+                    print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
+                    cc = print_from
+                    print('-' * (35 + len(str(print_to))))
+                    for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+                        cc += 1
+                        print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
+                              number_to_item_dict[number].name)
+                    print('-' * (35 + len(str(print_to))))
+                    print(f'\n(Page {page}/{num_of_pages})\n')
+
+                    while True:
+                        cmd = input('Command: ')
+                        if 'n' in cmd:
+                            cmd = cmd.split()
+                            if len(cmd) == 1:
+                                amount = 1
+                            else:
+                                amount = min(int(cmd[1]), num_of_pages-page)
+
+                            if page < num_of_pages:
+                                print()
+
+                                page += amount
+                                print_from = (page-1)*25  # next update will have this as a function
+                                print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
+                                cc = print_from
+                                print('-' * (35+len(str(print_to))))
+                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+                                    cc += 1
+                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
+                                print('-' * (35+len(str(print_to))))
+                                print(f'\n(Page {page}/{num_of_pages})\n')
+
+                            else:
+                                print("You're already at the last page\n")
+
+                        elif 'p' in cmd:
+                            cmd = cmd.split()
+                            if len(cmd) == 1:
+                                amount = 1
+                            else:
+                                amount = min(int(cmd[1]), page-1)
+
+                            if page > 1:
+                                print()
+
+                                page -= amount
+                                print_from = (page-1)*25
+                                print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
+                                cc = print_from
+                                print('-' * (35+len(str(print_to))))
+                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+                                    cc += 1
+                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
+                                print('-' * (35+len(str(print_to))))
+                                print(f'\n(Page {page}/{num_of_pages})\n')
+
+                            else:
+                                print("You're already at the first page\n")
+
+                        elif cmd.isnumeric():
+
+                            page = int(cmd)
+                            if page > num_of_pages:
+                                print(f'Pages go up to {num_of_pages}, you provided {page}\n')
+                            else:
+                                print()
+
+                                print_from = (page-1)*25
+                                print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
+                                cc = print_from
+                                print('-' * (35+len(str(print_to))))
+                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+                                    cc += 1
+                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
+                                print('-' * (35+len(str(print_to))))
+                                print(f'\n(Page {page}/{num_of_pages})\n')
+
+
+                        elif cmd == 'e':
+                            print('No longer viewing wish history!\n')
+                            break
+
+                else:
+                    print('\nWish history empty!\n')
+                continue
+
             if a == 'clear':
                 pities['character'] = [0, 0, False, False]
                 pity_info = [0, 0, False, False]
@@ -1635,6 +1875,8 @@ if __name__ == '__main__':
                 five_count = 0
                 four_count = 0
                 unique_five_count = 0
+                wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
+                save_history_to_file(wish_history)
                 print('Done\n')
                 continue
 
@@ -1651,7 +1893,7 @@ if __name__ == '__main__':
                     break
                 count += a
                 for i in range(a):
-                    res, pity = make_pull(banner_of_choice, pity_info)
+                    res, p = make_pull(banner_of_choice, pity_info)
                     if isinstance(res, Character):
                         if res in constellations:
                             if constellations[res] < 6:
@@ -1672,10 +1914,13 @@ if __name__ == '__main__':
                         five_count += 1
 
                     if res.rarity >= verbose_threshold:
-                        print(f'( {print_map[res.rarity]} )   {res.name}{f", {pity} pity" if res.rarity >= 4 else ""}')
+                        print(f'( {print_map[res.rarity]} )   {res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
                     if pity_info[1] == 10:
                         print("10 PULLS WITHOUT A 4-STAR!")
-
+                # print(wish_history)
+                print()
+                print(f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
+                save_history_to_file(wish_history)
             elif a < 0:
                 print('what are u doing bro')
 
