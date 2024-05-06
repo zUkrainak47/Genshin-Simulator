@@ -3,4 +3,6 @@
 /plots/
 /inventory.txt
 /wish.txt
+/archive.txt
+/pity.txt
 *.pyc

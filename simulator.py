@@ -219,17 +219,46 @@ def load_history():
         return {"character": [], "weapon": [], "standard": [], "chronicled": []}
 
 
+def load_pity():
+    try:
+        with open('.\\pity.txt') as file:
+            data = file.read()
+        pity_and_other_info = json.loads(data)
+        return pity_and_other_info
+
+    except FileNotFoundError:
+        pities = {'character': [0, 0, False, False],
+                  'weapon': [0, 0, 0, False, False],
+                  'standard': [0, 0, 0, 0],
+                  'chronicled': [0, 0, True, False]}
+        with open('.\\pity.txt', 'w') as file:
+            file.write(f'[{pities},0,0,0,0]')
+        return [pities, 0, 0, 0, 0]
+
+
+def jsonKeys2int(x):
+    if isinstance(x, dict):
+        return {int(k):v for k,v in x.items()}
+    return x
+
+
 def load_archive():
     try:
         with open('.\\archive.txt') as file:
             data = file.read()
-        archive = json.loads(data)
-        return archive
+        archive = json.loads(data, object_hook=jsonKeys2int)
+
+        indexes_c = [number_to_item_dict[i] for i in archive[0]]
+        indexes_w = [number_to_item_dict[i] for i in archive[1]]
+        new_dict_c = dict(zip(indexes_c, list(archive[0].values())))
+        new_dict_w = dict(zip(indexes_w, list(archive[1].values())))
+
+        return new_dict_c, new_dict_w
 
     except FileNotFoundError:
         with open('.\\archive.txt', 'w') as file:
-            file.write('')
-        return [{}, {}]
+            file.write("[{}, {}]")
+        return {}, {}
 
 
 def create_artifact(from_where):
@@ -365,6 +394,23 @@ def save_inventory_to_file(artifacts):
 def save_history_to_file(data):
     with open(r'.\wish.txt', 'w') as f:
         f.write(json.dumps(data, separators=(',', ':')))
+
+
+def save_pity_to_file(pity, count, five_count, four_count, unique_five_count):
+    with open(r'.\pity.txt', 'w') as f:
+        f.write(json.dumps([pity, count, five_count, four_count, unique_five_count], separators=(',', ':')))
+
+
+def save_archive_to_file(cons, refs):
+
+    numeric_indexes_c = [character.num for character in cons]
+    numeric_indexes_w = [weapon.num for weapon in refs]
+    new_dict_c = dict(zip(numeric_indexes_c, list(cons.values())))
+    new_dict_w = dict(zip(numeric_indexes_w, list(refs.values())))
+    with open(r'.\archive.txt', 'w') as f:
+        data = (new_dict_c, new_dict_w)
+        f.write(json.dumps(data, separators=(',', ':')))
+
 
 
 def sort_inventory(artifacts):
@@ -1162,8 +1208,20 @@ def show_full_inventory():
     print()
 
 
+    print_from = (page - 1) * 25
+    print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
+    cc = print_from
+    print('-' * (35 + len(str(print_to))))
+    for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+        cc += 1
+        print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
+              number_to_item_dict[number].name)
+    print('-' * (35 + len(str(print_to))))
+    print(f'\n(Page {page}/{num_of_pages})\n')
+
+
 if __name__ == '__main__':
-    mode = 'artifact'
+    mode = 'banner'
     if mode == 'artifact':
         try:
             artifact_list = load_inventory()
@@ -1672,22 +1730,44 @@ if __name__ == '__main__':
 
         try:
             wish_history = load_history()
-            print('Loading successful\n')
+            print('Loaded wish history successfully')
         except json.decoder.JSONDecodeError:
             print('Something off with wish history file. Clearing wish.txt')
             wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
             save_history_to_file(wish_history)
-            print('Wish history cleared\n')
+            print('Wish history cleared')
+
+        try:
+            constellations, refinements = load_archive()
+            print('Loaded Archive successfully')
+        except json.decoder.JSONDecodeError:
+            print('Something off with archive file. Clearing archive.txt')
+            constellations, refinements = {}, {}
+            save_archive_to_file(constellations, refinements)
+            print('Archive cleared')
+
+        try:
+            pities, count, five_count, four_count, unique_five_count = load_pity()
+            print('Loaded additional information successfully')
+        except json.decoder.JSONDecodeError:
+            print('Something off with pity file. Clearing pity.txt')
+            pities = {'character': [0, 0, False, False],
+                      # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+                      'weapon': [0, 0, 0, False, False],
+                      # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
+                      'standard': [0, 0, 0, 0],
+                      # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
+                      'chronicled': [0, 0, True, False]
+                      # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+                      }
+            count, five_count, four_count, unique_five_count = 0, 0, 0, 0
+            save_pity_to_file(pities, count, five_count, four_count, unique_five_count)
+            print('Pity cleared')
 
         banner_types = ["character", "weapon", "standard", "chronicled"]
 
         # print([c in standard_characters for c in character_banner_list["venti-1"]])
 
-        pities = {'character': [0, 0, False, False],  # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
-                  'weapon': [0, 0, 0, False, False],  # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
-                  'standard': [0, 0, 0, 0],  # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
-                  'chronicled': [0, 0, True, False]  # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
-                  }
 
 
         def make_pull(banner_info, pity):
@@ -1729,6 +1809,7 @@ if __name__ == '__main__':
             #     result = [0, 0]
 
             wish_history[banner_info[0]].insert(0, result[0].num)
+            pities[banner_info[0]] = pity
             return result
 
         def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star)
@@ -1744,13 +1825,7 @@ if __name__ == '__main__':
 
         banner_of_choice = ('character', character_banner_list["arlecchino-1"])
 
-        pity_info = pities['character']
-        constellations = {}
-        refinements = {}
-        count = 0
-        five_count = 0
-        four_count = 0
-        unique_five_count = 0
+        pity_info = pities[banner_of_choice[0]]
 
         three_stars = '  * * *  '
         four_stars = ' * * * * '
@@ -1758,6 +1833,7 @@ if __name__ == '__main__':
         print_map = {3: three_stars, 4: four_stars, 5: five_stars}
         verbose_threshold = 3
 
+        print()
         while True:
             a = input('Command: ').lower().strip()
             if a == 'pity':
@@ -1778,19 +1854,10 @@ if __name__ == '__main__':
                     print('\n=========== WISH HISTORY ============\n')
 
                     page = 1
-                    print_from = (page - 1) * 25
-                    print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
-                    cc = print_from
-                    print('-' * (35 + len(str(print_to))))
-                    for number in wish_history[banner_of_choice[0]][print_from:print_to]:
-                        cc += 1
-                        print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
-                              number_to_item_dict[number].name)
-                    print('-' * (35 + len(str(print_to))))
-                    print(f'\n(Page {page}/{num_of_pages})\n')
+                    print_history_page()
 
                     while True:
-                        cmd = input('Command: ')
+                        cmd = input('History Command: ')
                         if 'n' in cmd:
                             cmd = cmd.split()
                             if len(cmd) == 1:
@@ -1802,15 +1869,7 @@ if __name__ == '__main__':
                                 print()
 
                                 page += amount
-                                print_from = (page-1)*25  # next update will have this as a function
-                                print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
-                                cc = print_from
-                                print('-' * (35+len(str(print_to))))
-                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
-                                    cc += 1
-                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
-                                print('-' * (35+len(str(print_to))))
-                                print(f'\n(Page {page}/{num_of_pages})\n')
+                                print_history_page()
 
                             else:
                                 print("You're already at the last page\n")
@@ -1826,34 +1885,32 @@ if __name__ == '__main__':
                                 print()
 
                                 page -= amount
-                                print_from = (page-1)*25
-                                print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
-                                cc = print_from
-                                print('-' * (35+len(str(print_to))))
-                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
-                                    cc += 1
-                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
-                                print('-' * (35+len(str(print_to))))
-                                print(f'\n(Page {page}/{num_of_pages})\n')
+                                print_history_page()
+
+                            elif page == 1:
+                                print("You're already at the first page\n")
 
                             else:
-                                print("You're already at the first page\n")
+                                print("You cant go back even further\n")
 
                         elif cmd.isnumeric():
 
-                            page = int(cmd)
-                            if page > num_of_pages:
-                                print(f'Pages go up to {num_of_pages}, you provided {page}\n')
+                            if int(cmd) > num_of_pages:
+                                print(f'Pages go up to {num_of_pages}, you provided {cmd}\n')
                             else:
+                                page = int(cmd)
                                 print()
 
                                 print_from = (page-1)*25
                                 print_to = min(page*25, len(wish_history[banner_of_choice[0]]))
                                 cc = print_from
                                 print('-' * (35+len(str(print_to))))
-                                for number in wish_history[banner_of_choice[0]][print_from:print_to]:
-                                    cc += 1
-                                    print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
+                                if page > 0:
+                                    for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+                                        cc += 1
+                                        print(f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}', number_to_item_dict[number].name)
+                                else:
+                                    print('          You found page 0')
                                 print('-' * (35+len(str(print_to))))
                                 print(f'\n(Page {page}/{num_of_pages})\n')
 
@@ -1863,20 +1920,32 @@ if __name__ == '__main__':
                             break
 
                 else:
-                    print('\nWish history empty!\n')
+                    print('Wish history empty!\n')
                 continue
 
             if a == 'clear':
-                pities['character'] = [0, 0, False, False]
-                pity_info = [0, 0, False, False]
-                constellations = {}
-                refinements = {}
+                constellations, refinements = {}, {}
+                save_archive_to_file(constellations, refinements)
+
+                pities = {'character': [0, 0, False, False],
+                          # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+                          'weapon': [0, 0, 0, False, False],
+                          # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
+                          'standard': [0, 0, 0, 0],
+                          # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
+                          'chronicled': [0, 0, True, False]
+                          # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+                          }
+                pity_info = pities[banner_of_choice[0]]
                 count = 0
                 five_count = 0
                 four_count = 0
                 unique_five_count = 0
+                save_pity_to_file(pities,count, five_count, four_count, unique_five_count)
+
                 wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
                 save_history_to_file(wish_history)
+
                 print('Done\n')
                 continue
 
@@ -1918,6 +1987,8 @@ if __name__ == '__main__':
                     if pity_info[1] == 10:
                         print("10 PULLS WITHOUT A 4-STAR!")
                 # print(wish_history)
+                save_archive_to_file(constellations, refinements)
+                save_pity_to_file(pities, count, five_count, four_count, unique_five_count)
                 print()
                 print(f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
                 save_history_to_file(wish_history)
