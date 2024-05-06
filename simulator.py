@@ -412,7 +412,6 @@ def save_archive_to_file(cons, refs):
         f.write(json.dumps(data, separators=(',', ':')))
 
 
-
 def sort_inventory(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
@@ -1771,7 +1770,6 @@ if __name__ == '__main__':
         # print([c in standard_characters for c in character_banner_list["venti-1"]])
 
 
-
         def make_pull(banner_info, pity):
             five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
             rarity = 5 if choices((True, False), (five_star_chance, 100-five_star_chance))[0] \
@@ -1916,7 +1914,6 @@ if __name__ == '__main__':
                                 print('-' * (35+len(str(print_to))))
                                 print(f'\n(Page {page}/{num_of_pages})\n')
 
-
                         elif cmd == 'e':
                             print('No longer viewing wish history!\n')
                             break
@@ -1943,7 +1940,7 @@ if __name__ == '__main__':
                 five_count = 0
                 four_count = 0
                 unique_five_count = 0
-                save_pity_to_file(pities,count, five_count, four_count, unique_five_count)
+                save_pity_to_file(pities, count, five_count, four_count, unique_five_count)
 
                 wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
                 save_history_to_file(wish_history)
@@ -2002,7 +1999,3 @@ if __name__ == '__main__':
             print()
 
     print('\nThank you for using Artifact Simulator')
-
-
-
-
