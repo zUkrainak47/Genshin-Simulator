@@ -11,9 +11,10 @@ import json
 import time
 from operator import itemgetter
 from random import choice, choices
-from colorama import Fore, Style
+from colorama import init, Fore, Style
 from pathlib import Path
 
+init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
 
 class Artifact:
@@ -2008,8 +2009,8 @@ if __name__ == '__main__':
 
                     if res.rarity >= verbose_threshold:
                         print(print_map[res.rarity] + f'{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
-                    if pity_info[1] == 10:
-                        print(Style.RESET_ALL + "10 PULLS WITHOUT A 4-STAR!")
+                    if pity_info[1] >= 10:
+                        print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
                 # print(wish_history)
                 save_archive_to_file(constellations, refinements)
                 save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count)
