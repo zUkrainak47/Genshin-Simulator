@@ -1233,7 +1233,7 @@ def print_history_page():
 
 
 if __name__ == '__main__':
-    mode = 'banner'
+    mode = 'artifact'
     if mode == 'artifact':
         try:
             artifact_list = load_inventory()
