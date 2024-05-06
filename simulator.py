@@ -1224,12 +1224,12 @@ def print_history_page():
     print_from = (page - 1) * 25
     print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
     cc = print_from
-    print(Style.RESET_ALL + '-' * (35 + len(str(print_to))))
+    print(Style.RESET_ALL + '-' * 51)
     for number in wish_history[banner_of_choice[0]][print_from:print_to]:
         cc += 1
         print(print_map[number_to_item_dict[number].rarity] + f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
               number_to_item_dict[number].name)
-    print(Style.RESET_ALL + '-' * (35 + len(str(print_to))))
+    print(Style.RESET_ALL + '-' * 51)
     print(f'\n(Page {page}/{num_of_pages})\n')
 
 
@@ -1805,7 +1805,7 @@ if __name__ == '__main__':
                 featured_four_stars = banner_info[1][1:]
 
                 if rarity == 5:
-                    # print(Style.RESET_ALL + five_star_chance)
+                    # print(f'{Style.RESET_ALL}{five_star_chance}')
                     if pity[-2]:
                         result = [featured_five_star, pity[0] + 1]
                         pity[-2] = False
@@ -1817,6 +1817,7 @@ if __name__ == '__main__':
                     pity[1] += 1
 
                 elif rarity == 4:
+                    # print(f'{Style.RESET_ALL}{four_star_chance}')
                     if pity[-1]:
                         result = [choice(featured_four_stars), pity[1] + 1]
                         pity[-1] = False
@@ -1842,11 +1843,12 @@ if __name__ == '__main__':
         def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star)
             if banner_type != 'weapon':        # + 1 here to check the number of the next pull you're making
                 five_star_chance = max(0, pity[0] + 1 - 73) * 6 + 0.6  # every pull above 73 adds 6%
-                four_star_chance = 100 if pity[1] + 1 >= 10 else 5.1  # 10+ pity = 4 star in case of no 5 star
+                four_star_chance = 100 if pity[1] + 1 >= 10 else (56.1 if pity[1] + 1 == 9 else 5.1)
+                # 10+ pity = 4 star in case of no 5 star, 9 pity = 56.1% chance, <9 = 5.6%
 
             else:
                 five_star_chance = max(0, pity[0] + 1 - 62) * 7 + 0.7
-                four_star_chance = 100 if pity[1] + 1 >= 10 else 6
+                four_star_chance = 100 if pity[1] + 1 >= 10 else (66 if pity[1] + 1 == 9 else 6)
 
             return five_star_chance, four_star_chance
 
@@ -1928,9 +1930,9 @@ if __name__ == '__main__':
                                 page = int(cmd)
                                 print()
                                 if page == 0:
-                                    print(Style.RESET_ALL + '-' * 35)
-                                    print(Fore.YELLOW + '          You found page 0')
-                                    print(Style.RESET_ALL + '-' * 35)
+                                    print(Style.RESET_ALL + '-' * 51)
+                                    print(Fore.YELLOW + '                 You found page 0')
+                                    print(Style.RESET_ALL + '-' * 51)
                                     print(f"\n(Page 0/{num_of_pages})\n")
                                 else:
                                     print_history_page()
@@ -1975,12 +1977,19 @@ if __name__ == '__main__':
             except ValueError:
                 print('Try "help"\n')
                 continue
+
             if 0 <= a <= 1000000:
                 print()
                 if a == 0:
                     print_pity(count, pity_info, five_count, four_count)
                     show_full_inventory()
                     break
+                verbose_threshold = 6 - (a <= 100000) - (a <= 10000) - (a <= 1000)
+                if a > 100000:
+                    print('Are you sure? This would take a while.\n')
+                    sure = input('Type "CONFIRM" if you want to proceed: ')
+                    if sure != "CONFIRM":
+                        continue
                 count += a
                 for i in range(a):
                     res, p = make_pull(banner_of_choice, pity_info)
@@ -2021,7 +2030,7 @@ if __name__ == '__main__':
                 print('what are u doing bro')
 
             else:
-                print('alright lets slow down no more than 1 million wishes at once')
+                print('I\'m not letting you do that. max 1 million at a time, that takes a while already')
             print()
 
     print('\nThank you for using Artifact Simulator')
