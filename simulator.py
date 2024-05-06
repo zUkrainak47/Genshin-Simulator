@@ -1771,7 +1771,7 @@ if __name__ == '__main__':
         if history_ok:
             try:
                 constellations, refinements = load_archive()
-                print('Loaded Archive successfully!')
+                print('Loaded archive successfully!')
                 archive_ok = True
             except:
                 print('Something off with archive file. Clearing everything...')
