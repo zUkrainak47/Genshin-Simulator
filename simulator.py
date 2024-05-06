@@ -1208,6 +1208,8 @@ def show_full_inventory():
     print()
 
 
+def print_history_page():
+    global print_from, print_to, cc, number
     print_from = (page - 1) * 25
     print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
     cc = print_from
@@ -1221,7 +1223,7 @@ def show_full_inventory():
 
 
 if __name__ == '__main__':
-    mode = 'banner'
+    mode = 'artifact'
     if mode == 'artifact':
         try:
             artifact_list = load_inventory()
