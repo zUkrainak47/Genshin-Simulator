@@ -2,7 +2,5 @@
 /.idea/
 /plots/
 /inventory.txt
-/wish.txt
-/archive.txt
-/pity.txt
+/banner_info
 *.pyc
