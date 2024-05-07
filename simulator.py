@@ -1985,7 +1985,7 @@ if __name__ == '__main__':
                     print_pity(count, pity_info, five_count, four_count)
                     show_full_inventory()
                     break
-                verbose_threshold = 6 - (a <= 100000) - (a <= 10000) - (a <= 1000)
+                verbose_threshold = 6 - (a <= 1000000) - (a <= 100000) - (a <= 10000)
                 if a > 1000000:  # if number bigger than 1 million
                     print(f'Are you sure? Doing {a} pulls would take around {round(43 * a/10000000)} seconds.\n')
                     sure = input('Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
