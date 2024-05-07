@@ -1226,7 +1226,7 @@ def print_history_page():  # no idea how this works anymore
     print(Style.RESET_ALL + '-' * 51)
     for number in wish_history[banner_of_choice[0]][print_from:print_to:-1]:
         cc += 1
-        print(print_map[number_to_item_dict[number].rarity] + f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
+        print(print_map[number_to_item_dict[number].rarity] + f'{cc}.{" " if len(str(cc)) < len(str(-print_to-1)) else ""}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '-' * 51)
     print(f'\n(Page {page}/{num_of_pages})\n')
