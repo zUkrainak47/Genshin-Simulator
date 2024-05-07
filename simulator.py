@@ -917,7 +917,7 @@ amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 
 
 # thank you chatgpt for helping me convert paimon moe to this
-standard_5_star_characters = ["Jean", "Qiqi", "Tighnari", "Dehya", "Mona", "Diluc", "Keqing"]
+standard_5_star_characters = ["Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya"]
 standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",
                            "Skyward Harp", "Skyward Pride", "Skyward Atlas", "Aquila Favonia",
                            "Wolf's Gravestone", "Amos' Bow", "Lost Prayer to the Sacred Winds"]
@@ -957,108 +957,108 @@ amount_of_four_star_weapons = len(weapons_dict) - amount_of_five_star_weapons - 
 
 
 character_banner_list = {  # thank you @shilva on discord for typing this out BY HAND WHAT THE HELL DID U DO BRO
-    "venti-1": ["Venti", "Barbara", "Fischl", "Xiangling"],
-    "klee-1": ["Klee", "Xingqiu", "Noelle", "Sucrose"],
-    "tartaglia-1": ["Tartaglia", "Diona", "Beidou", "Ningguang"],
-    "zhongli-1": ["Zhongli", "Xinyan", "Razor", "Chongyun"],
-    "albedo-1": ["Albedo", "Fischl", "Sucrose", "Bennett"],
-    "ganyu-1": ["Ganyu", "Xiangling", "Xingqiu", "Noelle"],
-    "xiao-1": ["Xiao", "Diona", "Beidou", "Xinyan"],
-    "keqing-1": ["Keqing", "Ningguang", "Bennett", "Barbara"],
-    "tao-1": ["Hu Tao", "Xingqiu", "Xiangling", "Chongyun"],
-    "venti-2": ["Venti", "Sucrose", "Razor", "Noelle"],
-    "tartaglia-2": ["Tartaglia", "Rosaria", "Barbara", "Fischl"],
-    "zhongli-2": ["Zhongli", "Yanfei", "Noelle", "Diona"],
-    "eula-1": ["Eula", "Xinyan", "Xingqiu", "Beidou"],
-    "klee-2": ["Klee", "Barbara", "Sucrose", "Fischl"],
-    "kazuha-1": ["Kaedehara Kazuha", "Rosaria", "Bennett", "Razor"],
-    "ayaka-1": ["Kamisato Ayaka", "Ningguang", "Chongyun", "Yanfei"],
-    "yoimiya-1": ["Yoimiya", "Sayu", "Diona", "Xinyan"],
-    "shogun-1": ["Raiden Shogun", "Kujou Sara", "Xiangling", "Sucrose"],
-    "kokomi-1": ["Sangonomiya Kokomi", "Rosaria", "Beidou", "Xingqiu"],
-    "tartaglia-3": ["Tartaglia", "Ningguang", "Chongyun", "Yanfei"],
-    "tao-2": ["Hu Tao", "Thoma", "Diona", "Sayu"],
-    "albedo-2": ["Albedo", "Bennett", "Noelle", "Rosaria"],
-    "eula-2": ["Eula", "Bennett", "Noelle", "Rosaria"],
-    "itto-1": ["Arataki Itto", "Gorou", "Barbara", "Xiangling"],
-    "shenhe-1": ["Shenhe", "Yun Jin", "Ningguang", "Chongyun"],
-    "xiao-2": ["Xiao", "Yun Jin", "Ningguang", "Chongyun"],
-    "zhongli-3": ["Zhongli", "Xingqiu", "Beidou", "Yanfei"],
-    "ganyu-2": ["Ganyu", "Xingqiu", "Beidou", "Yanfei"],
-    "miko-1": ["Yae Miko", "Fischl", "Diona", "Thoma"],
-    "shogun-2": ["Raiden Shogun", "Bennett", "Xinyan", "Kujou Sara"],
-    "kokomi-2": ["Sangonomiya Kokomi", "Bennett", "Xinyan", "Kujou Sara"],
-    "ayato-1": ["Kamisato Ayato", "Sucrose", "Xiangling", "Yun Jin"],
-    "venti-3": ["Venti", "Sucrose", "Xiangling", "Yun Jin"],
-    "ayaka-2": ["Kamisato Ayaka", "Razor", "Rosaria", "Sayu"],
-    "yelan-1": ["Yelan", "Barbara", "Yanfei", "Noelle"],
-    "xiao-3": ["Xiao", "Barbara", "Yanfei", "Noelle"],
-    "itto-2": ["Arataki Itto", "Kuki Shinobu", "Chongyun", "Gorou"],
-    "kazuha-2": ["Kaedehara Kazuha", "Shikanoin Heizou", "Ningguang", "Thoma"],
-    "klee-3": ["Klee", "Shikanoin Heizou", "Ningguang", "Thoma"],
-    "yoimiya-2": ["Yoimiya", "Bennett", "Xinyan", "Yun Jin"],
-    "tighnari-1": ["Tighnari", "Collei", "Diona", "Fischl"],
-    "zhongli-4": ["Zhongli", "Collei", "Diona", "Fischl"],
-    "ganyu-3": ["Ganyu", "Dori", "Sucrose", "Xingqiu"],
-    "kokomi-3": ["Sangonomiya Kokomi", "Dori", "Sucrose", "Xingqiu"],
-    "cyno-1": ["Cyno", "Candace", "Kuki Shinobu", "Sayu"],
-    "venti-4": ["Venti", "Candace", "Kuki Shinobu", "Sayu"],
-    "nilou-1": ["Nilou", "Barbara", "Beidou", "Xiangling"],
-    "albedo-3": ["Albedo", "Barbara", "Beidou", "Xiangling"],
-    "nahida-1": ["Nahida", "Razor", "Noelle", "Bennett"],
-    "yoimiya-3": ["Yoimiya", "Razor", "Noelle", "Bennett"],
-    "miko-2": ["Yae Miko", "Layla", "Thoma", "Shikanoin Heizou"],
-    "tartaglia-4": ["Tartaglia", "Layla", "Thoma", "Shikanoin Heizou"],
-    "wanderer-1": ["Wanderer", "Faruzan", "Gorou", "Yanfei"],
-    "itto-3": ["Arataki Itto", "Faruzan", "Gorou", "Yanfei"],
-    "shogun-3": ["Raiden Shogun", "Rosaria", "Sayu", "Kujou Sara"],
-    "ayato-2": ["Kamisato Ayato", "Rosaria", "Sayu", "Kujou Sara"],
-    "alhaitham-1": ["Alhaitham", "Yaoyao", "Yun Jin", "Xinyan"],
-    "xiao-4": ["Xiao", "Yaoyao", "Yun Jin", "Xinyan"],
-    "tao-3": ["Hu Tao", "Xingqiu", "Ningguang", "Beidou"],
-    "yelan-2": ["Yelan", "Xingqiu", "Ningguang", "Beidou"],
-    "dehya-1": ["Dehya", "Bennett", "Barbara", "Collei"],
-    "cyno-2": ["Cyno", "Bennett", "Barbara", "Collei"],
-    "shenhe-2": ["Shenhe", "Diona", "Sucrose", "Mika"],
-    "ayaka-3": ["Kamisato Ayaka", "Diona", "Sucrose", "Mika"],
-    "nahida-2": ["Nahida", "Kuki Shinobu", "Dori", "Layla"],
-    "nilou-2": ["Nilou", "Kuki Shinobu", "Dori", "Layla"],
-    "baizhu-1": ["Baizhu", "Kaveh", "Candace", "Fischl"],
-    "ganyu-4": ["Ganyu", "Kaveh", "Candace", "Fischl"],
-    "yoimiya-4": ["Yoimiya", "Kirara", "Yun Jin", "Chongyun"],
-    "miko-3": ["Yae Miko", "Kirara", "Yun Jin", "Chongyun"],
-    "alhaitham-2": ["Alhaitham", "Shikanoin Heizou", "Xiangling", "Yaoyao"],
-    "kazuha-3": ["Kaedehara Kazuha", "Shikanoin Heizou", "Xiangling", "Yaoyao"],
-    "eula-3": ["Eula", "Mika", "Razor", "Thoma"],
-    "klee-4": ["Klee", "Mika", "Razor", "Thoma"],
-    "kokomi-4": ["Sangonomiya Kokomi", "Faruzan", "Rosaria", "Yanfei"],
-    "wanderer-2": ["Wanderer", "Faruzan", "Rosaria", "Yanfei"],
-    "lyney-1": ["Lyney", "Lynette", "Bennett", "Barbara"],
-    "yelan-3": ["Yelan", "Lynette", "Bennett", "Barbara"],
-    "zhongli-5": ["Zhongli", "Freminet", "Sayu", "Noelle"],
-    "tartaglia-5": ["Tartaglia", "Freminet", "Sayu", "Noelle"],
-    "neuvillette-1": ["Neuvillette", "Fischl", "Xingqiu", "Diona"],
-    "tao-4": ["Hu Tao", "Fischl", "Xingqiu", "Diona"],
-    "wriothesley-1": ["Wriothesley", "Chongyun", "Thoma", "Dori"],
-    "venti-5": ["Venti", "Chongyun", "Thoma", "Dori"],
-    "furina-1": ["Furina", "Charlotte", "Collei", "Beidou"],
-    "baizhu-2": ["Baizhu", "Charlotte", "Collei", "Beidou"],
-    "cyno-3": ["Cyno", "Kirara", "Kuki Shinobu", "Xiangling"],
-    "ayato-3": ["Kamisato Ayato", "Kirara", "Kuki Shinobu", "Xiangling"],
-    "navia-1": ["Navia", "Sucrose", "Rosaria", "Candace"],
-    "ayaka-4": ["Kamisato Ayaka", "Sucrose", "Rosaria", "Candace"],
-    "shogun-4": ["Raiden Shogun", "Chevreuse", "Kujou Sara", "Bennett"],
-    "yoimiya-5": ["Yoimiya", "Chevreuse", "Kujou Sara", "Bennett"],
-    "xianyun-1": ["Xianyun", "Gaming", "Faruzan", "Noelle"],
-    "nahida-3": ["Nahida", "Gaming", "Faruzan", "Noelle"],
-    "xiao-5": ["Xiao", "Yaoyao", "Xinyan", "Ningguang"],
-    "miko-4": ["Yae Miko", "Yaoyao", "Xinyan", "Ningguang"],
-    "chiori-1": ["Chiori", "Gorou", "Yun Jin", "Dori"],
-    "itto-4": ["Arataki Itto", "Gorou", "Yun Jin", "Dori"],
-    "neuvillette-2": ["Neuvillette", "Barbara", "Xingqiu", "Yanfei"],
-    "kazuha-4": ["Kaedehara Kazuha", "Barbara", "Xingqiu", "Yanfei"],
-    "arlecchino-1": ["Arlecchino", "Freminet", "Lynette", "Xiangling"],
-    "lyney-2": ["Lyney", "Freminet", "Lynette", "Xiangling"]
+    "venti-1": (["Venti", "Barbara", "Fischl", "Xiangling"], 1.0),
+    "klee-1": (["Klee", "Xingqiu", "Noelle", "Sucrose"], 1.0),
+    "tartaglia-1": (["Tartaglia", "Diona", "Beidou", "Ningguang"], 1.1),
+    "zhongli-1": (["Zhongli", "Xinyan", "Razor", "Chongyun"], 1.1),
+    "albedo-1": (["Albedo", "Fischl", "Sucrose", "Bennett"], 1.2),
+    "ganyu-1": (["Ganyu", "Xiangling", "Xingqiu", "Noelle"], 1.2),
+    "xiao-1": (["Xiao", "Diona", "Beidou", "Xinyan"], 1.3),
+    "keqing-1": (["Keqing", "Ningguang", "Bennett", "Barbara"], 1.3),
+    "tao-1": (["Hu Tao", "Xingqiu", "Xiangling", "Chongyun"], 1.3),
+    "venti-2": (["Venti", "Sucrose", "Razor", "Noelle"], 1.4),
+    "tartaglia-2": (["Tartaglia", "Rosaria", "Barbara", "Fischl"], 1.4),
+    "zhongli-2": (["Zhongli", "Yanfei", "Noelle", "Diona"], 1.5),
+    "eula-1": (["Eula", "Xinyan", "Xingqiu", "Beidou"], 1.5),
+    "klee-2": (["Klee", "Barbara", "Sucrose", "Fischl"], 1.6),
+    "kazuha-1": (["Kaedehara Kazuha", "Rosaria", "Bennett", "Razor"], 1.6),
+    "ayaka-1": (["Kamisato Ayaka", "Ningguang", "Chongyun", "Yanfei"], 2.0),
+    "yoimiya-1": (["Yoimiya", "Sayu", "Diona", "Xinyan"], 2.0),
+    "shogun-1": (["Raiden Shogun", "Kujou Sara", "Xiangling", "Sucrose"], 2.1),
+    "kokomi-1": (["Sangonomiya Kokomi", "Rosaria", "Beidou", "Xingqiu"], 2.1),
+    "tartaglia-3": (["Tartaglia", "Ningguang", "Chongyun", "Yanfei"], 2.2),
+    "tao-2": (["Hu Tao", "Thoma", "Diona", "Sayu"], 2.2),
+    "albedo-2": (["Albedo", "Bennett", "Noelle", "Rosaria"], 2.3),
+    "eula-2": (["Eula", "Bennett", "Noelle", "Rosaria"], 2.3),
+    "itto-1": (["Arataki Itto", "Gorou", "Barbara", "Xiangling"], 2.3),
+    "shenhe-1": (["Shenhe", "Yun Jin", "Ningguang", "Chongyun"], 2.4),
+    "xiao-2": (["Xiao", "Yun Jin", "Ningguang", "Chongyun"], 2.4),
+    "zhongli-3": (["Zhongli", "Xingqiu", "Beidou", "Yanfei"], 2.4),
+    "ganyu-2": (["Ganyu", "Xingqiu", "Beidou", "Yanfei"], 2.4),
+    "miko-1": (["Yae Miko", "Fischl", "Diona", "Thoma"], 2.5),
+    "shogun-2": (["Raiden Shogun", "Bennett", "Xinyan", "Kujou Sara"], 2.5),
+    "kokomi-2": (["Sangonomiya Kokomi", "Bennett", "Xinyan", "Kujou Sara"], 2.5),
+    "ayato-1": (["Kamisato Ayato", "Sucrose", "Xiangling", "Yun Jin"], 2.6),
+    "venti-3": (["Venti", "Sucrose", "Xiangling", "Yun Jin"], 2.6),
+    "ayaka-2": (["Kamisato Ayaka", "Razor", "Rosaria", "Sayu"], 2.6),
+    "yelan-1": (["Yelan", "Barbara", "Yanfei", "Noelle"], 2.7),
+    "xiao-3": (["Xiao", "Barbara", "Yanfei", "Noelle"], 2.7),
+    "itto-2": (["Arataki Itto", "Kuki Shinobu", "Chongyun", "Gorou"], 2.7),
+    "kazuha-2": (["Kaedehara Kazuha", "Shikanoin Heizou", "Ningguang", "Thoma"], 2.8),
+    "klee-3": (["Klee", "Shikanoin Heizou", "Ningguang", "Thoma"], 2.8),
+    "yoimiya-2": (["Yoimiya", "Bennett", "Xinyan", "Yun Jin"], 2.8),
+    "tighnari-1": (["Tighnari", "Collei", "Diona", "Fischl"], 3.0),
+    "zhongli-4": (["Zhongli", "Collei", "Diona", "Fischl"], 3.0),
+    "ganyu-3": (["Ganyu", "Dori", "Sucrose", "Xingqiu"], 3.0),
+    "kokomi-3": (["Sangonomiya Kokomi", "Dori", "Sucrose", "Xingqiu"], 3.0),
+    "cyno-1": (["Cyno", "Candace", "Kuki Shinobu", "Sayu"], 3.1),
+    "venti-4": (["Venti", "Candace", "Kuki Shinobu", "Sayu"], 3.1),
+    "nilou-1": (["Nilou", "Barbara", "Beidou", "Xiangling"], 3.1),
+    "albedo-3": (["Albedo", "Barbara", "Beidou", "Xiangling"], 3.1),
+    "nahida-1": (["Nahida", "Razor", "Noelle", "Bennett"], 3.2),
+    "yoimiya-3": (["Yoimiya", "Razor", "Noelle", "Bennett"], 3.2),
+    "miko-2": (["Yae Miko", "Layla", "Thoma", "Shikanoin Heizou"], 3.2),
+    "tartaglia-4": (["Tartaglia", "Layla", "Thoma", "Shikanoin Heizou"], 3.2),
+    "wanderer-1": (["Wanderer", "Faruzan", "Gorou", "Yanfei"], 3.3),
+    "itto-3": (["Arataki Itto", "Faruzan", "Gorou", "Yanfei"], 3.3),
+    "shogun-3": (["Raiden Shogun", "Rosaria", "Sayu", "Kujou Sara"], 3.3),
+    "ayato-2": (["Kamisato Ayato", "Rosaria", "Sayu", "Kujou Sara"], 3.3),
+    "alhaitham-1": (["Alhaitham", "Yaoyao", "Yun Jin", "Xinyan"], 3.4),
+    "xiao-4": (["Xiao", "Yaoyao", "Yun Jin", "Xinyan"], 3.4),
+    "tao-3": (["Hu Tao", "Xingqiu", "Ningguang", "Beidou"], 3.4),
+    "yelan-2": (["Yelan", "Xingqiu", "Ningguang", "Beidou"], 3.4),
+    "dehya-1": (["Dehya", "Bennett", "Barbara", "Collei"], 3.5),
+    "cyno-2": (["Cyno", "Bennett", "Barbara", "Collei"], 3.5),
+    "shenhe-2": (["Shenhe", "Diona", "Sucrose", "Mika"], 3.5),
+    "ayaka-3": (["Kamisato Ayaka", "Diona", "Sucrose", "Mika"], 3.5),
+    "nahida-2": (["Nahida", "Kuki Shinobu", "Dori", "Layla"], 3.6),
+    "nilou-2": (["Nilou", "Kuki Shinobu", "Dori", "Layla"], 3.6),
+    "baizhu-1": (["Baizhu", "Kaveh", "Candace", "Fischl"], 3.6),
+    "ganyu-4": (["Ganyu", "Kaveh", "Candace", "Fischl"], 3.6),
+    "yoimiya-4": (["Yoimiya", "Kirara", "Yun Jin", "Chongyun"], 3.7),
+    "miko-3": (["Yae Miko", "Kirara", "Yun Jin", "Chongyun"], 3.7),
+    "alhaitham-2": (["Alhaitham", "Shikanoin Heizou", "Xiangling", "Yaoyao"], 3.7),
+    "kazuha-3": (["Kaedehara Kazuha", "Shikanoin Heizou", "Xiangling", "Yaoyao"], 3.7),
+    "eula-3": (["Eula", "Mika", "Razor", "Thoma"], 3.8),
+    "klee-4": (["Klee", "Mika", "Razor", "Thoma"], 3.8),
+    "kokomi-4": (["Sangonomiya Kokomi", "Faruzan", "Rosaria", "Yanfei"], 3.8),
+    "wanderer-2": (["Wanderer", "Faruzan", "Rosaria", "Yanfei"], 3.8),
+    "lyney-1": (["Lyney", "Lynette", "Bennett", "Barbara"], 4.0),
+    "yelan-3": (["Yelan", "Lynette", "Bennett", "Barbara"], 4.0),
+    "zhongli-5": (["Zhongli", "Freminet", "Sayu", "Noelle"], 4.0),
+    "tartaglia-5": (["Tartaglia", "Freminet", "Sayu", "Noelle"], 4.0),
+    "neuvillette-1": (["Neuvillette", "Fischl", "Xingqiu", "Diona"], 4.1),
+    "tao-4": (["Hu Tao", "Fischl", "Xingqiu", "Diona"], 4.1),
+    "wriothesley-1": (["Wriothesley", "Chongyun", "Thoma", "Dori"], 4.1),
+    "venti-5": (["Venti", "Chongyun", "Thoma", "Dori"], 4.1),
+    "furina-1": (["Furina", "Charlotte", "Collei", "Beidou"], 4.2),
+    "baizhu-2": (["Baizhu", "Charlotte", "Collei", "Beidou"], 4.2),
+    "cyno-3": (["Cyno", "Kirara", "Kuki Shinobu", "Xiangling"], 4.2),
+    "ayato-3": (["Kamisato Ayato", "Kirara", "Kuki Shinobu", "Xiangling"], 4.2),
+    "navia-1": (["Navia", "Sucrose", "Rosaria", "Candace"], 4.3),
+    "ayaka-4": (["Kamisato Ayaka", "Sucrose", "Rosaria", "Candace"], 4.3),
+    "shogun-4": (["Raiden Shogun", "Chevreuse", "Kujou Sara", "Bennett"], 4.3),
+    "yoimiya-5": (["Yoimiya", "Chevreuse", "Kujou Sara", "Bennett"], 4.3),
+    "xianyun-1": (["Xianyun", "Gaming", "Faruzan", "Noelle"], 4.4),
+    "nahida-3": (["Nahida", "Gaming", "Faruzan", "Noelle"], 4.4),
+    "xiao-5": (["Xiao", "Yaoyao", "Xinyan", "Ningguang"], 4.4),
+    "miko-4": (["Yae Miko", "Yaoyao", "Xinyan", "Ningguang"], 4.4),
+    "chiori-1": (["Chiori", "Gorou", "Yun Jin", "Dori"], 4.5),
+    "itto-4": (["Arataki Itto", "Gorou", "Yun Jin", "Dori"], 4.5),
+    "neuvillette-2": (["Neuvillette", "Barbara", "Xingqiu", "Yanfei"], 4.5),
+    "kazuha-4": (["Kaedehara Kazuha", "Barbara", "Xingqiu", "Yanfei"], 4.5),
+    "arlecchino-1": (["Arlecchino", "Freminet", "Lynette", "Xiangling"], 4.6),
+    "lyney-2": (["Lyney", "Freminet", "Lynette", "Xiangling"], 4.6)
 }
 
 weapon_banner_list = {
@@ -1129,8 +1129,8 @@ weapon_banner_list = {
 
 # replace strings with objects in lists of banners
 for banner in character_banner_list:
-    for i in range(len(character_banner_list[banner])):
-        character_banner_list[banner][i] = characters_dict[character_banner_list[banner][i]]
+    for i in range(len(character_banner_list[banner][0])):
+        character_banner_list[banner][0][i] = characters_dict[character_banner_list[banner][0][i]]
 
 for banner in weapon_banner_list:
     for i in range(len(weapon_banner_list[banner])):
@@ -1141,7 +1141,6 @@ for banner in weapon_banner_list:
 for chars in (standard_5_star_characters, standard_4_star_characters):
     for i in range(len(chars)):
         chars[i] = characters_dict[chars[i]]
-
 
 # replace strings with objects in lists of weapons
 for i in range(len(standard_5_star_weapons)):
@@ -1154,8 +1153,8 @@ for i in range(len(three_star_weapons)):
     three_star_weapons[i] = weapons_dict[three_star_weapons[i]]
 
 
-standard_characters = standard_5_star_characters + standard_4_star_characters
-standard_weapons = standard_5_star_weapons + standard_4_star_weapons
+# standard_characters = standard_5_star_characters + standard_4_star_characters
+# standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
 
 def print_pity(counter, p, c5, c4):
@@ -1219,13 +1218,13 @@ def show_full_inventory():
     print()
 
 
-def print_history_page():
+def print_history_page():  # no idea how this works anymore
     global print_from, print_to, cc, number, print_map
-    print_from = (page - 1) * 25
-    print_to = min(page * 25, len(wish_history[banner_of_choice[0]]))
-    cc = print_from
+    print_from = -((page - 1) * 25) - 1
+    print_to = -(min(page * 25, len(wish_history[banner_of_choice[0]]))) - 1
+    cc = -print_from - 1
     print(Style.RESET_ALL + '-' * 51)
-    for number in wish_history[banner_of_choice[0]][print_from:print_to]:
+    for number in wish_history[banner_of_choice[0]][print_from:print_to:-1]:
         cc += 1
         print(print_map[number_to_item_dict[number].rarity] + f'{cc}.{" " if len(str(cc)) < len(str(print_to)) else ""}',
               number_to_item_dict[number].name)
@@ -1796,7 +1795,7 @@ if __name__ == '__main__':
 
 
         def make_pull(banner_info, pity):
-            global legal_standard_four_stars
+            global legal_standard_four_stars, legal_standard_five_stars
             five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
             rarity = 5 if choices((True, False), (five_star_chance, 100-five_star_chance))[0] \
                 else 4 if choices((True, False), (four_star_chance, 100-four_star_chance))[0] else 3
@@ -1810,7 +1809,7 @@ if __name__ == '__main__':
                         result = [featured_five_star, pity[0] + 1]
                         pity[-2] = False
                     else:
-                        result = [choice((featured_five_star, choice(standard_5_star_characters))), pity[0] + 1]
+                        result = [choice((featured_five_star, choice(legal_standard_five_stars))), pity[0] + 1]
                         if result[0] != featured_five_star:
                             pity[-2] = True
                     pity[0] = 0
@@ -1835,13 +1834,12 @@ if __name__ == '__main__':
 
             # elif banner_info[0] == 'weapon':
             #     result = [0, 0]
-
-            wish_history[banner_info[0]].insert(0, result[0].num)
+            wish_history[banner_info[0]].append(result[0].num)
             pities[banner_info[0]] = pity
             return result
 
         def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star)
-            if banner_type != 'weapon':        # + 1 here to check the number of the next pull you're making
+            if banner_type != 'weapon':         # + 1 here to check the number of the next pull you're making
                 five_star_chance = max(0, pity[0] + 1 - 73) * 6 + 0.6  # every pull above 73 adds 6%
                 four_star_chance = 100 if pity[1] + 1 >= 10 else (56.1 if pity[1] + 1 == 9 else 5.1)
                 # 10+ pity = 4 star in case of no 5 star, 9 pity = 56.1% chance, <9 = 5.6%
@@ -1852,8 +1850,11 @@ if __name__ == '__main__':
 
             return five_star_chance, four_star_chance
 
-        banner_of_choice = ('character', character_banner_list["yelan-2"])
-        legal_standard_four_stars = [s for s in standard_4_star_characters if s not in banner_of_choice[1]]
+
+        user_banner_input = 'character', "ganyu-4"
+        banner_of_choice = (user_banner_input[0], character_banner_list[user_banner_input[1]][0], character_banner_list[user_banner_input[1]][1])
+        legal_standard_four_stars = [s for s in standard_4_star_characters if (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+        legal_standard_five_stars = [s for s in standard_5_star_characters if (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
         pity_info = pities[banner_of_choice[0]]
 
         three_stars = '(   * * *   )'
@@ -1978,19 +1979,20 @@ if __name__ == '__main__':
                 print('Try "help"\n')
                 continue
 
-            if 0 <= a <= 1000000:
+            if 0 <= a <= 1000000000:
                 print()
                 if a == 0:
                     print_pity(count, pity_info, five_count, four_count)
                     show_full_inventory()
                     break
                 verbose_threshold = 6 - (a <= 100000) - (a <= 10000) - (a <= 1000)
-                if a > 100000:
-                    print('Are you sure? This would take a while.\n')
-                    sure = input('Type "CONFIRM" if you want to proceed: ')
-                    if sure != "CONFIRM":
-                        continue
-                count += a
+                if a > 1000000:  # if number bigger than 1 million
+                    print(f'Are you sure? Doing {a} pulls would take around {round(43 * a/10000000)} seconds.\n')
+                    sure = input('Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
+                    if sure != "CONFIRM":  # if they're not sure
+                        print()
+                        continue  # abort this job and ask for next command
+                count += a  # if the program came this far, go on with the job
                 for i in range(a):
                     res, p = make_pull(banner_of_choice, pity_info)
                     if isinstance(res, Character):
@@ -2018,6 +2020,8 @@ if __name__ == '__main__':
 
                     if res.rarity >= verbose_threshold:
                         print(print_map[res.rarity] + f'{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
+                    if verbose_threshold == 6 and i % 10000 == 0:
+                        print(f'{i}/{a} wishes done')
                     if pity_info[1] >= 10:
                         print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
                 # print(wish_history)
@@ -2030,7 +2034,7 @@ if __name__ == '__main__':
                 print('what are u doing bro')
 
             else:
-                print('I\'m not letting you do that. max 1 million at a time, that takes a while already')
+                print("I'm not letting you do that. Max 1 billion wishes at a time please")
             print()
 
     print('\nThank you for using Artifact Simulator')
