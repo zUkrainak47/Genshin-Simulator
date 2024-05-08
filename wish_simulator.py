@@ -1069,7 +1069,7 @@ while True:
         try:
             save_history_to_file(wish_history)
         except:
-            print('not enough storage to hold this wish history')
+            print('Not enough storage to hold this wish history. Wish history not backed up')
     elif user_command < 0:
         print('what are u doing bro')
 
