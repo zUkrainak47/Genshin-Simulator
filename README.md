@@ -2,7 +2,7 @@
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
 With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wishing System and the Artifact System.
 
-## How do I start simulating Genshin Impact?
+## How do I start simulating Genshin Impact? \
 First you need to download or clone the repository on your device (i know) \
 Next, locate `simulator.py`. You can access both simulators from there! \
 Alternatively, you can run `wish_simulator.py` or `artifact_simulator.py` to access the respective simulator directly.
