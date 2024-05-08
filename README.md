@@ -2,7 +2,7 @@
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
 With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wishing System and the Artifact System.
 
-## How do I start simulating Genshin Impact?
+### How do I start simulating Genshin Impact?
 
 First you need to download or clone the repository on your device (i know) \
 Next, locate `simulator.py`. You can access both simulators from there! \
@@ -10,7 +10,7 @@ Alternatively, you can run `wish_simulator.py` or `artifact_simulator.py` to acc
 
 
 ---
-## Artifact Simulator
+# Artifact Simulator
 ### About
 Ever wanted to know how long it *actually* takes to get a 50CV artifact? \
 Are you out of resin but crave that lovely RNG?
@@ -41,7 +41,7 @@ Right now only CV is supported as a stat, but I might add more in the future.
 
 ---
 
-## Wish Simulator
+# Wish Simulator
 ### About
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
