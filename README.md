@@ -20,7 +20,7 @@ This Artifact Simulator can help you with that.
 
 ### Mode 1:
 - Allows you to generate and upgrade artifacts one by one. Basically like running domains or using the strongbox, but you have unlimited resin.
-- If there's an artifact that you like, you can add it to your inventory. It also carries over sessions.
+- If there's an artifact that you like, you can add it to your inventory. It also carries over sessions!
 - Commands include:
   - leveling artifact (to next tier or to +20)
   - re-rolling artifact
@@ -47,8 +47,9 @@ You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
 As stated above, this part of the project is still WIP, however I'm actively working on it. \
-By using Wish Simulator, you may
+Using Wish Simulator allows you to
 - Do virtually any amount of pulls on ~~any banner~~ a currently hardcoded character banner
-- Check your wish history!
+- Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
 - Make a "5-stars VS Pity" graph based on your results
+All of these results are backed up using files so you don't have to worry about your data getting lost!
