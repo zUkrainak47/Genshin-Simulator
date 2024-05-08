@@ -605,9 +605,11 @@ valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
 
 
+print('\n============================ LOADING ===========================\n')
+
 try:
     artifact_list = load_inventory()
-    print('Loading successful')
+    print('Loaded inventory successfully!')
     # print_inventory(artifact_list)
     # print()
 except json.decoder.JSONDecodeError:
@@ -626,7 +628,7 @@ while True:
         else:
             print('Commands are 0, 1 or 2\n')
 
-    print('For the list of commands, type "help"\n' if automate == "1" else '')
+    print('Exiting...\n' if automate in ('0', 'exit') else '')
     print('=' * 64)
 
     if automate == "2":
@@ -738,9 +740,9 @@ while True:
             f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
 
-    elif automate == "1":
-        source = "domain"
-        print()
+    elif automate == '1':
+        source = 'domain'
+        print('\nType "help" for the list of commands\n')
         art = create_artifact(source)
         art.print_stats()
 
@@ -1103,7 +1105,7 @@ while True:
                 break
 
             else:
-                print("Try 'help'\n")
+                print('Try "help"\n')
 
     else:
         break

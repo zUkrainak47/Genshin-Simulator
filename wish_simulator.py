@@ -2,9 +2,11 @@ import json
 from random import choice, choices
 from colorama import init, Fore, Style
 from pathlib import Path
+import sys
+import importlib
 
-print("\nTHIS IS A WIP PROJECT. SOME FEATURES ARE BROKEN, I'M WORKING ON THEM.\n")
-
+print("\nTHIS IS A WIP PROJECT. SOME FEATURES ARE BROKEN, I'M WORKING ON THEM.")
+print('\n============================ LOADING ===========================\n')
 init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
 
@@ -14,9 +16,9 @@ def save_history_to_file(data):
         f.write(json.dumps(data, separators=(',', ':')))
 
 
-def save_pity_datamine_to_file():
-    with open(r'.\banner_info\datamine.txt', 'w') as f:
-        f.write(json.dumps(pity_datamine, separators=(',', ':')))
+def save_distribution_to_file():
+    with open(r'.\banner_info\character_distribution.txt', 'w') as f:
+        f.write(json.dumps(distribution, separators=(',', ':')))
 
 
 def save_pity_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count):
@@ -71,16 +73,19 @@ def jsonKeys2int(x):
     return x
 
 
-def load_datamine():
-    global pity_datamine
+def load_distribution():
+    global distribution
     try:
-        with open('.\\banner_info\\datamine.txt') as file:
+        with open('.\\banner_info\\character_distribution.txt') as file:
             data = file.read()
-        pity_datamine = json.loads(data, object_hook=jsonKeys2int)
+        distribution = json.loads(data, object_hook=jsonKeys2int)
 
     except:
-        pity_datamine = {i: 0 for i in range(1, 91)}
-        save_pity_datamine_to_file()
+        distribution = {i: 0 for i in range(1, 91)}
+        distribution[100] = 0
+        save_distribution_to_file()
+
+    print('Loaded distribution successfully!')
 
 
 def load_archive():
@@ -598,7 +603,7 @@ for i in range(len(three_star_weapons)):
 # standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
 def print_pity(counter, p, c5, c4):
-    print("\n" + "="*19 + " PITY INFORMATION " + "="*18)
+    print("\n" + "="*23 + " PITY INFORMATION " + "="*23 + '\n')
     print(f'{counter} wish{"es" if counter != 1 else ""} done so far')
     print(f'Out of them {Fore.LIGHTYELLOW_EX}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
@@ -608,7 +613,7 @@ def print_pity(counter, p, c5, c4):
         insert2 = ' ' * (p[1] < 10)
     print(f'{Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
     print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
-
+    # print('\n================================================================')
 
 def print_character_archive():
     global sorted_constellations, a
@@ -616,12 +621,13 @@ def print_character_archive():
                                    key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
     if sorted_constellations:
         last_rarity = 0
-        print("\n" + "="*18 + " CHARACTER ARCHIVE " + "="*18)
-        print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
-              f"({unique_five_char_count}/{amount_of_five_stars} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+        print("\n" + "="*23 + " CHARACTER ARCHIVE " + "="*22)
+        print(f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+        # print()
         for a in sorted_constellations:
             if a[0].rarity != last_rarity:
-                print(Style.RESET_ALL + "-" * 23 + f' {a[0].rarity} STARS ' + "-" * 23 + color_map[a[0].rarity])
+                # print(Style.RESET_ALL + "-" * 28 + f' {a[0].rarity} STARS ' + "-" * 27 + color_map[a[0].rarity])
+                print(color_map[a[0].rarity], end='')
                 last_rarity = a[0].rarity
             print(f'c{a[1]} {a[0].name}')
         print(Style.RESET_ALL)
@@ -635,12 +641,13 @@ def print_weapon_archive():
                                 key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
     if sorted_refinements:
         last_rarity = 0
-        print("\n" + "="*20 + " WEAPON ARCHIVE " + "="*19)
-        print(f"You own {len(refinements)}/{len(weapons_dict)} different gacha weapons\n"
-              f"({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3*{Style.RESET_ALL})")
+        print("\n" + "="*24 + " WEAPON ARCHIVE " + "="*24)
+        print(f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3*{Style.RESET_ALL})")
+        # print()
         for a in sorted_refinements:
             if a[0].rarity != last_rarity:
-                print(Style.RESET_ALL + "-" * 23 + f' {a[0].rarity} STARS ' + "-" * 23 + color_map[a[0].rarity])
+                # print(Style.RESET_ALL + "-" * 28 + f' {a[0].rarity} STARS ' + "-" * 27 + color_map[a[0].rarity])
+                print(color_map[a[0].rarity], end='')
                 last_rarity = a[0].rarity
             print(f'r{a[1]} {a[0].name}')
         print(Style.RESET_ALL)
@@ -652,7 +659,7 @@ def show_full_inventory():
     print()
     if not print_character_archive():
         if not print_weapon_archive():
-            print('Do a wish first to see your character/weapon archive!')
+            print('Character/weapon archive empty!')
     else:
         print_weapon_archive()
     print()
@@ -701,8 +708,7 @@ if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherw
 if not (history_ok and archive_ok and pity_ok):
     clear_everything()
 
-load_datamine()
-print('Loaded datamine info successfully!')
+load_distribution()
 
 banner_types = ["character", "weapon", "standard", "chronicled"]
 
@@ -718,9 +724,8 @@ def make_pull(banner_info, pity):
     if banner_info[0] == 'character':
         featured_five_star = banner_info[1][0]
         featured_four_stars = banner_info[1][1:]
-
         if rarity == 5:
-            pity_datamine[pity[0] + 1] += 1
+            distribution[pity[0] + 1] += 1
             # print(f'{Style.RESET_ALL}{five_star_chance}')
             if pity[-2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
@@ -794,23 +799,34 @@ win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}', 1: f'{Fore.LIGHTCYAN_EX}W{Style.R
            2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}'}
 verbose_threshold = 3
 
-print()
+print('\n================================================================\n')
+print('Type "help" for the list of commands\n')
 while True:
-    a = input('Command: ').lower().strip()
+    user_command = input('Command: ').lower().strip()
 
-    if a == 'help':
-        print('i will update "help" later\n'
+    if user_command == 'help':
+        print('\n'
+              'i will update "help" later\n'
               'but if you\'re using this rn, here\'s some commands you can get silly with:\n'
               '\n'
-              '<number> = make <number> wishes\n'
-              'banner, load, clear, pity, inv, info, full info\n'
-              'h = view wish history -> n [<number>] = go forward <number> pages\n'
-              '                         p [<number>] = go back <number> pages,\n'
-              '                         <number> = go to page <number>,\n'
-              '                         e = exit')
+              '<number> = do <number> pulls\n'
+              'banner = view current banner\n'
+              'load = load updates made to wish.txt, archive.txt, pity.txt, character_distribution.txt\n'
+              'clear = clear wishing history, pity, inventory. basically like starting a new account\n'
+              'pity = view pity related information\n'
+              'inv = view character/weapon archive\n'
+              'dist = view disribution of 5-star character per pity (from 71 to 90)\n'
+              'full dist = same as dist except from 1 to 90\n'
+              'viz = plot a "Distribution of 5★ characters per pity" graph, visualizing full dist\n'
+              'h = view wish history, commands to interact with it:\n'
+              '\t\tn [<number>] = go forward <number> pages\n'
+              '\t\tp [<number>] = go back <number> pages,\n'
+              '\t\t<number> = go to page <number>,\n'
+              '\t\te = exit\n'
+              '0 = exit the simulator\n')
         continue
 
-    if a == 'banner':
+    if user_command == 'banner':
         print(f'\nChosen banner type: {user_banner_input[0]}\nBanner ID: {user_banner_input[1]}')
         if banner_of_choice[0] != 'standard':
             for i in banner_of_choice[1]:
@@ -818,7 +834,7 @@ while True:
         print()
         continue
 
-    if a == 'load':
+    if user_command == 'load':
         try:
             wish_history = load_history()
             print('Loaded wish history successfully!')
@@ -848,42 +864,60 @@ while True:
         if not (history_ok and archive_ok and pity_ok):
             clear_everything()
 
-        load_datamine()
+        load_distribution()
 
+        print()
         continue
 
-    if a == 'clear':
+    if user_command == 'clear':
         clear_everything()
         pity_info = pities[banner_of_choice[0]]  # pities was reinitialized, need to make the reference again
         print('Done\n')
         continue
 
-    if a == 'pity':
+    if user_command == 'pity':
         print_pity(count, pity_info, five_count, four_count)
         print()
         continue
 
-    if a == 'inv':
+    if user_command == 'inv':
         show_full_inventory()
         continue
 
-    if a == 'info':
-        print()
-        total = sum(pity_datamine.values())
-        for i in range(71, 91):
-            print(f'Pity {i}: {pity_datamine[i] / total * 100:.2f}% - {pity_datamine[i]}/{total}')
-        print()
-        continue
-
-    if a == 'full info':
-        print()
-        total = sum(pity_datamine.values())
-        for i in range(1, 91):
-            print(f'Pity {i}: {pity_datamine[i] / total * 100:.2f}% - {pity_datamine[i]}/{total}')
+    if user_command == 'dist':
+        total = sum(distribution.values()) - distribution[100]
+        if total > 0:
+            print(f'Total entries = {distribution[100]}')
+            print(f'Total 5★ entries = {total}\n')
+            for i in range(71, 91):
+                print(f'Pity {i}: {distribution[i] / total * 100:.2f}% - {distribution[i]}/{total}')
+        else:
+            print('Get a 5-star first')
         print()
         continue
 
-    if a == 'h':
+    if user_command == 'full dist':
+        total = sum(distribution.values()) - distribution[100]
+        if total > 0:
+            print(f'Total entries = {distribution[100]}')
+            print(f'Total 5★ entries = {total}\n')
+            for i in range(1, 91):
+                print(f'Pity {i}: {distribution[i] / total * 100:.2f}% - {distribution[i]}/{total}')
+            print('If you want to visualize your results, type "viz" or run visualize_distribution.py')
+        else:
+            print('Get a 5-star first')
+        print()
+        continue
+
+    if user_command == 'viz':
+        if 'visualize_distribution' not in sys.modules:
+            import visualize_distribution
+        else:
+            importlib.reload(visualize_distribution)
+        print('Done\n')
+        continue
+
+    if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
             print('\n================== WISH HISTORY ===================\n')
@@ -952,32 +986,35 @@ while True:
         continue
 
     try:
-        a = int(a)
+        user_command = int(user_command)
     except ValueError:
         print('Try "help"\n')
         continue
 
-    if 0 <= a <= 1000000000:
-        print()
-        if a == 0:
-            print_pity(count, pity_info, five_count, four_count)
-            show_full_inventory()
+    if 0 <= user_command <= 1000000000:
+        if user_command == 0:
+            # print_pity(count, pity_info, five_count, four_count)
+            # show_full_inventory()
+            print('Exiting...')
+            print('\n================================================================')
             break
-        verbose_threshold = 7 - (a <= 10000000) - (a <= 1000000) - (a <= 100000) - (a <= 10000)
+        print()
+        verbose_threshold = 7 - (user_command <= 10000000) - (user_command <= 1000000) - (user_command <= 100000) - (user_command <= 10000)
         # pulls <= 10k = show every pull
         # 10k < pulls <= 100k = show 4* and 5*
         # 100k < pulls <= 1M = show only 5*
         # 1M < pulls = show progress (10k step) and stop showing "10 PULLS WITHOUT 4 STAR" message
         # comparison to 10M is made just in case ill need it in the future
 
-        if a > 1000000:  # if number bigger than 1 million
-            print(f'Are you sure? Doing {a} pulls would take around {round(50 * a / 10000000)} seconds.\n')
+        if user_command > 1000000:  # if number bigger than 1 million
+            print(f'Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.\n')
             sure = input('Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
             if sure != "CONFIRM":  # if they're not sure
                 print()
                 continue  # abort this job and ask for next command
-        count += a  # if the program came this far, go on with the job
-        for i in range(a):
+        count += user_command  # if the program came this far, go on with the job
+        distribution[100] += user_command
+        for i in range(user_command):
             res, p, w = make_pull(banner_of_choice, pity_info)
             if isinstance(res, Character):
                 if res in constellations:
@@ -1006,20 +1043,23 @@ while True:
                 print(
                     Style.RESET_ALL + f'{f"[{win_map[w]}] " if res.rarity >= 4 else ""}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 10000 == 0:
-                print(f'{i}/{a} wishes done')
+                print(f'{i}/{user_command} wishes done')
             if verbose_threshold < 6 and pity_info[1] >= 10:
                 print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                           unique_four_weap_count)
-        save_pity_datamine_to_file()
+        save_distribution_to_file()
         print()
         print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
         save_history_to_file(wish_history)
-    elif a < 0:
+    elif user_command < 0:
         print('what are u doing bro')
 
     else:
         print("I'm not letting you do that. Max 1 billion wishes at a time please")
     print()
+
+if __name__ == '__main__':
+    print('\nThank you for using Wish Simulator')
