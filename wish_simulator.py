@@ -1015,7 +1015,20 @@ while True:
         count += user_command  # if the program came this far, go on with the job
         distribution[100] += user_command
         for i in range(user_command):
-            res, p, w = make_pull(banner_of_choice, pity_info)
+            try:
+                res, p, w = make_pull(banner_of_choice, pity_info)
+            except MemoryError:
+                print('The program ran out of memory dude what have you DONE')
+                save_archive_to_file(constellations, refinements)
+                save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                                  unique_four_weap_count)
+                save_distribution_to_file()
+                try:
+                    save_history_to_file(wish_history)
+                    print('backed up the history at least')
+                except:
+                    print('couldnt even save the wish history')
+                break
             if isinstance(res, Character):
                 if res in constellations:
                     if constellations[res] < 6:
@@ -1053,7 +1066,10 @@ while True:
         save_distribution_to_file()
         print()
         print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
-        save_history_to_file(wish_history)
+        try:
+            save_history_to_file(wish_history)
+        except:
+            print('not enough storage to hold this wish history')
     elif user_command < 0:
         print('what are u doing bro')
 
