@@ -603,8 +603,8 @@ for i in range(len(three_star_weapons)):
 # standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
 def print_pity(counter, p, c5, c4):
-    print("\n" + "="*23 + " PITY INFORMATION " + "="*23 + '\n')
-    print(f'{counter} wish{"es" if counter != 1 else ""} done so far')
+    print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
+    print(f'{counter} pull{"s" if counter != 1 else ""} done so far')
     print(f'Out of them {Fore.LIGHTYELLOW_EX}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
@@ -798,6 +798,7 @@ color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.LIGHTYELLOW_EX}
 win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}', 1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
            2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}'}
 verbose_threshold = 3
+messaged = False  # has wish history limit warning been shown?
 
 print('\n================================================================\n')
 print('Type "help" for the list of commands\n')
@@ -963,19 +964,15 @@ while True:
                         print("You can't go back even further\n")
 
                 elif cmd.isnumeric():
-
-                    if int(cmd) > num_of_pages:
-                        print(f'Pages go up to {num_of_pages}, you provided {cmd}\n')
+                    page = min(int(cmd), num_of_pages)
+                    print()
+                    if page == 0:
+                        print(Style.RESET_ALL + '-' * 51)
+                        print(Fore.LIGHTYELLOW_EX + '                 You found page 0')
+                        print(Style.RESET_ALL + '-' * 51)
+                        print(f"\n(Page 0/{num_of_pages})\n")
                     else:
-                        page = int(cmd)
-                        print()
-                        if page == 0:
-                            print(Style.RESET_ALL + '-' * 51)
-                            print(Fore.LIGHTYELLOW_EX + '                 You found page 0')
-                            print(Style.RESET_ALL + '-' * 51)
-                            print(f"\n(Page 0/{num_of_pages})\n")
-                        else:
-                            print_history_page()
+                        print_history_page()
 
                 elif cmd == 'e':
                     print('No longer viewing wish history!\n')
@@ -1007,11 +1004,13 @@ while True:
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
-            print(f'Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.\n')
+            print(f'Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.')
             sure = input('Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
             if sure != "CONFIRM":  # if they're not sure
-                print()
-                continue  # abort this job and ask for next command
+                print('Aborting\n')  # abort this job
+                continue  # and ask for next command
+            else:
+                print()  # otherwise add an extra space cuz pretty
         count += user_command  # if the program came this far, go on with the job
         distribution[100] += user_command
         for i in range(user_command):
@@ -1055,7 +1054,7 @@ while True:
             if res.rarity >= verbose_threshold:
                 print(
                     Style.RESET_ALL + f'{f"[{win_map[w]}] " if res.rarity >= 4 else ""}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
-            if verbose_threshold >= 6 and i % 10000 == 0:
+            if verbose_threshold >= 6 and i % 100000 == 0:
                 print(f'{i}/{user_command} wishes done')
             if verbose_threshold < 6 and pity_info[1] >= 10:
                 print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
@@ -1066,6 +1065,13 @@ while True:
         save_distribution_to_file()
         print()
         print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
+        if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
+            messaged = True
+            print(Fore.LIGHTRED_EX + '\nTo save disk space and ensure acceptable simulator performance,\n'
+                                     'the size of the wish history has been limited to 2.5 million entries.\n'
+                                     'This does NOT limit the the distribution data size (e.g. character_distribution.txt)',
+                  Style.RESET_ALL)
+        wish_history[banner_of_choice[0]] = wish_history[banner_of_choice[0]][-2500000:]
         try:
             save_history_to_file(wish_history)
         except:
