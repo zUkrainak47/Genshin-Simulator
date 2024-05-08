@@ -51,6 +51,6 @@ Using Wish Simulator allows you to
 - Do virtually any amount of pulls on ~~any banner~~ a currently hardcoded character banner
 - Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
-- Make a "5-stars VS Pity" graph based on your results \
+- Make a "5-stars VS Pity" graph based on your results
 
 All of these results are backed up using files so you don't have to worry about your data getting lost!
