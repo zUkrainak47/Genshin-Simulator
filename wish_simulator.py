@@ -1,8 +1,9 @@
-from simulator import json, choice, choices
+import json
+from random import choice, choices
 from colorama import init, Fore, Style
 from pathlib import Path
 
-print("\nTHIS IS STILL WIP. SOME FEATURES ARE BROKEN, I'M WORKING ON THEM.\n")
+print("\nTHIS IS A WIP PROJECT. SOME FEATURES ARE BROKEN, I'M WORKING ON THEM.\n")
 
 init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
@@ -70,7 +71,7 @@ def jsonKeys2int(x):
     return x
 
 
-def load_pity_datamine():
+def load_datamine():
     global pity_datamine
     try:
         with open('.\\banner_info\\datamine.txt') as file:
@@ -599,13 +600,13 @@ for i in range(len(three_star_weapons)):
 def print_pity(counter, p, c5, c4):
     print("\n" + "="*19 + " PITY INFORMATION " + "="*18)
     print(f'{counter} wish{"es" if counter != 1 else ""} done so far')
-    print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+    print(f'Out of them {Fore.LIGHTYELLOW_EX}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
     else:
         insert1 = ' ' * (p[0] < 10)
         insert2 = ' ' * (p[1] < 10)
-    print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
+    print(f'{Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
     print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
 
 
@@ -617,7 +618,7 @@ def print_character_archive():
         last_rarity = 0
         print("\n" + "="*18 + " CHARACTER ARCHIVE " + "="*18)
         print(f"You own {len(constellations)}/{len(characters_dict)} characters\n"
-              f"({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+              f"({unique_five_char_count}/{amount_of_five_stars} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
         for a in sorted_constellations:
             if a[0].rarity != last_rarity:
                 print(Style.RESET_ALL + "-" * 23 + f' {a[0].rarity} STARS ' + "-" * 23 + color_map[a[0].rarity])
@@ -636,7 +637,7 @@ def print_weapon_archive():
         last_rarity = 0
         print("\n" + "="*20 + " WEAPON ARCHIVE " + "="*19)
         print(f"You own {len(refinements)}/{len(weapons_dict)} different gacha weapons\n"
-              f"({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3*{Style.RESET_ALL})")
+              f"({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3*{Style.RESET_ALL})")
         for a in sorted_refinements:
             if a[0].rarity != last_rarity:
                 print(Style.RESET_ALL + "-" * 23 + f' {a[0].rarity} STARS ' + "-" * 23 + color_map[a[0].rarity])
@@ -700,7 +701,7 @@ if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherw
 if not (history_ok and archive_ok and pity_ok):
     clear_everything()
 
-load_pity_datamine()
+load_datamine()
 print('Loaded datamine info successfully!')
 
 banner_types = ["character", "weapon", "standard", "chronicled"]
@@ -788,7 +789,7 @@ pity_info = pities[banner_of_choice[0]]
 three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
-color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
+color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.LIGHTYELLOW_EX}
 win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}', 1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
            2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}'}
 verbose_threshold = 3
@@ -847,7 +848,7 @@ while True:
         if not (history_ok and archive_ok and pity_ok):
             clear_everything()
 
-        load_pity_datamine()
+        load_datamine()
 
         continue
 
@@ -936,7 +937,7 @@ while True:
                         print()
                         if page == 0:
                             print(Style.RESET_ALL + '-' * 51)
-                            print(Fore.YELLOW + '                 You found page 0')
+                            print(Fore.LIGHTYELLOW_EX + '                 You found page 0')
                             print(Style.RESET_ALL + '-' * 51)
                             print(f"\n(Page 0/{num_of_pages})\n")
                         else:
