@@ -35,9 +35,12 @@ This Artifact Simulator can help you with that.
 - It also assumes a 33.3% (1/3) chance to get a 4-liner from strongbox and 20% from domains, as well as a 6.66% (2/30) chance to get double artifact drops from a domain run. 
 
 ## Plotting with `simulator_for_plotting.py`
+
 This program will run Mode 2 of `simulator.py`, but will create a graph to visualize the results. \
 Right now only CV is supported as a stat, but I might add more in the future.
+
 ---
+
 ## Wish Simulator
 ### About
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
