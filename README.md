@@ -1,6 +1,6 @@
 # Genshin Impact Simulator
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
-With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wishing System and the Artifact System.
+With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wish System and the Artifact System.
 
 ### How do I start simulating Genshin Impact?
 
@@ -22,9 +22,9 @@ This Artifact Simulator can help you with that.
 - Allows you to generate and upgrade artifacts one by one. Basically like running domains or using the strongbox, but you have unlimited resin.
 - If there's an artifact that you like, you can add it to your inventory. It also carries over sessions!
 - Commands include:
-  - leveling artifact (to next tier or to +20)
-  - re-rolling artifact
-  - viewing inventory
+  - Leveling artifact (to next tier or to +20)
+  - Re-rolling artifact
+  - Viewing inventory
   - etc.
 
 ### Mode 2: 
@@ -48,9 +48,9 @@ I've got you covered! Hop on and spend any amount of pulls on any banner that's 
 ## Using `Wish Simulator`
 As stated above, this part of the project is still WIP, however I'm actively working on it. \
 Using Wish Simulator allows you to
-- Do virtually any amount of pulls on ~~any banner~~ a currently hardcoded character banner
+- Do virtually any amount of pulls on any character banner (other banner types are coming soon)
 - Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
 - Make a "5-stars VS Pity" graph based on your results
 
-All of these results are backed up using files so you don't have to worry about your data getting lost!
+All of these results are backed up in separate files, so you don't have to worry about your data getting lost!
