@@ -12,12 +12,265 @@ import json
 import sys
 import time
 from pathlib import Path
-from random import choices
+from random import choices, choice
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from simulator import Artifact, take_input, create_artifact, compare_to_highest_cv
+
+artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
+sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
+goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
+                     'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                     'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                     'Dendro DMG% Bonus', 'HP%', 'ATK%', 'DEF%', 'EM')
+circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'Crit DMG%', 'Crit RATE%',
+                      'Healing Bonus')
+substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
+            'Crit RATE%', 'Crit DMG%')
+flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
+feather_stats = (47, 100, 152, 205, 258, 311)
+hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
+def_stats = (8.7, 18.6, 28.6, 38.5, 48.4, 58.3)
+em_stats = (28, 60, 91, 123, 155, 187)
+er_stats = (7.8, 16.6, 25.4, 34.2, 43.0, 51.8)
+healing_bonus_stats = (5.4, 11.5, 17.6, 23.7, 29.8, 35.9)
+crit_rate_stats = (4.7, 9.9, 15.2, 20.5, 25.8, 31.1)
+crit_dmg_stats = (9.3, 19.9, 30.5, 41.0, 51.6, 62.2)
+max_rolls = {
+    'HP': 298.75,
+    'ATK': 19.45000076,
+    'DEF': 23.149999,
+    'HP%': 5.8335,
+    'ATK%': 5.8335,
+    'DEF%': 7.289999,
+    'EM': 23.309999,
+    'ER%': 6.4800001,
+    'Crit RATE%': 3.889999,
+    'Crit DMG%': 7.769999
+}
+possible_rolls = (0.7, 0.8, 0.9, 1.0)
+
+sands_main_stats_weights = (26.68, 26.66, 26.66, 10.0, 10.0)
+goblet_main_stats_weights = (5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 19.25,
+                             19.25, 19.0, 2.5)
+circlet_main_stats_weights = (22.0, 22.0, 22.0, 4.0, 10.0, 10.0, 10.0)
+substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
+
+
+class Artifact:
+    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, last_upgrade="",
+                 roll_value=0):
+        self.type = artifact_type
+        self.mainstat = mainstat
+        self.mainstat_value = mainstat_value
+        self.threeliner = threeliner
+        self.substats = sub_stats
+        self.level = level
+        self.last_upgrade = last_upgrade
+        self.roll_value = roll_value
+
+        if "Crit RATE%" in self.substats:
+            if self.substats["Crit RATE%"] == 23.0:
+                self.substats["Crit RATE%"] = 22.9
+
+    def __str__(self):
+        val = (self.mainstat_value[0])[self.mainstat_value[1]]
+        return f"{val} {self.mainstat} {self.type} (+{self.level})"
+
+    def subs(self):
+        return {
+            sub: round(self.substats[sub], 1)
+            if "%" in sub else round(self.substats[sub])
+            for sub in self.substats
+        }
+
+    def print_stats(self):
+
+        # 311 ATK Feather (+20)
+        # - HP: 418
+        # - Crit DMG%: 14.8
+        # - HP%: 14.6
+        # - DEF%: 5.8
+
+        print(self)
+
+        for sub in self.substats:
+            is_percentage = '%' in sub
+            print(
+                f"- {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{' (+)' if sub == self.last_upgrade else ''}")
+
+        self.last_upgrade = ""
+        print()
+
+    def upgrade(self):
+        if self.level != 20:
+            roll = choice(possible_rolls)
+
+            if self.threeliner:
+                self.substats[self.threeliner] = max_rolls[
+                                                     self.threeliner] * roll
+                self.last_upgrade = self.threeliner
+                self.threeliner = 0
+
+            else:
+                sub = choice(list(self.substats.keys()))
+                self.substats[sub] += max_rolls[sub] * roll
+                self.last_upgrade = sub
+
+            self.level += 4
+            self.mainstat_value[1] += 1
+            self.roll_value += roll * 100
+
+    def cv(self):
+        crit_value = 0
+        if "Crit DMG%" in self.substats:
+            # for eyeball:
+            crit_value += round(self.substats["Crit DMG%"], 1)
+            # for cv like in akasha:
+            # crit_value += self.substats["Crit DMG%"]
+        if "Crit RATE%" in self.substats:
+            # for eyeball:
+            crit_value += round(self.substats["Crit RATE%"], 1) * 2
+            # for cv like in akasha:
+            # crit_value += self.substats["Crit RATE%"] * 2
+        return round(crit_value, 1)
+
+    def rv(self):
+        return int(self.roll_value)
+
+
+def take_input(defaults=(1, 50)):
+    valid_exit = ('exit', "'exit'", '"exit"')
+    ok1 = False
+    ok2 = False
+    print("\nPlease input conditions. Type 'exit' to go back to menu.\n"
+          f"Leave blank to use defaults ({defaults[0]} test{'s' if defaults[0] != 1 else ''}, {defaults[1]} CV).\n")
+
+    while not ok1:
+        size = input("Number of tests to run: ")
+        if size:
+            if size.lower() in valid_exit:
+                return 'exit', 0
+
+            try:
+                if int(size) > 0:
+                    ok1 = True
+                else:
+                    print("Needs to be positive. Try again.\n")
+
+            except ValueError:
+                print("Needs to be an integer. Try again.\n")
+
+        else:
+            ok1 = True
+            size = defaults[0]
+
+    while not ok2:
+        cv = input("Desired Crit Value: ")
+        if cv:
+            if cv.lower() in valid_exit:
+                return 0, 'exit'
+
+            try:
+                if float(cv) > 0:
+                    ok2 = True
+                else:
+                    print("Needs to be positive. Try again.\n")
+
+            except ValueError:
+                print("Needs to be a number. Try again.\n")
+
+        else:
+            ok2 = True
+            cv = defaults[1]
+
+    print(
+        f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {min(54.5, float(cv))} CV.")
+    return size, cv
+
+
+def create_artifact(from_where):
+    art_type = choice(artifact_types)
+    rv = 0
+
+    if art_type == 'Flower':
+        mainstat = 'HP'
+    elif art_type == 'Feather':
+        mainstat = 'ATK'
+    elif art_type == 'Sands':
+        mainstat = choices(sands_main_stats,
+                           weights=sands_main_stats_weights)[0]
+    elif art_type == 'Goblet':
+        mainstat = choices(goblet_main_stats,
+                           weights=goblet_main_stats_weights)[0]
+    else:
+        mainstat = choices(circlet_main_stats,
+                           weights=circlet_main_stats_weights)[0]
+
+    if mainstat == 'HP':
+        mainstat_value = [flower_stats, 0]
+    elif mainstat == 'ATK':
+        mainstat_value = [feather_stats, 0]
+    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
+                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+        mainstat_value = [hp_atk_dmg_stats, 0]
+    elif mainstat == 'DEF%':
+        mainstat_value = [def_stats, 0]
+    elif mainstat == 'ER%':
+        mainstat_value = [er_stats, 0]
+    elif mainstat == 'EM':
+        mainstat_value = [em_stats, 0]
+    elif mainstat == 'Healing Bonus%':
+        mainstat_value = [healing_bonus_stats, 0]
+    elif mainstat == 'CRIT Rate%':
+        mainstat_value = [crit_rate_stats, 0]
+    else:
+        mainstat_value = [crit_dmg_stats, 0]
+
+    fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
+    fourliner = choices((1, 0), weights=fourliner_weights)[0]
+    subs = {}
+
+    subs_pool = list(substats)
+    subs_weights = list(substats_weights)
+
+    if mainstat in subs_pool:
+        subs_weights.remove(subs_weights[subs_pool.index(mainstat)])
+        subs_pool.remove(mainstat)
+
+    for _i in range(3 + fourliner):
+        roll = choice(possible_rolls)
+        sub = choices(subs_pool, weights=subs_weights)[0]
+        subs_weights.remove(subs_weights[subs_pool.index(sub)])
+        subs_pool.remove(sub)
+        subs[sub] = max_rolls[sub] * roll
+        rv += roll * 100
+
+    threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
+
+    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
+
+
+def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
+                          only_one):
+    if artifact.cv() >= min(54.5, cv_want):
+        days_list.append(day_number)
+        artifacts.append(artifact_number)
+
+        if fastest[0] == 0 or day_number < fastest[0]:
+            fastest = (day_number, artifact)
+
+        if day_number > slowest[0]:
+            slowest = (day_number, artifact)
+        # print(artifact.subs())
+
+        if not only_one:
+            print(f'Artifacts generated: {artifact_number}')
+
+    return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
 
 
 dict_of_days_total = {0.0: 0.0}
