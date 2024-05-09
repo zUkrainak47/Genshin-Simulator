@@ -8,6 +8,9 @@ First you need to download or clone the repository on your device (i know) \
 Next, locate `simulator.py`. You can access both simulators from there! \
 Alternatively, you can run `wish_simulator.py` or `artifact_simulator.py` to access the respective simulator directly.
 
+Or  click this button and Fork & Run on replit
+
+[![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator)
 
 ---
 # Artifact Simulator
