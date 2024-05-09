@@ -21,9 +21,9 @@ def save_distribution_to_file():
         f.write(json.dumps(distribution, separators=(',', ':')))
 
 
-def save_pity_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count):
-    with open(r'.\banner_info\pity.txt', 'w') as f:
-        f.write(json.dumps([pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count], separators=(',', ':')))
+def save_info_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input):
+    with open(r'.\banner_info\info.txt', 'w') as f:
+        f.write(json.dumps([pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input], separators=(',', ':')))
 
 
 def save_archive_to_file(cons, refs):
@@ -50,9 +50,9 @@ def load_history():
         return {"character": [], "weapon": [], "standard": [], "chronicled": []}
 
 
-def load_pity():
+def load_info():
     try:
-        with open('.\\banner_info\\pity.txt') as file:
+        with open('.\\banner_info\\info.txt') as file:
             data = file.read()
         pity_and_other_info = json.loads(data)
         return pity_and_other_info
@@ -62,9 +62,9 @@ def load_pity():
                   'weapon': [0, 0, 0, False, False],
                   'standard': [0, 0, 0, 0],
                   'chronicled': [0, 0, True, False]}
-        with open('.\\banner_info\\pity.txt', 'w') as file:
-            file.write(f'[{pities},0,0,0,0,0,0]')
-        return [pities, 0, 0, 0, 0, 0, 0]
+        with open('.\\banner_info\\info.txt', 'w') as file:
+            file.write(f'[{pities},0,0,0,0,0,0,("character","tao-3")]')
+        return [pities, 0, 0, 0, 0, 0, 0, ("character", "tao-3")]
 
 
 def jsonKeys2int(x):
@@ -107,7 +107,7 @@ def load_archive():
         return {}, {}
 
 def clear_everything():
-    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
+    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
     save_history_to_file(wish_history)
 
@@ -124,8 +124,8 @@ def clear_everything():
               # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
               }
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
-    save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                      unique_four_weap_count)
+    save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                      unique_four_weap_count, user_banner_input)
     print("Everything cleared!")
 
 
@@ -602,16 +602,28 @@ for i in range(len(three_star_weapons)):
 # standard_characters = standard_5_star_characters + standard_4_star_characters
 # standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
+def save_new_banner_of_choice():
+    global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
+    banner_of_choice = (
+        user_banner_input[0], character_banner_list[user_banner_input[1]][0],
+        character_banner_list[user_banner_input[1]][1])
+    legal_standard_four_stars = [s for s in standard_4_star_characters if
+                                 (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+    legal_standard_five_stars = [s for s in standard_5_star_characters if
+                                 (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+    pity_info = pities[banner_of_choice[0]]
+
+
 def print_pity(counter, p, c5, c4):
     print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
     print(f'{counter} pull{"s" if counter != 1 else ""} done so far')
-    print(f'Out of them {Fore.LIGHTYELLOW_EX}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+    print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
     else:
         insert1 = ' ' * (p[0] < 10)
         insert2 = ' ' * (p[1] < 10)
-    print(f'{Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
+    print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
     print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
     # print('\n================================================================')
 
@@ -622,7 +634,7 @@ def print_character_archive():
     if sorted_constellations:
         last_rarity = 0
         print("\n" + "="*23 + " CHARACTER ARCHIVE " + "="*22)
-        print(f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+        print(f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
         # print()
         for a in sorted_constellations:
             if a[0].rarity != last_rarity:
@@ -642,7 +654,7 @@ def print_weapon_archive():
     if sorted_refinements:
         last_rarity = 0
         print("\n" + "="*24 + " WEAPON ARCHIVE " + "="*24)
-        print(f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.LIGHTYELLOW_EX}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3*{Style.RESET_ALL})")
+        print(f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
         # print()
         for a in sorted_refinements:
             if a[0].rarity != last_rarity:
@@ -698,11 +710,16 @@ if history_ok:
 
 if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherwise check fails at history_ok
     try:
-        pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_pity()
+        pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
+        save_new_banner_of_choice()
         print('Loaded additional information successfully!')
         pity_ok = True
     except:
-        print('Something off with pity file. Clearing everything...')
+        user_banner_input = ['character', 'tao-3']
+        banner_of_choice = (
+            user_banner_input[0], character_banner_list[user_banner_input[1]][0],
+            character_banner_list[user_banner_input[1]][1])
+        print('Something off with info file. Clearing everything...')
         pity_ok = False
 
 if not (history_ok and archive_ok and pity_ok):
@@ -782,19 +799,10 @@ def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star
     return five_star_chance, four_star_chance
 
 
-user_banner_input = 'character', "ganyu-4"
-banner_of_choice = (
-user_banner_input[0], character_banner_list[user_banner_input[1]][0], character_banner_list[user_banner_input[1]][1])
-legal_standard_four_stars = [s for s in standard_4_star_characters if
-                             (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
-legal_standard_five_stars = [s for s in standard_5_star_characters if
-                             (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
-pity_info = pities[banner_of_choice[0]]
-
 three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
-color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.LIGHTYELLOW_EX}
+color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
 win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}', 1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
            2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}'}
 verbose_threshold = 3
@@ -812,7 +820,8 @@ while True:
               '\n'
               '<number> = do <number> pulls\n'
               'banner = view current banner\n'
-              'load = load updates made to wish.txt, archive.txt, pity.txt, character_distribution.txt\n'
+              'change = pick a different banner\n'
+              'load = load updates made to wish.txt, archive.txt, info.txt, character_distribution.txt\n'
               'clear = clear wishing history, pity, inventory. basically like starting a new account\n'
               'pity = view pity related information\n'
               'inv = view character/weapon archive\n'
@@ -829,6 +838,62 @@ while True:
 
     if user_command == 'banner':
         print(f'\nChosen banner type: {user_banner_input[0]}\nBanner ID: {user_banner_input[1]}')
+        if banner_of_choice[0] != 'standard':
+            for i in banner_of_choice[1]:
+                print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+        print()
+        continue
+    
+    if user_command == 'change':
+        print(f'\nCurrent banner type: {user_banner_input[0]}\nCurrent banner ID: {user_banner_input[1]}')
+        if banner_of_choice[0] != 'standard':
+            for i in banner_of_choice[1]:
+                print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+        print()
+        m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
+        print("Choose the banner type:")
+        print("0 = exit")
+        for i in m.items():
+            print(f"{i[0]} = {i[1]}")
+        print("(note: only character is supported as of right now)\n")
+        while True:
+            new1 = input('Your pick: ').strip()
+            if new1 == '0':
+                break
+            if new1 in m or new1 in m.values():
+                break
+            else:
+                print('Please input either the number or the name of the banner type of choice\n')
+        if new1 == '0':
+            print('Ok, not changing banner anymore.\n')
+            continue
+        if new1 in m:
+            new1 = m[new1]
+        if new1 != 'character':
+            print("\nDude i JUST told you only character banner is supported.\nWhat you think you're quirky or something?\nYou thought I didn't see this coming?\njk its ok pookie bear ill still pick character banner for u ok? :3\n")
+            new1 = 'character'
+        print(f'{new1.capitalize()} banner selected.\n'
+              'Choose the banner now!\n'
+              'List of available banners:\n')
+        print(', '.join(i for i in character_banner_list))
+        print()
+        while True:
+            new2 = input('Choose one: ').strip()
+            if new2 == '0':
+                break
+            if new2 not in character_banner_list.keys():
+                print("That's not a banner that's available! Try again\n")
+            else:
+                print(f"Ok, {new2} selected")
+                break
+        if new2 == '0':
+            print('Ok, not changing banner anymore.\n')
+            continue
+        user_banner_input = [new1, new2]
+        save_new_banner_of_choice()
+        save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                          unique_four_weap_count, user_banner_input)
+        print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
         if banner_of_choice[0] != 'standard':
             for i in banner_of_choice[1]:
                 print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
@@ -855,11 +920,12 @@ while True:
 
         if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherwise check fails at history_ok
             try:
-                pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_pity()
+                pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
+                save_new_banner_of_choice()
                 print('Loaded additional information successfully!')
                 pity_ok = True
             except:
-                print('Something off with pity file. Clearing everything...')
+                print('Something off with info file. Clearing everything...')
                 pity_ok = False
 
         if not (history_ok and archive_ok and pity_ok):
@@ -968,7 +1034,7 @@ while True:
                     print()
                     if page == 0:
                         print(Style.RESET_ALL + '-' * 51)
-                        print(Fore.LIGHTYELLOW_EX + '                 You found page 0')
+                        print(Fore.YELLOW + '                 You found page 0')
                         print(Style.RESET_ALL + '-' * 51)
                         print(f"\n(Page 0/{num_of_pages})\n")
                     else:
@@ -1019,8 +1085,8 @@ while True:
             except MemoryError:
                 print('The program ran out of memory dude what have you DONE')
                 save_archive_to_file(constellations, refinements)
-                save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                                  unique_four_weap_count)
+                save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                                  unique_four_weap_count, user_banner_input)
                 save_distribution_to_file()
                 try:
                     save_history_to_file(wish_history)
@@ -1060,8 +1126,8 @@ while True:
                 print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
-        save_pity_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                          unique_four_weap_count)
+        save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                          unique_four_weap_count, user_banner_input)
         save_distribution_to_file()
         print()
         print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
