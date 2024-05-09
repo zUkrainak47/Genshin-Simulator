@@ -623,8 +623,9 @@ def print_pity(counter, p, c5, c4):
     else:
         insert1 = ' ' * (p[0] < 10)
         insert2 = ' ' * (p[1] < 10)
-    print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {"you're on a 50/50" if not p[-2] else "next is guaranteed to be featured"}')
-    print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {"you're on a 50/50" if not p[-1] else "next is guaranteed to be featured"}')
+    fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
+    print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[-2] else "next is guaranteed to be featured"}')
+    print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[-1] else "next is guaranteed to be featured"}')
     # print('\n================================================================')
 
 def print_character_archive():
@@ -876,7 +877,7 @@ while True:
               'Choose the banner now!\n'
               'List of available banners:\n')
         print(', '.join(i for i in character_banner_list))
-        print()
+        print('\n(Type 0 to exit)\n')
         while True:
             new2 = input('Choose one: ').strip()
             if new2 == '0':
