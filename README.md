@@ -46,11 +46,11 @@ Right now only CV is supported as a stat, but I might add more in the future.
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
-As stated above, this part of the project is still WIP, however I'm actively working on it. \
+As stated above, this part of the project is still WIP. \
 Using Wish Simulator allows you to
 - Do virtually any amount of pulls on any character banner (other banner types are coming soon)
 - Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
 - Make a "5-stars VS Pity" graph based on your results
 
-All of these results are backed up in separate files, so you don't have to worry about your data getting lost!
+All of your results are backed up in separate files, so you don't have to worry about your data getting lost!
