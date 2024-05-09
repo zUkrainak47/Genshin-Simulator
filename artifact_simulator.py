@@ -1111,4 +1111,4 @@ while True:
         break
 
 if __name__ == '__main__':
-    print('\nThank you for using Artifact Simlator')
+    print('\nThank you for using Artifact Simulator')
