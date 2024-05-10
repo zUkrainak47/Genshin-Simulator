@@ -2,10 +2,12 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def jsonKeys2int(x):
     if isinstance(x, dict):
         return {int(kk): vv for kk, vv in x.items()}
     return x
+
 
 try:
     with open('.\\banner_info\\character_distribution.txt') as file:
