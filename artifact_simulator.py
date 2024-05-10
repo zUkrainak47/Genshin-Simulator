@@ -270,6 +270,17 @@ def create_artifact(from_where):
     return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
 
+# ccc = 0
+# aaamount = 100000000
+# for i in range(aaamount):
+#     if i % 1000000 == 0:
+#         print(i)
+#     a = create_artifact('domain')
+#     if not a.threeliner and "Crit RATE%" in a.substats and "Crit DMG%" in a.substats:
+#         ccc += 1
+# print(f'{ccc / aaamount * 100}%')
+
+
 def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     artifact = create_artifact(arti_source)
 
