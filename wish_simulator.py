@@ -21,9 +21,14 @@ def save_distribution_to_file():
         f.write(json.dumps(distribution, separators=(',', ':')))
 
 
-def save_info_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input):
+def save_info_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count):
     with open(r'.\banner_info\info.txt', 'w') as f:
-        f.write(json.dumps([pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input], separators=(',', ':')))
+        f.write(json.dumps([pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count], separators=(',', ':')))
+
+
+def save_banner_to_file():
+    with open(r'.\banner_info\banner.txt', 'w') as f:
+        f.write(json.dumps(user_banner_input, separators=(',', ':')))
 
 
 def save_archive_to_file(cons, refs):
@@ -37,6 +42,7 @@ def save_archive_to_file(cons, refs):
         f.write(json.dumps(data, separators=(',', ':')))
 
 banner_types = ["character", "weapon", "standard", "chronicled"]
+
 
 def load_history():
     try:
@@ -69,8 +75,21 @@ def load_info():
                   'standard': [0, 0, 0, 0],
                   'chronicled': [0, 0, True, False]}
         with open('.\\banner_info\\info.txt', 'w') as file:
-            file.write(f'[{pities},0,0,0,0,0,0,["character","tao-3"]]')
-        return [pities, 0, 0, 0, 0, 0, 0, ["character", "tao-3"]]
+            file.write(f'[{pities},0,0,0,0,0,0]')
+        return [pities, 0, 0, 0, 0, 0, 0]
+
+
+def load_banner():
+    global user_banner_input
+    try:
+        with open('.\\banner_info\\banner.txt') as file:
+            data = file.read()
+        user_banner_input = json.loads(data)
+        check_for_banner_mismatch_and_save()
+    except FileNotFoundError:
+        user_banner_input = ['character', 'tao-3']
+        with open('.\\banner_info\\banner.txt', 'w') as file:
+            file.write(json.dumps(user_banner_input, separators=(',', ':')))
 
 
 def jsonKeys2int(x):
@@ -114,7 +133,7 @@ def load_archive():
 
 
 def set_defaults():
-    global user_banner_input, wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
+    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
 
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
     save_history_to_file(wish_history)
@@ -133,7 +152,7 @@ def set_defaults():
               }
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                      unique_four_weap_count, user_banner_input)
+                      unique_four_weap_count)
     print(Fore.GREEN + "Everything cleared!" + Style.RESET_ALL)
 
 
@@ -145,7 +164,7 @@ def check_for_banner_mismatch_and_save():
 
     keys = ['character', 'weapon', 'chronicled']
     if user_banner_input[0] not in keys:
-        print('Banner mismatch detected, setting to default')
+        print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
         user_banner_input = ['character', 'tao-3']
 
         save_new_banner_of_choice()
@@ -663,8 +682,7 @@ def save_new_banner_of_choice():    # needs user_banner_input and pities to work
     legal_standard_five_stars = [s for s in standard_5_star_characters if
                                  (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
     pity_info = pities[banner_of_choice[0]]
-    save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                      unique_four_weap_count, user_banner_input)
+    save_banner_to_file()
 
 
 def print_pity(counter, p, c5, c4):
@@ -745,18 +763,24 @@ def print_history_page():  # no idea how this works anymore
     print(f'\n(Page {page}/{num_of_pages})\n')
 
 
-try:  # try to get variables, user_banner_input included.
-    pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
-    check_for_banner_mismatch_and_save()  # if successful, make sure the banner is correct
+
+try:
+    pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
     print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
     info_ok = True
-except:  # if failed, go 30 lines lower. there, create user_banner_input
-
-    # can't put here because pities is not defined, need to run clear_everything() first
-    # save_new_banner_of_choice()
-
+except:
     print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
     info_ok = False
+
+
+try:
+    load_banner()
+    print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+    banner_ok = True
+except:
+    print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
+    banner_ok = False
+
 
 
 if info_ok:
@@ -960,7 +984,8 @@ while True:
 
     if user_command == 'load':
         try:
-            pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
+            load_banner()
+            pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
             check_for_banner_mismatch_and_save()
             print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
             info_ok = True
@@ -1146,7 +1171,7 @@ while True:
                 print('The program ran out of memory dude what have you DONE')
                 save_archive_to_file(constellations, refinements)
                 save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                                  unique_four_weap_count, user_banner_input)
+                                  unique_four_weap_count)
                 save_distribution_to_file()
                 try:
                     save_history_to_file(wish_history)
@@ -1187,7 +1212,7 @@ while True:
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                          unique_four_weap_count, user_banner_input)
+                          unique_four_weap_count)
         save_distribution_to_file()
         print()
         print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
