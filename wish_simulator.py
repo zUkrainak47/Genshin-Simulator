@@ -36,17 +36,23 @@ def save_archive_to_file(cons, refs):
         data = (new_dict_c, new_dict_w)
         f.write(json.dumps(data, separators=(',', ':')))
 
+banner_types = ["character", "weapon", "standard", "chronicled"]
 
 def load_history():
     try:
         with open('.\\banner_info\\wish.txt') as file:
             data = file.read()
         history = json.loads(data)
+        for i in banner_types:
+            for num in history[i]:
+                if num not in number_to_item_dict:
+                    raise ValueError
+
         return history
 
     except FileNotFoundError:
         with open('.\\banner_info\\wish.txt', 'w') as file:
-            file.write('{"character": [], "weapon": [], "standard": [], "chronicled": []}')
+            file.write('{"character":[],"weapon":[],"standard":[],"chronicled":[]}')
         return {"character": [], "weapon": [], "standard": [], "chronicled": []}
 
 
@@ -63,8 +69,8 @@ def load_info():
                   'standard': [0, 0, 0, 0],
                   'chronicled': [0, 0, True, False]}
         with open('.\\banner_info\\info.txt', 'w') as file:
-            file.write(f'[{pities},0,0,0,0,0,0,("character","tao-3")]')
-        return [pities, 0, 0, 0, 0, 0, 0, ("character", "tao-3")]
+            file.write(f'[{pities},0,0,0,0,0,0,["character","tao-3"]]')
+        return [pities, 0, 0, 0, 0, 0, 0, ["character", "tao-3"]]
 
 
 def jsonKeys2int(x):
@@ -85,7 +91,7 @@ def load_distribution():
         distribution[100] = 0
         save_distribution_to_file()
 
-    print('Loaded distribution successfully!')
+    print(Fore.GREEN + 'Loaded distribution successfully!' + Style.RESET_ALL)
 
 
 def load_archive():
@@ -106,8 +112,10 @@ def load_archive():
             file.write("[{}, {}]")
         return {}, {}
 
-def clear_everything():
-    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input
+
+def set_defaults():
+    global user_banner_input, wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
+
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
     save_history_to_file(wish_history)
 
@@ -126,7 +134,33 @@ def clear_everything():
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count, user_banner_input)
-    print("Everything cleared!")
+    print(Fore.GREEN + "Everything cleared!" + Style.RESET_ALL)
+
+
+def check_for_banner_mismatch_and_save():
+    global user_banner_input
+    if user_banner_input[0] == 'standard':
+        save_new_banner_of_choice()
+        return
+
+    keys = ['character', 'weapon', 'chronicled']
+    if user_banner_input[0] not in keys:
+        print('Banner mismatch detected, setting to default')
+        user_banner_input = ['character', 'tao-3']
+
+        save_new_banner_of_choice()
+        return
+
+    banner_type_to_dict = {k: v for k, v in zip(keys, [character_banner_list, weapon_banner_list, chronicled_banner_list])}
+    if user_banner_input[1] not in banner_type_to_dict[user_banner_input[0]]:
+        print('Banner mismatch detected, setting to default')
+        user_banner_input = ['character', 'tao-3']
+
+        save_new_banner_of_choice()
+        return
+
+    save_new_banner_of_choice()
+    return
 
 
 class Character:
@@ -573,6 +607,22 @@ weapon_banner_list = {
     "Crimson Moon's Semblance - The First Great Magic": ["Crimson Moon's Semblance", "The First Great Magic",  "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"]
 }
 
+
+chronicled_banner_list = {
+    'mondstadt-1': [
+        [  # 5-stars
+            [characters_dict[i] for i in ['Albedo', 'Diluc', 'Eula', 'Jean', 'Klee', 'Mona']],
+            [weapons_dict[i] for i in ['Aquila Favonia', 'Beacon of the Reed Sea', "Hunter's Path", 'Lost Prayer to the Sacred Winds', 'Skyward Atlas', 'Skyward Blade', 'Skyward Harp', 'Skyward Pride', 'Skyward Spine', 'Song of Broken Pines', "Wolf's Gravestone"]],
+        ],
+
+        [  # 4-stars
+            [characters_dict[i] for i in ['Amber', 'Barbara', 'Bennett', 'Diona', 'Fischl', 'Kaeya', 'Lisa', 'Mika', 'Noelle', 'Razor', 'Rosaria', 'Sucrose']],
+            [weapons_dict[i] for i in ["Alley Hunter", "Dragon's Bane", "Eye of Perception", "Favonius Codex", "Favonius Greatsword", "Favonius Lance", "Favonius Sword", "Favonius Warbow", "Lion's Roar", "Mitternachts Waltz", "Rainslasher", "Rust", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Greatsword", "Sacrificial Sword", "The Alley Flash", "The Bell", "The Flute", "The Stringless", "The Widsith", "Wine and Song"]]
+        ]
+    ]
+}
+
+
 # replace strings with objects in lists of banners
 for banner in character_banner_list:
     for i in range(len(character_banner_list[banner][0])):
@@ -602,7 +652,8 @@ for i in range(len(three_star_weapons)):
 # standard_characters = standard_5_star_characters + standard_4_star_characters
 # standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
-def save_new_banner_of_choice():
+def save_new_banner_of_choice():    # needs user_banner_input and pities to work
+                                    # (other variables like standard_4_star_characters are hardcoded)
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
     banner_of_choice = (
         user_banner_input[0], character_banner_list[user_banner_input[1]][0],
@@ -612,6 +663,8 @@ def save_new_banner_of_choice():
     legal_standard_five_stars = [s for s in standard_5_star_characters if
                                  (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
     pity_info = pities[banner_of_choice[0]]
+    save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                      unique_four_weap_count, user_banner_input)
 
 
 def print_pity(counter, p, c5, c4):
@@ -692,43 +745,50 @@ def print_history_page():  # no idea how this works anymore
     print(f'\n(Page {page}/{num_of_pages})\n')
 
 
-try:  # if i extract this into a method pycharm stops seeing all the variables assigned
-    wish_history = load_history()
-    print('Loaded wish history successfully!')
-    history_ok = True
-except:
-    print('Something off with wish history file. Clearing everything...')
-    history_ok = False
+try:  # try to get variables, user_banner_input included.
+    pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
+    check_for_banner_mismatch_and_save()  # if successful, make sure the banner is correct
+    print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
+    info_ok = True
+except:  # if failed, go 30 lines lower. there, create user_banner_input
 
-if history_ok:
+    # can't put here because pities is not defined, need to run clear_everything() first
+    # save_new_banner_of_choice()
+
+    print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
+    info_ok = False
+
+
+if info_ok:
+    try:  # if i extract this into a method pycharm stops seeing all the variables assigned
+        wish_history = load_history()
+        print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
+        history_ok = True
+    except:
+        print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
+        history_ok = False
+
+
+if info_ok and history_ok:
     try:
         constellations, refinements = load_archive()
-        print('Loaded archive successfully!')
+        print(Fore.GREEN + 'Loaded archive successfully!' + Style.RESET_ALL)
         archive_ok = True
     except:
-        print('Something off with archive file. Clearing everything...')
+        print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
         archive_ok = False
 
-if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherwise check fails at history_ok
-    try:
-        pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
-        save_new_banner_of_choice()
-        print('Loaded additional information successfully!')
-        pity_ok = True
-    except:
-        user_banner_input = ['character', 'tao-3']
-        banner_of_choice = (
-            user_banner_input[0], character_banner_list[user_banner_input[1]][0],
-            character_banner_list[user_banner_input[1]][1])
-        print('Something off with info file. Clearing everything...')
-        pity_ok = False
 
-if not (history_ok and archive_ok and pity_ok):
-    clear_everything()
+if not (info_ok and history_ok and archive_ok):
+    if 'user_banner_input' not in globals():
+        user_banner_input = ['character', 'tao-3']
+    set_defaults()
+    # no need to check if banner is correct because at this point it always is
+    # either we failed to read file, and created banner 3 lines higher
+    # or we were successful and made sure it's correct
+    # both scenarios = correct banner
 
 load_distribution()
-
-banner_types = ["character", "weapon", "standard", "chronicled"]
 
 
 # print([c in standard_characters for c in character_banner_list["venti-1"]])
@@ -779,7 +839,6 @@ def make_pull(banner_info, pity):
             result = [choice(three_star_weapons), 0, False]
             pity[0] += 1
             pity[1] += 1
-
     # elif banner_info[0] == 'weapon':
     #     result = [0, 0]
     wish_history[banner_info[0]].append(result[0].num)
@@ -892,8 +951,6 @@ while True:
             continue
         user_banner_input = [new1, new2]
         save_new_banner_of_choice()
-        save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                          unique_four_weap_count, user_banner_input)
         print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
         if banner_of_choice[0] != 'standard':
             for i in banner_of_choice[1]:
@@ -903,34 +960,36 @@ while True:
 
     if user_command == 'load':
         try:
-            wish_history = load_history()
-            print('Loaded wish history successfully!')
-            history_ok = True
+            pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
+            check_for_banner_mismatch_and_save()
+            print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
+            info_ok = True
         except:
-            print('Something off with wish history file. Clearing everything...')
-            history_ok = False
+            print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
+            info_ok = False
 
-        if history_ok:
+
+        if info_ok:
+            try:
+                wish_history = load_history()
+                print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
+                history_ok = True
+            except:
+                print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
+                history_ok = False
+
+
+        if info_ok and history_ok:
             try:
                 constellations, refinements = load_archive()
-                print('Loaded archive successfully!')
+                print(Fore.GREEN + 'Loaded archive successfully!' + Style.RESET_ALL)
                 archive_ok = True
             except:
-                print('Something off with archive file. Clearing everything...')
+                print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
                 archive_ok = False
 
-        if history_ok and archive_ok:  # history_ok == True -> archive_ok exists, otherwise check fails at history_ok
-            try:
-                pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, user_banner_input = load_info()
-                save_new_banner_of_choice()
-                print('Loaded additional information successfully!')
-                pity_ok = True
-            except:
-                print('Something off with info file. Clearing everything...')
-                pity_ok = False
-
-        if not (history_ok and archive_ok and pity_ok):
-            clear_everything()
+        if not (info_ok and history_ok and archive_ok):
+            set_defaults()
 
         load_distribution()
 
@@ -938,7 +997,7 @@ while True:
         continue
 
     if user_command == 'clear':
-        clear_everything()
+        set_defaults()
         pity_info = pities[banner_of_choice[0]]  # pities was reinitialized, need to make the reference again
         print('Done\n')
         continue
