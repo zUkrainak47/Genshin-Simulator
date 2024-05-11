@@ -163,25 +163,46 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
         save_new_banner_of_choice()
         return
 
-    if user_banner_input[0] == 'standard':  # if standard, accept
+    if user_banner_input[0] == 'standard':  # ['standard', '0']
         save_new_banner_of_choice()
         return
 
-    keys = ['character', 'weapon', 'chronicled']
-    if user_banner_input[0] not in keys:  # if banner type isn't valid, set default
+    if user_banner_input[0] not in ['character', 'weapon', 'chronicled']:
+        # ['something', 'tao-3']
         print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
         user_banner_input = ['character', 'tao-3']
 
         save_new_banner_of_choice()
         return
 
-    banner_type_to_dict = {k: v for k, v in zip(keys, [character_banner_list, weapon_banner_list, chronicled_banner_list])}
-    if user_banner_input[1] not in banner_type_to_dict[user_banner_input[0]]:  # if banner id not in respective banner
-        print('Banner mismatch detected, setting to default')                  # dict, set default
-        user_banner_input = ['character', 'tao-3']
+    banner_id = user_banner_input[1]
+    if user_banner_input[0] != 'chronicled':
+        # ['character', 'tao-4']
+        # ['weapon', 'Engulfing Lightning - Thundering Pulse']
+        banner_type_to_dict = {'character': character_banner_list, 'weapon': weapon_banner_list}
+        banner_list = banner_type_to_dict[user_banner_input[0]]
+        if banner_id not in banner_list:
+            print('Banner mismatch detected, setting to default')
+            user_banner_input = ['character', 'tao-3']
 
-        save_new_banner_of_choice()
-        return
+            save_new_banner_of_choice()
+            return
+
+    else:  # ['chronicled', ['mondstadt-1', 'Jean']]
+        if banner_id[0] in chronicled_banner_list:
+            chron_banner = chronicled_banner_list[banner_id[0]]  # [[5-chars, 4-chars], [5-weaps, 4-weaps]]
+            valids = [i.name for i in chron_banner[0][0]] + [i.name for i in chron_banner[1][0]]
+            if banner_id[1] not in valids:  # ['chronicled', ['mondstadt-1', 'Furina']]
+                user_banner_input = ['character', 'tao-3']
+
+                save_new_banner_of_choice()
+                return
+
+        else:  # ['chronicled', ['mondstadt-8', 'Jean']]
+            user_banner_input = ['character', 'tao-3']
+
+            save_new_banner_of_choice()
+            return
 
     save_new_banner_of_choice()
     return
