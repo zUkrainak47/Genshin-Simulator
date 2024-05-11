@@ -51,7 +51,7 @@ I've got you covered! Hop on and spend any amount of pulls on any banner that's 
 ## Using `Wish Simulator`
 As stated above, this part of the project is still WIP. \
 Using Wish Simulator allows you to
-- Do virtually any amount of pulls on any character banner (other banner types are coming soon)
+- Do virtually any amount of pulls on any character banner or the chronicled banner (standard and weapon banners are coming soon)
 - Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
 - Make a "5-stars VS Pity" graph based on your results
