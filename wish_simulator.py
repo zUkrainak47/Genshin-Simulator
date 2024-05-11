@@ -79,17 +79,16 @@ def load_info():
         return [pities, 0, 0, 0, 0, 0, 0]
 
 
-def load_banner():
+def load_banner():  # always returns a valid banner
     global user_banner_input
-    try:
+    try:  # if can read, read.
         with open('.\\banner_info\\banner.txt') as file:
             data = file.read()
         user_banner_input = json.loads(data)
-        check_for_banner_mismatch_and_save()
-    except FileNotFoundError:
+        check_for_banner_mismatch_and_save()  # make sure what was read is a valid banner and save variables
+    except FileNotFoundError:  # if can't read, set to default
         user_banner_input = ['character', 'tao-3']
-        with open('.\\banner_info\\banner.txt', 'w') as file:
-            file.write(json.dumps(user_banner_input, separators=(',', ':')))
+        save_new_banner_of_choice()
 
 
 def jsonKeys2int(x):
@@ -156,14 +155,20 @@ def set_defaults():
     print(Fore.GREEN + "Everything cleared!" + Style.RESET_ALL)
 
 
-def check_for_banner_mismatch_and_save():
+def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes sure it's valid
     global user_banner_input
-    if user_banner_input[0] == 'standard':
+    if not isinstance(user_banner_input, list) and len(user_banner_input) != 2:  # if not even a list, set default
+        user_banner_input = ['character', 'tao-3']
+
+        save_new_banner_of_choice()
+        return
+
+    if user_banner_input[0] == 'standard':  # if standard, accept
         save_new_banner_of_choice()
         return
 
     keys = ['character', 'weapon', 'chronicled']
-    if user_banner_input[0] not in keys:
+    if user_banner_input[0] not in keys:  # if banner type isn't valid, set default
         print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
         user_banner_input = ['character', 'tao-3']
 
@@ -171,8 +176,8 @@ def check_for_banner_mismatch_and_save():
         return
 
     banner_type_to_dict = {k: v for k, v in zip(keys, [character_banner_list, weapon_banner_list, chronicled_banner_list])}
-    if user_banner_input[1] not in banner_type_to_dict[user_banner_input[0]]:
-        print('Banner mismatch detected, setting to default')
+    if user_banner_input[1] not in banner_type_to_dict[user_banner_input[0]]:  # if banner id not in respective banner
+        print('Banner mismatch detected, setting to default')                  # dict, set default
         user_banner_input = ['character', 'tao-3']
 
         save_new_banner_of_choice()
@@ -629,14 +634,23 @@ weapon_banner_list = {
 
 chronicled_banner_list = {
     'mondstadt-1': [
-        [  # 5-stars
+        [  # characters
             [characters_dict[i] for i in ['Albedo', 'Diluc', 'Eula', 'Jean', 'Klee', 'Mona']],
-            [weapons_dict[i] for i in ['Aquila Favonia', 'Beacon of the Reed Sea', "Hunter's Path", 'Lost Prayer to the Sacred Winds', 'Skyward Atlas', 'Skyward Blade', 'Skyward Harp', 'Skyward Pride', 'Skyward Spine', 'Song of Broken Pines', "Wolf's Gravestone"]],
+            [characters_dict[i] for i in
+             ['Amber', 'Barbara', 'Bennett', 'Diona', 'Fischl', 'Kaeya', 'Lisa', 'Mika', 'Noelle', 'Razor', 'Rosaria',
+              'Sucrose']]
         ],
 
-        [  # 4-stars
-            [characters_dict[i] for i in ['Amber', 'Barbara', 'Bennett', 'Diona', 'Fischl', 'Kaeya', 'Lisa', 'Mika', 'Noelle', 'Razor', 'Rosaria', 'Sucrose']],
-            [weapons_dict[i] for i in ["Alley Hunter", "Dragon's Bane", "Eye of Perception", "Favonius Codex", "Favonius Greatsword", "Favonius Lance", "Favonius Sword", "Favonius Warbow", "Lion's Roar", "Mitternachts Waltz", "Rainslasher", "Rust", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Greatsword", "Sacrificial Sword", "The Alley Flash", "The Bell", "The Flute", "The Stringless", "The Widsith", "Wine and Song"]]
+        [  # weapons
+            [weapons_dict[i] for i in
+             ['Aquila Favonia', 'Beacon of the Reed Sea', "Hunter's Path", 'Lost Prayer to the Sacred Winds',
+              'Skyward Atlas', 'Skyward Blade', 'Skyward Harp', 'Skyward Pride', 'Skyward Spine',
+              'Song of Broken Pines', "Wolf's Gravestone"]],
+            [weapons_dict[i] for i in
+             ["Alley Hunter", "Dragon's Bane", "Eye of Perception", "Favonius Codex", "Favonius Greatsword",
+              "Favonius Lance", "Favonius Sword", "Favonius Warbow", "Lion's Roar", "Mitternachts Waltz", "Rainslasher",
+              "Rust", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Greatsword", "Sacrificial Sword",
+              "The Alley Flash", "The Bell", "The Flute", "The Stringless", "The Widsith", "Wine and Song"]]
         ]
     ]
 }
@@ -671,16 +685,31 @@ for i in range(len(three_star_weapons)):
 # standard_characters = standard_5_star_characters + standard_4_star_characters
 # standard_weapons = standard_5_star_weapons + standard_4_star_weapons
 
-def save_new_banner_of_choice():    # needs user_banner_input and pities to work
-                                    # (other variables like standard_4_star_characters are hardcoded)
+def save_new_banner_of_choice():  # needs user_banner_input and pities to work
+    # saves variables needed for wish making based on new banner
+    # call this function after changing user_banner_input explicitly IF SURE that the banner is valid
+    # if in doubt about new banner being valid, call check_for_banner_mismatch_and_save()
+    # load_banner() already calls check_for_banner_mismatch_and_save() which calls save_new_banner_of_choice()
+
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
     banner_of_choice = (
         user_banner_input[0], character_banner_list[user_banner_input[1]][0],
         character_banner_list[user_banner_input[1]][1])
-    legal_standard_four_stars = [s for s in standard_4_star_characters if
-                                 (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
-    legal_standard_five_stars = [s for s in standard_5_star_characters if
-                                 (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+    if user_banner_input[0] == 'character':
+        legal_standard_four_stars = [s for s in standard_4_star_characters if
+                                     (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+        legal_standard_five_stars = [s for s in standard_5_star_characters if
+                                     (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
+
+    # elif user_banner_input[0] == 'weapon':
+    #     legal_standard_four_stars = [s for s in standard_4_star_weapons if s not in banner_of_choice[1]]
+    #     legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
+
+    # elif user_banner_input[0] == 'chronicled':
+        # legal_standard_four_stars =
+        # legal_standard_five_stars =
+
+
     pity_info = pities[banner_of_choice[0]]
     save_banner_to_file()
 
@@ -773,16 +802,6 @@ except:
     info_ok = False
 
 
-try:
-    load_banner()
-    print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
-    banner_ok = True
-except:
-    print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
-    banner_ok = False
-
-
-
 if info_ok:
     try:  # if i extract this into a method pycharm stops seeing all the variables assigned
         wish_history = load_history()
@@ -804,13 +823,17 @@ if info_ok and history_ok:
 
 
 if not (info_ok and history_ok and archive_ok):
-    if 'user_banner_input' not in globals():
-        user_banner_input = ['character', 'tao-3']
     set_defaults()
-    # no need to check if banner is correct because at this point it always is
-    # either we failed to read file, and created banner 3 lines higher
-    # or we were successful and made sure it's correct
-    # both scenarios = correct banner
+
+
+try:
+    load_banner()
+    print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+except:
+    print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
+    user_banner_input = ['character', 'tao-3']
+    save_new_banner_of_choice()
+
 
 load_distribution()
 
@@ -984,9 +1007,7 @@ while True:
 
     if user_command == 'load':
         try:
-            load_banner()
             pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
-            check_for_banner_mismatch_and_save()
             print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
             info_ok = True
         except:
@@ -1017,6 +1038,14 @@ while True:
             set_defaults()
 
         load_distribution()
+
+        try:
+            load_banner()
+            print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+        except:
+            print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
+            user_banner_input = ['character', 'tao-3']
+            save_new_banner_of_choice()
 
         print()
         continue
