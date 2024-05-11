@@ -716,10 +716,10 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     # load_banner() already calls check_for_banner_mismatch_and_save() which calls save_new_banner_of_choice()
 
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
-    banner_of_choice = (
-        user_banner_input[0], character_banner_list[user_banner_input[1]][0],
-        character_banner_list[user_banner_input[1]][1])
     if user_banner_input[0] == 'character':
+        banner_of_choice = (
+            user_banner_input[0], character_banner_list[user_banner_input[1]][0],
+            character_banner_list[user_banner_input[1]][1])
         legal_standard_four_stars = [s for s in standard_4_star_characters if
                                      (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
         legal_standard_five_stars = [s for s in standard_5_star_characters if
@@ -729,24 +729,29 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     #     legal_standard_four_stars = [s for s in standard_4_star_weapons if s not in banner_of_choice[1]]
     #     legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
 
-    elif user_banner_input[0] == 'chronicled':
+    elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
+        banner_of_choice = (
+            user_banner_input[0], chronicled_banner_list[user_banner_input[1][0]]
+        )
         if user_banner_input[1][1] in characters_dict:
             t = 0
         else:
             t = 1
-        legal_standard_four_stars = (chronicled_banner_list[user_banner_input[1][0]][0][1] +
-                                     chronicled_banner_list[user_banner_input[1][0]][0][1])
-        legal_standard_five_stars = [i for i in chronicled_banner_list[user_banner_input[1][0]][t][0]
-                                     if i.name != user_banner_input[1][1]]
-        # WHAT DID I JUST WRITE PLEASE DON'T WRITE CODE LIKE THIS
+        legal_standard_four_stars = (banner_of_choice[1][0][1] +  # 4-star characters
+                                     banner_of_choice[1][1][1])   # 4-star weapons
+        legal_standard_five_stars = [i for i in banner_of_choice[1][t][0]   # every item that's a 5-star
+                                                                            # of the same type as the chosen 5-star
+                                     if i.name != user_banner_input[1][1]]  # that isn't the chosen item
+
         # for context, user_banner_input has ['chronicled', ['mondstadt-1', 'Jean']] structure
         # legal_standard_five_stars is the list of characters you can lose your 5050 to
 
-        # first, I determine the chronicled banner of choice based on user_banner_input[1][0]
+        # first, I determine the chronicled banner of choice based on user_banner_input[1][0] and save it to
+        # banner_of_choice[1]
 
         # then, I determine the type of the item user has chosen: if user_banner_input[1][1] in characters_dict, it's
-        # a character, otherwise it's a weapon. I set t to 0 or 1 respectively because chronicled banners have
-        # [[5-star characters, 4-star characters], [5-star weapons, 4-star weapons]] structure
+        # a character (set t to 0), otherwise it's a weapon (set t to 0).
+        # Chronicled banners have [[5-star characters, 4-star characters], [5-star weapons, 4-star weapons]] structure
 
         # I extract the list of featured characters or weapons based on t
         # I take index 0 of that list because I got [5-star items, 4-star items], and I need the 5-star ones
@@ -1026,24 +1031,24 @@ while True:
         print(f'{new1.capitalize()} banner selected.\n'
               'Choose the banner now!\n'
               'List of available banners:\n')
-        print(', '.join(i for i in character_banner_list))
-        print('\n(Type 0 to exit)\n')
-        while True:
-            new2 = input('Choose one: ').strip()
+        if new1 == 'character':
+            print(', '.join(i for i in character_banner_list))
+            print('\n(Type 0 to exit)\n')
+            while True:
+                new2 = input('Choose one: ').strip()
+                if new2 == '0':
+                    break
+                if new2 not in character_banner_list.keys():
+                    print("That's not a banner that's available! Try again\n")
+                else:
+                    print(f"Ok, {new2} selected")
+                    break
             if new2 == '0':
-                break
-            if new2 not in character_banner_list.keys():
-                print("That's not a banner that's available! Try again\n")
-            else:
-                print(f"Ok, {new2} selected")
-                break
-        if new2 == '0':
-            print('Ok, not changing banner anymore.\n')
-            continue
-        user_banner_input = [new1, new2]
-        save_new_banner_of_choice()
-        print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
-        if banner_of_choice[0] != 'standard':
+                print('Ok, not changing banner anymore.\n')
+                continue
+            user_banner_input = [new1, new2]
+            save_new_banner_of_choice()
+            print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
             for i in banner_of_choice[1]:
                 print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
         print()
