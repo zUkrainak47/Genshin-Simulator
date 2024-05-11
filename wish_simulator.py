@@ -196,7 +196,8 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
     else:  # ['chronicled', ['mondstadt-1', 'Jean']]
         if banner_id[0] in chronicled_banner_list:
             chron_banner = chronicled_banner_list[banner_id[0]]  # [[5-chars, 4-chars], [5-weaps, 4-weaps]]
-            valids = [i.name for i in chron_banner[0][0]] + [i.name for i in chron_banner[1][0]]
+            valids = ([i.name for i in chron_banner['characters']['5-stars']] +
+                      [i.name for i in chron_banner['weapons']['5-stars']])
             if banner_id[1] not in valids:  # ['chronicled', ['mondstadt-1', 'Furina']]
                 user_banner_input = ['character', 'tao-3']
                 save_new_banner_of_choice()
@@ -657,26 +658,25 @@ weapon_banner_list = {
 
 
 chronicled_banner_list = {
-    'mondstadt-1': [
-        [  # characters
-            [characters_dict[i] for i in ['Albedo', 'Diluc', 'Eula', 'Jean', 'Klee', 'Mona']],
-            [characters_dict[i] for i in
-             ['Amber', 'Barbara', 'Bennett', 'Diona', 'Fischl', 'Kaeya', 'Lisa', 'Mika', 'Noelle', 'Razor', 'Rosaria',
-              'Sucrose']]
-        ],
+    'mondstadt-1': {
+        'characters': {
+            '5-stars': [characters_dict[i] for i in ['Albedo', 'Diluc', 'Eula', 'Jean', 'Klee', 'Mona']],
+            '4-stars': [characters_dict[i] for i in ['Amber', 'Barbara', 'Bennett', 'Diona', 'Fischl', 'Kaeya',
+                                                     'Lisa', 'Mika', 'Noelle', 'Razor', 'Rosaria', 'Sucrose']]},
 
-        [  # weapons
-            [weapons_dict[i] for i in
-             ['Aquila Favonia', 'Beacon of the Reed Sea', "Hunter's Path", 'Lost Prayer to the Sacred Winds',
-              'Skyward Atlas', 'Skyward Blade', 'Skyward Harp', 'Skyward Pride', 'Skyward Spine',
-              'Song of Broken Pines', "Wolf's Gravestone"]],
-            [weapons_dict[i] for i in
-             ["Alley Hunter", "Dragon's Bane", "Eye of Perception", "Favonius Codex", "Favonius Greatsword",
-              "Favonius Lance", "Favonius Sword", "Favonius Warbow", "Lion's Roar", "Mitternachts Waltz", "Rainslasher",
-              "Rust", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Greatsword", "Sacrificial Sword",
-              "The Alley Flash", "The Bell", "The Flute", "The Stringless", "The Widsith", "Wine and Song"]]
-        ]
-    ]
+        'weapons': {
+            '5-stars': [weapons_dict[i] for i in ['Aquila Favonia', 'Beacon of the Reed Sea', "Hunter's Path",
+                                                  'Lost Prayer to the Sacred Winds', 'Skyward Atlas', 'Skyward Blade',
+                                                  'Skyward Harp', 'Skyward Pride', 'Skyward Spine',
+                                                  'Song of Broken Pines', "Wolf's Gravestone"]],
+            '4-stars': [weapons_dict[i] for i in ["Alley Hunter", "Dragon's Bane", "Eye of Perception",
+                                                  "Favonius Codex", "Favonius Greatsword",  "Favonius Lance",
+                                                  "Favonius Sword", "Favonius Warbow", "Lion's Roar",
+                                                  "Mitternachts Waltz", "Rainslasher", "Rust", "Sacrificial Bow",
+                                                  "Sacrificial Fragments", "Sacrificial Greatsword",
+                                                  "Sacrificial Sword",  "The Alley Flash", "The Bell", "The Flute",
+                                                  "The Stringless", "The Widsith", "Wine and Song"]]}
+    }
 }
 
 
@@ -716,7 +716,7 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     # load_banner() already calls check_for_banner_mismatch_and_save() which calls save_new_banner_of_choice()
 
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
-    if user_banner_input[0] == 'character':
+    if user_banner_input[0] == 'character':  # ['
         banner_of_choice = (
             user_banner_input[0],
             character_banner_list[user_banner_input[1]][0],
@@ -732,16 +732,16 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         banner_of_choice = (
-            user_banner_input[0], 
+            user_banner_input[0],
             chronicled_banner_list[user_banner_input[1][0]])
 
-        t = 0 if user_banner_input[1][1] in characters_dict else 1
+        t = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
 
-        legal_standard_four_stars = (banner_of_choice[1][0][1] +  # 4-star characters
-                                     banner_of_choice[1][1][1])   # 4-star weapons
-        legal_standard_five_stars = [i for i in banner_of_choice[1][t][0]   # every item that's a 5-star
-                                                                            # of the same type as the chosen 5-star
-                                     if i.name != user_banner_input[1][1]]  # that isn't the chosen item
+        legal_standard_four_stars = (banner_of_choice[1]['characters']['4-stars'] +  # 4-star characters
+                                     banner_of_choice[1]['weapons']['4-stars'])      # 4-star weapons
+
+        legal_standard_five_stars = [i for i in banner_of_choice[1][t]['5-stars']    # every item that's a 5-star of the same type as the chosen 5-star
+                                     if i.name != user_banner_input[1][1]]           # that isn't the chosen item
 
         # for context, user_banner_input has ['chronicled', ['mondstadt-1', 'Jean']] structure
         # legal_standard_five_stars is the list of characters you can lose your 5050 to
@@ -750,8 +750,7 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
         # banner_of_choice[1]
 
         # then, I determine the type of the item user has chosen: if user_banner_input[1][1] in characters_dict, it's
-        # a character (set t to 0), otherwise it's a weapon (set t to 0).
-        # Chronicled banners have [[5-star characters, 4-star characters], [5-star weapons, 4-star weapons]] structure
+        # a character (set t to 'characters'), otherwise it's a weapon (set t to 'weapons').
 
         # I extract the list of featured characters or weapons based on t
         # I take index 0 of that list because I got [5-star items, 4-star items], and I need the 5-star ones
@@ -1028,12 +1027,17 @@ while True:
         if new1 != 'character':
             print("\nDude i JUST told you only character banner is supported.\nWhat you think you're quirky or something?\nYou thought I didn't see this coming?\njk its ok pookie bear ill still pick character banner for u ok? :3\n")
             new1 = 'character'
-        print(f'{new1.capitalize()} banner selected.\n'
-              'Choose the banner now!\n'
+        print(f'{new1.capitalize()} banner selected.')
+        if new1 == 'standard':
+            print()
+            continue
+
+        print('Choose the banner now!\n'
               'List of available banners:\n')
         if new1 == 'character':
             print(', '.join(i for i in character_banner_list))
             print('\n(Type 0 to exit)\n')
+
             while True:
                 new2 = input('Choose one: ').strip()
                 if new2 == '0':
@@ -1043,6 +1047,7 @@ while True:
                 else:
                     print(f"Ok, {new2} selected")
                     break
+
             if new2 == '0':
                 print('Ok, not changing banner anymore.\n')
                 continue
@@ -1051,6 +1056,49 @@ while True:
             print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
             for i in banner_of_choice[1]:
                 print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+
+        elif new1 == 'chronicled':
+            print(', '.join(i for i in chronicled_banner_list))
+            print('\n(Type 0 to exit)\n')
+
+            while True:
+                new2 = input('Choose one: ').strip()
+                if new2 == '0':
+                    break
+                if new2 not in chronicled_banner_list.keys():
+                    print("That's not a banner that's available! Try again\n")
+                else:
+                    print(f"Ok, {new2} selected")
+                    break
+
+            if new2 == '0':
+                print('Ok, not changing banner anymore.\n')
+                continue
+            print(f'Alright, {new2} selected.\n'
+                  f'Choose your Chronicled Path now!\n'
+                  f'List of available options:\n')
+            options = [chronicled_banner_list[new2]['characters']['5-stars'] +
+                       chronicled_banner_list[new2]['weapons']['5-stars']]
+            print(', '.join(i.name for i in options))
+            print('\n(Type 0 to exit)\n')
+
+            while True:
+                new3 = input('Choose one: ').strip()
+                if new3 == '0':
+                    break
+                if new3 not in options:
+                    print("That's not a valid pick! Try again\n")
+                else:
+                    print(f"Ok, {new3} selected")
+                    break
+
+            if new3 == '0':
+                print('Ok, not choosing Chronicled Path anymore.\n')
+                continue
+            user_banner_input = [new1, [new2, new3]]
+            save_new_banner_of_choice()
+            print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
+
         print()
         continue
 
