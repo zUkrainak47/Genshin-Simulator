@@ -14,7 +14,7 @@ Or  click this button and Fork & Run on replit
 
 ---
 # Artifact Simulator
-### About
+## About
 Ever wanted to know how long it *actually* takes to get a 50CV artifact? \
 Are you out of resin but crave that lovely RNG?
 
@@ -45,7 +45,7 @@ Right now only CV is supported as a stat, but I might add more in the future.
 ---
 
 # Wish Simulator
-### About
+## About
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
