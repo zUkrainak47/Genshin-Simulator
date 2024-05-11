@@ -718,7 +718,8 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
     if user_banner_input[0] == 'character':
         banner_of_choice = (
-            user_banner_input[0], character_banner_list[user_banner_input[1]][0],
+            user_banner_input[0],
+            character_banner_list[user_banner_input[1]][0],
             character_banner_list[user_banner_input[1]][1])
         legal_standard_four_stars = [s for s in standard_4_star_characters if
                                      (s not in banner_of_choice[1] and s.version < banner_of_choice[-1])]
@@ -731,12 +732,11 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         banner_of_choice = (
-            user_banner_input[0], chronicled_banner_list[user_banner_input[1][0]]
-        )
-        if user_banner_input[1][1] in characters_dict:
-            t = 0
-        else:
-            t = 1
+            user_banner_input[0], 
+            chronicled_banner_list[user_banner_input[1][0]])
+
+        t = 0 if user_banner_input[1][1] in characters_dict else 1
+
         legal_standard_four_stars = (banner_of_choice[1][0][1] +  # 4-star characters
                                      banner_of_choice[1][1][1])   # 4-star weapons
         legal_standard_five_stars = [i for i in banner_of_choice[1][t][0]   # every item that's a 5-star
