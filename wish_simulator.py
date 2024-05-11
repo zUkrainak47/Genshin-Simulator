@@ -729,10 +729,30 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     #     legal_standard_four_stars = [s for s in standard_4_star_weapons if s not in banner_of_choice[1]]
     #     legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
 
-    # elif user_banner_input[0] == 'chronicled':
-        # legal_standard_four_stars =
-        # legal_standard_five_stars =
+    elif user_banner_input[0] == 'chronicled':
+        if user_banner_input[1][1] in characters_dict:
+            t = 0
+        else:
+            t = 1
+        legal_standard_four_stars = (chronicled_banner_list[user_banner_input[1][0]][0][1] +
+                                     chronicled_banner_list[user_banner_input[1][0]][0][1])
+        legal_standard_five_stars = [i for i in chronicled_banner_list[user_banner_input[1][0]][t][0]
+                                     if i.name != user_banner_input[1][1]]
+        # WHAT DID I JUST WRITE PLEASE DON'T WRITE CODE LIKE THIS
+        # for context, user_banner_input has ['chronicled', ['mondstadt-1', 'Jean']] structure
+        # legal_standard_five_stars is the list of characters you can lose your 5050 to
 
+        # first, I determine the chronicled banner of choice based on user_banner_input[1][0]
+
+        # then, I determine the type of the item user has chosen: if user_banner_input[1][1] in characters_dict, it's
+        # a character, otherwise it's a weapon. I set t to 0 or 1 respectively because chronicled banners have
+        # [[5-star characters, 4-star characters], [5-star weapons, 4-star weapons]] structure
+
+        # I extract the list of featured characters or weapons based on t
+        # I take index 0 of that list because I got [5-star items, 4-star items], and I need the 5-star ones
+
+        # I then choose the ones whose name does not equal to user_banner_input[1][1] (since you can't lose your 5050 to
+        # the item that you chose) and add them to a list
 
     pity_info = pities[banner_of_choice[0]]
     save_banner_to_file()
