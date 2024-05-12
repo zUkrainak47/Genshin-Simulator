@@ -178,32 +178,47 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
     # left only ['character', 'weapon', 'chronicled']
 
     banner_id = user_banner_input[1]
-    if banner_type != 'chronicled':
-        # ['character', 'tao-4']
-        # ['weapon', 'Engulfing Lightning - Thundering Pulse']
+    if banner_type == 'character':
+        # ["character", "tao-4"]
 
-        if banner_type == 'character':
-            banner_list = character_banner_list
-        else:
-            banner_list = weapon_banner_list
+        if banner_id not in character_banner_list:
+            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            user_banner_input = ['character', 'tao-3']
+            save_new_banner_of_choice()
+            return
 
-        if banner_id not in banner_list:
-            print('Banner mismatch detected, setting to default')
+    elif banner_type == 'weapon':
+        # ["weapon", ["Staff of Homa - Aqua Simulacra", "Staff of Homa"]]
+
+        if banner_id[0] not in weapon_banner_list:
+            # ["weapon", ["something", "Staff of Homa"]]
+            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            user_banner_input = ['character', 'tao-3']
+            save_new_banner_of_choice()
+            return
+        if banner_id[1] not in [s.name for s in weapon_banner_list[banner_id[0]][0][:2]]:
+            # ["weapon", ["Staff of Homa - Aqua Simulacra", "Mistsplitter Reforged"]]
+            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            print(banner_id[1])
+            print(weapon_banner_list[banner_id[0]][0][:2])
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
 
     else:  # ['chronicled', ['mondstadt-1', 'Jean']]
-        if banner_id[0] in chronicled_banner_list:
-            chron_banner = chronicled_banner_list[banner_id[0]]  # [[5-chars, 4-chars], [5-weaps, 4-weaps]]
-            valids = ([i.name for i in chron_banner['characters']['5-stars']] +
-                      [i.name for i in chron_banner['weapons']['5-stars']])
-            if banner_id[1] not in valids:  # ['chronicled', ['mondstadt-1', 'Furina']]
-                user_banner_input = ['character', 'tao-3']
-                save_new_banner_of_choice()
-                return
+        if banner_id[0] not in chronicled_banner_list:
+            # ['chronicled', ['mondstadt-8', 'Jean']]
+            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            user_banner_input = ['character', 'tao-3']
+            save_new_banner_of_choice()
+            return
 
-        else:  # ['chronicled', ['mondstadt-8', 'Jean']]
+        chron_banner = chronicled_banner_list[banner_id[0]]
+        valids = ([i.name for i in chron_banner['characters']['5-stars']] +
+                  [i.name for i in chron_banner['weapons']['5-stars']])
+        if banner_id[1] not in valids:
+            # ['chronicled', ['mondstadt-1', 'Furina']]
+            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
@@ -591,69 +606,69 @@ character_banner_list = {  # thank you @shilva on discord for typing this out BY
 }
 
 weapon_banner_list = {
-    "Aquila Favonia - Amos' Bow": ["Aquila Favonia", "Amos' Bow", "The Flute", "The Bell", "The Widsith", "The Stringless", "Favonius Lance"],
-    "Lost Prayer to the Sacred Winds - Wolf's Gravestone": ["Lost Prayer to the Sacred Winds", "Wolf's Gravestone", "Sacrificial Sword", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Fragments", "Dragon's Bane"],
-    "Memory of Dust - Skyward Harp": ["Memory of Dust", "Skyward Harp",  "The Flute", "Rainslasher", "Eye of Perception", "Rust", "Favonius Lance"],
-    "Vortex Vanquisher - The Unforged": ["Vortex Vanquisher", "The Unforged",  "Lion's Roar", "The Bell", "Favonius Codex", "Favonius Warbow", "Dragon's Bane"],
-    "Summit Shaper - Skyward Atlas": ["Summit Shaper", "Skyward Atlas",  "Favonius Sword", "Favonius Greatsword", "Favonius Lance", "Sacrificial Fragments", "The Stringless"],
-    "Skyward Pride - Amos' Bow": ["Skyward Pride", "Amos' Bow",  "Sacrificial Sword", "The Bell", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"],
-    "Primordial Jade Cutter - Primordial Jade Winged-Spear": ["Primordial Jade Cutter", "Primordial Jade Winged-Spear",  "The Flute", "Sacrificial Greatsword", "Rust", "Eye of Perception", "Favonius Lance"],
-    "Staff of Homa - Wolf's Gravestone": ["Staff of Homa", "Wolf's Gravestone",  "Lithic Blade", "Lithic Spear", "Lion's Roar", "Sacrificial Bow", "The Widsith"],
-    "Elegy for the End - Skyward Blade": ["Elegy for the End", "Skyward Blade",  "The Alley Flash", "Wine and Song", "Favonius Greatsword", "Favonius Warbow", "Dragon's Bane"],
-    "Skyward Harp - Lost Prayer to the Sacred Winds": ["Skyward Harp", "Lost Prayer to the Sacred Winds",  "Alley Hunter", "Favonius Sword", "Sacrificial Greatsword", "Favonius Codex", "Favonius Lance"],
-    "Summit Shaper - Memory of Dust": ["Summit Shaper", "Memory of Dust",  "Lithic Blade", "Lithic Spear", "The Flute", "Eye of Perception", "Sacrificial Bow"],
-    "Song of Broken Pines - Aquila Favonia": ["Song of Broken Pines", "Aquila Favonia",  "Sacrificial Sword", "Rainslasher", "Dragon's Bane", "Sacrificial Fragments", "Rust"],
-    "Skyward Pride - Lost Prayer to the Sacred Winds": ["Skyward Pride", "Lost Prayer to the Sacred Winds",  "Mitternachts Waltz", "Lion's Roar", "The Bell", "Favonius Lance", "The Widsith"],
-    "Freedom-Sworn - Skyward Atlas": ["Freedom-Sworn", "Skyward Atlas",  "The Alley Flash", "Wine and Song", "Alley Hunter", "Dragon's Bane", "Favonius Greatsword"],
-    "Mistsplitter Reforged - Skyward Spine": ["Mistsplitter Reforged", "Skyward Spine",  "Sacrificial Greatsword", "Favonius Lance", "Favonius Codex", "Favonius Sword", "The Stringless"],
-    "Thundering Pulse - Skyward Blade": ["Thundering Pulse", "Skyward Blade",  "Sacrificial Sword", "Rainslasher", "Dragon's Bane", "Sacrificial Fragments", "Favonius Warbow"],
-    "Engulfing Lightning - The Unforged": ["Engulfing Lightning", "The Unforged",  "Lion's Roar", "The Bell", "Favonius Lance", "The Widsith", "Sacrificial Bow"],
-    "Everlasting Moonglow - Primordial Jade Cutter": ["Everlasting Moonglow", "Primordial Jade Cutter",  "The Flute", "Favonius Greatsword", "Dragon's Bane", "Favonius Codex", "The Stringless"],
-    "Polar Star - Memory of Dust": ["Polar Star", "Memory of Dust",  "Akuoumaru", "Favonius Sword", "Favonius Lance", "Eye of Perception", "Rust"],
-    "Staff of Homa - Elegy for the End": ["Staff of Homa", "Elegy for the End",  "Wavebreaker's Fin", "Mouun's Moon", "Sacrificial Sword", "Rainslasher", "The Widsith"],
-    "Freedom-Sworn - Song of Broken Pines": ["Freedom-Sworn", "Song of Broken Pines",  "Wine and Song", "Alley Hunter", "Lion's Roar", "Sacrificial Greatsword", "Dragon's Bane"],
-    "Redhorn Stonethresher - Skyward Harp": ["Redhorn Stonethresher", "Skyward Harp",  "The Alley Flash", "Mitternachts Waltz", "The Bell", "Favonius Lance", "Sacrificial Fragments"],
-    "Calamity Queller - Primordial Jade Winged-Spear": ["Calamity Queller", "Primordial Jade Winged-Spear",  "Lithic Spear", "The Flute", "Favonius Greatsword", "The Widsith", "Favonius Warbow"],
-    "Vortex Vanquisher - Amos' Bow": ["Vortex Vanquisher", "Amos' Bow",  "Lithic Blade", "Favonius Sword", "Dragon's Bane", "Favonius Codex", "Sacrificial Bow"],
-    "Kagura's Verity - Primordial Jade Cutter": ["Kagura's Verity", "Primordial Jade Cutter",  "Wavebreaker's Fin", "Sacrificial Sword", "Rainslasher", "Eye of Perception", "The Stringless"],
-    "Engulfing Lightning - Everlasting Moonglow": ["Engulfing Lightning", "Everlasting Moonglow",  "Akuoumaru", "Mouun's Moon", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments"],
-    "Haran Geppaku Futsu - Elegy for the End": ["Haran Geppaku Futsu", "Elegy for the End",  "The Flute", "Sacrificial Greatsword", "Dragon's Bane", "The Widsith", "Rust"],
-    "Mistsplitter Reforged - The Unforged": ["Mistsplitter Reforged", "The Unforged",  "Favonius Sword", "The Bell", "Favonius Lance", "Favonius Codex", "Favonius Warbow"],
-    "Aqua Simulacra - Primordial Jade Winged-Spear": ["Aqua Simulacra", "Primordial Jade Winged-Spear",  "Lithic Spear", "Eye of Perception", "Favonius Greatsword", "Sacrificial Bow", "Sacrificial Sword"],
-    "Redhorn Stonethresher - Memory of Dust": ["Redhorn Stonethresher", "Memory of Dust",  "Lithic Blade", "Lion's Roar", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"],
-    "Freedom-Sworn - Lost Prayer to the Sacred Winds": ["Freedom-Sworn", "Lost Prayer to the Sacred Winds",  "The Alley Flash", "Mitternachts Waltz", "Rainslasher", "Favonius Lance", "The Widsith"],
-    "Thundering Pulse - Summit Shaper": ["Thundering Pulse", "Summit Shaper",  "Wine and Song", "Alley Hunter", "The Flute", "Sacrificial Greatsword", "Dragon's Bane"],
-    "Hunter's Path - Vortex Vanquisher": ["Hunter's Path", "Vortex Vanquisher",  "Favonius Sword", "The Bell", "Favonius Lance", "Favonius Codex", "The Stringless"],
-    "Everlasting Moonglow - Amos' Bow": ["Everlasting Moonglow", "Amos' Bow",  "Sacrificial Sword", "Favonius Greatsword", "Dragon's Bane", "Eye of Perception", "Rust"],
-    "Staff of the Scarlet Sands - Elegy for the End": ["Staff of the Scarlet Sands", "Elegy for the End",  "Makhaira Aquamarine", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments", "Favonius Warbow"],
-    "Key of Khaj-Nisut - Primordial Jade Cutter": ["Key of Khaj-Nisut", "Primordial Jade Cutter",  "Xiphos' Moonlight", "Wandering Evenstar", "Rainslasher", "Dragon's Bane", "Sacrificial Bow"],
-    "A Thousand Floating Dreams - Thundering Pulse": ["A Thousand Floating Dreams", "Thundering Pulse",  "The Flute", "Sacrificial Greatsword", "Favonius Lance", "The Widsith", "Rust"],
-    "Kagura's Verity - Polar Star": ["Kagura's Verity", "Polar Star",  "Favonius Sword", "The Bell", "Dragon's Bane", "Favonius Codex", "The Stringless"],
-    "Tulaytullah's Remembrance - Redhorn Stonethresher": ["Tulaytullah's Remembrance", "Redhorn Stonethresher",  "Wavebreaker's Fin", "Sacrificial Sword", "Favonius Greatsword", "Eye of Perception", "Favonius Warbow"],
-    "Engulfing Lightning - Haran Geppaku Futsu": ["Engulfing Lightning", "Haran Geppaku Futsu",  "Akuoumaru", "Mouun's Moon", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments"],
-    "Light of Foliar Incision - Primordial Jade Winged-Spear": ["Light of Foliar Incision", "Primordial Jade Winged-Spear",  "Lithic Spear", "The Flute", "Rainslasher", "The Widsith", "Sacrificial Bow"],
-    "Staff of Homa - Aqua Simulacra": ["Staff of Homa", "Aqua Simulacra",  "Lithic Blade", "Favonius Sword", "Dragon's Bane", "Favonius Codex", "Rust"],
-    "Beacon of the Reed Sea - Staff of the Scarlet Sands": ["Beacon of the Reed Sea", "Staff of the Scarlet Sands",  "The Alley Flash", "Alley Hunter", "Sacrificial Greatsword", "Dragon's Bane", "Eye of Perception"],
-    "Calamity Queller - Mistsplitter Reforged": ["Calamity Queller", "Mistsplitter Reforged",  "Wine and Song", "Sacrificial Sword", "The Bell", "Favonius Lance", "Favonius Warbow"],
-    "A Thousand Floating Dreams - Key of Khaj-Nisut": ["A Thousand Floating Dreams", "Key of Khaj-Nisut",  "Xiphos' Moonlight", "Favonius Greatsword", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"],
-    "Jadefall's Splendor - Amos' Bow": ["Jadefall's Splendor", "Amos' Bow",  "Makhaira Aquamarine", "Wandering Evenstar", "Lion's Roar", "Favonius Lance", "Sacrificial Bow"],
-    "Thundering Pulse - Kagura's Verity": ["Thundering Pulse", "Kagura's Verity",  "Akuoumaru", "The Flute", "Dragon's Bane", "The Widsith", "Rust"],
-    "Light of Foliar Incision - Freedom-Sworn": ["Light of Foliar Incision", "Freedom-Sworn",  "Favonius Codex", "Favonius Sword", "Mouun's Moon", "Sacrificial Greatsword", "Wavebreaker's Fin"],
-    "Song of Broken Pines - Lost Prayer to the Sacred Winds": ["Song of Broken Pines", "Lost Prayer to the Sacred Winds",  "The Alley Flash", "Alley Hunter", "Rainslasher", "Favonius Lance", "Eye of Perception"],
-    "Everlasting Moonglow - Tulaytullah's Remembrance": ["Everlasting Moonglow", "Tulaytullah's Remembrance",  "Wine and Song", "Lion's Roar", "The Bell", "Dragon's Bane", "Favonius Warbow"],
-    "The First Great Magic - Aqua Simulacra": ["The First Great Magic", "Aqua Simulacra",  "Sacrificial Sword", "Favonius Greatsword", "Favonius Lance", "Sacrificial Fragments", "Sacrificial Bow"],
-    "Vortex Vanquisher - Polar Star": ["Vortex Vanquisher", "Polar Star",  "The Flute", "Sacrificial Greatsword", "Dragon's Bane", "The Widsith", "Rust"],
-    "Tome of the Eternal Flow - Staff of Homa": ["Tome of the Eternal Flow", "Staff of Homa",  "The Dockhand's Assistant", "Portable Power Saw", "Mitternachts Waltz", "Favonius Lance", "Favonius Codex"],
-    "Cashflow Supervision - Elegy for the End": ["Cashflow Supervision", "Elegy for the End",  "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Eye of Perception"],
-    "Splendor of Tranquil Waters - Jadefall's Splendor": ["Splendor of Tranquil Waters", "Jadefall's Splendor",  "Sacrificial Sword", "The Bell", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"],
-    "Staff of the Scarlet Sands - Haran Geppaku Futsu": ["Staff of the Scarlet Sands", "Haran Geppaku Futsu",  "Lion's Roar", "Favonius Greatsword", "Favonius Lance", "The Widsith", "Favonius Warbow"],
-    "Verdict - Mistsplitter Reforged": ["Verdict", "Mistsplitter Reforged",  "Akuoumaru", "Mouun's Moon", "The Flute", "Dragon's Bane", "Favonius Codex"],
-    "Engulfing Lightning - Thundering Pulse": ["Engulfing Lightning", "Thundering Pulse",  "Wavebreaker's Fin", "Favonius Sword", "Rainslasher", "Eye of Perception", "Rust"],
-    "Crane's Echoing Call - A Thousand Floating Dreams": ["Crane's Echoing Call", "A Thousand Floating Dreams",  "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "Sacrificial Fragments", "Sacrificial Bow"],
-    "Kagura's Verity - Primordial Jade Winged-Spear": ["Kagura's Verity", "Primordial Jade Winged-Spear",  "Lithic Blade", "Lion's Roar", "Favonius Lance", "The Widsith", "The Stringless"],
-    "Uraku Misugiri - Redhorn Stonethresher": ["Uraku Misugiri", "Redhorn Stonethresher",  "The Alley Flash", "Alley Hunter", "The Bell", "Dragon's Bane", "Favonius Codex"],
-    "Tome of the Eternal Flow - Freedom-Sworn": ["Tome of the Eternal Flow", "Freedom-Sworn",  "Wine and Song", "Mitternachts Waltz", "The Flute", "Favonius Greatsword", "Favonius Lance"],
-    "Crimson Moon's Semblance - The First Great Magic": ["Crimson Moon's Semblance", "The First Great Magic",  "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"]
+    "Aquila Favonia - Amos' Bow": (["Aquila Favonia", "Amos' Bow", "The Flute", "The Bell", "The Widsith", "The Stringless", "Favonius Lance"], 1.0),
+    "Lost Prayer to the Sacred Winds - Wolf's Gravestone": (["Lost Prayer to the Sacred Winds", "Wolf's Gravestone", "Sacrificial Sword", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Fragments", "Dragon's Bane"], 1.0),
+    "Memory of Dust - Skyward Harp": (["Memory of Dust", "Skyward Harp",  "The Flute", "Rainslasher", "Eye of Perception", "Rust", "Favonius Lance"], 1.1),
+    "Vortex Vanquisher - The Unforged": (["Vortex Vanquisher", "The Unforged",  "Lion's Roar", "The Bell", "Favonius Codex", "Favonius Warbow", "Dragon's Bane"], 1.1),
+    "Summit Shaper - Skyward Atlas": (["Summit Shaper", "Skyward Atlas",  "Favonius Sword", "Favonius Greatsword", "Favonius Lance", "Sacrificial Fragments", "The Stringless"], 1.2),
+    "Skyward Pride - Amos' Bow": (["Skyward Pride", "Amos' Bow",  "Sacrificial Sword", "The Bell", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"], 1.2),
+    "Primordial Jade Cutter - Primordial Jade Winged-Spear": (["Primordial Jade Cutter", "Primordial Jade Winged-Spear",  "The Flute", "Sacrificial Greatsword", "Rust", "Eye of Perception", "Favonius Lance"], 1.3),
+    "Staff of Homa - Wolf's Gravestone": (["Staff of Homa", "Wolf's Gravestone",  "Lithic Blade", "Lithic Spear", "Lion's Roar", "Sacrificial Bow", "The Widsith"], 1.3),
+    "Elegy for the End - Skyward Blade": (["Elegy for the End", "Skyward Blade",  "The Alley Flash", "Wine and Song", "Favonius Greatsword", "Favonius Warbow", "Dragon's Bane"], 1.4),
+    "Skyward Harp - Lost Prayer to the Sacred Winds": (["Skyward Harp", "Lost Prayer to the Sacred Winds",  "Alley Hunter", "Favonius Sword", "Sacrificial Greatsword", "Favonius Codex", "Favonius Lance"], 1.4),
+    "Summit Shaper - Memory of Dust": (["Summit Shaper", "Memory of Dust",  "Lithic Blade", "Lithic Spear", "The Flute", "Eye of Perception", "Sacrificial Bow"], 1.5),
+    "Song of Broken Pines - Aquila Favonia": (["Song of Broken Pines", "Aquila Favonia",  "Sacrificial Sword", "Rainslasher", "Dragon's Bane", "Sacrificial Fragments", "Rust"], 1.5),
+    "Skyward Pride - Lost Prayer to the Sacred Winds": (["Skyward Pride", "Lost Prayer to the Sacred Winds",  "Mitternachts Waltz", "Lion's Roar", "The Bell", "Favonius Lance", "The Widsith"], 1.6),
+    "Freedom-Sworn - Skyward Atlas": (["Freedom-Sworn", "Skyward Atlas",  "The Alley Flash", "Wine and Song", "Alley Hunter", "Dragon's Bane", "Favonius Greatsword"], 1.6),
+    "Mistsplitter Reforged - Skyward Spine": (["Mistsplitter Reforged", "Skyward Spine",  "Sacrificial Greatsword", "Favonius Lance", "Favonius Codex", "Favonius Sword", "The Stringless"], 2.0),
+    "Thundering Pulse - Skyward Blade": (["Thundering Pulse", "Skyward Blade",  "Sacrificial Sword", "Rainslasher", "Dragon's Bane", "Sacrificial Fragments", "Favonius Warbow"], 2.0),
+    "Engulfing Lightning - The Unforged": (["Engulfing Lightning", "The Unforged",  "Lion's Roar", "The Bell", "Favonius Lance", "The Widsith", "Sacrificial Bow"], 2.1),
+    "Everlasting Moonglow - Primordial Jade Cutter": (["Everlasting Moonglow", "Primordial Jade Cutter",  "The Flute", "Favonius Greatsword", "Dragon's Bane", "Favonius Codex", "The Stringless"], 2.1),
+    "Polar Star - Memory of Dust": (["Polar Star", "Memory of Dust",  "Akuoumaru", "Favonius Sword", "Favonius Lance", "Eye of Perception", "Rust"], 2.2),
+    "Staff of Homa - Elegy for the End": (["Staff of Homa", "Elegy for the End",  "Wavebreaker's Fin", "Mouun's Moon", "Sacrificial Sword", "Rainslasher", "The Widsith"], 2.2),
+    "Freedom-Sworn - Song of Broken Pines": (["Freedom-Sworn", "Song of Broken Pines",  "Wine and Song", "Alley Hunter", "Lion's Roar", "Sacrificial Greatsword", "Dragon's Bane"], 2.3),
+    "Redhorn Stonethresher - Skyward Harp": (["Redhorn Stonethresher", "Skyward Harp",  "The Alley Flash", "Mitternachts Waltz", "The Bell", "Favonius Lance", "Sacrificial Fragments"], 2.3),
+    "Calamity Queller - Primordial Jade Winged-Spear": (["Calamity Queller", "Primordial Jade Winged-Spear",  "Lithic Spear", "The Flute", "Favonius Greatsword", "The Widsith", "Favonius Warbow"], 2.4),
+    "Vortex Vanquisher - Amos' Bow": (["Vortex Vanquisher", "Amos' Bow",  "Lithic Blade", "Favonius Sword", "Dragon's Bane", "Favonius Codex", "Sacrificial Bow"], 2.4),
+    "Kagura's Verity - Primordial Jade Cutter": (["Kagura's Verity", "Primordial Jade Cutter",  "Wavebreaker's Fin", "Sacrificial Sword", "Rainslasher", "Eye of Perception", "The Stringless"], 2.5),
+    "Engulfing Lightning - Everlasting Moonglow": (["Engulfing Lightning", "Everlasting Moonglow",  "Akuoumaru", "Mouun's Moon", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments"], 2.5),
+    "Haran Geppaku Futsu - Elegy for the End": (["Haran Geppaku Futsu", "Elegy for the End",  "The Flute", "Sacrificial Greatsword", "Dragon's Bane", "The Widsith", "Rust"], 2.6),
+    "Mistsplitter Reforged - The Unforged": (["Mistsplitter Reforged", "The Unforged",  "Favonius Sword", "The Bell", "Favonius Lance", "Favonius Codex", "Favonius Warbow"], 2.6),
+    "Aqua Simulacra - Primordial Jade Winged-Spear": (["Aqua Simulacra", "Primordial Jade Winged-Spear",  "Lithic Spear", "Eye of Perception", "Favonius Greatsword", "Sacrificial Bow", "Sacrificial Sword"], 2.7),
+    "Redhorn Stonethresher - Memory of Dust": (["Redhorn Stonethresher", "Memory of Dust",  "Lithic Blade", "Lion's Roar", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"], 2.7),
+    "Freedom-Sworn - Lost Prayer to the Sacred Winds": (["Freedom-Sworn", "Lost Prayer to the Sacred Winds",  "The Alley Flash", "Mitternachts Waltz", "Rainslasher", "Favonius Lance", "The Widsith"], 2.8),
+    "Thundering Pulse - Summit Shaper": (["Thundering Pulse", "Summit Shaper",  "Wine and Song", "Alley Hunter", "The Flute", "Sacrificial Greatsword", "Dragon's Bane"], 2.8),
+    "Hunter's Path - Vortex Vanquisher": (["Hunter's Path", "Vortex Vanquisher",  "Favonius Sword", "The Bell", "Favonius Lance", "Favonius Codex", "The Stringless"], 3.0),
+    "Everlasting Moonglow - Amos' Bow": (["Everlasting Moonglow", "Amos' Bow",  "Sacrificial Sword", "Favonius Greatsword", "Dragon's Bane", "Eye of Perception", "Rust"], 3.0),
+    "Staff of the Scarlet Sands - Elegy for the End": (["Staff of the Scarlet Sands", "Elegy for the End",  "Makhaira Aquamarine", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments", "Favonius Warbow"], 3.1),
+    "Key of Khaj-Nisut - Primordial Jade Cutter": (["Key of Khaj-Nisut", "Primordial Jade Cutter",  "Xiphos' Moonlight", "Wandering Evenstar", "Rainslasher", "Dragon's Bane", "Sacrificial Bow"], 3.1),
+    "A Thousand Floating Dreams - Thundering Pulse": (["A Thousand Floating Dreams", "Thundering Pulse",  "The Flute", "Sacrificial Greatsword", "Favonius Lance", "The Widsith", "Rust"], 3.2),
+    "Kagura's Verity - Polar Star": (["Kagura's Verity", "Polar Star",  "Favonius Sword", "The Bell", "Dragon's Bane", "Favonius Codex", "The Stringless"], 3.2),
+    "Tulaytullah's Remembrance - Redhorn Stonethresher": (["Tulaytullah's Remembrance", "Redhorn Stonethresher",  "Wavebreaker's Fin", "Sacrificial Sword", "Favonius Greatsword", "Eye of Perception", "Favonius Warbow"], 3.3),
+    "Engulfing Lightning - Haran Geppaku Futsu": (["Engulfing Lightning", "Haran Geppaku Futsu",  "Akuoumaru", "Mouun's Moon", "Lion's Roar", "Favonius Lance", "Sacrificial Fragments"], 3.3),
+    "Light of Foliar Incision - Primordial Jade Winged-Spear": (["Light of Foliar Incision", "Primordial Jade Winged-Spear",  "Lithic Spear", "The Flute", "Rainslasher", "The Widsith", "Sacrificial Bow"], 3.4),
+    "Staff of Homa - Aqua Simulacra": (["Staff of Homa", "Aqua Simulacra",  "Lithic Blade", "Favonius Sword", "Dragon's Bane", "Favonius Codex", "Rust"], 3.4),
+    "Beacon of the Reed Sea - Staff of the Scarlet Sands": (["Beacon of the Reed Sea", "Staff of the Scarlet Sands",  "The Alley Flash", "Alley Hunter", "Sacrificial Greatsword", "Dragon's Bane", "Eye of Perception"], 3.5),
+    "Calamity Queller - Mistsplitter Reforged": (["Calamity Queller", "Mistsplitter Reforged",  "Wine and Song", "Sacrificial Sword", "The Bell", "Favonius Lance", "Favonius Warbow"], 3.5),
+    "A Thousand Floating Dreams - Key of Khaj-Nisut": (["A Thousand Floating Dreams", "Key of Khaj-Nisut",  "Xiphos' Moonlight", "Favonius Greatsword", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"], 3.6),
+    "Jadefall's Splendor - Amos' Bow": (["Jadefall's Splendor", "Amos' Bow",  "Makhaira Aquamarine", "Wandering Evenstar", "Lion's Roar", "Favonius Lance", "Sacrificial Bow"], 3.6),
+    "Thundering Pulse - Kagura's Verity": (["Thundering Pulse", "Kagura's Verity",  "Akuoumaru", "The Flute", "Dragon's Bane", "The Widsith", "Rust"], 3.7),
+    "Light of Foliar Incision - Freedom-Sworn": (["Light of Foliar Incision", "Freedom-Sworn",  "Favonius Codex", "Favonius Sword", "Mouun's Moon", "Sacrificial Greatsword", "Wavebreaker's Fin"], 3.7),
+    "Song of Broken Pines - Lost Prayer to the Sacred Winds": (["Song of Broken Pines", "Lost Prayer to the Sacred Winds",  "The Alley Flash", "Alley Hunter", "Rainslasher", "Favonius Lance", "Eye of Perception"], 3.8),
+    "Everlasting Moonglow - Tulaytullah's Remembrance": (["Everlasting Moonglow", "Tulaytullah's Remembrance",  "Wine and Song", "Lion's Roar", "The Bell", "Dragon's Bane", "Favonius Warbow"], 3.8),
+    "The First Great Magic - Aqua Simulacra": (["The First Great Magic", "Aqua Simulacra",  "Sacrificial Sword", "Favonius Greatsword", "Favonius Lance", "Sacrificial Fragments", "Sacrificial Bow"], 4.0),
+    "Vortex Vanquisher - Polar Star": (["Vortex Vanquisher", "Polar Star",  "The Flute", "Sacrificial Greatsword", "Dragon's Bane", "The Widsith", "Rust"], 4.0),
+    "Tome of the Eternal Flow - Staff of Homa": (["Tome of the Eternal Flow", "Staff of Homa",  "The Dockhand's Assistant", "Portable Power Saw", "Mitternachts Waltz", "Favonius Lance", "Favonius Codex"], 4.1),
+    "Cashflow Supervision - Elegy for the End": (["Cashflow Supervision", "Elegy for the End",  "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Eye of Perception"], 4.1),
+    "Splendor of Tranquil Waters - Jadefall's Splendor": (["Splendor of Tranquil Waters", "Jadefall's Splendor",  "Sacrificial Sword", "The Bell", "Dragon's Bane", "Sacrificial Fragments", "The Stringless"], 4.2),
+    "Staff of the Scarlet Sands - Haran Geppaku Futsu": (["Staff of the Scarlet Sands", "Haran Geppaku Futsu",  "Lion's Roar", "Favonius Greatsword", "Favonius Lance", "The Widsith", "Favonius Warbow"], 4.2),
+    "Verdict - Mistsplitter Reforged": (["Verdict", "Mistsplitter Reforged",  "Akuoumaru", "Mouun's Moon", "The Flute", "Dragon's Bane", "Favonius Codex"], 4.3),
+    "Engulfing Lightning - Thundering Pulse": (["Engulfing Lightning", "Thundering Pulse",  "Wavebreaker's Fin", "Favonius Sword", "Rainslasher", "Eye of Perception", "Rust"], 4.3),
+    "Crane's Echoing Call - A Thousand Floating Dreams": (["Crane's Echoing Call", "A Thousand Floating Dreams",  "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "Sacrificial Fragments", "Sacrificial Bow"], 4.4),
+    "Kagura's Verity - Primordial Jade Winged-Spear": (["Kagura's Verity", "Primordial Jade Winged-Spear",  "Lithic Blade", "Lion's Roar", "Favonius Lance", "The Widsith", "The Stringless"], 4.4),
+    "Uraku Misugiri - Redhorn Stonethresher": (["Uraku Misugiri", "Redhorn Stonethresher",  "The Alley Flash", "Alley Hunter", "The Bell", "Dragon's Bane", "Favonius Codex"], 4.5),
+    "Tome of the Eternal Flow - Freedom-Sworn": (["Tome of the Eternal Flow", "Freedom-Sworn",  "Wine and Song", "Mitternachts Waltz", "The Flute", "Favonius Greatsword", "Favonius Lance"], 4.5),
+    "Crimson Moon's Semblance - The First Great Magic": (["Crimson Moon's Semblance", "The First Great Magic",  "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"], 4.6)
 }
 
 
@@ -686,8 +701,8 @@ for banner in character_banner_list:
         character_banner_list[banner][0][i] = characters_dict[character_banner_list[banner][0][i]]
 
 for banner in weapon_banner_list:
-    for i in range(len(weapon_banner_list[banner])):
-        weapon_banner_list[banner][i] = weapons_dict[weapon_banner_list[banner][i]]
+    for i in range(len(weapon_banner_list[banner][0])):
+        weapon_banner_list[banner][0][i] = weapons_dict[weapon_banner_list[banner][0][i]]
 
 
 # replace strings with objects in lists of standard characters
@@ -716,19 +731,27 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     # load_banner() already calls check_for_banner_mismatch_and_save() which calls save_new_banner_of_choice()
 
     global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info, show5050
-    if user_banner_input[0] == 'character':  # ['
+    if user_banner_input[0] == 'character':  # ['character', 'tao-4']
         banner_of_choice = (
             user_banner_input[0],
             character_banner_list[user_banner_input[1]][0],
             character_banner_list[user_banner_input[1]][1])
-        legal_standard_four_stars = [s for s in standard_4_star_characters if
-                                     (s not in banner_of_choice[1] and (s.version < banner_of_choice[-1] or s.version == 1.0))]
-        legal_standard_five_stars = [s for s in standard_5_star_characters if
-                                     (s not in banner_of_choice[1] and (s.version < banner_of_choice[-1] or s.version == 1.0))]
 
-    # elif user_banner_input[0] == 'weapon':
-    #     legal_standard_four_stars = [s for s in standard_4_star_weapons if s not in banner_of_choice[1]]
-    #     legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
+        legal_standard_four_stars = [s for s in standard_4_star_characters if
+                                     (s not in banner_of_choice[1] and (s.version < banner_of_choice[2] or s.version == 1.0))]
+        legal_standard_five_stars = [s for s in standard_5_star_characters if
+                                     (s not in banner_of_choice[1] and (s.version < banner_of_choice[2] or s.version == 1.0))]
+
+    elif user_banner_input[0] == 'weapon':  # ['weapon', ['Staff of Homa - Aqua Simulacra', 'Staff of Homa']]
+        banner_of_choice = (  # ['weapon', featured weapon list, banner version, chosen epitomized path weapon]
+            user_banner_input[0],
+            weapon_banner_list[user_banner_input[1][0]][0],
+            weapon_banner_list[user_banner_input[1][0]][1],
+            weapons_dict[user_banner_input[1][1]])
+
+        legal_standard_four_stars = [s for s in standard_4_star_characters if
+                                     (s.version < banner_of_choice[2] or s.version == 1.0)]
+        legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         t = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
@@ -773,9 +796,20 @@ def print_pity(counter, p, c5, c4):
     else:
         insert1 = ' ' * (p[0] < 10)
         insert2 = ' ' * (p[1] < 10)
-    fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-    print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[-2] else "next is guaranteed to be featured"}')
-    print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[-1] else "next is guaranteed to be featured"}')
+    if user_banner_input[0] == 'character':
+        fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[-2] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[-1] else "next is guaranteed to be featured"}')
+    elif user_banner_input[0] == 'chronicled':
+        fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[-1] else "next is guaranteed to be featured"}')
+    else:
+        was_standard = 'was standard' if p[3] else 'was not standard'
+        epitomized = f"epitomized points: {p[2]}, last {was_standard}"
+        seventyfive = "you're on a 75/25"
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {epitomized if p[2] < 2 else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {seventyfive if not p[-1] else "next is guaranteed to be featured"}')
+
     # print('\n================================================================')
 
 def print_character_archive():
@@ -876,13 +910,13 @@ if not (info_ok and history_ok and archive_ok):
     set_defaults()
 
 
-try:
-    load_banner()
-    print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
-except:
-    print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
-    user_banner_input = ['character', 'tao-3']
-    save_new_banner_of_choice()
+# try:
+load_banner()
+print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+# except:
+#     print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
+#     user_banner_input = ['character', 'tao-3']
+#     save_new_banner_of_choice()
 
 
 load_distribution()
@@ -948,8 +982,7 @@ def make_pull(banner_info, pity):
             else:  # if not guaranteed
                 # choose if win 50/50
                 result = [choice((featured_five_star, choice(legal_standard_five_stars))), pity[0] + 1]
-                if result[0] != featured_five_star:  # if didnt win 50/50
-                    pity[-1] = True  # set guarantee to true
+                pity[-1] = (result[0] != featured_five_star)  # if didn't win 50/50 set guarantee to true
                 result.append(int(result[0] == featured_five_star))  # log if you won or not
             pity[0] = 0
             pity[1] += 1
@@ -964,8 +997,53 @@ def make_pull(banner_info, pity):
             pity[0] += 1
             pity[1] += 1
 
-    # elif banner_info[0] == 'weapon':
-    #     result = [0, 0]
+    elif banner_info[0] == 'weapon':  # ['weapon', featured weapon list, banner version, chosen epitomized path weapon]
+        featured_five_star = banner_info[3]
+        other_five_star = banner_info[1][0] if banner_info[1][0] != featured_five_star else banner_info[1][1]
+        if rarity == 5:
+            if pity[2] < 2:  # 'weapon': [0, 0, 0, False, False] - 5-star pity, 4-star pity, epitomized path, last 5-star was standard, last 4-star was standard
+                if pity[3]:  # if last 5-star was a standard one
+                    result = [choice((featured_five_star, other_five_star)), pity[0] + 1]  # give one of the rate-ups
+                    pity[3] = False  # set last 5-star to not be standard
+                    if result[0] == featured_five_star:
+                        result.append((3, pity[2]))  # last standard, not full epitomized path, win
+                        pity[2] = 0  # set epitomized path back to 0
+                    else:
+                        result.append((4, pity[2]))  # last standard, not full epitomized path, loss
+                        pity[2] += 1  # +1 to epitomized path
+                else:  # if it wasn't standard
+                    # give one based on 37.5/37.5/25 rule
+                    result = [choices((featured_five_star, other_five_star, choice(legal_standard_five_stars)), [3, 3, 2])[0], pity[0] + 1]
+                    if result[0] == featured_five_star:  # if won
+                        result.append((5, pity[2]))  # last not standard, not full epitomized path, win
+                        pity[2] = 0
+                    else:  # if not won
+                        pity[3] = result[0] in legal_standard_five_stars  # log if what was lost to is standard
+                        result.append((6, pity[2]))  # last not standard, not full epitomized path, loss
+                        pity[2] += 1
+            else:
+                result = [featured_five_star, pity[0] + 1, 7]
+                pity[2] = 0  # set epitomized path back to 0
+                pity[3] = False  # set last 5-star to not standard
+            pity[0] = 0  # set 5-star pity to 0
+            pity[1] += 1  # increase 4-star pity by 1
+
+        elif rarity == 4:
+            if pity[4]:
+                result = [choice(banner_info[1][2:]), pity[1] + 1, 2]
+                pity[4] = False
+            else:
+                result = [choice(choices((banner_info[1][2:], legal_standard_four_stars), [3, 1])[0]), pity[1] + 1]
+                result.append(int(result[0] in banner_info[1]))
+                pity[4] = result[0] in legal_standard_four_stars
+            pity[0] += 1
+            pity[1] = 0
+
+        elif rarity == 3:
+            result = [choice(three_star_weapons), 0, False]
+            pity[0] += 1
+            pity[1] += 1
+
     wish_history[banner_info[0]].append(result[0].num)
     pities[banner_info[0]] = pity
     return result
@@ -979,7 +1057,7 @@ def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star
 
     else:
         five_star_chance = max(0, pity[0] + 1 - 62) * 7 + 0.7
-        four_star_chance = 100 if pity[1] + 1 >= 10 else (66 if pity[1] + 1 == 9 else 6)
+        four_star_chance = 100 if pity[1] + 1 >= 9 else (66 if pity[1] + 1 == 8 else 6)
 
     return five_star_chance, four_star_chance
 
@@ -988,13 +1066,48 @@ three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
 color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
-win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}', 1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
-           2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}'}
+win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}',
+           1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
+           2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}',
+           (3, 0): f'{Fore.LIGHTCYAN_EX}S0W{Style.RESET_ALL}',
+           (3, 1): f'{Fore.LIGHTCYAN_EX}S1W{Style.RESET_ALL}',
+           (4, 0): f'{Fore.RED}S0L{Style.RESET_ALL}',
+           (4, 1): f'{Fore.RED}S1L{Style.RESET_ALL}',
+           (5, 0): f'{Fore.LIGHTCYAN_EX}N0W{Style.RESET_ALL}',
+           (5, 1): f'{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}',
+           (6, 0): f'{Fore.RED}N0L{Style.RESET_ALL}',
+           (6, 1): f'{Fore.RED}N1L{Style.RESET_ALL}',
+           7: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}',
+           }
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
 print('\n================================================================\n')
 print('Type "help" for the list of commands\n')
+
+
+def print_banner(t):
+    if t == 'Chosen':
+        t2 = 'B'
+    elif t == 'Current':
+        t2 = 'Current b'
+    elif t == 'New':
+        t2 = 'New b'
+    else:
+        t2 = '???'
+    print(f'\n{t} banner type: {user_banner_input[0]}')
+    if banner_of_choice[0] == 'character':
+        print(f'{t2}anner ID: {user_banner_input[1]}')
+        for i in banner_of_choice[1]:
+            print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+    elif banner_of_choice[0] == 'weapon':
+        print(f'{t2}anner ID: {user_banner_input[1][0]}\nEpitomized Path: {user_banner_input[1][1]}\n')
+        for i in banner_of_choice[1]:
+            print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+    elif banner_of_choice[0] == 'chronicled':
+        print(f'{t2}anner ID: {user_banner_input[1][0]}\nChronicled Path: {user_banner_input[1][1]}')
+
+
 while True:
     user_command = input('Command: ').lower().strip()
 
@@ -1022,25 +1135,23 @@ while True:
         continue
 
     if user_command == 'banner':
-        print(f'\nChosen banner type: {user_banner_input[0]}\nBanner ID: {user_banner_input[1]}')
-        if banner_of_choice[0] in ('character', 'weapon'):
-            for i in banner_of_choice[1]:
-                print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+        print_banner('Chosen')
         print()
         continue
     
     if user_command == 'change':
-        print(f'\nCurrent banner type: {user_banner_input[0]}\nCurrent banner ID: {user_banner_input[1]}')
-        if banner_of_choice[0] in ('character', 'weapon'):
-            for i in banner_of_choice[1]:
-                print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+        if user_banner_input[0] == 'weapon':
+            print(f'\n{Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER{Style.RESET_ALL}')
+        elif user_banner_input[0] == 'chronicled':
+            print(f'\n{Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER{Style.RESET_ALL}')
+        print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
         print("Choose the banner type:")
         print("0 = exit")
         for i in m.items():
             print(f"{i[0]} = {i[1]}")
-        print("(note: only character and chronicled are supported as of right now)\n")
+        print("(note: standard banner is not supported yet)\n")
         while True:
             new1 = input('Your pick: ').strip().lower()
             if new1 == '0':
@@ -1054,9 +1165,9 @@ while True:
             continue
         if new1 in m:
             new1 = m[new1]
-        if new1 not in ('character', 'chronicled'):
-            print("\nDude i JUST told you only character and chronicled banners are supported.\nWhat you think you're quirky or something?\nYou thought I didn't see this coming?\njk its ok pookie bear ill still pick character banner for u ok? :3\n")
-            new1 = 'character'
+        if new1 not in ('character', 'chronicled', 'weapon'):
+            print("\nDude i JUST told you the standard banner isn't supported.\nWhat you think you're quirky or something?\nYou thought I didn't see this coming?\njk its ok pookie bear just try again ok? :3\n")
+            continue
         print(f'{new1.capitalize()} banner selected.')
 
 
@@ -1088,9 +1199,7 @@ while True:
                 continue
             user_banner_input = [new1, new2]
             save_new_banner_of_choice()
-            print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
-            for i in banner_of_choice[1]:
-                print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+            print_banner('New')
 
         elif new1 == 'chronicled':
             print(', '.join(i for i in chronicled_banner_list))
@@ -1117,11 +1226,12 @@ while True:
             print('\n(Type 0 to exit)\n')
 
             while True:
-                new3 = input('Choose one: ').strip().title()
+                new3 = input('Choose one: ').strip()
                 if new3 == '0':
                     break
                 if new3 not in options:
-                    print("That's not a valid pick! Try again\n")
+                    print("That's not a valid pick! Try again\n"
+                          "Please make sure the capitalization matches\n")
                 else:
                     print(f"Ok, {new3} selected")
                     break
@@ -1131,8 +1241,49 @@ while True:
                 continue
             user_banner_input = [new1, [new2, new3]]
             save_new_banner_of_choice()
-            print(f'\nNew banner type: {user_banner_input[0]}\nNew banner ID: {user_banner_input[1]}')
+            print_banner('New')
 
+        elif new1 == 'weapon':
+            print('\n'.join(i for i in weapon_banner_list))
+            print('\n(Type 0 to exit)\n')
+
+            while True:
+                new2 = input('Choose one: ').strip()
+                if new2 == '0':
+                    break
+                if new2 not in weapon_banner_list.keys():
+                    print("That's not a banner that's available! Try again\n")
+                else:
+                    print(f"Ok, {new2} selected")
+                    break
+
+            if new2 == '0':
+                print('Ok, not changing banner anymore.\n')
+                continue
+            print(f'Choose your Epitomized Path now!\n'
+                  f'List of available options:\n')
+            print(weapon_banner_list[new2][0][0].name + '\n' + weapon_banner_list[new2][0][1].name)
+            print('\n(Type 0 to exit)\n')
+
+            while True:
+                new3 = input('Choose one: ').strip()
+                if new3 == '0':
+                    break
+                if new3 not in [weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name]:
+                    print("That's not a valid pick! Try again\n"
+                          "Please make sure the capitalization matches\n")
+                else:
+                    print(f"Ok, {new3} selected")
+                    break
+
+            if new3 == '0':
+                print('Ok, not choosing Eptomized Path anymore.\n')
+                continue
+            user_banner_input = [new1, [new2, new3]]
+            save_new_banner_of_choice()
+            print_banner('New')
+        pities['weapon'][2] = 0
+        pities['chronicled'][2] = False
         print()
         continue
 
@@ -1366,7 +1517,7 @@ while True:
                 print(Style.RESET_ALL + f'{f"[{win_map[w]}] " if res.rarity >= show5050 else ""}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 100000 == 0:
                 print(f'{i}/{user_command} wishes done')
-            if verbose_threshold < 6 and pity_info[1] >= 10:
+            if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                 print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
@@ -1374,7 +1525,14 @@ while True:
                           unique_four_weap_count)
         save_distribution_to_file()
         print()
-        print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
+        if user_banner_input[0] == 'character':
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
+        elif user_banner_input[0] == 'chronicled':
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-1] else "50/50"}')
+        else:
+            epitomized = f"epitomized points: {pity_info[2]}"
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[-2] else "50/50, "+epitomized}')
+
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
             print(Fore.LIGHTRED_EX + '\nTo save disk space and ensure acceptable simulator performance,\n'
