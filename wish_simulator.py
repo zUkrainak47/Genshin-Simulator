@@ -789,8 +789,9 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
 def print_pity(counter, p, c5, c4):
     print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
-    print(f'{counter} pull{"s" if counter != 1 else ""} done so far')
+    print(f'{counter} pull{"s" if counter != 1 else ""} done on all banners combined')
     print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+    print(f'\nCurrent banner type is \'{user_banner_input[0]}\'')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
     else:
@@ -867,13 +868,13 @@ def print_history_page():  # no idea how this works anymore
     print_from = -((page - 1) * 25) - 1
     print_to = -(min(page * 25, len(wish_history[banner_of_choice[0]]))) - 1
     cc = -print_from - 1
-    print(Style.RESET_ALL + '-' * 51)
+    print(Style.RESET_ALL + '   ' + '-' * 58)
     for number in wish_history[banner_of_choice[0]][print_from:print_to:-1]:
         cc += 1
-        print(color_map[number_to_item_dict[number].rarity] + f'{cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
+        print(color_map[number_to_item_dict[number].rarity] + f'   {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
               number_to_item_dict[number].name)
-    print(Style.RESET_ALL + '-' * 51)
-    print(f'\n(Page {page}/{num_of_pages})\n')
+    print(Style.RESET_ALL + '   ' + '-' * 58)
+    print(f'\n   (Page {page}/{num_of_pages})\n')
 
 
 
@@ -1383,13 +1384,15 @@ while True:
     if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
-            print('\n================== WISH HISTORY ===================\n')
-
+            print('\n======================== WISH HISTORY ==========================\n')
+            t = f'Total number of entries for {user_banner_input[0]} banner: {len(wish_history[user_banner_input[0]])}'
+            extra = (64 - len(t))//2
+            print(' ' * extra + t + '\n')
             page = 1
             print_history_page()
 
             while True:
-                cmd = input('History Command: ')
+                cmd = input('   History Command: ')
                 if 'n' in cmd:
                     cmd = cmd.split()
                     if len(cmd) == 1:
@@ -1404,7 +1407,7 @@ while True:
                         print_history_page()
 
                     else:
-                        print("You're already at the last page\n")
+                        print("   You're already at the last page\n")
 
                 elif 'p' in cmd:
                     cmd = cmd.split()
@@ -1420,26 +1423,26 @@ while True:
                         print_history_page()
 
                     elif page == 1:
-                        print("You're already at the first page\n")
+                        print("   You're already at the first page\n")
 
                     else:
-                        print("You can't go back even further\n")
+                        print("   You can't go back even further\n")
 
                 elif cmd.isnumeric():
                     page = min(int(cmd), num_of_pages)
                     print()
                     if page == 0:
-                        print(Style.RESET_ALL + '-' * 51)
-                        print(Fore.YELLOW + '                 You found page 0')
-                        print(Style.RESET_ALL + '-' * 51)
-                        print(f"\n(Page 0/{num_of_pages})\n")
+                        print(Style.RESET_ALL + '   ' + '-' * 58)
+                        print(Fore.YELLOW + '                       You found page 0')
+                        print(Style.RESET_ALL + '   ' + '-' * 58)
+                        print(f"\n   (Page 0/{num_of_pages})\n")
                     else:
                         print_history_page()
 
                 elif cmd == 'e':
-                    print('No longer viewing wish history!\n')
+                    print('   No longer viewing wish history!\n')
+                    print('================================================================\n')
                     break
-
         else:
             print('Wish history empty!\n')
         continue
