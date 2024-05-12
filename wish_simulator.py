@@ -75,10 +75,10 @@ def load_info():
         return pity_and_other_info
 
     except FileNotFoundError:
-        pities = {'character': [0, 0, False, False],
-                  'weapon': [0, 0, 0, False, False],
-                  'standard': [0, 0, 0, 0],
-                  'chronicled': [0, 0, False]}
+        pities = {'character': [0, 0, False, False, [0, 0, 0]],
+                  'weapon': [0, 0, 0, False, False, [0, 0, 0]],
+                  'standard': [0, 0, 0, 0, [0, 0, 0]],
+                  'chronicled': [0, 0, False, [0, 0, 0]]}
         with open('.\\banner_info\\info.txt', 'w') as file:
             info = [pities, 0, 0, 0, 0, 0, 0]
             file.write(json.dumps(info, separators=(',', ':')))
@@ -156,15 +156,16 @@ def set_defaults():
     constellations, refinements = {}, {}
     save_archive_to_file(constellations, refinements)
 
-    pities = {'character': [0, 0, False, False],
+    pities = {'character': [0, 0, False, False, [0, 0, 0]],
               # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
-              'weapon': [0, 0, 0, False, False],
+              'weapon': [0, 0, 0, False, False, [0, 0, 0]],
               # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
-              'standard': [0, 0, 0, 0],
+              'standard': [0, 0, 0, 0, [0, 0, 0]],
               # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
-              'chronicled': [0, 0, False]
+              'chronicled': [0, 0, False, [0, 0, 0]]
               # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
               }
+              # last item is [total pull count, 5-star count, 4-star count]
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count)
@@ -806,8 +807,10 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 def print_pity(counter, p, c5, c4):
     print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
     print(f'{counter} pull{"s" if counter != 1 else ""} done on all banners combined')
-    print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
-    print(f'\nCurrent banner type is \'{user_banner_input[0]}\'')
+    print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}'
+           '\n')
+    print(f'{p[-1][0]} pull{"s" if p[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
+    print(f'Out of them {Fore.YELLOW}{p[-1][1]} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{p[-1][2]} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
     else:
@@ -1127,6 +1130,9 @@ def print_banner(t):
 
 while True:
     user_command = input('Command: ').lower().strip()
+    if not user_command:
+        print('Try "help"\n')
+        continue
 
     if user_command in ['help', "'help'", '"help"']:
         print('\n' +
@@ -1573,6 +1579,7 @@ while True:
             else:
                 print()  # otherwise add an extra space cuz pretty
         count += user_command  # if the program came this far, go on with the job
+        pity_info[-1][0] += user_command
         if user_banner_input[0] != 'weapon':
             character_distribution[100] += user_command
         else:
@@ -1613,8 +1620,10 @@ while True:
 
             if res.rarity == 4:
                 four_count += 1
+                pity_info[-1][2] += 1
             elif res.rarity == 5:
                 five_count += 1
+                pity_info[-1][1] += 1
 
             if res.rarity >= verbose_threshold:
                 print(Style.RESET_ALL + f'{f"[{win_map[w]}] " if res.rarity >= show5050 else ""}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
