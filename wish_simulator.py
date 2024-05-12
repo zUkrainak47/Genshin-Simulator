@@ -943,7 +943,6 @@ load_distribution()
 
 
 def make_pull(banner_info, pity):
-    global legal_standard_four_stars, legal_standard_five_stars
     five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
     rarity = 5 if choices((True, False), (five_star_chance, 100 - five_star_chance))[0] \
         else 4 if choices((True, False), (four_star_chance, 100 - four_star_chance))[0] else 3
@@ -1181,13 +1180,13 @@ while True:
         print("(note: standard banner is not supported yet)\n")
         while True:
             new1 = input('Your pick: ').strip().lower()
-            if new1 == '0':
+            if new1 in ('0', 'exit'):
                 break
             if new1 in m or new1 in m.values():
                 break
             else:
                 print('Please input either the number or the name of the banner type of choice\n')
-        if new1 == '0':
+        if new1 in ('0', 'exit'):
             print('Ok, not changing banner anymore.\n')
             continue
         if new1 in m:
@@ -1213,7 +1212,7 @@ while True:
 
             while True:
                 new2 = input('Choose one: ').strip().lower()
-                if new2 == '0':
+                if new2 in ('0', 'exit'):
                     break
                 if new2 not in character_banner_list.keys():
                     print("That's not a banner that's available! Try again\n")
@@ -1221,7 +1220,7 @@ while True:
                     print(f"Ok, {new2} selected")
                     break
 
-            if new2 == '0':
+            if new2 in ('0', 'exit'):
                 print('Ok, not changing banner anymore.\n')
                 continue
             user_banner_input = [new1, new2]
@@ -1234,7 +1233,7 @@ while True:
 
             while True:
                 new2 = input('Choose one: ').strip().lower()
-                if new2 == '0':
+                if new2 in ('0', 'exit'):
                     break
                 if new2 not in chronicled_banner_list.keys():
                     print("That's not a banner that's available! Try again\n")
@@ -1242,7 +1241,7 @@ while True:
                     print(f"Ok, {new2} selected")
                     break
 
-            if new2 == '0':
+            if new2 in ('0', 'exit'):
                 print('Ok, not changing banner anymore.\n')
                 continue
             print(f'Choose your Chronicled Path now!\n'
@@ -1254,7 +1253,7 @@ while True:
 
             while True:
                 new3 = input('Choose one: ').strip()
-                if new3 == '0':
+                if new3 in ('0', 'exit'):
                     break
                 if new3 not in options:
                     print("That's not a valid pick! Try again\n"
@@ -1263,7 +1262,7 @@ while True:
                     print(f"Ok, {new3} selected")
                     break
 
-            if new3 == '0':
+            if new3 in ('0', 'exit'):
                 print('Ok, not choosing Chronicled Path anymore.\n')
                 continue
             user_banner_input = [new1, [new2, new3]]
@@ -1276,7 +1275,7 @@ while True:
 
             while True:
                 new2 = input('Choose one: ').strip()
-                if new2 == '0':
+                if new2 in ('0', 'exit'):
                     break
                 if new2 not in weapon_banner_list.keys():
                     print("That's not a banner that's available! Try again\n")
@@ -1284,7 +1283,7 @@ while True:
                     print(f"Ok, {new2} selected")
                     break
 
-            if new2 == '0':
+            if new2 in ('0', 'exit'):
                 print('Ok, not changing banner anymore.\n')
                 continue
             print(f'Choose your Epitomized Path now!\n'
@@ -1294,7 +1293,7 @@ while True:
 
             while True:
                 new3 = input('Choose one: ').strip()
-                if new3 == '0':
+                if new3 in ('0', 'exit'):
                     break
                 if new3 not in [weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name]:
                     print("That's not a valid pick! Try again\n"
@@ -1303,7 +1302,7 @@ while True:
                     print(f"Ok, {new3} selected")
                     break
 
-            if new3 == '0':
+            if new3 in ('0', 'exit'):
                 print('Ok, not choosing Eptomized Path anymore.\n')
                 continue
             user_banner_input = [new1, [new2, new3]]
@@ -1381,7 +1380,7 @@ while True:
             print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
             while True:
                 t = input('Your choice: ').strip().lower()
-                if t == '0':
+                if t in ('0', 'exit'):
                     break
                 if t == '1' or t == 'character':
                     t = 'character'
@@ -1392,7 +1391,7 @@ while True:
                 else:
                     print('Please input either the number or the name of the distribution you want to see\n')
 
-            if t == '0':
+            if t in ('0', 'exit'):
                 print('Ok, exiting distribution selection\n')
                 continue
 
@@ -1427,7 +1426,7 @@ while True:
         print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
         while True:
             t = input('Your choice: ').strip().lower()
-            if t == '0':
+            if t in ('0', 'exit'):
                 break
             if t == '1' or t == 'character':
                 t = 'character'
@@ -1438,7 +1437,7 @@ while True:
             else:
                 print('Please input either the number or the name of the visualization you want to see\n')
 
-        if t == '0':
+        if t in ('0', 'exit'):
             print('Ok, exiting visualization selection\n')
             continue
 
