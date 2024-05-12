@@ -20,7 +20,7 @@ try:
 
     plt.plot(weapon_distribution.keys(), weapon_distribution.values())
     plt.xticks([1] + list(range(4, 80, 4)), rotation=45)
-    plt.yticks(np.arange(0, 11, 0.6))
+    plt.yticks(np.arange(0, 12.1, 0.6))
     plt.ylabel('Percentage')
     plt.xlabel('Pity')
     plt.title(f'Distribution of 5★ weapons per pity (size = {num} pulls)')
