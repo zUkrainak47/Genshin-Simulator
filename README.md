@@ -13,6 +13,23 @@ Or  click this button and Fork & Run on replit
 [![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator)
 
 ---
+
+# Wish Simulator
+## About
+You're out of primogems? You watched a friend whale? You just lost your 50/50? \
+I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
+## Using `Wish Simulator`
+As stated above, this part of the project is still WIP. \
+Using Wish Simulator allows you to
+- Do virtually any amount of pulls on any banner
+- Check your wish history
+- Check your inventory containing every character's constellations and weapon refinements
+- Make a "5-stars VS Pity" graph based on your results
+
+All of your results are backed up in separate files, so you don't have to worry about your data getting lost!
+
+---
+
 # Artifact Simulator
 ## About
 Ever wanted to know how long it *actually* takes to get a 50CV artifact? \
@@ -41,19 +58,3 @@ This Artifact Simulator can help you with that.
 
 This program will run Mode 2 of `simulator.py`, but will create a graph to visualize the results. \
 Right now only CV is supported as a stat, but I might add more in the future.
-
----
-
-# Wish Simulator
-## About
-You're out of primogems? You watched a friend whale? You just lost your 50/50? \
-I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
-## Using `Wish Simulator`
-As stated above, this part of the project is still WIP. \
-Using Wish Simulator allows you to
-- Do virtually any amount of pulls on any banner
-- Check your wish history
-- Check your inventory containing every character's constellations and weapon refinements
-- Make a "5-stars VS Pity" graph based on your results
-
-All of your results are backed up in separate files, so you don't have to worry about your data getting lost!
