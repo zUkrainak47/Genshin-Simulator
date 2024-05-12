@@ -1120,7 +1120,7 @@ while True:
               '<number> = do <number> pulls\n'
               'banner = view current banner\n'
               'change = pick a different banner\n'
-              'load = load updates made to wish.txt, archive.txt, info.txt, character_distribution.txt\n'
+              'load = load updates made to wish.txt, archive.txt, info.txt, banner.txt and character_distribution.txt. it is not encouraged to introduce changes to the files yourself as they work together in tandem and by changing a file, chaos is introduced which may or may not cause unpredictable behavior!\n'
               'clear = clear wishing history, pity, inventory. basically like starting a new account\n'
               'pity = view pity related information\n'
               'inv = view character/weapon archive\n'
