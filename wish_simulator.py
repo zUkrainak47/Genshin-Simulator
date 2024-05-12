@@ -80,8 +80,9 @@ def load_info():
                   'standard': [0, 0, 0, 0],
                   'chronicled': [0, 0, False]}
         with open('.\\banner_info\\info.txt', 'w') as file:
-            file.write(f'[{pities},0,0,0,0,0,0]')
-        return [pities, 0, 0, 0, 0, 0, 0]
+            info = [pities, 0, 0, 0, 0, 0, 0]
+            file.write(json.dumps(info, separators=(',', ':')))
+        return info
 
 
 def load_banner():  # always returns a valid banner
@@ -1128,31 +1129,36 @@ def print_banner(t):
 while True:
     user_command = input('Command: ').lower().strip()
 
-    if user_command == 'help':
-        print('\n'
-              'i will update "help" later\n'
-              'but if you\'re using this rn, here\'s some commands you can get silly with:\n'
+    if user_command in ['help', "'help'", '"help"']:
+        print('\n' +
+              '=' * 29 + " HELP " + '=' * 29 + '\n'
               '\n'
-              f'{Fore.LIGHTCYAN_EX}<number>{Style.RESET_ALL} = do <number> pulls\n'
+              f'{Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
+              f'{Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
               f'{Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
-              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = pick a different banner\n'
-              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to wish.txt, archive.txt, info.txt, banner.txt, character_distribution.txt and weapon_distribution.txt. {Fore.RED}it is not encouraged to introduce changes to the files yourself as they work together in tandem and by changing a file, chaos is introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
-              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wishing history, pity, inventory. basically like starting a new account\n'
+              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n'
+              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
               f'{Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
               f'{Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive\n'
-              f'{Fore.LIGHTCYAN_EX}dist char{Style.RESET_ALL} = view disribution of 5-star character per pity (from 71 to 90)\n'
-              f'{Fore.LIGHTCYAN_EX}dist char full{Style.RESET_ALL} = same as dist except from 1 to 90\n'
-              f'{Fore.LIGHTCYAN_EX}dist weap{Style.RESET_ALL} = view disribution of 5-star weapon per pity (from 60 to 77)\n'
-              f'{Fore.LIGHTCYAN_EX}dist weap full{Style.RESET_ALL} = same as dist weap except from 1 to 77\n'
-              f'{Fore.LIGHTCYAN_EX}viz char{Style.RESET_ALL} = plot a "Distribution of 5★ characters per pity" graph, visualizing full dist char\n'
-              f'{Fore.LIGHTCYAN_EX}viz weap{Style.RESET_ALL} = plot a "Distribution of 5★ weapons per pity" graph, visualizing full dist weap\n'
+              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
+              f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n'
               f'{Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
-              f'\t\t{Fore.BLUE}anything in [] is optional{Style.RESET_ALL}\n'
-              f'\t\t{Fore.LIGHTMAGENTA_EX}n [<number>]{Style.RESET_ALL} = go forward <number> pages\n'
-              f'\t\t{Fore.LIGHTMAGENTA_EX}p [<number>]{Style.RESET_ALL} = go back <number> pages,\n'
-              f'\t\t{Fore.LIGHTMAGENTA_EX}<number>{Style.RESET_ALL} = go to page <number>,\n'
-              f'\t\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n'
-              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit the simulator\n')
+              f'\t{Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages,\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages,\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n'
+              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info.\n'
+              f'{Fore.RED}It is not encouraged to introduce changes to the files yourself\n'
+                        f'as they work together in tandem and by changing a file, chaos is\n'
+                        f'introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
+              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit the simulator\n'
+              f'\n' +
+              '=' * 64 +
+              '\n')
+        continue
+
+    if user_command == 'number':
+        print('real funny, input an actual number tho\n')
         continue
 
     if user_command == 'banner':
@@ -1368,72 +1374,89 @@ while True:
         show_full_inventory()
         continue
 
-    if user_command == 'dist char':
-        total = sum(character_distribution.values()) - character_distribution[100]
-        if total > 0:
-            print(f'Total entries = {character_distribution[100]}')
-            print(f'Total 5★ entries = {total}\n')
-            for i in range(71, 91):
-                print(f'Pity {i}: {character_distribution[i] / total * 100:.2f}% - {character_distribution[i]}/{total}')
-        else:
-            print('Get a 5-star first')
-        print()
-        continue
+    if user_command.split()[0] == 'dist':
+        total1 = sum(character_distribution.values()) - character_distribution[100]
+        total2 = sum(weapon_distribution.values()) - weapon_distribution[100]
+        if total1 or total2:
+            print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
+            while True:
+                t = input('Your choice: ').strip().lower()
+                if t == '0':
+                    break
+                if t == '1' or t == 'character':
+                    t = 'character'
+                    break
+                elif t == '2' or t == 'weapon':
+                    t = 'weapon'
+                    break
+                else:
+                    print('Not a valid choice, try again\n')
 
-    if user_command == 'dist char full':
-        total = sum(character_distribution.values()) - character_distribution[100]
-        if total > 0:
-            print(f'Total entries = {character_distribution[100]}')
-            print(f'Total 5★ entries = {total}\n')
-            for i in range(1, 91):
-                print(f'Pity {i}: {character_distribution[i] / total * 100:.2f}% - {character_distribution[i]}/{total}')
-            print('If you want to visualize your results, type "viz char" or run visualize_character_distribution.py')
-        else:
-            print('Get a 5-star first')
-        print()
-        continue
+            if t == '0':
+                print('Ok, exiting distribution selection\n')
+                continue
 
-    if user_command == 'dist weap':
-        total = sum(weapon_distribution.values()) - weapon_distribution[100]
-        if total > 0:
-            print(f'Total entries = {weapon_distribution[100]}')
-            print(f'Total 5★ entries = {total}\n')
-            for i in range(60, 78):
-                print(f'Pity {i}: {weapon_distribution[i] / total * 100:.2f}% - {weapon_distribution[i]}/{total}')
-        else:
-            print('Get a 5-star first')
-        print()
-        continue
+            if t == 'character':
+                if total1 > 0:
+                    print(f'Total entries = {character_distribution[100]}')
+                    print(f'Total 5★ entries = {total1}\n')
+                    for i in range(1, 91):
+                        print(f'Pity {i}: {character_distribution[i] / total1 * 100:.2f}% - {character_distribution[i]}/{total1}')
+                    print('If you want to visualize your results, type "viz" and then "1" or run visualize_character_distribution.py')
+                else:
+                    print('Get a 5-star character first!')
+                print()
+                continue
 
-    if user_command == 'dist weap full':
-        total = sum(weapon_distribution.values()) - weapon_distribution[100]
-        if total > 0:
-            print(f'Total entries = {weapon_distribution[100]}')
-            print(f'Total 5★ entries = {total}\n')
-            for i in range(1, 78):
-                print(f'Pity {i}: {weapon_distribution[i] / total * 100:.2f}% - {weapon_distribution[i]}/{total}')
-            print('If you want to visualize your results, type "viz weap" or run visualize_weapon_distribution.py')
+            elif t == 'weapon':
+                if total2 > 0:
+                    print(f'Total entries = {weapon_distribution[100]}')
+                    print(f'Total 5★ entries = {total2}\n')
+                    for i in range(1, 78):
+                        print(f'Pity {i}: {weapon_distribution[i] / total2 * 100:.2f}% - {weapon_distribution[i]}/{total2}')
+                    print('If you want to visualize your results, type "viz" and then "2" or run visualize_weapon_distribution.py')
+                else:
+                    print('Get a 5-star from the weapon banner first!')
+                print()
+                continue
         else:
-            print('Get a 5-star first')
-        print()
-        continue
+            print('Get a 5-star first!\n')
+            continue
 
+    if user_command.split()[0] == 'viz':
+        print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
+        while True:
+            t = input('Your choice: ').strip().lower()
+            if t == '0':
+                break
+            if t == '1' or t == 'character':
+                t = 'character'
+                break
+            elif t == '2' or t == 'weapon':
+                t = 'weapon'
+                break
+            else:
+                print('Not a valid choice, try again\n')
 
-    if user_command == 'viz char':
-        if 'visualize_character_distribution' not in sys.modules:
-            import visualize_character_distribution
-        else:
-            importlib.reload(visualize_character_distribution)
-        print()
-        continue
+        if t == '0':
+            print('Ok, exiting visualization selection\n')
+            continue
 
-    if user_command == 'viz weap':
-        if 'visualize_weapon_distribution' not in sys.modules:
-            import visualize_weapon_distribution
-        else:
-            importlib.reload(visualize_weapon_distribution)
-        print()
-        continue
+        if t == 'character':
+            if 'visualize_character_distribution' not in sys.modules:
+                import visualize_character_distribution
+            else:
+                importlib.reload(visualize_character_distribution)
+            print()
+            continue
+
+        elif t == 'weapon':
+            if 'visualize_weapon_distribution' not in sys.modules:
+                import visualize_weapon_distribution
+            else:
+                importlib.reload(visualize_weapon_distribution)
+            print()
+            continue
 
     if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
@@ -1508,11 +1531,11 @@ while True:
                     print('================================================================\n')
                     break
 
-                elif cmd == 'help':
-                    print(f'   {Fore.BLUE}anything in [] is optional{Style.RESET_ALL}\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}n [<number>]{Style.RESET_ALL} = go forward <number> pages\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}p [<number>]{Style.RESET_ALL} = go back <number> pages,\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}<number>{Style.RESET_ALL} = go to page <number>,\n'
+                elif cmd in ['help', "'help'", '"help"']:
+                    print(f'   {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page\n'
                           f'   {Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n')
 
                 else:
