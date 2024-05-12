@@ -815,17 +815,17 @@ def print_pity(counter, p, c5, c4):
         insert2 = ' ' * (p[1] < 10)
     if user_banner_input[0] == 'character':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[-2] else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[-1] else "next is guaranteed to be featured"}')
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[2] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[3] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[-1] else "next is guaranteed to be featured"}')
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[2] else "next is guaranteed to be featured"}')
     else:
         was_standard = 'was standard' if p[3] else 'was not standard'
         epitomized = f"epitomized points: {p[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
         print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {epitomized if p[2] < 2 else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {seventyfive if not p[-1] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {seventyfive if not p[4] else "next is guaranteed to be featured"}')
 
     # print('\n================================================================')
 
@@ -953,30 +953,30 @@ def make_pull(banner_info, pity):
         if rarity == 5:
             character_distribution[pity[0] + 1] += 1
             # print(f'{Style.RESET_ALL}{five_star_chance}')
-            if pity[-2]:  # if guaranteed
+            if pity[2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
-                pity[-2] = False  # change guaranteed to false
+                pity[2] = False  # change guaranteed to false
                 result.append(2)  # log that guarantee took place
             else:  # if not guaranteed
                 # choose if win 50/50
                 result = [choice((featured_five_star, choice(legal_standard_five_stars))), pity[0] + 1]
                 if result[0] != featured_five_star:  # if didnt win 50/50
-                    pity[-2] = True  # set guarantee to true
+                    pity[2] = True  # set guarantee to true
                 result.append(int(result[0] == featured_five_star))  # log if you won or not
             pity[0] = 0
             pity[1] += 1
 
         elif rarity == 4:
             # print(f'{Style.RESET_ALL}{four_star_chance}')
-            if pity[-1]:  # if guaranteed
+            if pity[3]:  # if guaranteed
                 result = [choice(featured_four_stars), pity[1] + 1]  # give a featured 4-star character
-                pity[-1] = False  # change guaranteed to false
+                pity[3] = False  # change guaranteed to false
                 result.append(2)  # log that guarantee took place
             else:  # if not guaranteed
                 # choose what to give from different pools
                 result = [choice(choices((featured_four_stars, legal_standard_four_stars, standard_4_star_weapons), [50, 25, 25])[0]), pity[1] + 1]
                 if result[0] not in featured_four_stars:  # if 50/50 lost
-                    pity[-1] = True  # set guarantee to true
+                    pity[3] = True  # set guarantee to true
                 result.append(int(result[0] in featured_four_stars))  # log if you won or not
             pity[0] += 1
             pity[1] = 0
@@ -991,14 +991,14 @@ def make_pull(banner_info, pity):
         if rarity == 5:
             character_distribution[pity[0] + 1] += 1
             # print(f'{Style.RESET_ALL}{five_star_chance}')
-            if pity[-1]:  # if guaranteed
+            if pity[2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
-                pity[-1] = False  # change guaranteed to false
+                pity[2] = False  # change guaranteed to false
                 result.append(2)  # log that guarantee took place
             else:  # if not guaranteed
                 # choose if win 50/50
                 result = [choice((featured_five_star, choice(legal_standard_five_stars))), pity[0] + 1]
-                pity[-1] = (result[0] != featured_five_star)  # if didn't win 50/50 set guarantee to true
+                pity[2] = (result[0] != featured_five_star)  # if didn't win 50/50 set guarantee to true
                 result.append(int(result[0] == featured_five_star))  # log if you won or not
             pity[0] = 0
             pity[1] += 1
@@ -1630,12 +1630,12 @@ while True:
         save_weapon_distribution_to_file()
         print()
         if user_banner_input[0] == 'character':
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'chronicled':
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-1] else "50/50"}')
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         else:
             epitomized = f"epitomized points: {pity_info[2]}"
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[-2] else "50/50, "+epitomized}')
+            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
 
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
