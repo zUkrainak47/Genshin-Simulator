@@ -161,9 +161,9 @@ def set_defaults():
               'weapon': [0, 0, 0, False, False, [0, 0, 0]],
               # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
               'standard': [0, 0, 0, 0, [0, 0, 0]],
-              # wishes since last [5-star char / 4-star char / 5-star weapon / 4-star weapon]
+              # wishes since last [5-star char / 5-star weapon / 4-star char / 4-star weapon]
               'chronicled': [0, 0, False, [0, 0, 0]]
-              # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
+              # 5-star pity / 4-star pity / 5-star guarantee
               }
               # last item is [total pull count, 5-star count, 4-star count]
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
@@ -747,7 +747,7 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     # if in doubt about new banner being valid, call check_for_banner_mismatch_and_save()
     # load_banner() already calls check_for_banner_mismatch_and_save() which calls save_new_banner_of_choice()
 
-    global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info, show5050
+    global banner_of_choice, legal_standard_four_stars, legal_standard_five_stars, pity_info
     if user_banner_input[0] == 'character':  # ['character', 'tao-4']
         banner_of_choice = (
             user_banner_input[0],
@@ -769,6 +769,11 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
         legal_standard_four_stars = [s for s in standard_4_star_characters if
                                      (s.version < banner_of_choice[2] or s.version == 1.0)]
         legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
+
+    elif user_banner_input[0] == 'standard':  # ['standard', 0]
+        banner_of_choice = (
+            user_banner_input[0],
+        )
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         t = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
@@ -799,7 +804,6 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
         # I then choose the ones whose name does not equal to user_banner_input[1][1] (since you can't lose your 5050 to
         # the item that you chose) and add them to a list
 
-    show5050 = 4 + (user_banner_input[0] == 'chronicled')
     pity_info = pities[banner_of_choice[0]]
     save_banner_to_file()
 
@@ -823,12 +827,21 @@ def print_pity(counter, p, c5, c4):
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
         print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[2] else "next is guaranteed to be featured"}')
-    else:
+    elif user_banner_input[0] == 'weapon':
         was_standard = 'was standard' if p[3] else 'was not standard'
         epitomized = f"epitomized points: {p[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
         print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {epitomized if p[2] < 2 else "next is guaranteed to be featured"}')
         print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {seventyfive if not p[4] else "next is guaranteed to be featured"}')
+    elif user_banner_input[0] == 'standard':
+        print(f'{Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {p[0]}\n'
+              f'{Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {p[1]}')
+        print(f'{Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {p[2]}\n'
+              f'{Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {p[3]}')
+        if p[0] >= 180 or p[1] >= 180:
+            print(f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[0] >= 180 else "weapon"}')
+        if p[2] >= 20 or p[3] >= 20:
+            print(f'Next {Fore.YELLOW}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[2] >= 20 else "weapon"}')
 
     # print('\n================================================================')
 
@@ -985,7 +998,7 @@ def make_pull(banner_info, pity):
             pity[1] = 0
 
         elif rarity == 3:
-            result = [choice(three_star_weapons), 0, False]
+            result = [choice(three_star_weapons), 0, 7]
             pity[0] += 1
             pity[1] += 1
 
@@ -1007,12 +1020,12 @@ def make_pull(banner_info, pity):
             pity[1] += 1
 
         elif rarity == 4:
-            result = [choice(choice((legal_standard_four_stars[0], legal_standard_four_stars[1]))), pity[1] + 1, False]
+            result = [choice(choice((legal_standard_four_stars[0], legal_standard_four_stars[1]))), pity[1] + 1, 7]
             pity[0] += 1
             pity[1] = 0
 
         elif rarity == 3:
-            result = [choice(three_star_weapons), 0, False]
+            result = [choice(three_star_weapons), 0, 7]
             pity[0] += 1
             pity[1] += 1
 
@@ -1042,7 +1055,7 @@ def make_pull(banner_info, pity):
                         result.append((6, pity[2]))  # last not standard, not full epitomized path, loss
                         pity[2] += 1
             else:
-                result = [featured_five_star, pity[0] + 1, 7]
+                result = [featured_five_star, pity[0] + 1, 2]
                 pity[2] = 0  # set epitomized path back to 0
                 pity[3] = False  # set last 5-star to not standard
             pity[0] = 0  # set 5-star pity to 0
@@ -1060,9 +1073,62 @@ def make_pull(banner_info, pity):
             pity[1] = 0
 
         elif rarity == 3:
-            result = [choice(three_star_weapons), 0, False]
+            result = [choice(three_star_weapons), 0, 7]
             pity[0] += 1
             pity[1] += 1
+
+    elif banner_info[0] == 'standard':
+        if rarity == 5:
+            if pity[0] >= 180:
+                result = [choice(standard_5_star_characters), f'{pity[1] + 1} ({pity[0] + 1})', 2]
+                pity[0] = 0
+                pity[1] += 1
+                pity[2] += 1
+                pity[3] += 1
+            elif pity[1] >= 180:
+                result = [choice(standard_5_star_weapons), f'{pity[0] + 1} ({pity[1] + 1})', 2]
+                pity[0] += 1
+                pity[1] = 0
+                pity[2] += 1
+                pity[3] += 1
+            else:
+                result = [choice(choice((standard_5_star_characters, standard_5_star_weapons)))]
+                got = int(result[0] in standard_5_star_weapons)  # 0 if character, 1 if weapon
+                result.extend([pity[got] + 1, 7])
+                pity[got] = 0
+                pity[1 - got] += 1
+                pity[2] += 1
+                pity[3] += 1
+
+        elif rarity == 4:
+            if pity[2] >= 20:
+                result = [choice(standard_4_star_characters), f'{pity[3] + 1} ({pity[2] + 1})', 2]
+                pity[0] += 1
+                pity[1] += 1
+                pity[2] = 0
+                pity[3] += 1
+            elif pity[3] >= 20:
+                result = [choice(standard_4_star_weapons), f'{pity[2] + 1} ({pity[3] + 1})', 2]
+                pity[0] += 1
+                pity[1] += 1
+                pity[2] += 1
+                pity[3] = 0
+            else:
+                result = [choice(choice((standard_4_star_characters, standard_4_star_weapons)))]
+                got = int(result[0] in standard_4_star_weapons) + 2  # 2 if character, 3 if weapon
+                result.extend([pity[got] + 1, 7])
+                pity[0] += 1
+                pity[1] += 1
+                pity[got] = 0
+                pity[5 - got] += 1
+
+        elif rarity == 3:
+            result = [choice(three_star_weapons), 0, 7]
+            pity[0] += 1
+            pity[1] += 1
+            pity[2] += 1
+            pity[3] += 1
+        # print(pity[0], pity[1], pity[2], pity[3])
 
     wish_history[banner_info[0]].append(result[0].num)
     pities[banner_info[0]] = pity
@@ -1070,14 +1136,18 @@ def make_pull(banner_info, pity):
 
 
 def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star)
-    if banner_type != 'weapon':  # + 1 here to check the number of the next pull you're making
+    if banner_type in ('character', 'chronicled'):  # + 1 here to check the number of the next pull you're making
         five_star_chance = max(0, pity[0] + 1 - 73) * 6 + 0.6  # every pull above 73 adds 6%
         four_star_chance = 100 if pity[1] + 1 >= 10 else (56.1 if pity[1] + 1 == 9 else 5.1)
         # 10+ pity = 4 star in case of no 5 star, 9 pity = 56.1% chance, <9 = 5.6%
 
-    else:
+    elif banner_type == 'weapon':
         five_star_chance = max(0, pity[0] + 1 - 62) * 7 + 0.7
         four_star_chance = 100 if pity[1] + 1 >= 9 else (66 if pity[1] + 1 == 8 else 6)
+
+    elif banner_type == 'standard':
+        five_star_chance = max(0, min(pity[0], pity[1]) + 1 - 73) * 6 + 0.6  # every pull above 73 adds 6%
+        four_star_chance = 100 if min(pity[2], pity[3]) + 1 >= 10 else (56.1 if min(pity[2], pity[3]) + 1 == 9 else 5.1)
 
     return five_star_chance, four_star_chance
 
@@ -1086,18 +1156,18 @@ three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
 color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
-win_map = {0: f'{Fore.RED}L{Style.RESET_ALL}',
-           1: f'{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}',
-           2: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}',
-           (3, 0): f'{Fore.LIGHTCYAN_EX}S0W{Style.RESET_ALL}',
-           (3, 1): f'{Fore.LIGHTCYAN_EX}S1W{Style.RESET_ALL}',
-           (4, 0): f'{Fore.RED}S0L{Style.RESET_ALL}',
-           (4, 1): f'{Fore.RED}S1L{Style.RESET_ALL}',
-           (5, 0): f'{Fore.LIGHTCYAN_EX}N0W{Style.RESET_ALL}',
-           (5, 1): f'{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}',
-           (6, 0): f'{Fore.RED}N0L{Style.RESET_ALL}',
-           (6, 1): f'{Fore.RED}N1L{Style.RESET_ALL}',
-           7: f'{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}',
+win_map = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
+           1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
+           2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
+           (3, 0): f'[{Fore.LIGHTCYAN_EX}S0W{Style.RESET_ALL}] ',
+           (3, 1): f'[{Fore.LIGHTCYAN_EX}S1W{Style.RESET_ALL}] ',
+           (4, 0): f'[{Fore.RED}S0L{Style.RESET_ALL}] ',
+           (4, 1): f'[{Fore.RED}S1L{Style.RESET_ALL}] ',
+           (5, 0): f'[{Fore.LIGHTCYAN_EX}N0W{Style.RESET_ALL}] ',
+           (5, 1): f'[{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}] ',
+           (6, 0): f'[{Fore.RED}N0L{Style.RESET_ALL}] ',
+           (6, 1): f'[{Fore.RED}N1L{Style.RESET_ALL}] ',
+           7: ''
            }
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
@@ -1115,18 +1185,17 @@ def print_banner(t):
         t2 = 'New b'
     else:
         t2 = '???'
-    print(f'\n{t} banner type: {user_banner_input[0]}')
+    print(f'\n{t} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
     if banner_of_choice[0] == 'character':
         print(f'{t2}anner ID: {user_banner_input[1]}')
         for i in banner_of_choice[1]:
             print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
     elif banner_of_choice[0] == 'weapon':
-        print(f'{t2}anner ID: {user_banner_input[1][0]}\nEpitomized Path: {user_banner_input[1][1]}\n')
+        print(f'{t2}anner ID: {user_banner_input[1][0]}\nEpitomized Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}\n')
         for i in banner_of_choice[1]:
             print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
     elif banner_of_choice[0] == 'chronicled':
-        print(f'{t2}anner ID: {user_banner_input[1][0]}\nChronicled Path: {user_banner_input[1][1]}')
-
+        print(f'{t2}anner ID: {user_banner_input[1][0]}\nChronicled Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}')
 
 while True:
     user_command = input('Command: ').lower().strip()
@@ -1172,10 +1241,12 @@ while True:
         continue
     
     if user_command == 'change':
-        if user_banner_input[0] == 'weapon':
-            print(f'\n{Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER{Style.RESET_ALL}')
-        elif user_banner_input[0] == 'chronicled':
-            print(f'\n{Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER{Style.RESET_ALL}')
+        if user_banner_input[0] == 'weapon' and pity_info[2]:
+            print(f'\n{Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
+                  f'(You own {pity_info[2]} Epitomized Point{"s" if pity_info[2] != 1 else ''}){Style.RESET_ALL}')
+        elif user_banner_input[0] == 'chronicled' and pity_info[2]:
+            print(f'\n{Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
+                  f'(You own 1 Chronicled Point){Style.RESET_ALL}')
         print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
@@ -1197,125 +1268,119 @@ while True:
             continue
         if new1 in m:
             new1 = m[new1]
-        if new1 not in ('character', 'chronicled', 'weapon'):
-            print("\nDude i JUST told you the standard banner isn't supported.\nWhat you think you're quirky or something?\nYou thought I didn't see this coming?\njk its ok pookie bear just try again ok? :3\n")
-            continue
         print(f'{new1.capitalize()} banner selected.')
 
 
         if new1 == 'standard':
-            print()
-            continue
+            user_banner_input = [new1]
 
+        else:
+            print('Choose the banner now!\n'
+                  'List of available banners:\n')
 
-        print('Choose the banner now!\n'
-              'List of available banners:\n')
+            if new1 == 'character':
+                print(', '.join(i for i in character_banner_list))
+                print('\n(Type 0 to exit)\n')
 
+                while True:
+                    new2 = input('Choose one: ').strip().lower()
+                    if new2 in ('0', 'exit'):
+                        break
+                    if new2 not in character_banner_list.keys():
+                        print("That's not a banner that's available! Try again\n")
+                    else:
+                        print(f"Ok, {new2} selected")
+                        break
 
-        if new1 == 'character':
-            print(', '.join(i for i in character_banner_list))
-            print('\n(Type 0 to exit)\n')
-
-            while True:
-                new2 = input('Choose one: ').strip().lower()
                 if new2 in ('0', 'exit'):
-                    break
-                if new2 not in character_banner_list.keys():
-                    print("That's not a banner that's available! Try again\n")
-                else:
-                    print(f"Ok, {new2} selected")
-                    break
+                    print('Ok, not changing banner anymore.\n')
+                    continue
+                user_banner_input = [new1, new2]
 
-            if new2 in ('0', 'exit'):
-                print('Ok, not changing banner anymore.\n')
-                continue
-            user_banner_input = [new1, new2]
-            save_new_banner_of_choice()
-            print_banner('New')
+            elif new1 == 'chronicled':
+                print(', '.join(i for i in chronicled_banner_list))
+                print('\n(Type 0 to exit)\n')
 
-        elif new1 == 'chronicled':
-            print(', '.join(i for i in chronicled_banner_list))
-            print('\n(Type 0 to exit)\n')
+                while True:
+                    new2 = input('Choose one: ').strip().lower()
+                    if new2 in ('0', 'exit'):
+                        break
+                    if new2 not in chronicled_banner_list.keys():
+                        print("That's not a banner that's available! Try again\n")
+                    else:
+                        print(f"Ok, {new2} selected")
+                        break
 
-            while True:
-                new2 = input('Choose one: ').strip().lower()
                 if new2 in ('0', 'exit'):
-                    break
-                if new2 not in chronicled_banner_list.keys():
-                    print("That's not a banner that's available! Try again\n")
-                else:
-                    print(f"Ok, {new2} selected")
-                    break
+                    print('Ok, not changing banner anymore.\n')
+                    continue
+                print(f'Choose your Chronicled Path now!\n'
+                      f'List of available options:\n')
+                options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
+                           [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
+                print(', '.join(i for i in options))
+                print('\n(Type 0 to exit)\n')
 
-            if new2 in ('0', 'exit'):
-                print('Ok, not changing banner anymore.\n')
-                continue
-            print(f'Choose your Chronicled Path now!\n'
-                  f'List of available options:\n')
-            options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
-                       [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
-            print(', '.join(i for i in options))
-            print('\n(Type 0 to exit)\n')
+                while True:
+                    new3 = input('Choose one: ').strip()
+                    if new3 in ('0', 'exit'):
+                        break
+                    if new3 not in options:
+                        print("That's not a valid pick! Try again\n"
+                              "Please make sure the capitalization matches\n")
+                    else:
+                        print(f"Ok, {new3} selected")
+                        break
 
-            while True:
-                new3 = input('Choose one: ').strip()
                 if new3 in ('0', 'exit'):
-                    break
-                if new3 not in options:
-                    print("That's not a valid pick! Try again\n"
-                          "Please make sure the capitalization matches\n")
-                else:
-                    print(f"Ok, {new3} selected")
-                    break
+                    print('Ok, not choosing Chronicled Path anymore.\n')
+                    continue
+                user_banner_input = [new1, [new2, new3]]
 
-            if new3 in ('0', 'exit'):
-                print('Ok, not choosing Chronicled Path anymore.\n')
-                continue
-            user_banner_input = [new1, [new2, new3]]
-            save_new_banner_of_choice()
-            print_banner('New')
+            elif new1 == 'weapon':
+                print('\n'.join(i for i in weapon_banner_list))
+                print('\n(Type 0 to exit)\n')
 
-        elif new1 == 'weapon':
-            print('\n'.join(i for i in weapon_banner_list))
-            print('\n(Type 0 to exit)\n')
+                while True:
+                    new2 = input('Choose one: ').strip()
+                    if new2 in ('0', 'exit'):
+                        break
+                    if new2 not in weapon_banner_list.keys():
+                        print("That's not a banner that's available! Try again\n")
+                    else:
+                        print(f"Ok, {new2} selected")
+                        break
 
-            while True:
-                new2 = input('Choose one: ').strip()
                 if new2 in ('0', 'exit'):
-                    break
-                if new2 not in weapon_banner_list.keys():
-                    print("That's not a banner that's available! Try again\n")
-                else:
-                    print(f"Ok, {new2} selected")
-                    break
+                    print('Ok, not changing banner anymore.\n')
+                    continue
+                print(f'Choose your Epitomized Path now!\n'
+                      f'List of available options:\n')
+                print(weapon_banner_list[new2][0][0].name + '\n' + weapon_banner_list[new2][0][1].name)
+                print('\n(Type 0 to exit)\n')
 
-            if new2 in ('0', 'exit'):
-                print('Ok, not changing banner anymore.\n')
-                continue
-            print(f'Choose your Epitomized Path now!\n'
-                  f'List of available options:\n')
-            print(weapon_banner_list[new2][0][0].name + '\n' + weapon_banner_list[new2][0][1].name)
-            print('\n(Type 0 to exit)\n')
+                while True:
+                    new3 = input('Choose one: ').strip()
+                    if new3 in ('0', 'exit'):
+                        break
+                    if new3 not in [weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name]:
+                        print("That's not a valid pick! Try again\n"
+                              "Please make sure the capitalization matches\n")
+                    else:
+                        print(f"Ok, {new3} selected")
+                        break
 
-            while True:
-                new3 = input('Choose one: ').strip()
                 if new3 in ('0', 'exit'):
-                    break
-                if new3 not in [weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name]:
-                    print("That's not a valid pick! Try again\n"
-                          "Please make sure the capitalization matches\n")
-                else:
-                    print(f"Ok, {new3} selected")
-                    break
+                    print('Ok, not choosing Eptomized Path anymore.\n')
+                    continue
+                user_banner_input = [new1, [new2, new3]]
 
-            if new3 in ('0', 'exit'):
-                print('Ok, not choosing Eptomized Path anymore.\n')
-                continue
-            user_banner_input = [new1, [new2, new3]]
-            save_new_banner_of_choice()
-            print_banner('New')
         pities['weapon'][2] = 0
         pities['chronicled'][2] = False
+        save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                          unique_four_weap_count)
+        save_new_banner_of_choice()
+        print_banner('New')
         print()
         continue
 
@@ -1567,7 +1632,7 @@ while True:
         # pulls <= 10k = show every pull
         # 10k < pulls <= 100k = show 4* and 5*
         # 100k < pulls <= 1M = show only 5*
-        # 1M < pulls = show progress (10k step) and stop showing "10 PULLS WITHOUT 4 STAR" message
+        # 1M < pulls = show progress (10k step) and stop showing "10 PULLS WITHOUT A 4 STAR" message
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
@@ -1626,11 +1691,12 @@ while True:
                 pity_info[-1][1] += 1
 
             if res.rarity >= verbose_threshold:
-                print(Style.RESET_ALL + f'{f"[{win_map[w]}] " if res.rarity >= show5050 else ""}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
+                print(Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 100000 == 0:
                 print(f'{i}/{user_command} wishes done')
-            if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
-                print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
+            if user_banner_input[0] != 'standard':
+                if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
+                    print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
@@ -1642,9 +1708,13 @@ while True:
             print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'chronicled':
             print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
-        else:
+        elif user_banner_input[0] == 'weapon':
             epitomized = f"epitomized points: {pity_info[2]}"
             print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
+        elif user_banner_input[0] == 'standard':
+            recent, not_recent = ('character', 'weapon') if pity_info[0] < pity_info[1] else ('weapon', 'character')
+            pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
+            print(Style.RESET_ALL + f'{min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
 
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
