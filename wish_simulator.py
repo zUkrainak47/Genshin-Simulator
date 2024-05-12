@@ -16,9 +16,14 @@ def save_history_to_file(data):
         f.write(json.dumps(data, separators=(',', ':')))
 
 
-def save_distribution_to_file():
+def save_character_distribution_to_file():
     with open(r'.\banner_info\character_distribution.txt', 'w') as f:
-        f.write(json.dumps(distribution, separators=(',', ':')))
+        f.write(json.dumps(character_distribution, separators=(',', ':')))
+
+
+def save_weapon_distribution_to_file():
+    with open(r'.\banner_info\weapon_distribution.txt', 'w') as f:
+        f.write(json.dumps(weapon_distribution, separators=(',', ':')))
 
 
 def save_info_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count):
@@ -98,16 +103,26 @@ def jsonKeys2int(x):
 
 
 def load_distribution():
-    global distribution
+    global character_distribution, weapon_distribution
     try:
         with open('.\\banner_info\\character_distribution.txt') as file:
             data = file.read()
-        distribution = json.loads(data, object_hook=jsonKeys2int)
+        character_distribution = json.loads(data, object_hook=jsonKeys2int)
 
     except:
-        distribution = {i: 0 for i in range(1, 91)}
-        distribution[100] = 0
-        save_distribution_to_file()
+        character_distribution = {i: 0 for i in range(1, 91)}
+        character_distribution[100] = 0
+        save_character_distribution_to_file()
+
+    try:
+        with open('.\\banner_info\\weapon_distribution.txt') as file:
+            data = file.read()
+        weapon_distribution = json.loads(data, object_hook=jsonKeys2int)
+
+    except:
+        weapon_distribution = {i: 0 for i in range(1, 78)}
+        weapon_distribution[100] = 0
+        save_weapon_distribution_to_file()
 
     print(Fore.GREEN + 'Loaded distribution successfully!' + Style.RESET_ALL)
 
@@ -936,7 +951,7 @@ def make_pull(banner_info, pity):
         featured_five_star = banner_info[1][0]
         featured_four_stars = banner_info[1][1:]
         if rarity == 5:
-            distribution[pity[0] + 1] += 1
+            character_distribution[pity[0] + 1] += 1
             # print(f'{Style.RESET_ALL}{five_star_chance}')
             if pity[-2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
@@ -974,7 +989,7 @@ def make_pull(banner_info, pity):
     elif banner_info[0] == 'chronicled':  # banner_info = ['chronicled', banner dictionary, Chronicled Path item]
         featured_five_star = banner_info[2]
         if rarity == 5:
-            distribution[pity[0] + 1] += 1
+            character_distribution[pity[0] + 1] += 1
             # print(f'{Style.RESET_ALL}{five_star_chance}')
             if pity[-1]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
@@ -1002,6 +1017,7 @@ def make_pull(banner_info, pity):
         featured_five_star = banner_info[3]
         other_five_star = banner_info[1][0] if banner_info[1][0] != featured_five_star else banner_info[1][1]
         if rarity == 5:
+            weapon_distribution[pity[0] + 1] += 1
             if pity[2] < 2:  # 'weapon': [0, 0, 0, False, False] - 5-star pity, 4-star pity, epitomized path, last 5-star was standard, last 4-star was standard
                 if pity[3]:  # if last 5-star was a standard one
                     result = [choice((featured_five_star, other_five_star)), pity[0] + 1]  # give one of the rate-ups
@@ -1117,22 +1133,26 @@ while True:
               'i will update "help" later\n'
               'but if you\'re using this rn, here\'s some commands you can get silly with:\n'
               '\n'
-              '<number> = do <number> pulls\n'
-              'banner = view current banner\n'
-              'change = pick a different banner\n'
-              'load = load updates made to wish.txt, archive.txt, info.txt, banner.txt and character_distribution.txt. it is not encouraged to introduce changes to the files yourself as they work together in tandem and by changing a file, chaos is introduced which may or may not cause unpredictable behavior!\n'
-              'clear = clear wishing history, pity, inventory. basically like starting a new account\n'
-              'pity = view pity related information\n'
-              'inv = view character/weapon archive\n'
-              'dist = view disribution of 5-star character per pity (from 71 to 90)\n'
-              'full dist = same as dist except from 1 to 90\n'
-              'viz = plot a "Distribution of 5★ characters per pity" graph, visualizing full dist\n'
-              'h = view wish history, commands to interact with it:\n'
-              '\t\tn [<number>] = go forward <number> pages\n'
-              '\t\tp [<number>] = go back <number> pages,\n'
-              '\t\t<number> = go to page <number>,\n'
-              '\t\te = exit\n'
-              '0 = exit the simulator\n')
+              f'{Fore.LIGHTCYAN_EX}<number>{Style.RESET_ALL} = do <number> pulls\n'
+              f'{Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
+              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = pick a different banner\n'
+              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to wish.txt, archive.txt, info.txt, banner.txt, character_distribution.txt and weapon_distribution.txt. {Fore.RED}it is not encouraged to introduce changes to the files yourself as they work together in tandem and by changing a file, chaos is introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
+              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wishing history, pity, inventory. basically like starting a new account\n'
+              f'{Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
+              f'{Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive\n'
+              f'{Fore.LIGHTCYAN_EX}dist char{Style.RESET_ALL} = view disribution of 5-star character per pity (from 71 to 90)\n'
+              f'{Fore.LIGHTCYAN_EX}dist char full{Style.RESET_ALL} = same as dist except from 1 to 90\n'
+              f'{Fore.LIGHTCYAN_EX}dist weap{Style.RESET_ALL} = view disribution of 5-star weapon per pity (from 60 to 77)\n'
+              f'{Fore.LIGHTCYAN_EX}dist weap full{Style.RESET_ALL} = same as dist weap except from 1 to 77\n'
+              f'{Fore.LIGHTCYAN_EX}viz char{Style.RESET_ALL} = plot a "Distribution of 5★ characters per pity" graph, visualizing full dist char\n'
+              f'{Fore.LIGHTCYAN_EX}viz weap{Style.RESET_ALL} = plot a "Distribution of 5★ weapons per pity" graph, visualizing full dist weap\n'
+              f'{Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
+              f'\t\t{Fore.BLUE}anything in [] is optional{Style.RESET_ALL}\n'
+              f'\t\t{Fore.LIGHTMAGENTA_EX}n [<number>]{Style.RESET_ALL} = go forward <number> pages\n'
+              f'\t\t{Fore.LIGHTMAGENTA_EX}p [<number>]{Style.RESET_ALL} = go back <number> pages,\n'
+              f'\t\t{Fore.LIGHTMAGENTA_EX}<number>{Style.RESET_ALL} = go to page <number>,\n'
+              f'\t\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n'
+              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit the simulator\n')
         continue
 
     if user_command == 'banner':
@@ -1348,37 +1368,71 @@ while True:
         show_full_inventory()
         continue
 
-    if user_command == 'dist':
-        total = sum(distribution.values()) - distribution[100]
+    if user_command == 'dist char':
+        total = sum(character_distribution.values()) - character_distribution[100]
         if total > 0:
-            print(f'Total entries = {distribution[100]}')
+            print(f'Total entries = {character_distribution[100]}')
             print(f'Total 5★ entries = {total}\n')
             for i in range(71, 91):
-                print(f'Pity {i}: {distribution[i] / total * 100:.2f}% - {distribution[i]}/{total}')
+                print(f'Pity {i}: {character_distribution[i] / total * 100:.2f}% - {character_distribution[i]}/{total}')
         else:
             print('Get a 5-star first')
         print()
         continue
 
-    if user_command == 'full dist':
-        total = sum(distribution.values()) - distribution[100]
+    if user_command == 'dist char full':
+        total = sum(character_distribution.values()) - character_distribution[100]
         if total > 0:
-            print(f'Total entries = {distribution[100]}')
+            print(f'Total entries = {character_distribution[100]}')
             print(f'Total 5★ entries = {total}\n')
             for i in range(1, 91):
-                print(f'Pity {i}: {distribution[i] / total * 100:.2f}% - {distribution[i]}/{total}')
-            print('If you want to visualize your results, type "viz" or run visualize_distribution.py')
+                print(f'Pity {i}: {character_distribution[i] / total * 100:.2f}% - {character_distribution[i]}/{total}')
+            print('If you want to visualize your results, type "viz char" or run visualize_character_distribution.py')
         else:
             print('Get a 5-star first')
         print()
         continue
 
-    if user_command == 'viz':
-        if 'visualize_distribution' not in sys.modules:
-            import visualize_distribution
+    if user_command == 'dist weap':
+        total = sum(weapon_distribution.values()) - weapon_distribution[100]
+        if total > 0:
+            print(f'Total entries = {weapon_distribution[100]}')
+            print(f'Total 5★ entries = {total}\n')
+            for i in range(60, 78):
+                print(f'Pity {i}: {weapon_distribution[i] / total * 100:.2f}% - {weapon_distribution[i]}/{total}')
         else:
-            importlib.reload(visualize_distribution)
-        print('Done\n')
+            print('Get a 5-star first')
+        print()
+        continue
+
+    if user_command == 'dist weap full':
+        total = sum(weapon_distribution.values()) - weapon_distribution[100]
+        if total > 0:
+            print(f'Total entries = {weapon_distribution[100]}')
+            print(f'Total 5★ entries = {total}\n')
+            for i in range(1, 78):
+                print(f'Pity {i}: {weapon_distribution[i] / total * 100:.2f}% - {weapon_distribution[i]}/{total}')
+            print('If you want to visualize your results, type "viz weap" or run visualize_weapon_distribution.py')
+        else:
+            print('Get a 5-star first')
+        print()
+        continue
+
+
+    if user_command == 'viz char':
+        if 'visualize_character_distribution' not in sys.modules:
+            import visualize_character_distribution
+        else:
+            importlib.reload(visualize_character_distribution)
+        print()
+        continue
+
+    if user_command == 'viz weap':
+        if 'visualize_weapon_distribution' not in sys.modules:
+            import visualize_weapon_distribution
+        else:
+            importlib.reload(visualize_weapon_distribution)
+        print()
         continue
 
     if user_command == 'h':
@@ -1392,14 +1446,21 @@ while True:
             print_history_page()
 
             while True:
-                cmd = input('   History Command: ')
-                if 'n' in cmd:
+                cmd = input('   History Command: ').strip().lower()
+                if not cmd:
+                    print('   Try "help"\n')
+                    continue
+
+                if cmd[0] == 'n':
                     cmd = cmd.split()
                     if len(cmd) == 1:
                         amount = 1
                     else:
-                        amount = min(int(cmd[1]), num_of_pages - page)
-
+                        if cmd[1].isnumeric():
+                            amount = min(int(cmd[1]), num_of_pages - page)
+                        else:
+                            print(f'   "{cmd[1]}" is not a number\n')
+                            continue
                     if page < num_of_pages:
                         print()
 
@@ -1409,13 +1470,16 @@ while True:
                     else:
                         print("   You're already at the last page\n")
 
-                elif 'p' in cmd:
+                elif cmd[0] == 'p':
                     cmd = cmd.split()
                     if len(cmd) == 1:
                         amount = 1
                     else:
-                        amount = min(int(cmd[1]), page - 1)
-
+                        if cmd[1].isnumeric():
+                            amount = min(int(cmd[1]), page - 1)
+                        else:
+                            print(f'   "{cmd[1]}" is not a number\n')
+                            continue
                     if page > 1:
                         print()
 
@@ -1443,6 +1507,16 @@ while True:
                     print('   No longer viewing wish history!\n')
                     print('================================================================\n')
                     break
+
+                elif cmd == 'help':
+                    print(f'   {Fore.BLUE}anything in [] is optional{Style.RESET_ALL}\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}n [<number>]{Style.RESET_ALL} = go forward <number> pages\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}p [<number>]{Style.RESET_ALL} = go back <number> pages,\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}<number>{Style.RESET_ALL} = go to page <number>,\n'
+                          f'   {Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n')
+
+                else:
+                    print('   Try "help"\n')
         else:
             print('Wish history empty!\n')
         continue
@@ -1477,7 +1551,10 @@ while True:
             else:
                 print()  # otherwise add an extra space cuz pretty
         count += user_command  # if the program came this far, go on with the job
-        distribution[100] += user_command
+        if user_banner_input[0] != 'weapon':
+            character_distribution[100] += user_command
+        else:
+            weapon_distribution[100] += user_command
         for i in range(user_command):
             try:
                 res, p, w = make_pull(banner_of_choice, pity_info)
@@ -1486,7 +1563,8 @@ while True:
                 save_archive_to_file(constellations, refinements)
                 save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                                   unique_four_weap_count)
-                save_distribution_to_file()
+                save_character_distribution_to_file()
+                save_weapon_distribution_to_file()
                 try:
                     save_history_to_file(wish_history)
                     print('backed up the history at least')
@@ -1526,7 +1604,8 @@ while True:
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                           unique_four_weap_count)
-        save_distribution_to_file()
+        save_character_distribution_to_file()
+        save_weapon_distribution_to_file()
         print()
         if user_banner_input[0] == 'character':
             print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[-2] else "50/50"}')

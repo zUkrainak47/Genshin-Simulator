@@ -12,13 +12,13 @@ def jsonKeys2int(x):
 try:
     with open('.\\banner_info\\character_distribution.txt') as file:
         data = file.read()
-    distribution = json.loads(data, object_hook=jsonKeys2int)
-    num = distribution.pop(100)
-    s = sum(distribution.values())
-    for i in distribution:
-        distribution[i] = distribution[i]/s * 100
+    character_distribution = json.loads(data, object_hook=jsonKeys2int)
+    num = character_distribution.pop(100)
+    s = sum(character_distribution.values())
+    for i in character_distribution:
+        character_distribution[i] = character_distribution[i] / s * 100
 
-    plt.plot(distribution.keys(), distribution.values())
+    plt.plot(character_distribution.keys(), character_distribution.values())
     plt.xticks([1] + list(range(4, 82, 4)) + [83, 87, 90], rotation=45)
     plt.yticks(np.arange(0, 11, 0.6))
     plt.ylabel('Percentage')
@@ -28,9 +28,13 @@ try:
     plt.tight_layout()
     plt.savefig(f'.\\banner_info\\character distribution (size = {num}).png', dpi=500)
     plt.show()
+    print('Done')
 
 except FileNotFoundError:
     print('No distribution file')
+
+except ZeroDivisionError:
+    print('Get a 5-star first!')
 
 except:
     print('Something went wrong')
