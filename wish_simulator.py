@@ -1390,7 +1390,7 @@ while True:
                     t = 'weapon'
                     break
                 else:
-                    print('Not a valid choice, try again\n')
+                    print('Please input either the number or the name of the distribution you want to see\n')
 
             if t == '0':
                 print('Ok, exiting distribution selection\n')
@@ -1436,7 +1436,7 @@ while True:
                 t = 'weapon'
                 break
             else:
-                print('Not a valid choice, try again\n')
+                print('Please input either the number or the name of the visualization you want to see\n')
 
         if t == '0':
             print('Ok, exiting visualization selection\n')
