@@ -1243,7 +1243,7 @@ while True:
     if user_command == 'change':
         if user_banner_input[0] == 'weapon' and pity_info[2]:
             print(f'\n{Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
-                  f'(You own {pity_info[2]} Epitomized Point{"s" if pity_info[2] != 1 else ''}){Style.RESET_ALL}')
+                  f'(You own {pity_info[2]} Epitomized Point{"s" if pity_info[2] != 1 else ""}){Style.RESET_ALL}')
         elif user_banner_input[0] == 'chronicled' and pity_info[2]:
             print(f'\n{Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
                   f'(You own 1 Chronicled Point){Style.RESET_ALL}')
