@@ -19,7 +19,7 @@ Or  click this button and Fork & Run on replit
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
-As stated above, this part of the project is still WIP. \
+This part of the project is WIP (but only minor tweaks are left, please report any bugs you find!) \
 Using Wish Simulator allows you to
 - Do virtually any amount of pulls on any banner
 - Check your wish history
