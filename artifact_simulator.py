@@ -520,7 +520,7 @@ def print_controls():
         f'{Fore.LIGHTCYAN_EX}r{Style.RESET_ALL} = re-roll artifact\n'
         f'{Fore.LIGHTCYAN_EX}r{Fore.BLUE} ++{Style.RESET_ALL} = re-roll and upgrade to +20\n'  # r ++
         f'{Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Style.RESET_ALL} = re-roll and save a given number of artifacts to the inventory\n'
-        f'{Fore.LIGHTCYAN_EX}r{Fore.BLUE} ++ {Fore.MAGENTA}[number]{Style.RESET_ALL} = re-roll, +20, and save a given number of artifacts to the inventory\n'
+        f'{Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Fore.BLUE} ++{Style.RESET_ALL} = re-roll, +20, and save a given number of artifacts to the inventory\n'
         f'\n'
         '------------------------------------ ACTIONS WITH INVENTORY ------------------------------------\n'
         '\n'
@@ -789,26 +789,22 @@ while True:
             artifact_list = sort_inventory(artifact_list)
             save_inventory_to_file(artifact_list)
 
-    elif user_command[:3] == 'r++' or user_command[:4] == 'r ++':
-        if user_command in ('r++', 'r ++'):
-            print('Re-rolling and upgrading...\n')
-            art, _ = create_and_roll_artifact(source)
-            continue
+    elif user_command == 'r':
+        print('Re-rolling...\n')
+        art = create_artifact(source)
+        art.print_stats()
 
-        else:
-            if 'r++' in user_command:
-                if len(user_command.split()) == 2:
-                    _, cmd = user_command.split()
-                else:
-                    print('Nuh uh. Only put one number after r++\n')
-                    continue
+    elif user_command in ('r++', 'r ++'):
+        print('Re-rolling and upgrading...\n')
+        art, _ = create_and_roll_artifact(source)
 
-            else:  # if it's "r ++ [indexes]" (I want to support both)
-                if len(user_command.split()) == 3:
-                    _, _, cmd = user_command.split()
-                else:
-                    print('Nuh uh. Only put one number after r ++\n')
-                    continue
+    elif user_command[:2] == 'r ':
+        if '++' in user_command:
+            if len(user_command.split()) == 3:
+                _, cmd, _ = user_command.split()
+            else:
+                print('Nuh uh. Only put one number between r and ++\n')
+                continue
 
             if cmd.isnumeric():
                 cmd = int(cmd)
@@ -829,36 +825,31 @@ while True:
                 print(f'{cmd} is not a valid number\n')
                 continue
 
-    elif user_command == 'r':
-        print('Re-rolling...\n')
-        art = create_artifact(source)
-        art.print_stats()
-
-    elif user_command[:2] == 'r ':
-        if len(user_command.split()) == 2:
-            _, cmd = user_command.split()
         else:
-            print('Nuh uh. Only put one number after r\n')
-            continue
+            if len(user_command.split()) == 2:
+                _, cmd = user_command.split()
+            else:
+                print('Nuh uh. Only put one number after r\n')
+                continue
 
-        if cmd.isnumeric():
-            cmd = int(cmd)
+            if cmd.isnumeric():
+                cmd = int(cmd)
 
-            for i in range(cmd):
-                art = create_artifact(source)
-                artifact_list.append(art)
+                for i in range(cmd):
+                    art = create_artifact(source)
+                    artifact_list.append(art)
 
-            artifact_list = sort_inventory(artifact_list)
-            save_inventory_to_file(artifact_list)
+                artifact_list = sort_inventory(artifact_list)
+                save_inventory_to_file(artifact_list)
 
-            print(f'{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory\n')
-            continue
-            # print_inventory(artifact_list)
-            # print()
+                print(f'{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory\n')
+                continue
+                # print_inventory(artifact_list)
+                # print()
 
-        else:
-            print(f'{cmd} is not a valid number\n')
-            continue
+            else:
+                print(f'{cmd} is not a valid number\n')
+                continue
 
     elif user_command in ('s', 'save'):
         if art not in artifact_list:
