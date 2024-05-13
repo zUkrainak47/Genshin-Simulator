@@ -668,7 +668,7 @@ while True:
         if sample_size == 'exit' or cv_desired == 'exit':
             print("Going back to menu...")
             print()
-            print('=' * 64)
+            print('=' * 26 + ' NORMAL MODE ' + '=' * 25)
             print()
             continue
         else:
