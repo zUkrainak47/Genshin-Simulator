@@ -840,7 +840,7 @@ def print_pity(counter, p, c5, c4):
         if p[0] >= 180 or p[1] >= 180:
             print(f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[0] >= 180 else "weapon"}')
         if p[2] >= 20 or p[3] >= 20:
-            print(f'Next {Fore.YELLOW}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[2] >= 20 else "weapon"}')
+            print(f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[2] >= 20 else "weapon"}')
 
     # print('\n================================================================')
 
@@ -1093,7 +1093,10 @@ def make_pull(banner_info, pity):
             else:
                 result = [choice(choice((standard_5_star_characters, standard_5_star_weapons)))]
                 got = int(result[0] in standard_5_star_weapons)  # 0 if character, 1 if weapon
-                result.extend([pity[got] + 1, 7])
+                if pity[got] > pity[1 - got]:
+                    result.extend([f'{pity[1 - got] + 1} ({pity[got] + 1})', 7])
+                else:
+                    result.extend([f'{pity[got] + 1}', 7])
                 pity[got] = 0
                 pity[1 - got] += 1
                 pity[2] += 1
@@ -1115,7 +1118,10 @@ def make_pull(banner_info, pity):
             else:
                 result = [choice(choice((standard_4_star_characters, standard_4_star_weapons)))]
                 got = int(result[0] in standard_4_star_weapons) + 2  # 2 if character, 3 if weapon
-                result.extend([pity[got] + 1, 7])
+                if pity[got] > pity[5 - got]:
+                    result.extend([f'{pity[5 - got] + 1} ({pity[got] + 1})', 7])
+                else:
+                    result.extend([f'{pity[got] + 1}', 7])
                 pity[0] += 1
                 pity[1] += 1
                 pity[got] = 0
