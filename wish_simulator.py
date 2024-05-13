@@ -1436,6 +1436,7 @@ while True:
         continue
 
     if user_command == 'load':
+        Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
         try:
             pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
             print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
@@ -1564,6 +1565,12 @@ while True:
             continue
 
         if t == 'character':
+            if character_distribution[100] and character_distribution[100] < 10000000:
+                print(f'{Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
+                c = input('Type "CONFIRM" if you want to see the graph regardless: ')
+                if c != "CONFIRM":
+                    print('Aborting\n')
+                    continue
             if 'visualize_character_distribution' not in sys.modules:
                 import visualize_character_distribution
             else:
@@ -1572,6 +1579,12 @@ while True:
             continue
 
         elif t == 'weapon':
+            if weapon_distribution[100] and weapon_distribution[100] < 10000000:
+                print(f'{Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
+                c = input('Type "CONFIRM" if you want to see the graph regardless: ')
+                if c != "CONFIRM":
+                    print('Aborting\n')
+                    continue
             if 'visualize_weapon_distribution' not in sys.modules:
                 import visualize_weapon_distribution
             else:
