@@ -849,8 +849,12 @@ def print_pity(counter, p, c5, c4):
 
 def print_character_archive():
     global sorted_constellations, a
-    sorted_constellations = sorted(list(constellations.items()),
-                                   key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    if user_banner_input[0] != 'standard':
+        sorted_constellations = sorted(list(constellations.items()),
+                                       key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    else:
+        sorted_constellations = sorted(list(constellations.items()),
+                                       key=lambda x: (-x[0].rarity, -x[1]))
     if sorted_constellations:
         last_rarity = 0
         print("\n" + "="*23 + " CHARACTER ARCHIVE " + "="*22)
@@ -869,8 +873,12 @@ def print_character_archive():
 
 def print_weapon_archive():
     global sorted_refinements, a
-    sorted_refinements = sorted(list(refinements.items()),
-                                key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    if user_banner_input[0] != 'standard':
+        sorted_refinements = sorted(list(refinements.items()),
+                                    key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+    else:
+        sorted_refinements = sorted(list(refinements.items()),
+                                    key=lambda x: (-x[0].rarity, -x[1]))
     if sorted_refinements:
         last_rarity = 0
         print("\n" + "="*24 + " WEAPON ARCHIVE " + "="*24)
