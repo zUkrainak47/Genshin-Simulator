@@ -1231,7 +1231,7 @@ while True:
               f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
               f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n\n'
               f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
-              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info.\n'
+              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info/\n'
               f'{Fore.RED}It is not encouraged to introduce changes to the files yourself\n'
                         f'as they work together in tandem and by changing a file, chaos is\n'
                         f'introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
