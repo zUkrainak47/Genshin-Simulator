@@ -776,6 +776,9 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
         banner_of_choice = (
             user_banner_input[0],
         )
+        legal_standard_four_stars = standard_4_star_characters + list(map(lambda x: characters_dict[x], ['Lisa', 'Amber', 'Kaeya']))
+        legal_standard_five_stars = standard_5_star_characters
+
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         t = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
@@ -1000,7 +1003,7 @@ def make_pull(banner_info, pity):
                 result.append(2)  # log that guarantee took place
             else:  # if not guaranteed
                 # choose what to give from different pools
-                result = [choice(choices((featured_four_stars, legal_standard_four_stars, standard_4_star_weapons), [50, 25, 25])[0]), pity[1] + 1]
+                result = [choice(choices((featured_four_stars, legal_standard_four_stars, standard_4_star_weapons), [2, 1, 1])[0]), pity[1] + 1]
                 if result[0] not in featured_four_stars:  # if 50/50 lost
                     pity[3] = True  # set guarantee to true
                 result.append(int(result[0] in featured_four_stars))  # log if you won or not
@@ -1090,7 +1093,7 @@ def make_pull(banner_info, pity):
     elif banner_info[0] == 'standard':
         if rarity == 5:
             if pity[0] >= 180:
-                result = [choice(standard_5_star_characters), f'{pity[1] + 1} ({pity[0] + 1})', 2]
+                result = [choice(legal_standard_five_stars), f'{pity[1] + 1} ({pity[0] + 1})', 2]
                 pity[0] = 0
                 pity[1] += 1
                 pity[2] += 1
@@ -1102,7 +1105,7 @@ def make_pull(banner_info, pity):
                 pity[2] += 1
                 pity[3] += 1
             else:
-                result = [choice(choice((standard_5_star_characters, standard_5_star_weapons)))]
+                result = [choice(choice((legal_standard_five_stars, standard_5_star_weapons)))]
                 got = int(result[0] in standard_5_star_weapons)  # 0 if character, 1 if weapon
                 if pity[got] > pity[1 - got]:
                     result.extend([f'{pity[1 - got] + 1} ({pity[got] + 1})', 7])
@@ -1115,7 +1118,7 @@ def make_pull(banner_info, pity):
 
         elif rarity == 4:
             if pity[2] >= 20:
-                result = [choice(standard_4_star_characters), f'{pity[3] + 1} ({pity[2] + 1})', 2]
+                result = [choice(legal_standard_four_stars), f'{pity[3] + 1} ({pity[2] + 1})', 2]
                 pity[0] += 1
                 pity[1] += 1
                 pity[2] = 0
@@ -1127,7 +1130,7 @@ def make_pull(banner_info, pity):
                 pity[2] += 1
                 pity[3] = 0
             else:
-                result = [choice(choice((standard_4_star_characters, standard_4_star_weapons)))]
+                result = [choice(choice((legal_standard_four_stars, standard_4_star_weapons)))]
                 got = int(result[0] in standard_4_star_weapons) + 2  # 2 if character, 3 if weapon
                 if pity[got] > pity[5 - got]:
                     result.extend([f'{pity[5 - got] + 1} ({pity[got] + 1})', 7])
