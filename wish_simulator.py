@@ -1290,16 +1290,22 @@ while True:
                   'List of available banners:\n')
 
             if new1 == 'character':
-                print(', '.join(i for i in character_banner_list))
+                m = {str(q): w for q, w in zip(range(1, len(character_banner_list)+1), character_banner_list.keys())}
+                for i in m.items():
+                    first = f"{i[0]} = {i[1]}"
+                    print(first + ' ' * (20-len(first)) + '(' + str(character_banner_list[i[1]][1]) + ')')
+
                 print('\n(Type 0 to exit)\n')
 
                 while True:
                     new2 = input('Choose one: ').strip().lower()
                     if new2 in ('0', 'exit'):
                         break
-                    if new2 not in character_banner_list.keys():
+                    if new2 not in m and new2 not in m.values():
                         print("That's not a banner that's available! Try again\n")
                     else:
+                        if new2 in m:
+                            new2 = m[new2]
                         print(f"Ok, {new2} selected")
                         break
 
@@ -1309,16 +1315,20 @@ while True:
                 user_banner_input = [new1, new2]
 
             elif new1 == 'chronicled':
-                print(', '.join(i for i in chronicled_banner_list))
+                m = {str(q): w for q, w in zip(range(1, len(chronicled_banner_list)+1), chronicled_banner_list.keys())}
+                for i in m.items():
+                    print(f"{i[0]} = {i[1]}")
                 print('\n(Type 0 to exit)\n')
 
                 while True:
                     new2 = input('Choose one: ').strip().lower()
                     if new2 in ('0', 'exit'):
                         break
-                    if new2 not in chronicled_banner_list.keys():
+                    if new2 not in m and new2 not in m.values():
                         print("That's not a banner that's available! Try again\n")
                     else:
+                        if new2 in m:
+                            new2 = m[new2]
                         print(f"Ok, {new2} selected")
                         break
 
@@ -1329,18 +1339,22 @@ while True:
                       f'List of available options:\n')
                 options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
                            [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
-                print(', '.join(i for i in options))
+                m = {str(q): w for q, w in zip(range(1, len(options)+1), options)}
+                for i in m.items():
+                    print(f"{i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
                 print('\n(Type 0 to exit)\n')
 
                 while True:
                     new3 = input('Choose one: ').strip()
                     if new3 in ('0', 'exit'):
                         break
-                    if new3 not in options:
+                    if new3 not in m and new3 not in m.values():
                         print("That's not a valid pick! Try again\n"
                               "Please make sure the capitalization matches\n")
                     else:
-                        print(f"Ok, {new3} selected")
+                        if new3 in m:
+                            new3 = m[new3]
+                        print(f"Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                         break
 
                 if new3 in ('0', 'exit'):
@@ -1349,16 +1363,24 @@ while True:
                 user_banner_input = [new1, [new2, new3]]
 
             elif new1 == 'weapon':
-                print('\n'.join(i for i in weapon_banner_list))
+                m = {str(q): w for q, w in zip(range(1, len(weapon_banner_list)+1), weapon_banner_list.keys())}
+                for i in m.items():
+                    first = f"{i[0]} = {i[1]}"
+                    print(first + ' ' * (61-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
+
+                # print('\n'.join(i for i in weapon_banner_list))
                 print('\n(Type 0 to exit)\n')
 
                 while True:
                     new2 = input('Choose one: ').strip()
                     if new2 in ('0', 'exit'):
                         break
-                    if new2 not in weapon_banner_list.keys():
-                        print("That's not a banner that's available! Try again\n")
+                    if new2 not in m and new2 not in m.values():
+                        print("That's not a banner that's available! Try again\n"
+                              "Please make sure the capitalization matches\n")
                     else:
+                        if new2 in m:
+                            new2 = m[new2]
                         print(f"Ok, {new2} selected")
                         break
 
@@ -1367,18 +1389,22 @@ while True:
                     continue
                 print(f'Choose your Epitomized Path now!\n'
                       f'List of available options:\n')
-                print(weapon_banner_list[new2][0][0].name + '\n' + weapon_banner_list[new2][0][1].name)
+                m = {"1": weapon_banner_list[new2][0][0].name, "2": weapon_banner_list[new2][0][1].name}
+                for i in m.items():
+                    print(f"{i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
                 print('\n(Type 0 to exit)\n')
 
                 while True:
                     new3 = input('Choose one: ').strip()
                     if new3 in ('0', 'exit'):
                         break
-                    if new3 not in [weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name]:
+                    if new3 not in m and new3 not in m.values():
                         print("That's not a valid pick! Try again\n"
                               "Please make sure the capitalization matches\n")
                     else:
-                        print(f"Ok, {new3} selected")
+                        if new3 in m:
+                            new3 = m[new3]
+                        print(f"Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                         break
 
                 if new3 in ('0', 'exit'):
