@@ -12,7 +12,7 @@ Alternatively, you can run `wish_simulator.py` or `artifact_simulator.py` to acc
 
 Or  click this button and Fork & Run on replit
 
-[![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator)
+[![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator?v=1)
 
 ---
 
