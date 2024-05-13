@@ -15,11 +15,14 @@ def print_rules():
 last_mode = 2
 
 if __name__ == '__main__':
+    print()
+    print('=' * 27 + ' LAUNCHER ' + '=' * 27)
     print('\nWelcome to Genshin Simulator!', end=' ')
     while True:
         if last_mode:
             if last_mode == 1:
                 print()
+                print('='*27 + ' LAUNCHER ' + '='*27 + '\n')
             print_rules()
 
         print()
@@ -39,7 +42,10 @@ if __name__ == '__main__':
             else:
                 importlib.reload(wish_simulator)
 
-        elif mode == '0':
+        elif mode in ('0', 'exit'):
+            print('Exiting Genshin Simulator...\n'
+                  '\n'
+                  '================================================================')
             break
 
         else:

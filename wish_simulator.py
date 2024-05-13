@@ -181,7 +181,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
 
     banner_type = user_banner_input[0]
 
-    if banner_type == 'standard':  # ['standard', '0']
+    if banner_type == 'standard':  # ['standard']
         save_new_banner_of_choice()
         return
 
@@ -770,7 +770,7 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
                                      (s.version < banner_of_choice[2] or s.version == 1.0)]
         legal_standard_five_stars = [s for s in standard_5_star_weapons if s not in banner_of_choice[1]]
 
-    elif user_banner_input[0] == 'standard':  # ['standard', 0]
+    elif user_banner_input[0] == 'standard':  # ['standard']
         banner_of_choice = (
             user_banner_input[0],
         )
@@ -1203,28 +1203,34 @@ while True:
         print('Try "help"\n')
         continue
 
+    if user_command in ('0', 'exit'):
+        print('Exiting Wish Simulator...')
+        print('\n================================================================')
+        break
+
     if user_command in ['help', "'help'", '"help"']:
         print('\n' +
-              '=' * 29 + " HELP " + '=' * 29 + '\n'
+              '=' * 27 + " CONTROLS " + '=' * 27 + '\n'
               '\n'
-              f'{Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
+              f'{Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n\n'
               f'{Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
               f'{Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
-              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n'
-              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
+              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n\n'
               f'{Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
               f'{Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive\n'
-              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
-              f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n'
               f'{Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
               f'\t{Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n\n'
+              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
+              f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n\n'
+              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
               f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info.\n'
               f'{Fore.RED}It is not encouraged to introduce changes to the files yourself\n'
                         f'as they work together in tandem and by changing a file, chaos is\n'
                         f'introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
+              f'\n'
               f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit the simulator\n'
               f'\n' +
               '=' * 64 +
@@ -1620,13 +1626,7 @@ while True:
         print('Try "help"\n')
         continue
 
-    if 0 <= user_command <= 1000000000:
-        if user_command == 0:
-            # print_pity(count, pity_info, five_count, four_count)
-            # show_full_inventory()
-            print('Exiting...')
-            print('\n================================================================')
-            break
+    if user_command <= 1000000000:
         print()
         verbose_threshold = 7 - (user_command <= 10000000) - (user_command <= 1000000) - (user_command <= 100000) - (user_command <= 10000)
         # pulls <= 10k = show every pull
