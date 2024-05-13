@@ -1720,6 +1720,12 @@ while True:
             recent, not_recent = ('character', 'weapon') if pity_info[0] < pity_info[1] else ('weapon', 'character')
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
             print(Style.RESET_ALL + f'{min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
+            if pity_info[0] >= 180 or pity_info[1] >= 180:
+                print(
+                    f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
+            if pity_info[2] >= 20 or pity_info[3] >= 20:
+                print(
+                    f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
 
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
