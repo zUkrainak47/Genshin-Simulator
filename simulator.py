@@ -8,7 +8,7 @@ def print_rules():
           '\n'
           '0 = exit Genshin Simulator\n'
           '1 = enter Artifact Simulator\n'
-          '2 = enter Wish Simulator (WIP)\n',
+          '2 = enter Wish Simulator\n',
           end='')
 
 
