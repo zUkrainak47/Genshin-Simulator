@@ -5,7 +5,6 @@ from pathlib import Path
 import sys
 import importlib
 
-print("\nTHIS IS A WIP PROJECT. SOME FEATURES ARE BROKEN, I'M WORKING ON THEM.")
 print('\n============================ LOADING ===========================\n')
 init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
@@ -1231,7 +1230,7 @@ while True:
                         f'as they work together in tandem and by changing a file, chaos is\n'
                         f'introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
               f'\n'
-              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit the simulator\n'
+              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Wish Simulator\n'
               f'\n' +
               '=' * 64 +
               '\n')

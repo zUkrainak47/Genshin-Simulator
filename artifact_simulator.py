@@ -549,7 +549,7 @@ def print_controls():
         f'{Fore.CYAN}strongbox{Style.RESET_ALL} = change artifact source to strongbox\n'
         f'{Fore.CYAN}abyss{Style.RESET_ALL} = change artifact source to abyss (same rate as strongbox)\n'
         '\n'
-        f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit artifact simulator\n'  # 0, menu
+        f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Artifact Simulator\n'  # 0, menu
         '\n'
         '================================================================================================\n'
         )

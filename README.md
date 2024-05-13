@@ -2,6 +2,8 @@
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
 With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wish System and the Artifact System.
 
+If you find any bugs, report them to me :)
+
 ### How do I start simulating Genshin Impact?
 
 First you need to download or clone the repository on your device (i know) \
@@ -19,7 +21,6 @@ Or  click this button and Fork & Run on replit
 You're out of primogems? You watched a friend whale? You just lost your 50/50? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
-This part of the project is WIP (but only minor tweaks are left, please report any bugs you find!) \
 Using Wish Simulator allows you to
 - Do virtually any amount of pulls on any banner
 - Check your wish history
