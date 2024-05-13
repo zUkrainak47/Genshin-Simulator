@@ -23,7 +23,7 @@ try:
     plt.yticks(np.arange(0, 11, 0.6))
     plt.ylabel('Percentage')
     plt.xlabel('Pity')
-    plt.title(f'Distribution of 5★ characters per pity (size = {num} pulls)')
+    plt.title(f'Distribution of 5★ characters per pity (size = {num:,} pulls)')
     plt.grid()
     plt.tight_layout()
     plt.savefig(f'.\\banner_info\\character distribution (size = {num}).png', dpi=500)
