@@ -1262,9 +1262,9 @@ while True:
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
         print("Choose the banner type:")
-        print("0 = exit")
         for i in m.items():
             print(f"{i[0]} = {i[1]}")
+        print('\n(Type 0 to exit)\n')
         while True:
             new1 = input('Your pick: ').strip().lower()
             if new1 in ('0', 'exit'):
