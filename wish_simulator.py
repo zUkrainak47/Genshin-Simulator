@@ -1265,7 +1265,6 @@ while True:
         print("0 = exit")
         for i in m.items():
             print(f"{i[0]} = {i[1]}")
-        print("(note: standard banner is not supported yet)\n")
         while True:
             new1 = input('Your pick: ').strip().lower()
             if new1 in ('0', 'exit'):
