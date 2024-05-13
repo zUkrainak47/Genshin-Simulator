@@ -1092,6 +1092,7 @@ def make_pull(banner_info, pity):
 
     elif banner_info[0] == 'standard':
         if rarity == 5:
+            character_distribution[min(pity[0], pity[1]) + 1] += 1
             if pity[0] >= 180:
                 result = [choice(legal_standard_five_stars), f'{pity[1] + 1} ({pity[0] + 1})', 2]
                 pity[0] = 0
