@@ -8,7 +8,8 @@ import os
 
 
 try:
-    replit = os.environ['replit']
+    os.environ['replit']
+    replit = True
     # if replit:
         # print('\n Running in replit!')
 except KeyError:

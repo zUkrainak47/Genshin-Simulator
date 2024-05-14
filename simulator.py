@@ -4,8 +4,10 @@ import sys
 from colorama import init, Fore, Style
 init()
 
+
 try:
-    replit = os.environ['replit']
+    os.environ['replit']
+    replit = True
     if replit:
         print('\n Running in replit!')
 except KeyError:
