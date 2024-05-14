@@ -374,8 +374,8 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
     else:
         for current_index in indexes_to_print:
             if current_index == -1 or current_index >= len(artifact_list):
-                print(f' No artifact with index "{current_index + 1}" in your inventory.', end='')
-                print(f' Indexes go from 1 to {len(artifact_list)}\n') if len(artifact_list) > 1 else print_empty_inv()
+                print(f' {Fore.RED}No artifact with index "{current_index + 1}" in your inventory.', end='')
+                print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n') if len(artifact_list) > 1 else print_empty_inv()
                 raise StopIteration
 
         needed_indexes = indexes_to_print
@@ -427,21 +427,21 @@ def get_indexes(user_input):
 
                     else:
                         print(
-                            f" Index \"{this_index[0] if not this_index[0].isnumeric() else this_index[1]}\" is non-numeric\n")
+                            f" {Fore.RED}Index \"{this_index[0] if not this_index[0].isnumeric() else this_index[1]}\" is non-numeric{Style.RESET_ALL}\n")
                         raise StopIteration
 
                 else:
                     print(
-                        f" Index \"{this_index}\" is incorrect, the range must consist of two numbers separated by \"-\"\n")
+                        f" {Fore.RED}Index \"{this_index}\" is incorrect, the range must consist of two numbers separated by \"-\"{Style.RESET_ALL}\n")
                     raise StopIteration
 
             elif not this_index.isnumeric():
-                print(f" Index \"{this_index}\" is non-numeric", end='')
+                print(f" {Fore.RED}Index \"{this_index}\" is non-numeric", end='')
 
                 if '[' in this_index:
-                    print(f'. Remove the parentheses\n')
+                    print(f'. Remove the parentheses{Style.RESET_ALL}\n')
                 else:
-                    print('\n')
+                    print(f'\n{Style.RESET_ALL}')
 
                 raise StopIteration
 
@@ -464,13 +464,13 @@ def get_indexes(user_input):
                     raise StopIteration
 
             else:
-                print(f' Index "{this_index[0] if not this_index[0].isnumeric() else this_index[1]}" is non-numeric',
+                print(f' {Fore.RED}Index "{this_index[0] if not this_index[0].isnumeric() else this_index[1]}" is non-numeric',
                       end='')
 
                 if '[' in this_index[0]:
-                    print(f'. Remove the parentheses\n')
+                    print(f'. Remove the parentheses{Style.RESET_ALL}\n')
                 else:
-                    print('\n')
+                    print(f'\n{Style.RESET_ALL}')
 
                 raise StopIteration
 
@@ -487,7 +487,7 @@ def get_indexes(user_input):
             idxs = [user_input]
 
         else:
-            print(f' Index "{user_input}" is non-numeric\n')
+            print(f' {Fore.RED}Index "{user_input}" is non-numeric{Style.RESET_ALL}\n')
             raise StopIteration
 
         case = 'index'
@@ -873,7 +873,7 @@ while True:
                 f' {Fore.LIGHTGREEN_EX}Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory{Style.RESET_ALL}\n')
 
         else:
-            print(f' {Fore.RED}This artifact is not in your inventory{Style.RESET_ALL}\n')
+            print(f' {Fore.LIGHTMAGENTA_EX}This artifact is not in your inventory{Style.RESET_ALL}\n')
 
     elif 'inv' in user_command:
         user_command = user_command.split()
@@ -903,7 +903,7 @@ while True:
                 if int(i) > len(artifact_list) or int(i) == 0:
                     flag = False
                     print(f' {Fore.RED}No artifact with index "{i}" in your inventory.', end='')
-                    print(f' Indexes go from 1 to {len(artifact_list)}\n{Style.RESET_ALL}') if len(
+                    print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n') if len(
                         artifact_list) > 0 else print_empty_inv()
                     break
 
@@ -961,7 +961,7 @@ while True:
 
                 if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                     save_inventory_to_file(artifact_list)
-                    print(f' Artifact{"s" if len(indexes) > 1 else ""} removed\n')
+                    print(f' {Fore.LIGHTGREEN_EX}Artifact{"s" if len(indexes) > 1 else ""} removed{Style.RESET_ALL}\n')
                     show_index_changes(artifact_list_old, artifact_list)
 
                 if cmd in ('+', '++'):
