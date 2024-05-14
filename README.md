@@ -18,11 +18,11 @@ Or  click this button and Fork & Run on replit
 
 # Wish Simulator
 ## About
-You're out of primogems? You watched a friend whale? You just lost your 50/50? \
+You're out of primogems? You watched a friend whale? You just lost your 50/50? Or do you just want to try your luck without risking thousands of dollars? \
 I've got you covered! Hop on and spend any amount of pulls on any banner that's ever existed (yes, even the Keqing banner)
 ## Using `Wish Simulator`
 
-- Do virtually any amount of pulls on any banner
+- Allows you to do virtually any amount of pulls on any banner
 - Check your wish history
 - Check your inventory containing every character's constellations and weapon refinements
 - Make a "5-stars VS Pity" graph based on your results
