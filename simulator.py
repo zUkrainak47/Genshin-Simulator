@@ -9,7 +9,8 @@ try:
     os.environ['replit']
     replit = True
     if replit:
-        print('\n Running in replit!')
+        print('\n Running in replit!\n'
+              ' To get rid of "Missing required secrets", set the replit variable to anything')
 except KeyError:
     replit = False
     # print('\n Not running in replit!')
