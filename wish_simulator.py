@@ -56,7 +56,6 @@ def load_history():
 
         return character_history, weapon_history, standard_history, chronicled_history
 
-
     except FileNotFoundError:
         global wish_history
         wish_history = {"character": [], "weapon": [], "standard": [],  "chronicled": []}
@@ -109,10 +108,12 @@ def load_info():
         return pity_and_other_info
 
     except FileNotFoundError:
-        pities_ = {'character': [0, 0, False, False, [0, 0, 0]],
-                  'weapon': [0, 0, 0, False, False, [0, 0, 0]],
-                  'standard': [0, 0, 0, 0, [0, 0, 0]],
-                  'chronicled': [0, 0, False, [0, 0, 0]]}
+        pities_ = {
+            'character': [0, 0, False, False, [0, 0, 0]],
+            'weapon': [0, 0, 0, False, False, [0, 0, 0]],
+            'standard': [0, 0, 0, 0, [0, 0, 0]],
+            'chronicled': [0, 0, False, [0, 0, 0]]
+        }
         with open('.\\banner_info\\info.txt', 'w') as file:
             info = [pities_, 0, 0, 0, 0, 0, 0]
             file.write(json.dumps(info, separators=(',', ':')))
@@ -817,7 +818,6 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
         legal_standard_four_stars = standard_4_star_characters + list(map(lambda x: characters_dict[x], ['Lisa', 'Amber', 'Kaeya']))
         legal_standard_five_stars = standard_5_star_characters
 
-
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
         chosen_type = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
 
@@ -826,15 +826,12 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
             chronicled_banner_list[user_banner_input[1][0]],
             characters_dict[user_banner_input[1][1]] if chosen_type == 'characters' else weapons_dict[user_banner_input[1][1]])
 
-        legal_standard_four_stars = (banner_of_choice[1]['characters']['4-stars'],
-                                     # 4-star characters
-                                     banner_of_choice[1]['weapons']['4-stars'])
-                                     # 4-star weapons
+        legal_standard_four_stars = (banner_of_choice[1]['characters']['4-stars'],  # 4-star characters
+                                     banner_of_choice[1]['weapons']['4-stars'])  # 4-star weapons
 
         legal_standard_five_stars = [i for i in banner_of_choice[1][chosen_type]['5-stars']
                                      # every item that's a 5-star of the same type as the chosen 5-star
-                                     if i.name != user_banner_input[1][1]]
-                                     # that isn't the chosen item
+                                     if i.name != user_banner_input[1][1]]  # that isn't the chosen item
 
         # for context, user_banner_input has ['chronicled', ['mondstadt-1', 'Jean']] structure
         # legal_standard_five_stars is the list of characters you can lose your 5050 to
@@ -892,6 +889,7 @@ def print_pity(counter, pity_, c5, c4):
             print(f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
 
     # print('\n================================================================')
+
 
 def print_character_archive():
     global sorted_constellations, a
@@ -1260,6 +1258,7 @@ def print_banner(t1):
     elif banner_of_choice[0] == 'chronicled':
         print(f'{t2}anner ID: {user_banner_input[1][0]}\nChronicled Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}')
 
+
 while True:
     user_command = input('Command: ').lower().strip()
     if not user_command:
@@ -1336,7 +1335,6 @@ while True:
         if new1 in m:
             new1 = m[new1]
         print(f'{new1.capitalize()} banner selected.')
-
 
         if new1 == 'standard':
             user_banner_input = [new1]
