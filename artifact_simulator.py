@@ -503,7 +503,7 @@ def print_empty_inv():
 
 def print_controls():
     print(
-        '\n' + '=' * 43 + ' CONTROLS ' + '=' * 43 + '\n'  # aliases included next to each command
+        '\n' + '=' * 43 + f' {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} ' + '=' * 43 + '\n'  # aliases included next to each command
         '\n'
         '-------------------------------- ACTIONS WITH GENERATED ARTIFACT -------------------------------\n'
         '\n'
@@ -615,18 +615,18 @@ valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
 
 
-print('\n============================ LOADING ===========================\n')
+print(f'\n=================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} =================\n')
 
 try:
     artifact_list = load_inventory()
-    print(f'{Fore.GREEN}Loaded inventory successfully!{Style.RESET_ALL}')
+    print(f'{Fore.LIGHTGREEN_EX}Loaded inventory successfully!{Style.RESET_ALL}')
     # print_inventory(artifact_list)
     # print()
 except json.decoder.JSONDecodeError:
     print(f'{Fore.RED}Something off with inventory file. Clearing inventory.txt{Style.RESET_ALL}')
     artifact_list = []
     save_inventory_to_file(artifact_list)
-    print(f'{Fore.GREEN}Inventory cleared{Style.RESET_ALL}')
+    print(f'{Fore.LIGHTGREEN_EX}Inventory cleared{Style.RESET_ALL}')
 
 # while True:
 #     print_menu()
@@ -643,7 +643,7 @@ print()
 print('=' * 64)
 
 source = 'domain'
-print('\nType "help" for the list of commands\n')
+print(f'\nType {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 art = create_artifact(source)
 art.print_stats()
 
@@ -1071,7 +1071,7 @@ while True:
             elif cmd == 'load':
                 try:
                     artifact_list = load_inventory()
-                    print('Loading successful')
+                    print(f'{Fore.LIGHTGREEN_EX}Loaded inventory successfully!{Style.RESET_ALL}')
                     if len(artifact_list) == 0:
                         print('Inventory is empty')
                     else:
@@ -1081,10 +1081,10 @@ while True:
                     print()
 
                 except json.decoder.JSONDecodeError:
-                    print('Something off with inventory file. Clearing inventory.txt')
+                    print(f'{Fore.RED}Something off with inventory file. Clearing inventory.txt{Style.RESET_ALL}')
                     artifact_list = []
                     save_inventory_to_file(artifact_list)
-                    print('Inventory cleared\n')
+                    print(f'{Fore.LIGHTGREEN_EX}Inventory cleared{Style.RESET_ALL}\n')
 
             else:
                 print(f'"{cmd}" is not a valid inventory command or index\n')
@@ -1114,7 +1114,7 @@ while True:
         art.print_stats()
 
     else:
-        print('Try "help"\n')
+        print(f'Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
 if __name__ == '__main__':
     print('\n================================================================')

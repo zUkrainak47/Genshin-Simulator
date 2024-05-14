@@ -1,6 +1,8 @@
 import importlib
 import os
 import sys
+from colorama import init, Fore, Style
+init()
 
 
 def print_rules():
@@ -16,7 +18,7 @@ last_mode = 2
 
 if __name__ == '__main__':
     print()
-    print('=' * 27 + ' LAUNCHER ' + '=' * 27)
+    print('=' * 27 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '=' * 27)
     print('\nWelcome to Genshin Simulator!', end=' ')
     while True:
         if last_mode:

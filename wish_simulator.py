@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import importlib
 
-print('\n============================ LOADING ===========================\n')
+print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} ====================\n')
 init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
 
@@ -158,7 +158,7 @@ def load_distribution():
         weapon_distribution[100] = 0
         save_weapon_distribution_to_file()
 
-    print(Fore.GREEN + 'Loaded distribution successfully!' + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + 'Loaded distribution successfully!' + Style.RESET_ALL)
 
 
 def load_archive():
@@ -205,7 +205,7 @@ def set_defaults():
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count)
-    print(Fore.GREEN + "Everything cleared!" + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + "Everything cleared!" + Style.RESET_ALL)
 
 
 def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes sure it's valid
@@ -963,7 +963,7 @@ def print_history_page():  # no idea how this works anymore
 
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
-    print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + 'Loaded additional information successfully!' + Style.RESET_ALL)
     info_ok = True
 except:
     print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
@@ -974,7 +974,7 @@ if info_ok:
     try:  # if I extract this into a method pycharm stops seeing all the variables assigned
         cchar, wweap, sstd, cchron = load_history()
         wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
-        print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
+        print(Fore.LIGHTGREEN_EX + 'Loaded wish history successfully!' + Style.RESET_ALL)
         history_ok = True
     except:
         print(Fore.RED + 'Something off with wish history files. Clearing everything...' + Style.RESET_ALL)
@@ -984,7 +984,7 @@ if info_ok:
 if info_ok and history_ok:
     try:
         constellations, refinements = load_archive()
-        print(Fore.GREEN + 'Loaded archive successfully!' + Style.RESET_ALL)
+        print(Fore.LIGHTGREEN_EX + 'Loaded archive successfully!' + Style.RESET_ALL)
         archive_ok = True
     except:
         print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
@@ -997,7 +997,7 @@ if not (info_ok and history_ok and archive_ok):
 
 # try:
 load_banner()
-print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+print(Fore.LIGHTGREEN_EX + 'Loaded banner information successfully!' + Style.RESET_ALL)
 # except:
 #     print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
 #     user_banner_input = ['character', 'tao-3']
@@ -1232,7 +1232,7 @@ verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
 print('\n================================================================\n')
-print('Type "help" for the list of commands\n')
+print(f'Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 
 
 def print_banner(t):
@@ -1259,17 +1259,16 @@ def print_banner(t):
 while True:
     user_command = input('Command: ').lower().strip()
     if not user_command:
-        print('Try "help"\n')
+        print(f'Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
 
     if user_command in ('0', 'exit'):
         print('Exiting Wish Simulator...')
-        print('\n================================================================')
         break
 
     if user_command in ['help', "'help'", '"help"']:
         print('\n' +
-              '=' * 27 + " CONTROLS " + '=' * 27 + '\n'
+              '=' * 27 + f" {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} " + '=' * 27 + '\n'
               '\n'
               f'{Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n\n'
               f'{Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
@@ -1278,8 +1277,8 @@ while True:
               f'{Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
               f'{Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive\n'
               f'{Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages,\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages,\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}n {Fore.BLUE}[number]{Style.RESET_ALL} = go forward a number of pages,\n'
+              f'\t{Fore.LIGHTMAGENTA_EX}p {Fore.BLUE}[number]{Style.RESET_ALL} = go back a number of pages,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n\n'
               f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
@@ -1478,7 +1477,7 @@ while True:
         Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
         try:
             pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
-            print(Fore.GREEN + 'Loaded additional information successfully!' + Style.RESET_ALL)
+            print(Fore.LIGHTGREEN_EX + 'Loaded additional information successfully!' + Style.RESET_ALL)
             info_ok = True
         except:
             print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
@@ -1489,7 +1488,7 @@ while True:
             try:
                 cchar, wweap, sstd, cchron = load_history()
                 wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
-                print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
+                print(Fore.LIGHTGREEN_EX + 'Loaded wish history successfully!' + Style.RESET_ALL)
                 history_ok = True
             except:
                 print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
@@ -1499,7 +1498,7 @@ while True:
         if info_ok and history_ok:
             try:
                 constellations, refinements = load_archive()
-                print(Fore.GREEN + 'Loaded archive successfully!' + Style.RESET_ALL)
+                print(Fore.LIGHTGREEN_EX + 'Loaded archive successfully!' + Style.RESET_ALL)
                 archive_ok = True
             except:
                 print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
@@ -1512,7 +1511,7 @@ while True:
 
         try:
             load_banner()
-            print(Fore.GREEN + 'Loaded banner information successfully!' + Style.RESET_ALL)
+            print(Fore.LIGHTGREEN_EX + 'Loaded banner information successfully!' + Style.RESET_ALL)
         except:
             print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
@@ -1645,7 +1644,7 @@ while True:
             while True:
                 cmd = input('   History Command: ').strip().lower()
                 if not cmd:
-                    print('   Try "help"\n')
+                    print(f'   Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
                     continue
 
                 if cmd[0] == 'n':
@@ -1713,7 +1712,7 @@ while True:
                           f'   {Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n')
 
                 else:
-                    print('   Try "help"\n')
+                    print(f'   Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         else:
             print('Wish history empty!\n')
         continue
@@ -1721,7 +1720,7 @@ while True:
     try:
         user_command = int(user_command)
     except ValueError:
-        print('Try "help"\n')
+        print(f'Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
 
     if user_command <= 1000000000:
@@ -1839,4 +1838,5 @@ while True:
     print()
 
 if __name__ == '__main__':
+    print('\n================================================================')
     print('\nThank you for using Wish Simulator')
