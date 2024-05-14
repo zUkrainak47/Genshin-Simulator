@@ -159,12 +159,13 @@ def take_input(defaults=(1, 50)):
             if size.isnumeric():
                 ok1 = True
             else:
-                print("Needs to be an integer. Try again")
+                print(f"{Fore.RED}Needs to be an integer. Try again{Style.RESET_ALL}\n")
 
         else:
             ok1 = True
             size = defaults[0]
-
+    sss = 's' if int(size) != 1 else ''
+    print(f'Ok, will run {Fore.LIGHTCYAN_EX}{int(size)}{Style.RESET_ALL} test{sss}\n')
     while not ok2:
         cv = input("Desired Crit Value: ")
         if cv:
@@ -176,14 +177,14 @@ def take_input(defaults=(1, 50)):
                 ok2 = True
 
             except ValueError:
-                print("Needs to be a number. Try again.\n")
+                print(f"{Fore.RED}Needs to be a number. Try again{Style.RESET_ALL}\n")
 
         else:
             ok2 = True
             cv = defaults[1]
 
-    print(
-        f"Running {Fore.CYAN}{int(size)}{Style.RESET_ALL} simulation{'s' if int(size) != 1 else ''}, looking for at least {Fore.CYAN}{min(54.5, float(cv))}{Style.RESET_ALL} CV.")
+    print(f'Ok, will look for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv))}{Style.RESET_ALL} cv\n')
+    print(f"Running {Fore.LIGHTCYAN_EX}{int(size)}{Style.RESET_ALL} simulation{'s' if int(size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv))}{Style.RESET_ALL} CV.")
     return size, cv
 
 
@@ -302,11 +303,11 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
 def upgrade_to_next_tier(artifact, do_we_print=True, extra_space=False):
     if artifact.level == 20:
         if do_we_print:
-            print("Artifact already at +20\n")
+            print(f"{Fore.LIGHTMAGENTA_EX}Artifact already at +20{Style.RESET_ALL}\n")
 
     else:
         if do_we_print:
-            print('Upgrading...')
+            print(f'{Fore.LIGHTMAGENTA_EX}Upgrading...{Style.RESET_ALL}')
             if extra_space:
                 print()
 
@@ -363,7 +364,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
         # print(artifact.subs())
 
         if not only_one:
-            print(f'Artifacts generated: {artifact_number}')
+            print(f'Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
 
     return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
 
@@ -381,9 +382,9 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
 
         needed_indexes = indexes_to_print
 
-    print("Inventory:\n")
+    print(f"{Fore.LIGHTMAGENTA_EX}Inventory:{Style.RESET_ALL}\n")
     t1 = list_of_artifacts[needed_indexes[0]].type
-    print('-' * 43, f'{t1}{"s" if t1 != "Sands" else ""}', '-' * 43)
+    print('-' * 43, f'{Fore.LIGHTCYAN_EX}{t1}{"s" if t1 != "Sands" else ""}{Style.RESET_ALL}', '-' * 43)
 
     for this_index in range(len(needed_indexes)):
         current_index = int(needed_indexes[this_index])
@@ -393,7 +394,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
             t_now = list_of_artifacts[needed_indexes[this_index]].type
 
             if t_now != t_last:
-                print('\n' + '-' * 43, f'{t_now}{"s" if t_now != "Sands" else ""}', '-' * 43)
+                print('\n' + '-' * 43, f'{Fore.LIGHTCYAN_EX}{t_now}{"s" if t_now != "Sands" else ""}{Style.RESET_ALL}', '-' * 43)
 
         print(f'{current_index + 1}) {list_of_artifacts[current_index]} - {list_of_artifacts[current_index].subs()}')
 
@@ -408,7 +409,7 @@ def get_indexes(user_input):
             this_index = idxs[idx]
 
             if this_index == '':
-                print('Try removing the space between the indexes (if applicable)\n')
+                print(f'{Fore.RED}Try removing the space between the indexes (if applicable){Style.RESET_ALL}\n')
                 raise StopIteration
 
             if '-' in this_index:  # if it has -
@@ -498,7 +499,7 @@ def get_indexes(user_input):
 
 
 def print_empty_inv():
-    print('Inventory is empty - try "r 5" to save 5 random artifacts\n')
+    print(f'{Style.RESET_ALL}Inventory is empty - try "r 5" to save 5 random artifacts\n')
 
 
 def print_controls():
@@ -653,7 +654,7 @@ while True:
         print_controls()
 
     elif '"' in user_command or "'" in user_command:
-        print('Remove the quotation marks\n')
+        print(f'{Fore.RED}Remove the quotation marks{Style.RESET_ALL}\n')
         continue
 
     elif user_command in ('exit', '0'):
@@ -661,14 +662,14 @@ while True:
         break
 
     elif user_command in ('automate', 'auto'):
-        print()
-        print('='*24 + ' AUTOMATION MODE ' + '='*23)
+        print('Entering Automation Mode...\n')
+        print('='*24 + f' {Fore.LIGHTCYAN_EX}AUTOMATION MODE{Style.RESET_ALL} ' + '='*23)
         sample_size, cv_desired = take_input()
 
         if sample_size == 'exit' or cv_desired == 'exit':
-            print("Going back to menu...")
+            print("Going back to normal mode...")
             print()
-            print('=' * 26 + ' NORMAL MODE ' + '=' * 25)
+            print('=' * 26 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 25)
             print()
             continue
         else:
@@ -689,13 +690,13 @@ while True:
             total_generated = 0
             inventory = 0
             flag = False
-            print(f'\nSimulation {i + 1}:' if sample_size > 1 else '')
+            print(f'\n{Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
 
             while not flag:
                 day += 1
 
                 if day % 10000 == 0:
-                    print(f'Day {day} - still going')
+                    print(f'{Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
 
                 if day % 15 == 1:  # 4 artifacts from abyss every 15 days
                     for k in range(4):
@@ -761,20 +762,20 @@ while True:
 
         if sample_size > 1:
             print(
-                f'Out of {sample_size} simulations, it took an average of {Fore.CYAN}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
+                f'Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
             print(f'Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].subs()}')
             print(
                 f'Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
 
         else:
-            print(f'It took {Fore.CYAN}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
+            print(f'It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
 
-        print(f'Total artifacts generated: {sum(artifacts_generated)}\n')
+        print(f'Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL}\n')
         print(
             f'The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f'Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
-        print('=' * 26 + ' NORMAL MODE ' + '=' * 25)
+        print('=' * 26 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 25)
         print()
 
     elif user_command in ('+', 'a+', 'a +'):
@@ -790,12 +791,12 @@ while True:
             save_inventory_to_file(artifact_list)
 
     elif user_command == 'r':
-        print('Re-rolling...\n')
+        print(f'{Fore.LIGHTMAGENTA_EX}Re-rolling...{Style.RESET_ALL}\n')
         art = create_artifact(source)
         art.print_stats()
 
     elif user_command in ('r++', 'r ++'):
-        print('Re-rolling and upgrading...\n')
+        print(f'{Fore.LIGHTMAGENTA_EX}Re-rolling and upgrading...{Style.RESET_ALL}\n')
         art, _ = create_and_roll_artifact(source)
 
     elif user_command[:2] == 'r ':
@@ -803,7 +804,7 @@ while True:
             if len(user_command.split()) == 3:
                 _, cmd, _ = user_command.split()
             else:
-                print('Nuh uh. Only put one number between r and ++\n')
+                print(f'{Fore.RED}Nuh uh. Only put one number between r and ++{Style.RESET_ALL}\n')
                 continue
 
             if cmd.isnumeric():
@@ -816,20 +817,20 @@ while True:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
 
-                print(f'{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory\n')
+                print(f'{Fore.LIGHTGREEN_EX}{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
                 continue
                 # print_inventory(artifact_list)
                 # print()
 
             else:
-                print(f'{cmd} is not a valid number\n')
+                print(f'{Fore.RED}{cmd} is not a valid number{Style.RESET_ALL}\n')
                 continue
 
         else:
             if len(user_command.split()) == 2:
                 _, cmd = user_command.split()
             else:
-                print('Nuh uh. Only put one number after r\n')
+                print(f'{Fore.RED}Nuh uh. Only put one number after r{Style.RESET_ALL}\n')
                 continue
 
             if cmd.isnumeric():
@@ -842,13 +843,13 @@ while True:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
 
-                print(f'{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory\n')
+                print(f'{Fore.LIGHTGREEN_EX}{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
                 continue
                 # print_inventory(artifact_list)
                 # print()
 
             else:
-                print(f'{cmd} is not a valid number\n')
+                print(f'{Fore.RED}{cmd} is not a valid number{Style.RESET_ALL}\n')
                 continue
 
     elif user_command in ('s', 'save'):
@@ -859,11 +860,10 @@ while True:
             artifact_list = sort_inventory(artifact_list)
             save_inventory_to_file(artifact_list)
 
-            print(
-                f'Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory\n')
+            print(f'{Fore.LIGHTGREEN_EX}Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory{Style.RESET_ALL}\n')
 
         else:
-            print('Already saved this artifact\n')
+            print(f'{Fore.LIGHTMAGENTA_EX}Already saved this artifact{Style.RESET_ALL}\n')
 
     elif user_command in ('d', 'del', 'delete', 'rm', 'remove'):
         if art in artifact_list:
@@ -872,18 +872,18 @@ while True:
 
             save_inventory_to_file(artifact_list)
             print(
-                f'Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory\n')
+                f'{Fore.LIGHTGREEN_EX}Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory{Style.RESET_ALL}\n')
 
         else:
-            print('This artifact is not in your inventory\n')
+            print(f'{Fore.RED}This artifact is not in your inventory{Style.RESET_ALL}\n')
 
     elif 'inv' in user_command:
         user_command = user_command.split()
         if user_command[0] in ('inv', 'inventory'):
             pass
         else:
-            print('Inventory commands must start with "inv".\n'
-                  'If you want to pass any arguments, you must put a space after "inv".\n')
+            print(f'{Fore.LIGHTMAGENTA_EX}Inventory commands must start with "inv".\n'
+                  f'If you want to pass any arguments, you must put a space after "inv"{Style.RESET_ALL}.\n')
             continue
 
         if len(user_command) == 1:
@@ -906,8 +906,8 @@ while True:
             for i in indexes:
                 if int(i) > len(artifact_list) or int(i) == 0:
                     flag = False
-                    print(f'No artifact with index "{i}" in your inventory. ', end='')
-                    print(f'Indexes go from 1 to {len(artifact_list)}\n') if len(
+                    print(f'{Fore.RED}No artifact with index "{i}" in your inventory. ', end='')
+                    print(f'Indexes go from 1 to {len(artifact_list)}\n{Style.RESET_ALL}') if len(
                         artifact_list) > 0 else print_empty_inv()
                     break
 
@@ -961,7 +961,7 @@ while True:
                             artifact_list.remove(arti_list[iterative_index])
 
                     else:
-                        print(f'"{cmd}" is not a valid command\n')
+                        print(f'{Fore.RED}"{cmd}" is not a valid command{Style.RESET_ALL}\n')
 
                 if cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                     save_inventory_to_file(artifact_list)
@@ -970,7 +970,7 @@ while True:
 
                 if cmd in ('+', '++'):
                     if not do_print:
-                        print("Done! Artifacts upgraded\n")
+                        print(f"{Fore.LIGHTGREEN_EX}Done! Artifacts upgraded{Style.RESET_ALL}\n")
                     elif len(indexes) > 1:
                         print()
 
@@ -1014,10 +1014,10 @@ while True:
                     artifact_list[int(cmd) - 1].print_stats()
 
                 else:
-                    print(f'No artifact with index "{cmd}" in your inventory. ', end='')
+                    print(f'{Fore.RED}No artifact with index "{cmd}" in your inventory. ', end='')
 
                     if len(artifact_list) > 0:
-                        print(f'Indexes go from 1 to {len(artifact_list)}\n')
+                        print(f'Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n')
                     else:
                         print_empty_inv()
 
@@ -1087,10 +1087,10 @@ while True:
                     print(f'{Fore.LIGHTGREEN_EX}Inventory cleared{Style.RESET_ALL}\n')
 
             else:
-                print(f'"{cmd}" is not a valid inventory command or index\n')
+                print(f'{Fore.RED}"{cmd}" is not a valid inventory command or index{Style.RESET_ALL}\n')
         else:
-            print(
-                'U did something wrong.\nIf you tried inputting multiple indexes, remove spaces between them\n')
+            print(f'{Fore.RED}You did something wrong.\n'
+                  f'If you tried inputting multiple indexes, remove spaces between them{Style.RESET_ALL}\n')
 
     elif user_command == 'domain':
         source = 'domain'
