@@ -816,10 +816,10 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 def print_pity(counter, p, c5, c4):
     print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
     if counter:
-        print(f'{counter} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
-        print(f'Out of them {Fore.YELLOW}{c5} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
-    print(f'{p[-1][0]} pull{"s" if p[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
-    print(f'Out of them {Fore.YELLOW}{p[-1][1]} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{p[-1][2]} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+        print(f'{counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
+        print(f'Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
+    print(f'{p[-1][0]:,} pull{"s" if p[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
+    print(f'Out of them {Fore.YELLOW}{p[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{p[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if p[0] < 10 and p[1] < 10:
         insert1, insert2 = '', ''
     else:
@@ -1596,7 +1596,7 @@ while True:
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
             print('\n======================== WISH HISTORY ==========================\n')
-            t = f'Total number of entries for {user_banner_input[0]} banner: {len(wish_history[user_banner_input[0]])}'
+            t = f'Total number of entries for {user_banner_input[0]} banner: {len(wish_history[user_banner_input[0]]):,}'
             extra = (64 - len(t))//2
             print(' ' * extra + t + '\n')
             page = 1
