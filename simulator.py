@@ -24,7 +24,7 @@ if __name__ == '__main__':
         if last_mode:
             if last_mode == 1:
                 print()
-                print('='*28 + ' LAUNCHER ' + '='*28 + '\n')
+                print('='*28 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '='*28 + '\n')
             print_rules()
 
         print()
