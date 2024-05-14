@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 import importlib
 
-print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} ====================\n')
+print(f'\n===================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} =====================\n')
 init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
 
@@ -160,7 +160,7 @@ def load_distribution():
         weapon_distribution[100] = 0
         save_weapon_distribution_to_file()
 
-    print(Fore.LIGHTGREEN_EX + 'Loaded distribution successfully!' + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + ' Loaded distribution successfully!' + Style.RESET_ALL)
 
 
 def load_archive():
@@ -206,7 +206,7 @@ def set_defaults():
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count)
-    print(Fore.LIGHTGREEN_EX + "Everything cleared!" + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + " Everything cleared!" + Style.RESET_ALL)
 
 
 def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes sure it's valid
@@ -224,7 +224,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
 
     if banner_type not in ['character', 'weapon', 'chronicled']:
         # ['something', 'tao-3']
-        print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+        print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
         user_banner_input = ['character', 'tao-3']
         save_new_banner_of_choice()
         return
@@ -236,7 +236,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
         # ["character", "tao-4"]
 
         if banner_id not in character_banner_list:
-            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
@@ -246,15 +246,13 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
 
         if banner_id[0] not in weapon_banner_list:
             # ["weapon", ["something", "Staff of Homa"]]
-            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
         if banner_id[1] not in [s.name for s in weapon_banner_list[banner_id[0]][0][:2]]:
             # ["weapon", ["Staff of Homa - Aqua Simulacra", "Mistsplitter Reforged"]]
-            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
-            print(banner_id[1])
-            print(weapon_banner_list[banner_id[0]][0][:2])
+            print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
@@ -262,7 +260,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
     else:  # ['chronicled', ['mondstadt-1', 'Jean']]
         if banner_id[0] not in chronicled_banner_list:
             # ['chronicled', ['mondstadt-8', 'Jean']]
-            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
@@ -272,7 +270,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
                   [i.name for i in chron_banner['weapons']['5-stars']])
         if banner_id[1] not in valids:
             # ['chronicled', ['mondstadt-1', 'Furina']]
-            print(Fore.RED + 'Banner mismatch detected, setting to default' + Style.RESET_ALL)
+            print(Fore.RED + ' Banner mismatch detected, setting to default' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
             return
@@ -852,12 +850,12 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
 
 def print_pity(counter, pity_, c5, c4):
-    print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
+    print("\n" + "="*24 + " PITY INFORMATION " + "="*24)
     if counter:
-        print(f'{counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
-        print(f'Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
-    print(f'{pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
-    print(f'Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+        print(f' {counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
+        print(f' Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
+    print(f' {pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
+    print(f' Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if pity_[0] < 10 and pity_[1] < 10:
         insert1, insert2 = '', ''
     else:
@@ -865,29 +863,29 @@ def print_pity(counter, pity_, c5, c4):
         insert2 = ' ' * (pity_[1] < 10)
     if user_banner_input[0] == 'character':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {fifty if not pity_[2] else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {fifty if not pity_[3] else "next is guaranteed to be featured"}')
+        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {fifty if not pity_[3] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]}, {fifty if not pity_[2] else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]}')
+        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]}, {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]}')
     elif user_banner_input[0] == 'weapon':
         was_standard = 'was standard' if pity_[3] else 'was not standard'
         epitomized_ = f"epitomized points: {pity_[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2 else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
+        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2 else "next is guaranteed to be featured"}')
+        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'standard':
-        print(f'{Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
-              f'{Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {pity_[1]}')
-        print(f'{Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {pity_[2]}\n'
-              f'{Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {pity_[3]}')
+        print(f' {Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
+              f' {Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {pity_[1]}')
+        print(f' {Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {pity_[2]}\n'
+              f' {Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {pity_[3]}')
         if pity_[0] >= 180 or pity_[1] >= 180:
-            print(f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
+            print(f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
         if pity_[2] >= 20 or pity_[3] >= 20:
-            print(f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
+            print(f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
 
-    # print('\n================================================================')
+    # print('\n==================================================================')
 
 
 def print_character_archive():
@@ -899,10 +897,10 @@ def print_character_archive():
         sorted_constellations = sorted(list(constellations.items()),
                                        key=lambda x: (-x[0].rarity, -x[1]))
     if sorted_constellations:
-        print("\n" + "="*23 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*22)
-        print(f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+        print("\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*23)
+        print(f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
         for a in sorted_constellations:
-            print(f'{color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
+            print(f' {color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
         print(Style.RESET_ALL)
         return True
     return False
@@ -917,10 +915,10 @@ def print_weapon_archive():
         sorted_refinements = sorted(list(refinements.items()),
                                     key=lambda x: (-x[0].rarity, -x[1]))
     if sorted_refinements:
-        print("\n" + "="*24 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*24)
-        print(f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
+        print("\n " + "="*25 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*25)
+        print(f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
         for a in sorted_refinements:
-            print(f'{color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
+            print(f' {color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
         print(Style.RESET_ALL)
         return True
     return False
@@ -930,7 +928,7 @@ def print_full_inventory():
     print()
     if not print_character_archive():
         if not print_weapon_archive():
-            print('Character/weapon archive empty!')
+            print(' Character/weapon archive empty!')
     else:
         print_weapon_archive()
     print()
@@ -941,13 +939,13 @@ def print_inventory_box_partial(ttt):
         counters = constellations
         item_dict = characters_dict
         letter = 'c'
-        title = "\n" + "=" * 23 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 22
+        title = "\n" + "=" * 24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 23
 
     else:
         counters = refinements
         item_dict = weapons_dict
         letter = 'r'
-        title = "\n" + "=" * 24 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 24
+        title = "\n" + "=" * 25 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 25
 
     if user_banner_input[0] != 'standard':
         sorted_items = sorted(list(counters.items()),
@@ -958,9 +956,9 @@ def print_inventory_box_partial(ttt):
     if sorted_items:
         print(title)
         print()
-        t = f"{len(counters)}/{len(item_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})"
+        t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})"
         extra = (64 - len(t) + 18) // 2  # +10 to account for the color change
-        print(' ' * extra + t + '\n')
+        print(" " + ' ' * extra + t + '\n')
 
         # max_length = max(len(s) for s in strings)
         cell_width = 20
@@ -969,7 +967,7 @@ def print_inventory_box_partial(ttt):
         num_lines = (len(sorted_items) + 2) // 3
 
         # Print top border
-        print('+', end='')
+        print(' +', end='')
         for j in range(3):
             print('-' * cell_width, end='+')
         print()
@@ -977,9 +975,9 @@ def print_inventory_box_partial(ttt):
         # Iterate through lines
         for i in range(num_lines):
             # Print the horizontal borders
-            print('|                    |                    |                    |')
+            print(' |                    |                    |                    |')
 
-            print('|', end='')
+            print(' |', end='')
             for j in range(3):
                 if i * 3 + j < len(sorted_items):
                     placeholder = sorted_items[i * 3 + j][0].name.split()
@@ -999,7 +997,7 @@ def print_inventory_box_partial(ttt):
                     print(' ' * cell_width, end='|')
             print()
 
-            print('|', end='')
+            print(' |', end='')
             for j in range(3):
                 if i * 3 + j < len(sorted_items):
                     placeholder = sorted_items[i * 3 + j][0].name.split()
@@ -1019,9 +1017,9 @@ def print_inventory_box_partial(ttt):
                     print(' ' * cell_width, end='|')
             print()
 
-            print('|                    |                    |                    |')
+            print(' |                    |                    |                    |')
 
-            print('|', end='')
+            print(' |', end='')
             for j in range(3):
                 if i * 3 + j < len(sorted_items):
                     padded_string = ' ' * ((19-len(str(sorted_items[i * 3 + j][1])))//2) + color_map[sorted_items[i * 3 + j][0].rarity] + letter + str(sorted_items[i * 3 + j][1]) + Style.RESET_ALL + ' ' * (19 - ((19-len(str(sorted_items[i * 3 + j][1])))//2) - len(str(sorted_items[i * 3 + j][1])))
@@ -1030,10 +1028,10 @@ def print_inventory_box_partial(ttt):
                     print(' ' * cell_width, end='|')
             print()
 
-            print('|                    |                    |                    |')
+            print(' |                    |                    |                    |')
 
             # Print the horizontal border between lines
-            print('+', end='')
+            print(' +', end='')
             for j in range(3):
                 print('-' * cell_width, end='+')
             print()
@@ -1046,7 +1044,7 @@ def print_inventory_box():
     print()
     if not print_inventory_box_partial('character'):
         if not print_inventory_box_partial('weapon'):
-            print('Character/weapon archive empty!')
+            print(' Character/weapon archive empty!')
     else:
         print_inventory_box_partial('weapon')
     print()
@@ -1056,21 +1054,21 @@ def print_history_page():  # no idea how this works anymore
     print_from = -((page - 1) * 25) - 1
     print_to = -(min(page * 25, len(wish_history[banner_of_choice[0]]))) - 1
     cc = -print_from - 1
-    print(Style.RESET_ALL + '   ' + '-' * 58)
+    print(Style.RESET_ALL + '    ' + '-' * 58)
     for number in wish_history[banner_of_choice[0]][print_from:print_to:-1]:
         cc += 1
-        print(color_map[number_to_item_dict[number].rarity] + f'   {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
+        print(color_map[number_to_item_dict[number].rarity] + f'    {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
               number_to_item_dict[number].name)
-    print(Style.RESET_ALL + '   ' + '-' * 58)
-    print(f'\n   (Page {page}/{num_of_pages})\n')
+    print(Style.RESET_ALL + '    ' + '-' * 58)
+    print(f'\n    (Page {page}/{num_of_pages})\n')
 
 
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
-    print(Fore.LIGHTGREEN_EX + 'Loaded additional information successfully!' + Style.RESET_ALL)
+    print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)
     info_ok = True
 except:
-    print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
+    print(Fore.RED + ' Something off with info file. Clearing everything...' + Style.RESET_ALL)
     info_ok = False
 
 
@@ -1078,20 +1076,20 @@ if info_ok:
     try:  # if I extract this into a method pycharm stops seeing all the variables assigned
         cchar, wweap, sstd, cchron = load_history()
         wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
-        print(Fore.LIGHTGREEN_EX + 'Loaded wish history successfully!' + Style.RESET_ALL)
+        print(Fore.LIGHTGREEN_EX + ' Loaded wish history successfully!' + Style.RESET_ALL)
         history_ok = True
     except:
-        print(Fore.RED + 'Something off with wish history files. Clearing everything...' + Style.RESET_ALL)
+        print(Fore.RED + ' Something off with wish history files. Clearing everything...' + Style.RESET_ALL)
         history_ok = False
 
 
 if info_ok and history_ok:
     try:
         constellations, refinements = load_archive()
-        print(Fore.LIGHTGREEN_EX + 'Loaded archive successfully!' + Style.RESET_ALL)
+        print(Fore.LIGHTGREEN_EX + ' Loaded archive successfully!' + Style.RESET_ALL)
         archive_ok = True
     except:
-        print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
+        print(Fore.RED + ' Something off with archive file. Clearing everything...' + Style.RESET_ALL)
         archive_ok = False
 
 
@@ -1101,9 +1099,9 @@ if not (info_ok and history_ok and archive_ok):
 
 # try:
 load_banner()
-print(Fore.LIGHTGREEN_EX + 'Loaded banner information successfully!' + Style.RESET_ALL)
+print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RESET_ALL)
 # except:
-#     print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
+#     print(Fore.RED + ' Something off with banner file. Setting to default...' + Style.RESET_ALL)
 #     user_banner_input = ['character', 'tao-3']
 #     save_new_banner_of_choice()
 
@@ -1124,7 +1122,7 @@ def make_pull(banner_info, pity):
         featured_four_stars = banner_info[1][1:]
         if rarity == 5:
             character_distribution[pity[0] + 1] += 1
-            # print(f'{Style.RESET_ALL}{five_star_chance}')
+            # print(f' {Style.RESET_ALL}{five_star_chance}')
             if pity[2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
                 pity[2] = False  # change guaranteed to false
@@ -1139,7 +1137,7 @@ def make_pull(banner_info, pity):
             pity[1] += 1
 
         elif rarity == 4:
-            # print(f'{Style.RESET_ALL}{four_star_chance}')
+            # print(f' {Style.RESET_ALL}{four_star_chance}')
             if pity[3]:  # if guaranteed
                 result = [choice(featured_four_stars), pity[1] + 1]  # give a featured 4-star character
                 pity[3] = False  # change guaranteed to false
@@ -1162,7 +1160,7 @@ def make_pull(banner_info, pity):
         featured_five_star = banner_info[2]
         if rarity == 5:
             character_distribution[pity[0] + 1] += 1
-            # print(f'{Style.RESET_ALL}{five_star_chance}')
+            # print(f' {Style.RESET_ALL}{five_star_chance}')
             if pity[2]:  # if guaranteed
                 result = [featured_five_star, pity[0] + 1]  # give featured 5-star character
                 pity[2] = False  # change guaranteed to false
@@ -1337,8 +1335,8 @@ win_map = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
-print('\n================================================================\n')
-print(f'Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
+print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH SIMULATOR{Style.RESET_ALL} =========================\n')
+print(f' Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 
 
 def print_banner(t1):
@@ -1350,61 +1348,61 @@ def print_banner(t1):
         t2 = 'New b'
     else:
         t2 = '???'
-    print(f'\n{t1} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
+    print(f'\n {t1} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
     if banner_of_choice[0] == 'character':
-        print(f'{t2}anner ID: {user_banner_input[1]}')
+        print(f' {t2}anner ID: {user_banner_input[1]}')
         for i in banner_of_choice[1]:
-            print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+            print(f' {color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
     elif banner_of_choice[0] == 'weapon':
-        print(f'{t2}anner ID: {user_banner_input[1][0]}\nEpitomized Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}\n')
+        print(f' {t2}anner ID: {user_banner_input[1][0]}\n Epitomized Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}\n')
         for i in banner_of_choice[1]:
-            print(f'{color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
+            print(f' {color_map[i.rarity]}{i.rarity}★ {i.name}{Style.RESET_ALL}')
     elif banner_of_choice[0] == 'chronicled':
-        print(f'{t2}anner ID: {user_banner_input[1][0]}\nChronicled Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}')
+        print(f' {t2}anner ID: {user_banner_input[1][0]}\n Chronicled Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}')
 
 
 while True:
-    user_command = input('Command: ').lower().strip()
+    user_command = input(' Command: ').lower().strip()
     if not user_command:
-        print(f'Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
+        print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
 
     if user_command in ('0', 'exit'):
-        print('Exiting Wish Simulator...')
+        print(' Exiting Wish Simulator...')
         break
 
     if user_command in ['help', "'help'", '"help"']:
         print('\n' +
-              '=' * 27 + f" {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} " + '=' * 27 + '\n'
+              '=' * 28 + f" {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} " + '=' * 28 + '\n'
               '\n'
-              f'{Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n\n'
-              f'{Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
-              f'{Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
-              f'{Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n\n'
-              f'{Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
-              f'{Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive as list\n'
-              f'{Fore.LIGHTCYAN_EX}inv box{Style.RESET_ALL} = view character/weapon archive as boxes\n'
-              f'{Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}n {Fore.BLUE}[number]{Style.RESET_ALL} = go forward a number of pages,\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}p {Fore.BLUE}[number]{Style.RESET_ALL} = go back a number of pages,\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
-              f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n\n'
-              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view distribution of 5-star items per pity\n'
-              f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n\n'
-              f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
-              f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info/\n'
-              f'{Fore.RED}It is not encouraged to introduce changes to the files yourself\n'
-                        f'as they work together in tandem and by changing a file, chaos is\n'
-                        f'introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
+              f' {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n\n'
+              f' {Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
+              f' {Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
+              f' {Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n\n'
+              f' {Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
+              f' {Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive as list\n'
+              f' {Fore.LIGHTCYAN_EX}inv box{Style.RESET_ALL} = view character/weapon archive as boxes\n'
+              f' {Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
+              f' \t{Fore.LIGHTMAGENTA_EX}n {Fore.BLUE}[number]{Style.RESET_ALL} = go forward a number of pages,\n'
+              f' \t{Fore.LIGHTMAGENTA_EX}p {Fore.BLUE}[number]{Style.RESET_ALL} = go back a number of pages,\n'
+              f' \t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
+              f' \t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n\n'
+              f' {Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view distribution of 5-star items per pity\n'
+              f' {Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n\n'
+              f' {Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
+              f' {Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info/\n'
+              f' {Fore.RED}It is not encouraged to introduce changes to the files yourself\n'
+                        f' as they work together in tandem and by changing a file, chaos is\n'
+                        f' introduced which may or may not cause unpredictable behavior!{Style.RESET_ALL}\n'
               f'\n'
-              f'{Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Wish Simulator\n'
+              f' {Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Wish Simulator\n'
               f'\n' +
-              '=' * 64 +
+              '=' * 66 +
               '\n')
         continue
 
     if user_command == 'number':
-        print('real funny, input an actual number tho\n')
+        print(' real funny, input an actual number tho\n')
         continue
 
     if user_command == 'banner':
@@ -1414,161 +1412,161 @@ while True:
     
     if user_command == 'change':
         if user_banner_input[0] == 'weapon' and pity_info[2]:
-            print(f'\n{Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
-                  f'(You own {pity_info[2]} Epitomized Point{"s" if pity_info[2] != 1 else ""}){Style.RESET_ALL}')
+            print(f'\n {Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
+                  f' (You own {pity_info[2]} Epitomized Point{"s" if pity_info[2] != 1 else ""}){Style.RESET_ALL}')
         elif user_banner_input[0] == 'chronicled' and pity_info[2]:
-            print(f'\n{Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
-                  f'(You own 1 Chronicled Point){Style.RESET_ALL}')
+            print(f'\n {Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
+                  f' (You own 1 Chronicled Point){Style.RESET_ALL}')
         print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
-        print("Choose the banner type:")
+        print(" Choose the banner type:")
         for i in m.items():
-            print(f"{i[0]} = {i[1]}")
-        print('\n(Type 0 to exit)\n')
+            print(f" {i[0]} = {i[1]}")
+        print('\n (Type 0 to exit)\n')
         while True:
-            new1 = input('Your pick: ').strip().lower()
+            new1 = input(' Your pick: ').strip().lower()
             if new1 in ('0', 'exit'):
                 break
             if new1 in m or new1 in m.values():
                 break
             else:
-                print('Please input either the number or the name of the banner type of choice\n')
+                print(' Please input either the number or the name of the banner type of choice\n')
         if new1 in ('0', 'exit'):
-            print('Ok, not changing banner anymore.\n')
+            print(' Ok, not changing banner anymore.\n')
             continue
         if new1 in m:
             new1 = m[new1]
-        print(f'{new1.capitalize()} banner selected.')
+        print(f' {new1.capitalize()} banner selected.')
 
         if new1 == 'standard':
             user_banner_input = [new1]
 
         else:
-            print('Choose the banner now!\n'
-                  'List of available banners:\n')
+            print(' Choose the banner now!\n'
+                  ' List of available banners:\n')
 
             if new1 == 'character':
                 m = {str(q): w for q, w in zip(range(1, len(character_banner_list)+1), character_banner_list.keys())}
                 for i in m.items():
-                    first = f"{i[0]} = {i[1]}"
-                    print(first + ' ' * (20-len(first)) + '(' + str(character_banner_list[i[1]][1]) + ')')
+                    first = f" {i[0]} = {i[1]}"
+                    print(" " + first + ' ' * (20-len(first)) + '(' + str(character_banner_list[i[1]][1]) + ')')
 
-                print('\n(Type 0 to exit)\n')
+                print('\n (Type 0 to exit)\n')
 
                 while True:
-                    new2 = input('Choose one: ').strip().lower()
+                    new2 = input(' Choose one: ').strip().lower()
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print("That's not a banner that's available! Try again\n")
+                        print(" That's not a banner that's available! Try again\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f"Ok, {new2} selected")
+                        print(f" Ok, {new2} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print('Ok, not changing banner anymore.\n')
+                    print(' Ok, not changing banner anymore.\n')
                     continue
                 user_banner_input = [new1, new2]
 
             elif new1 == 'chronicled':
                 m = {str(q): w for q, w in zip(range(1, len(chronicled_banner_list)+1), chronicled_banner_list.keys())}
                 for i in m.items():
-                    print(f"{i[0]} = {i[1]}")
-                print('\n(Type 0 to exit)\n')
+                    print(f" {i[0]} = {i[1]}")
+                print('\n (Type 0 to exit)\n')
 
                 while True:
-                    new2 = input('Choose one: ').strip().lower()
+                    new2 = input(' Choose one: ').strip().lower()
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print("That's not a banner that's available! Try again\n")
+                        print(" That's not a banner that's available! Try again\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f"Ok, {new2} selected")
+                        print(f" Ok, {new2} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print('Ok, not changing banner anymore.\n')
+                    print(' Ok, not changing banner anymore.\n')
                     continue
-                print(f'Choose your Chronicled Path now!\n'
-                      f'List of available options:\n')
+                print(f' Choose your Chronicled Path now!\n'
+                      f' List of available options:\n')
                 options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
                            [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
                 m = {str(q): w for q, w in zip(range(1, len(options)+1), options)}
                 for i in m.items():
-                    print(f"{i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
-                print('\n(Type 0 to exit)\n')
+                    print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
+                print('\n (Type 0 to exit)\n')
 
                 while True:
-                    new3 = input('Choose one: ').strip()
+                    new3 = input(' Choose one: ').strip()
                     if new3 in ('0', 'exit'):
                         break
                     if new3 not in m and new3 not in m.values():
-                        print("That's not a valid pick! Try again\n"
-                              "Please make sure the capitalization matches\n")
+                        print(" That's not a valid pick! Try again\n"
+                              " Please make sure the capitalization matches\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
-                        print(f"Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
+                        print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                         break
 
                 if new3 in ('0', 'exit'):
-                    print('Ok, not choosing Chronicled Path anymore.\n')
+                    print(' Ok, not choosing Chronicled Path anymore.\n')
                     continue
                 user_banner_input = [new1, [new2, new3]]
 
             elif new1 == 'weapon':
                 m = {str(q): w for q, w in zip(range(1, len(weapon_banner_list)+1), weapon_banner_list.keys())}
                 for i in m.items():
-                    first = f"{i[0]} = {i[1]}"
-                    print(first + ' ' * (61-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
+                    first = f" {i[0]} = {i[1]}"
+                    print(" " + first + ' ' * (61-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
                     # just learned that ljust and rjust exist, leaving this comment here for later
 
                 # print('\n'.join(i for i in weapon_banner_list))
-                print('\n(Type 0 to exit)\n')
+                print('\n (Type 0 to exit)\n')
 
                 while True:
-                    new2 = input('Choose one: ').strip()
+                    new2 = input(' Choose one: ').strip()
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print("That's not a banner that's available! Try again\n"
-                              "Please make sure the capitalization matches\n")
+                        print(" That's not a banner that's available! Try again\n"
+                              " Please make sure the capitalization matches\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f"Ok, {new2} selected")
+                        print(f" Ok, {new2} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print('Ok, not changing banner anymore.\n')
+                    print(' Ok, not changing banner anymore.\n')
                     continue
-                print(f'Choose your Epitomized Path now!\n'
-                      f'List of available options:\n')
+                print(f' Choose your Epitomized Path now!\n'
+                      f' List of available options:\n')
                 m = {"1": weapon_banner_list[new2][0][0].name, "2": weapon_banner_list[new2][0][1].name}
                 for i in m.items():
-                    print(f"{i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
-                print('\n(Type 0 to exit)\n')
+                    print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
+                print('\n (Type 0 to exit)\n')
 
                 while True:
-                    new3 = input('Choose one: ').strip()
+                    new3 = input(' Choose one: ').strip()
                     if new3 in ('0', 'exit'):
                         break
                     if new3 not in m and new3 not in m.values():
-                        print("That's not a valid pick! Try again\n"
-                              "Please make sure the capitalization matches\n")
+                        print(" That's not a valid pick! Try again\n"
+                              " Please make sure the capitalization matches\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
-                        print(f"Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
+                        print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                         break
 
                 if new3 in ('0', 'exit'):
-                    print('Ok, not choosing Epitomized Path anymore.\n')
+                    print(' Ok, not choosing Epitomized Path anymore.\n')
                     continue
                 user_banner_input = [new1, [new2, new3]]
 
@@ -1585,29 +1583,29 @@ while True:
         Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
         try:
             pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
-            print(Fore.LIGHTGREEN_EX + 'Loaded additional information successfully!' + Style.RESET_ALL)
+            print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)
             info_ok = True
         except:
-            print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
+            print(Fore.RED + ' Something off with info file. Clearing everything...' + Style.RESET_ALL)
             info_ok = False
 
         if info_ok:
             try:
                 cchar, wweap, sstd, cchron = load_history()
                 wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
-                print(Fore.LIGHTGREEN_EX + 'Loaded wish history successfully!' + Style.RESET_ALL)
+                print(Fore.LIGHTGREEN_EX + ' Loaded wish history successfully!' + Style.RESET_ALL)
                 history_ok = True
             except:
-                print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
+                print(Fore.RED + ' Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
                 history_ok = False
 
         if info_ok and history_ok:
             try:
                 constellations, refinements = load_archive()
-                print(Fore.LIGHTGREEN_EX + 'Loaded archive successfully!' + Style.RESET_ALL)
+                print(Fore.LIGHTGREEN_EX + ' Loaded archive successfully!' + Style.RESET_ALL)
                 archive_ok = True
             except:
-                print(Fore.RED + 'Something off with archive file. Clearing everything...' + Style.RESET_ALL)
+                print(Fore.RED + ' Something off with archive file. Clearing everything...' + Style.RESET_ALL)
                 archive_ok = False
 
         if not (info_ok and history_ok and archive_ok):
@@ -1617,9 +1615,9 @@ while True:
 
         try:
             load_banner()
-            print(Fore.LIGHTGREEN_EX + 'Loaded banner information successfully!' + Style.RESET_ALL)
+            print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RESET_ALL)
         except:
-            print(Fore.RED + 'Something off with banner file. Setting to default...' + Style.RESET_ALL)
+            print(Fore.RED + ' Something off with banner file. Setting to default...' + Style.RESET_ALL)
             user_banner_input = ['character', 'tao-3']
             save_new_banner_of_choice()
 
@@ -1629,7 +1627,7 @@ while True:
     if user_command == 'clear':
         set_defaults()
         pity_info = pities[banner_of_choice[0]]  # pities was reinitialized, need to make the reference again
-        print('Done\n')
+        print(' Done\n')
         continue
 
     if user_command == 'pity':
@@ -1649,9 +1647,9 @@ while True:
         total1 = sum(character_distribution.values()) - character_distribution[100]
         total2 = sum(weapon_distribution.values()) - weapon_distribution[100]
         if total1 or total2:
-            print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
+            print(' 1 = character\n 2 = weapon\n (they have different distributions, pick one)\n\n Type 0 to exit\n')
             while True:
-                t = input('Your choice: ').strip().lower()
+                t = input(' Your choice: ').strip().lower()
                 if t in ('0', 'exit'):
                     break
                 if t == '1' or t == 'character':
@@ -1661,43 +1659,43 @@ while True:
                     t = 'weapon'
                     break
                 else:
-                    print('Please input either the number or the name of the distribution you want to see\n')
+                    print(' Please input either the number or the name of the distribution you want to see\n')
 
             if t in ('0', 'exit'):
-                print('Ok, exiting distribution selection\n')
+                print(' Ok, exiting distribution selection\n')
                 continue
 
             if t == 'character':
                 if total1 > 0:
-                    print(f'Total entries = {character_distribution[100]}')
-                    print(f'Total 5★ entries = {total1}\n')
+                    print(f' Total entries = {character_distribution[100]}')
+                    print(f' Total 5★ entries = {total1}\n')
                     for i in range(1, 91):
-                        print(f'Pity {i}: {character_distribution[i] / total1 * 100:.2f}% - {character_distribution[i]}/{total1}')
-                    print('If you want to visualize your results, type "viz" and then "1" or run visualize_character_distribution.py')
+                        print(f' Pity {i}: {character_distribution[i] / total1 * 100:.2f}% - {character_distribution[i]}/{total1}')
+                    print(' If you want to visualize your results, type "viz" and then "1" or run visualize_character_distribution.py')
                 else:
-                    print('Get a 5-star character first!')
+                    print(' Get a 5-star character first!')
                 print()
                 continue
 
             elif t == 'weapon':
                 if total2 > 0:
-                    print(f'Total entries = {weapon_distribution[100]}')
-                    print(f'Total 5★ entries = {total2}\n')
+                    print(f' Total entries = {weapon_distribution[100]}')
+                    print(f' Total 5★ entries = {total2}\n')
                     for i in range(1, 78):
-                        print(f'Pity {i}: {weapon_distribution[i] / total2 * 100:.2f}% - {weapon_distribution[i]}/{total2}')
-                    print('If you want to visualize your results, type "viz" and then "2" or run visualize_weapon_distribution.py')
+                        print(f' Pity {i}: {weapon_distribution[i] / total2 * 100:.2f}% - {weapon_distribution[i]}/{total2}')
+                    print(' If you want to visualize your results, type "viz" and then "2" or run visualize_weapon_distribution.py')
                 else:
-                    print('Get a 5-star from the weapon banner first!')
+                    print(' Get a 5-star from the weapon banner first!')
                 print()
                 continue
         else:
-            print('Get a 5-star first!\n')
+            print(' Get a 5-star first!\n')
             continue
 
     if user_command.split()[0] == 'viz':
-        print('1 = character\n2 = weapon\n(they have different distributions, pick one)\n\nType 0 to exit\n')
+        print('1 = character\n 2 = weapon\n (they have different distributions, pick one)\n\n Type 0 to exit\n')
         while True:
-            t = input('Your choice: ').strip().lower()
+            t = input(' Your choice: ').strip().lower()
             if t in ('0', 'exit'):
                 break
             if t == '1' or t == 'character':
@@ -1707,18 +1705,18 @@ while True:
                 t = 'weapon'
                 break
             else:
-                print('Please input either the number or the name of the visualization you want to see\n')
+                print(' Please input either the number or the name of the visualization you want to see\n')
 
         if t in ('0', 'exit'):
-            print('Ok, exiting visualization selection\n')
+            print(' Ok, exiting visualization selection\n')
             continue
 
         if t == 'character':
             if character_distribution[100] and character_distribution[100] < 10000000:
-                print(f'{Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
-                c = input('Type "CONFIRM" if you want to see the graph regardless: ')
+                print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
+                c = input(' Type "CONFIRM" if you want to see the graph regardless: ')
                 if c != "CONFIRM":
-                    print('Aborting\n')
+                    print(' Aborting\n')
                     continue
             if 'visualize_character_distribution' not in sys.modules:
                 import visualize_character_distribution
@@ -1729,10 +1727,10 @@ while True:
 
         elif t == 'weapon':
             if weapon_distribution[100] and weapon_distribution[100] < 10000000:
-                print(f'{Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
-                c = input('Type "CONFIRM" if you want to see the graph regardless: ')
+                print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
+                c = input(' Type "CONFIRM" if you want to see the graph regardless: ')
                 if c != "CONFIRM":
-                    print('Aborting\n')
+                    print(' Aborting\n')
                     continue
             if 'visualize_weapon_distribution' not in sys.modules:
                 import visualize_weapon_distribution
@@ -1744,17 +1742,17 @@ while True:
     if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
-            print('\n======================== WISH HISTORY ==========================\n')
+            print('\n========================= WISH HISTORY ===========================\n')
             t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
             extra = (64 - len(t) + 10)//2  # +10 to account for the color change
-            print(' ' * extra + t + '\n')
+            print(" " + ' ' * extra + t + '\n')
             page = 1
             print_history_page()
 
             while True:
-                cmd = input('   History Command: ').strip().lower()
+                cmd = input('    History Command: ').strip().lower()
                 if not cmd:
-                    print(f'   Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
+                    print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
                     continue
 
                 if cmd[0] == 'n':
@@ -1765,7 +1763,7 @@ while True:
                         if cmd[1].isnumeric():
                             amount = min(int(cmd[1]), num_of_pages - page)
                         else:
-                            print(f'   "{cmd[1]}" is not a number\n')
+                            print(f'    "{cmd[1]}" is not a number\n')
                             continue
                     if page < num_of_pages:
                         print()
@@ -1774,7 +1772,7 @@ while True:
                         print_history_page()
 
                     else:
-                        print("   You're already at the last page\n")
+                        print("    You're already at the last page\n")
 
                 elif cmd[0] == 'p':
                     cmd = cmd.split()
@@ -1784,7 +1782,7 @@ while True:
                         if cmd[1].isnumeric():
                             amount = min(int(cmd[1]), page - 1)
                         else:
-                            print(f'   "{cmd[1]}" is not a number\n')
+                            print(f'    "{cmd[1]}" is not a number\n')
                             continue
                     if page > 1:
                         print()
@@ -1793,44 +1791,44 @@ while True:
                         print_history_page()
 
                     elif page == 1:
-                        print("   You're already at the first page\n")
+                        print("    You're already at the first page\n")
 
                     else:
-                        print("   You can't go back even further\n")
+                        print("    You can't go back even further\n")
 
                 elif cmd.isnumeric():
                     page = min(int(cmd), num_of_pages)
                     print()
                     if page == 0:
-                        print(Style.RESET_ALL + '   ' + '-' * 58)
-                        print(Fore.YELLOW + '                       You found page 0')
-                        print(Style.RESET_ALL + '   ' + '-' * 58)
-                        print(f"\n   (Page 0/{num_of_pages})\n")
+                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
+                        print(" " + Fore.YELLOW + '                       You found page 0')
+                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
+                        print(f"\n    (Page 0/{num_of_pages})\n")
                     else:
                         print_history_page()
 
                 elif cmd == 'e':
-                    print('   No longer viewing wish history!\n')
-                    print('================================================================\n')
+                    print('    No longer viewing wish history!\n')
+                    print('==================================================================\n')
                     break
 
                 elif cmd in ['help', "'help'", '"help"']:
-                    print(f'   {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page\n'
-                          f'   {Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n')
+                    print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
+                          f'    {Fore.LIGHTMAGENTA_EX}n [number]{Style.RESET_ALL} = go forward a number of pages\n'
+                          f'    {Fore.LIGHTMAGENTA_EX}p [number]{Style.RESET_ALL} = go back a number of pages\n'
+                          f'    {Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page\n'
+                          f'    {Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n')
 
                 else:
-                    print(f'   Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
+                    print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         else:
-            print('Wish history empty!\n')
+            print(' Wish history empty!\n')
         continue
 
     try:
         user_command = int(user_command)
     except ValueError:
-        print(f'Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
+        print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
 
     if user_command <= 1000000000:
@@ -1843,10 +1841,10 @@ while True:
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
-            print(f'Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.')
-            sure = input('Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
+            print(f' Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.')
+            sure = input(' Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
             if sure != "CONFIRM":  # if they're not sure
-                print('Aborting\n')  # abort this job
+                print(' Aborting\n')  # abort this job
                 continue  # and ask for next command
             else:
                 print()  # otherwise add an extra space cuz pretty
@@ -1860,7 +1858,7 @@ while True:
             try:
                 res, p, w = make_pull(banner_of_choice, pity_info)
             except MemoryError:
-                print('The program ran out of memory dude what have you DONE')
+                print(' The program ran out of memory dude what have you DONE')
                 save_archive_to_file(constellations, refinements)
                 save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                                   unique_four_weap_count)
@@ -1868,9 +1866,9 @@ while True:
                 save_weapon_distribution_to_file()
                 try:
                     saving_dict[banner_of_choice[0]]()
-                    print('backed up the history at least')
+                    print(' backed up the history at least')
                 except:
-                    print('couldnt even save the wish history')
+                    print(' couldnt even save the wish history')
                 break
             if isinstance(res, Character):
                 if res in constellations:
@@ -1898,12 +1896,12 @@ while True:
                 pity_info[-1][1] += 1
 
             if res.rarity >= verbose_threshold:
-                print(Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
+                print(" " + Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 100000 == 0:
-                print(f'{i}/{user_command} wishes done')
+                print(f' {i}/{user_command} wishes done')
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
-                    print(Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
+                    print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
@@ -1912,41 +1910,41 @@ while True:
         save_weapon_distribution_to_file()
         print()
         if user_banner_input[0] == 'character':
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
+            print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'chronicled':
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
+            print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'weapon':
             epitomized = f"epitomized points: {pity_info[2]}"
-            print(Style.RESET_ALL + f'{pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
+            print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
         elif user_banner_input[0] == 'standard':
             recent, not_recent = ('character', 'weapon') if pity_info[0] < pity_info[1] else ('weapon', 'character')
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
-            print(Style.RESET_ALL + f'{min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
+            print(Style.RESET_ALL + f' {min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
             if pity_info[0] >= 180 or pity_info[1] >= 180:
                 print(
-                    f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
+                    f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
             if pity_info[2] >= 20 or pity_info[3] >= 20:
                 print(
-                    f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
+                    f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
 
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
-            print(Fore.LIGHTRED_EX + '\nTo save disk space and ensure acceptable simulator performance,\n'
-                                     'the size of the wish history has been limited to 2.5 million entries.\n'
-                                     'This does NOT limit the the distribution data size (e.g. character_distribution.txt)',
+            print(Fore.LIGHTRED_EX + '\n To save disk space and ensure acceptable simulator performance,\n'
+                                     ' the size of the wish history has been limited to 2.5 million entries.\n'
+                                     ' This does NOT limit the the distribution data size (e.g. character_distribution.txt)',
                   Style.RESET_ALL)
         wish_history[banner_of_choice[0]] = wish_history[banner_of_choice[0]][-2500000:]
         try:
             saving_dict[banner_of_choice[0]]()
         except:
-            print('Not enough storage to hold this wish history. Wish history not backed up')
+            print(' Not enough storage to hold this wish history. Wish history not backed up')
     elif user_command < 0:
-        print('what are u doing bro')
+        print(' what are u doing bro')
 
     else:
-        print("I'm not letting you do that. Max 1 billion wishes at a time please")
+        print(" I'm not letting you do that. Max 1 billion wishes at a time please")
     print()
 
 if __name__ == '__main__':
-    print('\n================================================================')
-    print('\nThank you for using Wish Simulator')
+    print('\n==================================================================')
+    print('\n Thank you for using Wish Simulator')
