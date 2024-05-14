@@ -1319,7 +1319,8 @@ three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
 color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
-color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
+# color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
+color_map_light = color_map
 win_map = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
            1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
            2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
