@@ -321,11 +321,11 @@ def upgrade_to_next_tier(artifact, do_we_print=True, extra_space=False):
 
 def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):  # 2 - print everything
     if artifact.level == 20 and do_we_print >= 1:  # 1 - print only status and last upgrade
-        print(" Artifact already at +20\n")  # 0 - dont print
+        print(f" {Fore.LIGHTMAGENTA_EX}Artifact already at +20{Style.RESET_ALL}\n")  # 0 - dont print
 
     else:
         if do_we_print >= 1:
-            print(' Upgrading to +20...')
+            print(f' {Fore.LIGHTMAGENTA_EX}Upgrading to +20...{Style.RESET_ALL}')
             if extra_space:
                 print()
 
@@ -375,7 +375,11 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
         for current_index in indexes_to_print:
             if current_index == -1 or current_index >= len(artifact_list):
                 print(f' {Fore.RED}No artifact with index "{current_index + 1}" in your inventory.', end='')
-                print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n') if len(artifact_list) > 1 else print_empty_inv()
+                if len(artifact_list) >= 1:
+                    print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n')
+                else:
+                    print()
+                    print_empty_inv()
                 raise StopIteration
 
         needed_indexes = indexes_to_print
@@ -422,7 +426,7 @@ def get_indexes(user_input):
                             idxs[idx] = [_ for _ in range(this_index[0], this_index[1] + 1)]
 
                         else:
-                            print(f" \"{this_index}\" doesn't seem like a correct range\n")
+                            print(f" {Fore.RED}\"{this_index}\" doesn't seem like a correct range{Style.RESET_ALL}\n")
                             raise StopIteration
 
                     else:
@@ -439,7 +443,7 @@ def get_indexes(user_input):
                 print(f" {Fore.RED}Index \"{this_index}\" is non-numeric", end='')
 
                 if '[' in this_index:
-                    print(f'. Remove the parentheses{Style.RESET_ALL}\n')
+                    print(f'. {Fore.LIGHTMAGENTA_EX}Remove the parentheses{Style.RESET_ALL}\n')
                 else:
                     print(f'\n{Style.RESET_ALL}')
 
@@ -460,7 +464,7 @@ def get_indexes(user_input):
                     idxs = [_ for _ in range(this_index[0], this_index[1] + 1)]
 
                 else:
-                    print(f' "{this_index}" doesn\'t seem like a correct range\n')
+                    print(f' {Fore.RED}"{this_index}" doesn\'t seem like a correct range{Style.RESET_ALL}\n')
                     raise StopIteration
 
             else:
@@ -468,7 +472,7 @@ def get_indexes(user_input):
                       end='')
 
                 if '[' in this_index[0]:
-                    print(f'. Remove the parentheses{Style.RESET_ALL}\n')
+                    print(f'. {Fore.LIGHTMAGENTA_EX}Remove the parentheses{Style.RESET_ALL}\n')
                 else:
                     print(f'\n{Style.RESET_ALL}')
 
@@ -497,7 +501,7 @@ def get_indexes(user_input):
 
 
 def print_empty_inv():
-    print(f'{Style.RESET_ALL} Inventory is empty - try "r 5" to save 5 random artifacts\n')
+    print(f' {Fore.LIGHTMAGENTA_EX}Inventory is empty{Style.RESET_ALL} - try "r 5" to save 5 random artifacts\n')
 
 
 def print_controls():
@@ -585,7 +589,7 @@ def show_index_changes(old_list, new_list):
 
     if index_differences:
         counter = 0
-        print(' SOME INVENTORY INDEXES CHANGED:')
+        print(f' {Fore.LIGHTMAGENTA_EX}SOME INVENTORY INDEXES CHANGED:{Style.RESET_ALL}')
         for old, new in index_differences:
             counter += 1
             print(f' {old + 1} -> {new + 1}', end='')
@@ -652,7 +656,7 @@ while True:
         print_controls()
 
     elif '"' in user_command or "'" in user_command:
-        print(f' {Fore.RED}Remove the quotation marks{Style.RESET_ALL}\n')
+        print(f' {Fore.LIGHTMAGENTA_EX}Remove the quotation marks{Style.RESET_ALL}\n')
         continue
 
     elif user_command in ('exit', '0'):
@@ -903,8 +907,11 @@ while True:
                 if int(i) > len(artifact_list) or int(i) == 0:
                     flag = False
                     print(f' {Fore.RED}No artifact with index "{i}" in your inventory.', end='')
-                    print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n') if len(
-                        artifact_list) > 0 else print_empty_inv()
+                    if len(artifact_list) >= 1:
+                        print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n')
+                    else:
+                        print()
+                        print_empty_inv()
                     break
 
             if flag:  # if all given indexes are valid
@@ -1010,17 +1017,18 @@ while True:
                     artifact_list[int(cmd) - 1].print_stats()
 
                 else:
-                    print(f' {Fore.RED}No artifact with index "{cmd}" in your inventory. ', end='')
+                    print(f' {Fore.RED}No artifact with index "{cmd}" in your inventory.', end='')
 
-                    if len(artifact_list) > 0:
-                        print(f'Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n')
+                    if len(artifact_list) >= 1:
+                        print(f' Indexes go from 1 to {len(artifact_list)}{Style.RESET_ALL}\n')
                     else:
+                        print()
                         print_empty_inv()
 
             elif cmd in ('clear', 'clr', 'c'):
                 artifact_list.clear()
                 save_inventory_to_file(artifact_list)
-                print(' Inventory cleared\n')
+                print(f' {Fore.LIGHTGREEN_EX}Inventory cleared{Style.RESET_ALL}\n')
 
             elif cmd == 'cv':
                 big_cv = max(artifact_list, key=lambda x: x.cv())
@@ -1069,7 +1077,7 @@ while True:
                     artifact_list = load_inventory()
                     print(f' {Fore.LIGHTGREEN_EX}Loaded inventory successfully!{Style.RESET_ALL}')
                     if len(artifact_list) == 0:
-                        print(' Inventory is empty')
+                        print(f' {Fore.LIGHTMAGENTA_EX}Inventory is empty{Style.RESET_ALL}')
                     else:
                         if len(artifact_list) <= 25:
                             print()
