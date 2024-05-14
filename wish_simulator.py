@@ -4,6 +4,17 @@ from colorama import init, Fore, Style
 from pathlib import Path
 import sys
 import importlib
+import os
+
+
+try:
+    replit = os.environ['replit']
+    # if replit:
+        # print('\n Running in replit!')
+except KeyError:
+    replit = False
+    # print('\n Not running in replit!')
+
 
 print(f'\n===================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} =====================\n')
 init()
@@ -1841,7 +1852,7 @@ while True:
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
-            print(f' Are you sure? Doing {user_command} pulls would take around {round(50 * user_command / 10000000)} seconds.')
+            print(f' Are you sure? Doing {user_command} pulls would take around {round((50+replit*40) * user_command / 10000000)} seconds.')
             sure = input(' Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
             if sure != "CONFIRM":  # if they're not sure
                 print(' Aborting\n')  # abort this job

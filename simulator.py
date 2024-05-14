@@ -4,6 +4,14 @@ import sys
 from colorama import init, Fore, Style
 init()
 
+try:
+    replit = os.environ['replit']
+    if replit:
+        print('\n Running in replit!')
+except KeyError:
+    replit = False
+    # print('\n Not running in replit!')
+
 
 def print_rules():
     print(' Pick an action!\n'
