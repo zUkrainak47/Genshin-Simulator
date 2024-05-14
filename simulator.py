@@ -19,7 +19,7 @@ last_mode = 2
 if __name__ == '__main__':
     print()
     print('=' * 28 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '=' * 28)
-    print('\n Welcome to Genshin Simulator!', end=' ')
+    print('\n Welcome to Genshin Simulator!', end='')
     while True:
         if last_mode:
             if last_mode == 1:
