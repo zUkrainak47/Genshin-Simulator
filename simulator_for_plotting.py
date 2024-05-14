@@ -1,4 +1,4 @@
-# This program is essentially an advanced version of mode 2 from artifact_simulator.py
+# This program is essentially an advanced version of automation mode from artifact_simulator.py
 
 # The additional functionality is as follows:
 # You're not only getting the result for the requested Crit Value, but every value below that, too.
