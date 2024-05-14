@@ -902,7 +902,7 @@ def print_character_archive():
         print("\n" + "="*23 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*22)
         print(f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
         for a in sorted_constellations:
-            print(f'{color_map[a[0].rarity]}c{a[1]} {a[0].name}{Style.RESET_ALL}')
+            print(f'{color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
         print(Style.RESET_ALL)
         return True
     return False
@@ -920,7 +920,7 @@ def print_weapon_archive():
         print("\n" + "="*24 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*24)
         print(f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
         for a in sorted_refinements:
-            print(f'{color_map[a[0].rarity]}r{a[1]} {a[0].name}{Style.RESET_ALL}')
+            print(f'{color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
         print(Style.RESET_ALL)
         return True
     return False
