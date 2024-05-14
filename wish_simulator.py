@@ -1742,7 +1742,7 @@ while True:
     if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
-            print('\n========================= WISH HISTORY ===========================\n')
+            print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH HISTORY{Style.RESET_ALL} ===========================\n')
             t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
             extra = (64 - len(t) + 10)//2  # +10 to account for the color change
             print(" " + ' ' * extra + t + '\n')

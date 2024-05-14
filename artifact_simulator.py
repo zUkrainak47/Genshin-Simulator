@@ -614,7 +614,7 @@ valid_help = ['help', "'help'", '"help"']
 valid_picks = ['0', 'exit', '1', '2']
 
 
-print(f'\n===================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ===================\n')
+print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ==================\n')
 
 try:
     artifact_list = load_inventory()
@@ -639,7 +639,7 @@ except json.decoder.JSONDecodeError:
 #
 #     print('Exiting...\n' if automate in ('0', 'exit') else '')
 print()
-print(f'========================= {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} =======================')
+print(f'======================== {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} ======================')
 
 source = 'domain'
 print(f'\n Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
