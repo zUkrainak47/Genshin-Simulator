@@ -950,7 +950,6 @@ def show_full_inventory():
 
 
 def print_history_page():  # no idea how this works anymore
-    global print_from, print_to, cc, number, color_map
     print_from = -((page - 1) * 25) - 1
     print_to = -(min(page * 25, len(wish_history[banner_of_choice[0]]))) - 1
     cc = -print_from - 1
