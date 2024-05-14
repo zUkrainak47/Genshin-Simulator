@@ -1401,8 +1401,8 @@ while True:
               '\n')
         continue
 
-    if user_command == 'number':
-        print(' real funny, input an actual number tho\n')
+    if 'number' in user_command:
+        print(' real funny, input an actual number tho. just type "10" to do 10 wishes\n')
         continue
 
     if user_command == 'banner':
