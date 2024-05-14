@@ -77,9 +77,9 @@ def save_weapon_distribution_to_file():
         f.write(json.dumps(weapon_distribution, separators=(',', ':')))
 
 
-def save_info_to_file(pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count):
+def save_info_to_file(pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_):
     with open(r'.\banner_info\info.txt', 'w') as f:
-        f.write(json.dumps([pity, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count], separators=(',', ':')))
+        f.write(json.dumps([pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_], separators=(',', ':')))
 
 
 def save_banner_to_file():
@@ -97,6 +97,7 @@ def save_archive_to_file(cons, refs):
         data = (new_dict_c, new_dict_w)
         f.write(json.dumps(data, separators=(',', ':')))
 
+
 banner_types = ["character", "weapon", "standard", "chronicled"]
 
 
@@ -108,12 +109,12 @@ def load_info():
         return pity_and_other_info
 
     except FileNotFoundError:
-        pities = {'character': [0, 0, False, False, [0, 0, 0]],
+        pities_ = {'character': [0, 0, False, False, [0, 0, 0]],
                   'weapon': [0, 0, 0, False, False, [0, 0, 0]],
                   'standard': [0, 0, 0, 0, [0, 0, 0]],
                   'chronicled': [0, 0, False, [0, 0, 0]]}
         with open('.\\banner_info\\info.txt', 'w') as file:
-            info = [pities, 0, 0, 0, 0, 0, 0]
+            info = [pities_, 0, 0, 0, 0, 0, 0]
             file.write(json.dumps(info, separators=(',', ':')))
         return info
 
@@ -200,8 +201,8 @@ def set_defaults():
               # wishes since last [5-star char / 5-star weapon / 4-star char / 4-star weapon]
               'chronicled': [0, 0, False, [0, 0, 0]]
               # 5-star pity / 4-star pity / 5-star guarantee
-              }
               # last item is [total pull count, 5-star count, 4-star count]
+              }
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count)
@@ -553,7 +554,7 @@ amount_of_three_star_weapons = len(three_star_weapons)
 amount_of_four_star_weapons = len(weapons_dict) - amount_of_five_star_weapons - amount_of_three_star_weapons
 
 
-character_banner_list = {  # thank you @shilva on discord for typing this out BY HAND WHAT THE HELL DID U DO BRO
+character_banner_list = {  # thank you, @shilva on discord for typing this out BY HAND WHAT THE HELL DID U DO BRO
     "venti-1": (["Venti", "Barbara", "Fischl", "Xiangling"], 1.0),
     "klee-1": (["Klee", "Xingqiu", "Noelle", "Sucrose"], 1.0),
     "tartaglia-1": (["Tartaglia", "Diona", "Beidou", "Ningguang"], 1.1),
@@ -818,18 +819,22 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
 
     elif user_banner_input[0] == 'chronicled':  # ['chronicled', ['mondstadt-1', 'Jean']]
-        t = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
+        chosen_type = 'characters' if user_banner_input[1][1] in characters_dict else 'weapons'
 
         banner_of_choice = (
             user_banner_input[0],
             chronicled_banner_list[user_banner_input[1][0]],
-            characters_dict[user_banner_input[1][1]] if t == 'characters' else weapons_dict[user_banner_input[1][1]])
+            characters_dict[user_banner_input[1][1]] if chosen_type == 'characters' else weapons_dict[user_banner_input[1][1]])
 
-        legal_standard_four_stars = (banner_of_choice[1]['characters']['4-stars'],   # 4-star characters
-                                     banner_of_choice[1]['weapons']['4-stars'])      # 4-star weapons
+        legal_standard_four_stars = (banner_of_choice[1]['characters']['4-stars'],
+                                     # 4-star characters
+                                     banner_of_choice[1]['weapons']['4-stars'])
+                                     # 4-star weapons
 
-        legal_standard_five_stars = [i for i in banner_of_choice[1][t]['5-stars']    # every item that's a 5-star of the same type as the chosen 5-star
-                                     if i.name != user_banner_input[1][1]]           # that isn't the chosen item
+        legal_standard_five_stars = [i for i in banner_of_choice[1][chosen_type]['5-stars']
+                                     # every item that's a 5-star of the same type as the chosen 5-star
+                                     if i.name != user_banner_input[1][1]]
+                                     # that isn't the chosen item
 
         # for context, user_banner_input has ['chronicled', ['mondstadt-1', 'Jean']] structure
         # legal_standard_five_stars is the list of characters you can lose your 5050 to
@@ -850,41 +855,41 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
     save_banner_to_file()
 
 
-def print_pity(counter, p, c5, c4):
+def print_pity(counter, pity_, c5, c4):
     print("\n" + "="*23 + " PITY INFORMATION " + "="*23)
     if counter:
         print(f'{counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
         print(f'Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
-    print(f'{p[-1][0]:,} pull{"s" if p[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
-    print(f'Out of them {Fore.YELLOW}{p[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{p[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
-    if p[0] < 10 and p[1] < 10:
+    print(f'{pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
+    print(f'Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+    if pity_[0] < 10 and pity_[1] < 10:
         insert1, insert2 = '', ''
     else:
-        insert1 = ' ' * (p[0] < 10)
-        insert2 = ' ' * (p[1] < 10)
+        insert1 = ' ' * (pity_[0] < 10)
+        insert2 = ' ' * (pity_[1] < 10)
     if user_banner_input[0] == 'character':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {fifty if not p[2] else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {fifty if not p[3] else "next is guaranteed to be featured"}')
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {fifty if not pity_[3] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[2] else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]}')
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]}, {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]}')
     elif user_banner_input[0] == 'weapon':
-        was_standard = 'was standard' if p[3] else 'was not standard'
-        epitomized = f"epitomized points: {p[2]}, last {was_standard}"
+        was_standard = 'was standard' if pity_[3] else 'was not standard'
+        epitomized_ = f"epitomized points: {pity_[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
-        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]},{insert1} {epitomized if p[2] < 2 else "next is guaranteed to be featured"}')
-        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]},{insert2} {seventyfive if not p[4] else "next is guaranteed to be featured"}')
+        print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2 else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'standard':
-        print(f'{Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {p[0]}\n'
-              f'{Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {p[1]}')
-        print(f'{Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {p[2]}\n'
-              f'{Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {p[3]}')
-        if p[0] >= 180 or p[1] >= 180:
-            print(f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[0] >= 180 else "weapon"}')
-        if p[2] >= 20 or p[3] >= 20:
-            print(f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if p[2] >= 20 else "weapon"}')
+        print(f'{Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
+              f'{Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {pity_[1]}')
+        print(f'{Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {pity_[2]}\n'
+              f'{Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {pity_[3]}')
+        if pity_[0] >= 180 or pity_[1] >= 180:
+            print(f'Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
+        if pity_[2] >= 20 or pity_[3] >= 20:
+            print(f'Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
 
     # print('\n================================================================')
 
@@ -958,7 +963,6 @@ def print_history_page():  # no idea how this works anymore
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '   ' + '-' * 58)
     print(f'\n   (Page {page}/{num_of_pages})\n')
-
 
 
 try:
@@ -1235,16 +1239,16 @@ print('\n================================================================\n')
 print(f'Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 
 
-def print_banner(t):
-    if t == 'Chosen':
+def print_banner(t1):
+    if t1 == 'Chosen':
         t2 = 'B'
-    elif t == 'Current':
+    elif t1 == 'Current':
         t2 = 'Current b'
-    elif t == 'New':
+    elif t1 == 'New':
         t2 = 'New b'
     else:
         t2 = '???'
-    print(f'\n{t} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
+    print(f'\n{t1} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
     if banner_of_choice[0] == 'character':
         print(f'{t2}anner ID: {user_banner_input[1]}')
         for i in banner_of_choice[1]:
@@ -1281,7 +1285,7 @@ while True:
               f'\t{Fore.LIGHTMAGENTA_EX}p {Fore.BLUE}[number]{Style.RESET_ALL} = go back a number of pages,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page,\n'
               f'\t{Fore.LIGHTMAGENTA_EX}e{Style.RESET_ALL} = exit\n\n'
-              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view disribution of 5-star items per pity\n'
+              f'{Fore.LIGHTCYAN_EX}dist{Style.RESET_ALL} = view distribution of 5-star items per pity\n'
               f'{Fore.LIGHTCYAN_EX}viz{Style.RESET_ALL} = plot a "Distribution of 5★ items per pity" graph\n\n'
               f'{Fore.LIGHTCYAN_EX}clear{Style.RESET_ALL} = clear wish history, pity, archive\n'
               f'{Fore.LIGHTCYAN_EX}load{Style.RESET_ALL} = load updates made to files located in ./banner_info/\n'
@@ -1460,7 +1464,7 @@ while True:
                         break
 
                 if new3 in ('0', 'exit'):
-                    print('Ok, not choosing Eptomized Path anymore.\n')
+                    print('Ok, not choosing Epitomized Path anymore.\n')
                     continue
                 user_banner_input = [new1, [new2, new3]]
 
@@ -1483,7 +1487,6 @@ while True:
             print(Fore.RED + 'Something off with info file. Clearing everything...' + Style.RESET_ALL)
             info_ok = False
 
-
         if info_ok:
             try:
                 cchar, wweap, sstd, cchron = load_history()
@@ -1493,7 +1496,6 @@ while True:
             except:
                 print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
                 history_ok = False
-
 
         if info_ok and history_ok:
             try:
