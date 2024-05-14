@@ -10,9 +10,61 @@ init()
 Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
 
 
-def save_history_to_file(data):
-    with open(r'.\banner_info\wish.txt', 'w') as f:
-        f.write(json.dumps(data, separators=(',', ':')))
+def save_character_history_to_file():
+    with open(r'.\banner_info\character_wish_history.txt', 'w') as f:
+        f.write(json.dumps(wish_history["character"], separators=(',', ':')))
+
+
+def save_weapon_history_to_file():
+    with open(r'.\banner_info\weapon_wish_history.txt', 'w') as f:
+        f.write(json.dumps(wish_history["weapon"], separators=(',', ':')))
+
+
+def save_standard_history_to_file():
+    with open(r'.\banner_info\standard_wish_history.txt', 'w') as f:
+        f.write(json.dumps(wish_history["standard"], separators=(',', ':')))
+
+
+def save_chronicled_history_to_file():
+    with open(r'.\banner_info\chronicled_wish_history.txt', 'w') as f:
+        f.write(json.dumps(wish_history["chronicled"], separators=(',', ':')))
+
+
+saving_dict = {"character": save_character_history_to_file,
+               "weapon": save_weapon_history_to_file,
+               "standard": save_standard_history_to_file,
+               "chronicled": save_chronicled_history_to_file}
+
+
+def load_history():
+    try:
+        with open(r'.\banner_info\character_wish_history.txt') as file:
+            data = file.read()
+        character_history = json.loads(data)
+        with open(r'.\banner_info\weapon_wish_history.txt') as file:
+            data = file.read()
+        weapon_history = json.loads(data)
+        with open(r'.\banner_info\standard_wish_history.txt') as file:
+            data = file.read()
+        standard_history = json.loads(data)
+        with open(r'.\banner_info\chronicled_wish_history.txt') as file:
+            data = file.read()
+        chronicled_history = json.loads(data)
+        for i in character_history + weapon_history + standard_history + chronicled_history:
+            if i not in number_to_item_dict:
+                raise ValueError
+
+        return character_history, weapon_history, standard_history, chronicled_history
+
+
+    except FileNotFoundError:
+        global wish_history
+        wish_history = {"character": [], "weapon": [], "standard": [],  "chronicled": []}
+        save_character_history_to_file()
+        save_weapon_history_to_file()
+        save_chronicled_history_to_file()
+        save_standard_history_to_file()
+        return [], [], [], []
 
 
 def save_character_distribution_to_file():
@@ -46,24 +98,6 @@ def save_archive_to_file(cons, refs):
         f.write(json.dumps(data, separators=(',', ':')))
 
 banner_types = ["character", "weapon", "standard", "chronicled"]
-
-
-def load_history():
-    try:
-        with open('.\\banner_info\\wish.txt') as file:
-            data = file.read()
-        history = json.loads(data)
-        for i in banner_types:
-            for num in history[i]:
-                if num not in number_to_item_dict:
-                    raise ValueError
-
-        return history
-
-    except FileNotFoundError:
-        with open('.\\banner_info\\wish.txt', 'w') as file:
-            file.write('{"character":[],"weapon":[],"standard":[],"chronicled":[]}')
-        return {"character": [], "weapon": [], "standard": [], "chronicled": []}
 
 
 def load_info():
@@ -150,7 +184,10 @@ def set_defaults():
     global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
 
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
-    save_history_to_file(wish_history)
+    save_character_history_to_file()
+    save_weapon_history_to_file()
+    save_chronicled_history_to_file()
+    save_standard_history_to_file()
 
     constellations, refinements = {}, {}
     save_archive_to_file(constellations, refinements)
@@ -832,6 +869,7 @@ def print_pity(counter, p, c5, c4):
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
         print(f'{Fore.YELLOW}5★{Style.RESET_ALL} pity = {p[0]}, {fifty if not p[2] else "next is guaranteed to be featured"}')
+        print(f'{Fore.MAGENTA}4★{Style.RESET_ALL} pity = {p[1]}')
     elif user_banner_input[0] == 'weapon':
         was_standard = 'was standard' if p[3] else 'was not standard'
         epitomized = f"epitomized points: {p[2]}, last {was_standard}"
@@ -933,12 +971,13 @@ except:
 
 
 if info_ok:
-    try:  # if i extract this into a method pycharm stops seeing all the variables assigned
-        wish_history = load_history()
+    try:  # if I extract this into a method pycharm stops seeing all the variables assigned
+        cchar, wweap, sstd, cchron = load_history()
+        wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
         print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
         history_ok = True
     except:
-        print(Fore.RED + 'Something off with wish history file. Clearing everything...' + Style.RESET_ALL)
+        print(Fore.RED + 'Something off with wish history files. Clearing everything...' + Style.RESET_ALL)
         history_ok = False
 
 
@@ -1448,7 +1487,8 @@ while True:
 
         if info_ok:
             try:
-                wish_history = load_history()
+                cchar, wweap, sstd, cchron = load_history()
+                wish_history = {"character": cchar, "weapon": wweap, "standard": sstd, "chronicled": cchron}
                 print(Fore.GREEN + 'Loaded wish history successfully!' + Style.RESET_ALL)
                 history_ok = True
             except:
@@ -1596,8 +1636,8 @@ while True:
         if len(wish_history[banner_of_choice[0]]):
             num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
             print('\n======================== WISH HISTORY ==========================\n')
-            t = f'Total number of entries for {user_banner_input[0]} banner: {len(wish_history[user_banner_input[0]]):,}'
-            extra = (64 - len(t))//2
+            t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
+            extra = (64 - len(t) + 10)//2  # +10 to account for the color change
             print(' ' * extra + t + '\n')
             page = 1
             print_history_page()
@@ -1718,7 +1758,7 @@ while True:
                 save_character_distribution_to_file()
                 save_weapon_distribution_to_file()
                 try:
-                    save_history_to_file(wish_history)
+                    saving_dict[banner_of_choice[0]]()
                     print('backed up the history at least')
                 except:
                     print('couldnt even save the wish history')
@@ -1788,7 +1828,7 @@ while True:
                   Style.RESET_ALL)
         wish_history[banner_of_choice[0]] = wish_history[banner_of_choice[0]][-2500000:]
         try:
-            save_history_to_file(wish_history)
+            saving_dict[banner_of_choice[0]]()
         except:
             print('Not enough storage to hold this wish history. Wish history not backed up')
     elif user_command < 0:
