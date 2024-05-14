@@ -19,8 +19,8 @@ except KeyError:
 
 def print_rules():
     print(' Pick an action!\n'
-          '\n '
-          '0 = exit Genshin Simulator\n'
+          '\n'
+          ' 0 = exit Genshin Simulator\n'
           ' 1 = enter Artifact Simulator\n'
           ' 2 = enter Wish Simulator\n',
           end='')
