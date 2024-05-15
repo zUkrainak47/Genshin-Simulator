@@ -55,7 +55,7 @@ class Artifact:
         for sub in self.substats:
             is_percentage = '%' in sub
             print(
-                f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{' (+)' if sub == self.last_upgrade else ''}")
+                f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
         print()
@@ -124,15 +124,15 @@ crit_rate_stats = (4.7, 9.9, 15.2, 20.5, 25.8, 31.1)
 crit_dmg_stats = (9.3, 19.9, 30.5, 41.0, 51.6, 62.2)
 max_rolls = {
     'HP': 298.75,
-    'ATK': 19.45000076,
-    'DEF': 23.149999,
-    'HP%': 5.8335,
-    'ATK%': 5.8335,
-    'DEF%': 7.289999,
-    'EM': 23.309999,
-    'ER%': 6.4800001,
-    'Crit RATE%': 3.889999,
-    'Crit DMG%': 7.769999
+    'ATK': 19.4501,
+    'DEF': 23.1499,
+    'HP%': 5.83333,
+    'ATK%': 5.83333,
+    'DEF%': 7.2899,
+    'EM': 23.3099,
+    'ER%': 6.4801,
+    'Crit RATE%': 3.8899,
+    'Crit DMG%': 7.7699
 }
 possible_rolls = (0.7, 0.8, 0.9, 1.0)
 
@@ -811,10 +811,18 @@ while True:
 
             if cmd.isnumeric():
                 cmd = int(cmd)
-
+                s = len(artifact_list)
                 for i in range(cmd):
-                    art, _ = create_and_roll_artifact(source, 0, True)
-                    artifact_list.append(art)
+                    if s < 100000:
+                        art, _ = create_and_roll_artifact(source, 0, True)
+                        artifact_list.append(art)
+                        s += 1
+                    else:
+                        print(f' {Fore.RED}Inventory full (100k artifacts).\n'
+                              f' {Fore.LIGHTMAGENTA_EX}Delete some artifacts first to continue saving.\n'
+                              f' You may still generate artifacts without saving them.{Style.RESET_ALL}\n')
+                        cmd = i
+                        break
 
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
@@ -838,9 +846,18 @@ while True:
             if cmd.isnumeric():
                 cmd = int(cmd)
 
+                s = len(artifact_list)
                 for i in range(cmd):
-                    art = create_artifact(source)
-                    artifact_list.append(art)
+                    if s < 100000:
+                        art = create_artifact(source)
+                        artifact_list.append(art)
+                        s += 1
+                    else:
+                        print(f' {Fore.RED}Inventory full (100k artifacts).\n'
+                              f' {Fore.LIGHTMAGENTA_EX}Delete some artifacts first to continue saving.\n'
+                              f' You may still generate artifacts without saving them.{Style.RESET_ALL}\n')
+                        cmd = i
+                        break
 
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
@@ -856,14 +873,18 @@ while True:
 
     elif user_command in ('s', 'save'):
         if art not in artifact_list:
-            artifact_list.append(art)
-            len_artifact_list = len(artifact_list)
+            if len(artifact_list) < 100000:
+                artifact_list.append(art)
+                len_artifact_list = len(artifact_list)
 
-            artifact_list = sort_inventory(artifact_list)
-            save_inventory_to_file(artifact_list)
+                artifact_list = sort_inventory(artifact_list)
+                save_inventory_to_file(artifact_list)
 
-            print(f' {Fore.LIGHTGREEN_EX}Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory{Style.RESET_ALL}\n')
-
+                print(f' {Fore.LIGHTGREEN_EX}Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory{Style.RESET_ALL}\n')
+            else:
+                print(f' {Fore.RED}Inventory full (100k artifacts).\n'
+                      f' {Fore.LIGHTMAGENTA_EX}Delete some artifacts first to continue saving.\n'
+                      f' You may still generate artifacts without saving them.{Style.RESET_ALL}\n')
         else:
             print(f' {Fore.LIGHTMAGENTA_EX}Already saved this artifact{Style.RESET_ALL}\n')
 
