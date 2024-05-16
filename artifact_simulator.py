@@ -1117,16 +1117,12 @@ while True:
             print(f' {Fore.RED}You did something wrong.\n'
                   f' If you tried inputting multiple indexes, remove spaces between them{Style.RESET_ALL}\n')
 
-    elif user_command == 'domain':
-        source = 'domain'
-        print(' Source set to domain\n')
-
-    elif user_command in ('strongbox', 'abyss'):
+    elif user_command in ('domain', 'strongbox', 'abyss'):
         source = user_command
-        print(f' Source set to {source}\n')
+        print(f' Source set to {Fore.LIGHTGREEN_EX}{source}{Style.RESET_ALL}\n')
 
     elif user_command == 'source':
-        print(f' Current source: {source}\n')
+        print(f' Current source: {Fore.LIGHTGREEN_EX}{source}{Style.RESET_ALL}\n')
 
     elif user_command in ('a rv', 'rv'):
         print(f' RV: {art.rv()}%\n')

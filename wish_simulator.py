@@ -1471,7 +1471,7 @@ while True:
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print(" That's not a banner that's available! Try again\n")
+                        print(f" {Fore.RED}That's not a banner that's available! Try again{Style.RESET_ALL}\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
@@ -1494,7 +1494,7 @@ while True:
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print(" That's not a banner that's available! Try again\n")
+                        print(f" {Fore.RED}That's not a banner that's available! Try again{Style.RESET_ALL}\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
@@ -1518,8 +1518,8 @@ while True:
                     if new3 in ('0', 'exit'):
                         break
                     if new3 not in m and new3 not in m.values():
-                        print(" That's not a valid pick! Try again\n"
-                              " Please make sure the capitalization matches\n")
+                        print(f" {Fore.RED}That's not a valid pick! Try again\n"
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
@@ -1546,8 +1546,8 @@ while True:
                     if new2 in ('0', 'exit'):
                         break
                     if new2 not in m and new2 not in m.values():
-                        print(" That's not a banner that's available! Try again\n"
-                              " Please make sure the capitalization matches\n")
+                        print(f" {Fore.RED}That's not a banner that's available! Try again\n"
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
@@ -1569,8 +1569,8 @@ while True:
                     if new3 in ('0', 'exit'):
                         break
                     if new3 not in m and new3 not in m.values():
-                        print(" That's not a valid pick! Try again\n"
-                              " Please make sure the capitalization matches\n")
+                        print(f" {Fore.RED}That's not a valid pick! Try again\n"
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
