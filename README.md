@@ -56,5 +56,5 @@ This Artifact Simulator can help you with that.
 
 ## Plotting with `simulator_for_plotting.py`
 
-This program will run Automation Mode of `Artifact Simulator`, but will create a graph to visualize the results. \
+This program will run Automation Mode of `Artifact Simulator`, and will also create a graph to visualize the results. \
 Right now only CV is supported as a stat, but I might add more in the future.
