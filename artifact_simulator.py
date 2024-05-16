@@ -501,7 +501,8 @@ def get_indexes(user_input):
 
 
 def print_empty_inv():
-    print(f' {Fore.LIGHTMAGENTA_EX}Inventory is empty{Style.RESET_ALL} - try "r 5" to save 5 random artifacts\n')
+    print(f' {Fore.LIGHTMAGENTA_EX}Inventory is empty{Style.RESET_ALL}\n'
+          f' try "r 5" to save 5 random artifacts or "s" to save the generated one\n')
 
 
 def print_controls():
