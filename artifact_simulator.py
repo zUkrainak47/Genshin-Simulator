@@ -526,9 +526,9 @@ def print_controls():
         f' {Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Style.RESET_ALL} = re-roll and save a given number of artifacts to the inventory\n'
         f' {Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Fore.BLUE} ++{Style.RESET_ALL} = re-roll, +20, and save a given number of artifacts to the inventory\n'
         f'\n'
-        f' {Fore.LIGHTCYAN_EX}log{Style.RESET_ALL} = view artifact log\n'
-        f' {Fore.LIGHTCYAN_EX}-log{Fore.BLUE} [number]{Style.RESET_ALL} = move back in the artifact log\n'
-        f' {Fore.LIGHTCYAN_EX}+log{Fore.BLUE} [number]{Style.RESET_ALL} = move forward in the artifact log\n'
+        f' {Fore.LIGHTCYAN_EX}log{Style.RESET_ALL} = view artifact log (10 most recent artifacts generated)\n'
+        f' {Fore.LIGHTCYAN_EX}log-{Fore.BLUE} [number]{Style.RESET_ALL} = move back in the artifact log\n'
+        f' {Fore.LIGHTCYAN_EX}log+{Fore.BLUE} [number]{Style.RESET_ALL} = move forward in the artifact log\n'
         f'\n'
         '------------------------------------- ACTIONS WITH INVENTORY -------------------------------------\n'
         '\n'
@@ -825,8 +825,8 @@ while True:
         if len(artifact_log) > 10:
             artifact_log = artifact_log[1:]
 
-    elif '-log' in user_command:
-        if user_command[:4] == '-log':
+    elif 'log-' in user_command:
+        if user_command[:4] == 'log-':
             inp = user_command.split()
             if len(inp) == 2:
                 if inp[1].isnumeric():
@@ -852,10 +852,10 @@ while True:
             else:
                 print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the beginning of the artifact log!{Style.RESET_ALL}\n')
         else:
-            print(f' {Fore.RED}Command must start with "-log" to move back inside of the artifact log!{Style.RESET_ALL}\n')
+            print(f' {Fore.RED}Command must start with "log-" to move back inside of the artifact log!{Style.RESET_ALL}\n')
 
-    elif '+log' in user_command:
-        if user_command[:4] == '+log':
+    elif 'log+' in user_command:
+        if user_command[:4] == 'log+':
             inp = user_command.split()
             if len(inp) == 2:
                 if inp[1].isnumeric():
@@ -881,7 +881,7 @@ while True:
             else:
                 print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the end of the artifact log!{Style.RESET_ALL}\n')
         else:
-            print(f' {Fore.RED}Command must start with "+log" to move forward inside of the artifact log!{Style.RESET_ALL}\n')
+            print(f' {Fore.RED}Command must start with "log+" to move forward inside of the artifact log!{Style.RESET_ALL}\n')
 
     elif user_command == 'log':
         print_log()
