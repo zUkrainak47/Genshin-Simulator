@@ -526,6 +526,10 @@ def print_controls():
         f' {Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Style.RESET_ALL} = re-roll and save a given number of artifacts to the inventory\n'
         f' {Fore.LIGHTCYAN_EX}r {Fore.MAGENTA}[number]{Fore.BLUE} ++{Style.RESET_ALL} = re-roll, +20, and save a given number of artifacts to the inventory\n'
         f'\n'
+        f' {Fore.LIGHTCYAN_EX}log{Style.RESET_ALL} = view artifact log\n'
+        f' {Fore.LIGHTCYAN_EX}-log{Fore.BLUE} [number]{Style.RESET_ALL} = move back in the artifact log\n'
+        f' {Fore.LIGHTCYAN_EX}+log{Fore.BLUE} [number]{Style.RESET_ALL} = move forward in the artifact log\n'
+        f'\n'
         '------------------------------------- ACTIONS WITH INVENTORY -------------------------------------\n'
         '\n'
         f' {Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = show inventory\n'  # inventory
@@ -649,7 +653,20 @@ print(f'======================== {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RES
 source = 'domain'
 print(f'\n Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 art = create_artifact(source)
+artifact_log = [art]
 art.print_stats()
+
+
+def print_log():
+    for this_index in range(1, len(artifact_log) + 1):
+        if art == artifact_log[-this_index]:
+            color = Fore.GREEN
+        else:
+            color = ''
+        print(
+            f' {color}{this_index}) {artifact_log[-this_index]} - {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
+    print()
+
 
 while True:
     user_command = input(' Command: ').lower().strip()
@@ -796,11 +813,78 @@ while True:
     elif user_command == 'r':
         print(f' {Fore.LIGHTMAGENTA_EX}Re-rolling...{Style.RESET_ALL}\n')
         art = create_artifact(source)
+        artifact_log.append(art)
+        if len(artifact_log) > 10:
+            artifact_log = artifact_log[1:]
         art.print_stats()
 
     elif user_command in ('r++', 'r ++'):
         print(f' {Fore.LIGHTMAGENTA_EX}Re-rolling and upgrading...{Style.RESET_ALL}\n')
         art, _ = create_and_roll_artifact(source)
+        artifact_log.append(art)
+        if len(artifact_log) > 10:
+            artifact_log = artifact_log[1:]
+
+    elif '-log' in user_command:
+        if user_command[:4] == '-log':
+            inp = user_command.split()
+            if len(inp) == 2:
+                if inp[1].isnumeric():
+                    back = int(inp[1])
+                else:
+                    print(f' {Fore.RED}"{inp[1]}" is not a number{Style.RESET_ALL}\n')
+                    continue
+            else:
+                back = 1
+            if artifact_log.index(art) - back >= 0:
+                art = artifact_log[artifact_log.index(art) - back]
+                # print(f' {Fore.LIGHTGREEN_EX}Ok, moved back {back} artifact{"s" if back != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
+            elif artifact_log.index(art) != 0:
+                art = artifact_log[0]
+                print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move back {back} spot{"s" if back != 1 else ""}{Style.RESET_ALL}\n'
+                      f' {Fore.MAGENTA}Moved back to the start of the artifact log instead{Style.RESET_ALL}\n')
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
+            else:
+                print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the beginning of the artifact log!{Style.RESET_ALL}\n')
+        else:
+            print(f' {Fore.RED}Command must start with "-log" to move back inside of the artifact log!{Style.RESET_ALL}\n')
+
+    elif '+log' in user_command:
+        if user_command[:4] == '+log':
+            inp = user_command.split()
+            if len(inp) == 2:
+                if inp[1].isnumeric():
+                    forward = int(inp[1])
+                else:
+                    print(f' {Fore.RED}"{inp[1]}" is not a number{Style.RESET_ALL}\n')
+                    continue
+            else:
+                forward = 1
+            if artifact_log.index(art) + forward < len(artifact_log):
+                art = artifact_log[artifact_log.index(art) + forward]
+                # print(f' {Fore.LIGHTGREEN_EX}Ok, moved forward {forward} artifact{"s" if forward != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
+            elif artifact_log.index(art) != len(artifact_log) - 1:
+                art = artifact_log[-1]
+                print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move forward {forward} spot{"s" if forward != 1 else ""}{Style.RESET_ALL}\n'
+                      f' {Fore.MAGENTA}Moved to the end of the artifact log instead{Style.RESET_ALL}\n')
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
+            else:
+                print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the end of the artifact log!{Style.RESET_ALL}\n')
+        else:
+            print(f' {Fore.RED}Command must start with "+log" to move forward inside of the artifact log!{Style.RESET_ALL}\n')
+
+    elif user_command == 'log':
+        print_log()
 
     elif user_command[:2] == 'r ':
         if '++' in user_command:
