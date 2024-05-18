@@ -5,6 +5,8 @@ d   - percentage of all pulls that will end up being a 5-star on a specific pity
 cum - probability that you will have gotten a 5-star by that pity
 r   - probability that you will NOT have gotten a 5-star by that pity
 raw - probability of getting a 5-star at any given pity (that is, if you got to it)
+
+4-star chances assume that the pull is already not a 5-star
 """)
 
 
@@ -74,6 +76,8 @@ print()
 # cum - probability that you will have gotten a 5-star by that pity
 # r   - probability that you will NOT have gotten a 5-star by that pity
 # raw - probability of getting a 5-star at any given pity (that is, if you got to it)
+#
+# 4-star chances assume that the pull is already not a 5-star
 #
 #
 # CHARACTER BANNER (5-STAR)
@@ -433,7 +437,7 @@ print()
 # p=75 - d = 0.003826423500%, cum = 50.393354448088%, r = 0.000687267075%, raw = 46.21%
 # p=76 - d = 0.000341836902%, cum = 50.393696284990%, r = 0.000008934472%, raw = 49.74%
 # p=77 - d = 0.000004502411%, cum = 50.393700787402%, r = 0.000000000000%, raw = 50.39%
-
+#
 # Average pity = 105.6687438178803
 # 0.9464% of all pulls are desired 5-star weapons on average
 #
