@@ -13,18 +13,27 @@ def show_chances(t):
     cumulative = 0
     count = 0
 
-    if t == 'character':
+    if t == '5-star character':
         hard, soft, base, m = 90, 74, 0.006, 1
-    elif t == 'weapon':
+    elif t == '5-star weapon':
         hard, soft, base, m = 77, 63, 0.007, 1
-    elif t == 'desired character':
+    elif t == 'desired 5-star character':
         hard, soft, base, m = 90, 74, 0.006, 1.5
-    else:
+    elif t == 'desired 5-star weapon':
         hard, soft, base, m = 77, 63, 0.007, 127/64
+    elif t == '4-star character':
+        hard, soft, base, m = 10, 9, 0.051, 1
+    elif t == '4-star weapon':
+        hard, soft, base, m = 10, 8, 0.06, 1
+    elif t == 'desired 4-star character':
+        hard, soft, base, m = 10, 9, 0.051, 1.5
+    elif t == 'desired 4-star weapon':
+        hard, soft, base, m = 10, 8, 0.06, 5/4
 
-    desired = "desired " if len(t.split()) == 2 else ''
+    desired = "desired " if len(t.split()) == 3 else ''
 
-    print(f'\n{t.split()[-1].upper()} BANNER', end=' '); print('(DESIRED 5-STAR)\n') if desired else print('\n')
+    print(f'\n{t.split()[-1].upper()} BANNER', end=' ')
+    print(f'({desired.upper()}{t.split()[-2].upper()})\n')
 
     for pity in range(1, hard+1):
         raw = min((max(pity - (soft-1), 0) * base*10 + base)/m, 1/m)  # count raw probability for x pity
@@ -36,16 +45,25 @@ def show_chances(t):
               f'r = {remaining:.12f}%, raw = {raw * 100:.2f}%')
         # print(100/delta)  # one in how many attempts will stop at this pity
     print(f'\nAverage pity = {count}')
-    print(f'{1 / count * 100:.4f}% of all pulls are {desired}5-star {t.split()[-1]}s on average')
+    print(f'{1 / count * 100:.4f}% of all pulls are {t}s on average')
 
 
-show_chances('character')
+show_chances('5-star character')
 print()
-show_chances('weapon')
+show_chances('5-star weapon')
 print()
-show_chances('desired character')
+show_chances('desired 5-star character')
 print()
-show_chances('desired weapon')
+show_chances('desired 5-star weapon')
+print()
+show_chances('4-star character')
+print()
+show_chances('4-star weapon')
+print()
+show_chances('desired 4-star character')
+print()
+show_chances('desired 4-star weapon')
+print()
 
 # This is what the program will output:
 
@@ -58,8 +76,8 @@ show_chances('desired weapon')
 # raw - probability of getting a 5-star at any given pity (that is, if you got to it)
 #
 #
-# CHARACTER BANNER
-# 
+# CHARACTER BANNER (5-STAR)
+#
 # p=1 - d = 0.600000000000%, cum = 0.600000000000%, r = 99.400000000000%, raw = 0.60%
 # p=2 - d = 0.596400000000%, cum = 1.196400000000%, r = 98.803600000000%, raw = 0.60%
 # p=3 - d = 0.592821600000%, cum = 1.789221600000%, r = 98.210778400000%, raw = 0.60%
@@ -155,7 +173,7 @@ show_chances('desired weapon')
 # 1.6052% of all pulls are 5-star characters on average
 #
 #
-# WEAPON BANNER
+# WEAPON BANNER (5-STAR)
 #
 # p=1 - d = 0.700000000000%, cum = 0.700000000000%, r = 99.300000000000%, raw = 0.70%
 # p=2 - d = 0.695100000000%, cum = 1.395100000000%, r = 98.604900000000%, raw = 0.70%
@@ -415,6 +433,74 @@ show_chances('desired weapon')
 # p=75 - d = 0.003826423500%, cum = 50.393354448088%, r = 0.000687267075%, raw = 46.21%
 # p=76 - d = 0.000341836902%, cum = 50.393696284990%, r = 0.000008934472%, raw = 49.74%
 # p=77 - d = 0.000004502411%, cum = 50.393700787402%, r = 0.000000000000%, raw = 50.39%
-#
+
 # Average pity = 105.6687438178803
 # 0.9464% of all pulls are desired 5-star weapons on average
+#
+#
+# CHARACTER BANNER (4-STAR)
+#
+# p=1 - d = 5.100000000000%, cum = 5.100000000000%, r = 94.900000000000%, raw = 5.10%
+# p=2 - d = 4.839900000000%, cum = 9.939900000000%, r = 90.060100000000%, raw = 5.10%
+# p=3 - d = 4.593065100000%, cum = 14.532965100000%, r = 85.467034900000%, raw = 5.10%
+# p=4 - d = 4.358818779900%, cum = 18.891783879900%, r = 81.108216120100%, raw = 5.10%
+# p=5 - d = 4.136519022125%, cum = 23.028302902025%, r = 76.971697097975%, raw = 5.10%
+# p=6 - d = 3.925556551997%, cum = 26.953859454022%, r = 73.046140545978%, raw = 5.10%
+# p=7 - d = 3.725353167845%, cum = 30.679212621867%, r = 69.320787378133%, raw = 5.10%
+# p=8 - d = 3.535360156285%, cum = 34.214572778151%, r = 65.785427221848%, raw = 5.10%
+# p=9 - d = 36.905624671457%, cum = 71.120197449608%, r = 28.879802550391%, raw = 56.10%
+# p=10 - d = 28.879802550391%, cum = 100.000000000000%, r = 0.000000000000%, raw = 100.00%
+#
+# Average pity = 7.655392058144262
+# 13.0627% of all pulls are 4-star characters on average
+#
+#
+# WEAPON BANNER (4-STAR)
+#
+# p=1 - d = 6.000000000000%, cum = 6.000000000000%, r = 94.000000000000%, raw = 6.00%
+# p=2 - d = 5.640000000000%, cum = 11.640000000000%, r = 88.360000000000%, raw = 6.00%
+# p=3 - d = 5.301600000000%, cum = 16.941600000000%, r = 83.058400000000%, raw = 6.00%
+# p=4 - d = 4.983504000000%, cum = 21.925104000000%, r = 78.074896000000%, raw = 6.00%
+# p=5 - d = 4.684493760000%, cum = 26.609597760000%, r = 73.390402240000%, raw = 6.00%
+# p=6 - d = 4.403424134400%, cum = 31.013021894400%, r = 68.986978105600%, raw = 6.00%
+# p=7 - d = 4.139218686336%, cum = 35.152240580736%, r = 64.847759419264%, raw = 6.00%
+# p=8 - d = 42.799521216714%, cum = 77.951761797450%, r = 22.048238202550%, raw = 66.00%
+# p=9 - d = 22.048238202550%, cum = 100.000000000000%, r = 0.000000000000%, raw = 100.00%
+# p=10 - d = 0.000000000000%, cum = 100.000000000000%, r = 0.000000000000%, raw = 100.00%
+#
+# Average pity = 6.7276667396741345
+# 14.8640% of all pulls are 4-star weapons on average
+#
+#
+# CHARACTER BANNER (DESIRED 4-STAR)
+#
+# p=1 - d = 3.400000000000%, cum = 3.400000000000%, r = 94.900000000000%, raw = 3.40%
+# p=2 - d = 3.226600000000%, cum = 6.626600000000%, r = 90.060100000000%, raw = 3.40%
+# p=3 - d = 3.062043400000%, cum = 9.688643400000%, r = 85.467034900000%, raw = 3.40%
+# p=4 - d = 2.905879186600%, cum = 12.594522586600%, r = 81.108216120100%, raw = 3.40%
+# p=5 - d = 2.757679348083%, cum = 15.352201934683%, r = 76.971697097975%, raw = 3.40%
+# p=6 - d = 2.617037701331%, cum = 17.969239636015%, r = 73.046140545978%, raw = 3.40%
+# p=7 - d = 2.483568778563%, cum = 20.452808414578%, r = 69.320787378133%, raw = 3.40%
+# p=8 - d = 2.356906770857%, cum = 22.809715185434%, r = 65.785427221849%, raw = 3.40%
+# p=9 - d = 24.603749780971%, cum = 47.413464966406%, r = 28.879802550391%, raw = 37.40%
+# p=10 - d = 19.253201700261%, cum = 66.666666666667%, r = 0.000000000000%, raw = 66.67%
+#
+# Average pity = 11.4830880872164
+# 8.7085% of all pulls are desired 4-star characters on average
+#
+#
+# WEAPON BANNER (DESIRED 4-STAR)
+#
+# p=1 - d = 4.800000000000%, cum = 4.800000000000%, r = 94.000000000000%, raw = 4.80%
+# p=2 - d = 4.512000000000%, cum = 9.312000000000%, r = 88.360000000000%, raw = 4.80%
+# p=3 - d = 4.241280000000%, cum = 13.553280000000%, r = 83.058400000000%, raw = 4.80%
+# p=4 - d = 3.986803200000%, cum = 17.540083200000%, r = 78.074896000000%, raw = 4.80%
+# p=5 - d = 3.747595008000%, cum = 21.287678208000%, r = 73.390402240000%, raw = 4.80%
+# p=6 - d = 3.522739307520%, cum = 24.810417515520%, r = 68.986978105600%, raw = 4.80%
+# p=7 - d = 3.311374949069%, cum = 28.121792464589%, r = 64.847759419264%, raw = 4.80%
+# p=8 - d = 34.239616973371%, cum = 62.361409437960%, r = 22.048238202550%, raw = 52.80%
+# p=9 - d = 17.638590562040%, cum = 80.000000000000%, r = 0.000000000000%, raw = 80.00%
+# p=10 - d = 0.000000000000%, cum = 80.000000000000%, r = 0.000000000000%, raw = 80.00%
+#
+# Average pity = 8.409583424592668
+# 11.8912% of all pulls are desired 4-star weapons on average
