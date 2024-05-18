@@ -1775,7 +1775,7 @@ while True:
                         if cmd[1].isnumeric():
                             amount = min(int(cmd[1]), num_of_pages - page)
                         else:
-                            print(f'    "{cmd[1]}" is not a number\n')
+                            print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
                             continue
                     if page < num_of_pages:
                         print()
@@ -1784,7 +1784,7 @@ while True:
                         print_history_page()
 
                     else:
-                        print("    You're already at the last page\n")
+                        print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the last page{Style.RESET_ALL}\n")
 
                 elif cmd[0] == 'p':
                     cmd = cmd.split()
@@ -1794,7 +1794,7 @@ while True:
                         if cmd[1].isnumeric():
                             amount = min(int(cmd[1]), page - 1)
                         else:
-                            print(f'    "{cmd[1]}" is not a number\n')
+                            print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
                             continue
                     if page > 1:
                         print()
@@ -1803,10 +1803,10 @@ while True:
                         print_history_page()
 
                     elif page == 1:
-                        print("    You're already at the first page\n")
+                        print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the first page{Style.RESET_ALL}\n")
 
                     else:
-                        print("    You can't go back even further\n")
+                        print(f"    {Fore.LIGHTMAGENTA_EX}You can't go back even further{Style.RESET_ALL}\n")
 
                 elif cmd.isnumeric():
                     page = min(int(cmd), num_of_pages)
