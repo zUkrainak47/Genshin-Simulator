@@ -27,22 +27,27 @@ def show_chances(t):
         hard, soft, base, m = 10, 9, 0.051, 1
     elif t == '4-star weapon':
         hard, soft, base, m = 10, 8, 0.06, 1
-    elif t == 'desired 4-star character':
+    elif t == 'on-banner 4-star character':
         hard, soft, base, m = 10, 9, 0.051, 1.5
-    elif t == 'desired 4-star weapon':
+    elif t == 'on-banner 4-star weapon':
         hard, soft, base, m = 10, 8, 0.06, 5/4
 
-    desired = "desired " if len(t.split()) == 3 else ''
+    if "desired" in t:
+        desired = "desired "
+    elif "on-banner" in t:
+        desired = "on-banner "
+    else:
+        desired = ""
 
     print(f'\n{t.split()[-1].upper()} BANNER', end=' ')
     print(f'({desired.upper()}{t.split()[-2].upper()})\n')
 
-    for pity in range(1, hard+1):
-        raw = min((max(pity - (soft-1), 0) * base*10 + base)/m, 1/m)  # count raw probability for x pity
-        delta = raw * remaining                          # count how many wishes will be successful exactly on x pity
-        cumulative += delta                              # count how many wishes were successful on x pity or before
+    for pity in range(1, hard + 1):
+        raw = min((max(pity - (soft - 1), 0) * base * 10 + base) / m, 1 / m)  # count raw probability for x pity
+        delta = raw * remaining  # count how many wishes will be successful exactly on x pity
+        cumulative += delta  # count how many wishes were successful on x pity or before
         count += (raw * m) * remaining / 100 * m * pity  # update counter for average pity
-        remaining *= (1 - (raw * m))                     # count what percentage of pulls still haven't reached needed rarity
+        remaining *= (1 - (raw * m))  # count what percentage of pulls still haven't reached needed rarity
         print(f'p={pity} - d = {delta:.12f}%, cum = {cumulative:.12f}%, '
               f'r = {remaining:.12f}%, raw = {raw * 100:.2f}%')
         # print(100/delta)  # one in how many attempts will stop at this pity
@@ -62,16 +67,16 @@ show_chances('4-star character')
 print()
 show_chances('4-star weapon')
 print()
-show_chances('desired 4-star character')
+show_chances('on-banner 4-star character')
 print()
-show_chances('desired 4-star weapon')
+show_chances('on-banner 4-star weapon')
 print()
 
 # This is what the program will output:
 
 
 # here's some statistical information about getting 5-stars and 4-stars based on pity
-
+#
 # d   - percentage of all pulls that will end up being your desired item on a specific pity
 # cum - probability that you will have gotten your desired item by that pity
 # r   - probability that you will NOT have gotten any item of the respective rarity by that pity
@@ -476,7 +481,7 @@ print()
 # 14.8640% of all pulls are 4-star weapons on average
 #
 #
-# CHARACTER BANNER (DESIRED 4-STAR)
+# CHARACTER BANNER (ON-BANNER 4-STAR)
 #
 # p=1 - d = 3.400000000000%, cum = 3.400000000000%, r = 94.900000000000%, raw = 3.40%
 # p=2 - d = 3.226600000000%, cum = 6.626600000000%, r = 90.060100000000%, raw = 3.40%
@@ -490,10 +495,10 @@ print()
 # p=10 - d = 19.253201700261%, cum = 66.666666666667%, r = 0.000000000000%, raw = 66.67%
 #
 # Average pity = 11.4830880872164
-# 8.7085% of all pulls are desired 4-star characters on average
+# 8.7085% of all pulls are on-banner 4-star characters on average
 #
 #
-# WEAPON BANNER (DESIRED 4-STAR)
+# WEAPON BANNER (ON-BANNER 4-STAR)
 #
 # p=1 - d = 4.800000000000%, cum = 4.800000000000%, r = 94.000000000000%, raw = 4.80%
 # p=2 - d = 4.512000000000%, cum = 9.312000000000%, r = 88.360000000000%, raw = 4.80%
@@ -507,4 +512,4 @@ print()
 # p=10 - d = 0.000000000000%, cum = 80.000000000000%, r = 0.000000000000%, raw = 80.00%
 #
 # Average pity = 8.409583424592668
-# 11.8912% of all pulls are desired 4-star weapons on average
+# 11.8912% of all pulls are on-banner 4-star weapons on average
