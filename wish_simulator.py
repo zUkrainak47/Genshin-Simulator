@@ -1910,7 +1910,7 @@ while True:
             if res.rarity >= verbose_threshold:
                 print(" " + Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 100000 == 0:
-                print(f' {i}/{user_command} wishes done')
+                print(f' {i//100000}/{user_command//100000} done')
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
