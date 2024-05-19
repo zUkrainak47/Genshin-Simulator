@@ -1,5 +1,5 @@
 print("""
-here's some statistical information about getting 5-stars based on pity
+here's some statistical information about getting 5-stars and 4-stars based on pity
 
 d   - percentage of all pulls that will end up being a 5-star on a specific pity
 cum - probability that you will have gotten a 5-star by that pity
@@ -70,7 +70,7 @@ print()
 # This is what the program will output:
 
 
-# here's some statistical information about getting 5-stars based on pity
+# here's some statistical information about getting 5-stars and 4-stars based on pity
 #
 # d   - percentage of all pulls that will end up being a 5-star on a specific pity
 # cum - probability that you will have gotten a 5-star by that pity
