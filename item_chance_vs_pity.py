@@ -1,10 +1,10 @@
 print("""
 here's some statistical information about getting 5-stars and 4-stars based on pity
 
-d   - percentage of all pulls that will end up being a 5-star on a specific pity
-cum - probability that you will have gotten a 5-star by that pity
-r   - probability that you will NOT have gotten a 5-star by that pity
-raw - probability of getting a 5-star at any given pity (that is, if you got to it)
+d   - percentage of all pulls that will end up being your desired item on a specific pity
+cum - probability that you will have gotten your desired item by that pity
+r   - probability that you will NOT have gotten any item of the respective rarity by that pity
+raw - probability of getting your desired item at any given pity (that is, if you got to it)
 
 4-star chances assume that the pull is already not a 5-star
 """)
@@ -42,7 +42,7 @@ def show_chances(t):
         delta = raw * remaining                          # count how many wishes will be successful exactly on x pity
         cumulative += delta                              # count how many wishes were successful on x pity or before
         count += (raw * m) * remaining / 100 * m * pity  # update counter for average pity
-        remaining *= (1 - (raw * m))                     # count what percentage of pulls still haven't reached 5-star
+        remaining *= (1 - (raw * m))                     # count what percentage of pulls still haven't reached needed rarity
         print(f'p={pity} - d = {delta:.12f}%, cum = {cumulative:.12f}%, '
               f'r = {remaining:.12f}%, raw = {raw * 100:.2f}%')
         # print(100/delta)  # one in how many attempts will stop at this pity
@@ -71,11 +71,11 @@ print()
 
 
 # here's some statistical information about getting 5-stars and 4-stars based on pity
-#
-# d   - percentage of all pulls that will end up being a 5-star on a specific pity
-# cum - probability that you will have gotten a 5-star by that pity
-# r   - probability that you will NOT have gotten a 5-star by that pity
-# raw - probability of getting a 5-star at any given pity (that is, if you got to it)
+
+# d   - percentage of all pulls that will end up being your desired item on a specific pity
+# cum - probability that you will have gotten your desired item by that pity
+# r   - probability that you will NOT have gotten any item of the respective rarity by that pity
+# raw - probability of getting your desired item at any given pity (that is, if you got to it)
 #
 # 4-star chances assume that the pull is already not a 5-star
 #
