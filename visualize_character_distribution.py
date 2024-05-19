@@ -28,13 +28,13 @@ try:
     plt.tight_layout()
     plt.savefig(f'.\\banner_info\\character distribution (size = {num}).png', dpi=500)
     plt.show()
-    print('Done')
+    print(' Done')
 
 except FileNotFoundError:
-    print('No distribution file')
+    print(' No distribution file')
 
 except ZeroDivisionError:
-    print('Get a 5-star first!')
+    print(' Get a 5-star first!')
 
 except:
-    print('Something went wrong')
+    print(' Something went wrong')

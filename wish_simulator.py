@@ -1705,7 +1705,7 @@ while True:
             continue
 
     if user_command.split()[0] == 'viz':
-        print('1 = character\n 2 = weapon\n (they have different distributions, pick one)\n\n Type 0 to exit\n')
+        print(' 1 = character\n 2 = weapon\n (they have different distributions, pick one)\n\n Type 0 to exit\n')
         while True:
             t = input(' Your choice: ').strip().lower()
             if t in ('0', 'exit'):
