@@ -26,11 +26,11 @@ def show_chances(t):
     elif t == '4-star character':
         hard, soft, base, m = 10, 9, 0.051, 1
     elif t == '4-star weapon':
-        hard, soft, base, m = 10, 8, 0.06, 1
+        hard, soft, base, m = 9, 8, 0.06, 1
     elif t == 'on-banner 4-star character':
         hard, soft, base, m = 10, 9, 0.051, 1.5
     elif t == 'on-banner 4-star weapon':
-        hard, soft, base, m = 10, 8, 0.06, 5/4
+        hard, soft, base, m = 9, 8, 0.06, 5/4
 
     if "desired" in t:
         desired = "desired "
@@ -475,7 +475,6 @@ print()
 # p=7 - d = 4.139218686336%, cum = 35.152240580736%, r = 64.847759419264%, raw = 6.00%
 # p=8 - d = 42.799521216714%, cum = 77.951761797450%, r = 22.048238202550%, raw = 66.00%
 # p=9 - d = 22.048238202550%, cum = 100.000000000000%, r = 0.000000000000%, raw = 100.00%
-# p=10 - d = 0.000000000000%, cum = 100.000000000000%, r = 0.000000000000%, raw = 100.00%
 #
 # Average pity = 6.7276667396741345
 # 14.8640% of all pulls are 4-star weapons on average
@@ -509,7 +508,6 @@ print()
 # p=7 - d = 3.311374949069%, cum = 28.121792464589%, r = 64.847759419264%, raw = 4.80%
 # p=8 - d = 34.239616973371%, cum = 62.361409437960%, r = 22.048238202550%, raw = 52.80%
 # p=9 - d = 17.638590562040%, cum = 80.000000000000%, r = 0.000000000000%, raw = 80.00%
-# p=10 - d = 0.000000000000%, cum = 80.000000000000%, r = 0.000000000000%, raw = 80.00%
 #
 # Average pity = 8.409583424592668
 # 11.8912% of all pulls are on-banner 4-star weapons on average
