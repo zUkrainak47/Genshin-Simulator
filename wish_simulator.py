@@ -1432,7 +1432,7 @@ while True:
         print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
-        print(" Choose the banner type:")
+        print(f" {Fore.CYAN}Choose the banner type:{Style.RESET_ALL}")
         for i in m.items():
             print(f" {i[0]} = {i[1]}")
         print('\n (Type 0 to exit)\n')
@@ -1443,7 +1443,7 @@ while True:
             if new1 in m or new1 in m.values():
                 break
             else:
-                print(' Please input either the number or the name of the banner type of choice\n')
+                print(f' {Fore.RED}Please input either the number or the name of the banner type of choice{Style.RESET_ALL}\n')
         if new1 in ('0', 'exit'):
             print(' Ok, not changing banner anymore.\n')
             continue
@@ -1455,7 +1455,7 @@ while True:
             user_banner_input = [new1]
 
         else:
-            print(' Choose the banner now!\n'
+            print(f'\n {Fore.CYAN}Choose the banner now!{Style.RESET_ALL}\n'
                   ' List of available banners:\n')
 
             if new1 == 'character':
@@ -1504,7 +1504,7 @@ while True:
                 if new2 in ('0', 'exit'):
                     print(' Ok, not changing banner anymore.\n')
                     continue
-                print(f' Choose your Chronicled Path now!\n'
+                print(f'\n {Fore.CYAN}Choose your Chronicled Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
                 options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
                            [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
@@ -1557,7 +1557,7 @@ while True:
                 if new2 in ('0', 'exit'):
                     print(' Ok, not changing banner anymore.\n')
                     continue
-                print(f' Choose your Epitomized Path now!\n'
+                print(f'\n {Fore.CYAN}Choose your Epitomized Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
                 m = {"1": weapon_banner_list[new2][0][0].name, "2": weapon_banner_list[new2][0][1].name}
                 for i in m.items():
