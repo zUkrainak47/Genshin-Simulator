@@ -951,13 +951,13 @@ def print_inventory_box_partial(ttt):
         counters = constellations
         item_dict = characters_dict
         letter = 'c'
-        title = "\n" + "=" * 24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 23
+        title = "\n" + "=" * 45 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 44
 
     else:
         counters = refinements
         item_dict = weapons_dict
         letter = 'r'
-        title = "\n" + "=" * 25 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 25
+        title = "\n" + "=" * 46 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 46
 
     if user_banner_input[0] != 'standard':
         sorted_items = sorted(list(counters.items()),
@@ -969,30 +969,30 @@ def print_inventory_box_partial(ttt):
         print(title)
         print()
         t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})"
-        extra = (64 - len(t) + 18) // 2  # +10 to account for the color change
+        extra = (104 - len(t) + 18) // 2  # +10 to account for the color change
         print(" " + ' ' * extra + t + '\n')
 
         # max_length = max(len(s) for s in strings)
         cell_width = 20
 
         # Calculate the number of lines needed
-        num_lines = (len(sorted_items) + 2) // 3
+        num_lines = (len(sorted_items) + 4) // 5
 
         # Print top border
         print(' +', end='')
-        for j in range(3):
+        for j in range(5):
             print('-' * cell_width, end='+')
         print()
 
         # Iterate through lines
         for i in range(num_lines):
             # Print the horizontal borders
-            print(' |                    |                    |                    |')
+            print(' |                    |                    |                    |                    |                    |')
 
             print(' |', end='')
-            for j in range(3):
-                if i * 3 + j < len(sorted_items):
-                    placeholder = sorted_items[i * 3 + j][0].name.split()
+            for j in range(5):
+                if i * 5 + j < len(sorted_items):
+                    placeholder = sorted_items[i * 5 + j][0].name.split()
                     counter_ = 0
                     for k in range(len(placeholder)):
                         if counter_ + len(placeholder[k]) + 1 <= 16:
@@ -1003,16 +1003,16 @@ def print_inventory_box_partial(ttt):
                     else:
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[:to_print]))
-                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 3 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
+                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
                     print(padded_string, end='|')
                 else:
                     print(' ' * cell_width, end='|')
             print()
 
             print(' |', end='')
-            for j in range(3):
-                if i * 3 + j < len(sorted_items):
-                    placeholder = sorted_items[i * 3 + j][0].name.split()
+            for j in range(5):
+                if i * 5 + j < len(sorted_items):
+                    placeholder = sorted_items[i * 5 + j][0].name.split()
                     counter_ = 0
                     for k in range(len(placeholder)):
                         if counter_ + len(placeholder[k]) + 1 <= 16:
@@ -1023,28 +1023,28 @@ def print_inventory_box_partial(ttt):
                     else:
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[to_print:]))
-                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 3 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
+                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
                     print(padded_string, end='|')
                 else:
                     print(' ' * cell_width, end='|')
             print()
 
-            print(' |                    |                    |                    |')
+            print(' |                    |                    |                    |                    |                    |')
 
             print(' |', end='')
-            for j in range(3):
-                if i * 3 + j < len(sorted_items):
-                    padded_string = ' ' * ((19-len(str(sorted_items[i * 3 + j][1])))//2) + color_map[sorted_items[i * 3 + j][0].rarity] + letter + str(sorted_items[i * 3 + j][1]) + Style.RESET_ALL + ' ' * (19 - ((19-len(str(sorted_items[i * 3 + j][1])))//2) - len(str(sorted_items[i * 3 + j][1])))
+            for j in range(5):
+                if i * 5 + j < len(sorted_items):
+                    padded_string = ' ' * ((19-len(str(sorted_items[i * 5 + j][1])))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + letter + str(sorted_items[i * 5 + j][1]) + Style.RESET_ALL + ' ' * (19 - ((19-len(str(sorted_items[i * 5 + j][1])))//2) - len(str(sorted_items[i * 5 + j][1])))
                     print(padded_string, end='|')
                 else:
                     print(' ' * cell_width, end='|')
             print()
 
-            print(' |                    |                    |                    |')
+            print(' |                    |                    |                    |                    |                    |')
 
             # Print the horizontal border between lines
             print(' +', end='')
-            for j in range(3):
+            for j in range(5):
                 print('-' * cell_width, end='+')
             print()
         print()
@@ -1462,7 +1462,7 @@ while True:
                 m = {str(q): w for q, w in zip(range(1, len(character_banner_list)+1), character_banner_list.keys())}
                 for i in m.items():
                     first = f" {i[0]} = {i[1]}"
-                    print(" " + first + ' ' * (20-len(first)) + '(' + str(character_banner_list[i[1]][1]) + ')')
+                    print(" " + first + ' ' * (21-len(first)) + '(' + str(character_banner_list[i[1]][1]) + ')')
 
                 print('\n (Type 0 to exit)\n')
 
@@ -1535,7 +1535,7 @@ while True:
                 m = {str(q): w for q, w in zip(range(1, len(weapon_banner_list)+1), weapon_banner_list.keys())}
                 for i in m.items():
                     first = f" {i[0]} = {i[1]}"
-                    print(" " + first + ' ' * (61-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
+                    print(" " + first + ' ' * (62-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
                     # just learned that ljust and rjust exist, leaving this comment here for later
 
                 # print('\n'.join(i for i in weapon_banner_list))
