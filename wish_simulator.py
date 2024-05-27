@@ -310,6 +310,7 @@ class Weapon:
         self.num = unique_number
 
 
+# ADD NEW CHARACTERS HERE
 characters_dict = {
     "Amber": Character("Amber", "Mondstadt", "Pyro", "Bow", 1.0, 4, 13),
     "Barbara": Character("Barbara", "Mondstadt", "Hydro", "Catalyst", 1.0, 4, 14),
@@ -391,11 +392,13 @@ characters_dict = {
     "Xianyun": Character("Xianyun", "Liyue", "Anemo", "Catalyst", 4.4, 5, 90),
     "Chiori": Character("Chiori", "Inazuma", "Geo", "Sword", 4.5, 5, 91),
     "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5, 92),
-    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 93),
+    # "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 93),
     # "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 94),
-    # "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 95),
+    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 95),
 }
 
+
+# ADD NEW WEAPONS HERE
 weapons_dict = {
     "A Thousand Floating Dreams": Weapon("A Thousand Floating Dreams", "Catalyst", 5, 300),
     "Akuoumaru": Weapon("Akuoumaru", "Claymore", 4, 301),
@@ -403,6 +406,7 @@ weapons_dict = {
     "Amos' Bow": Weapon("Amos' Bow", "Bow", 5, 303),
     "Aqua Simulacra": Weapon("Aqua Simulacra", "Bow", 5, 304),
     "Aquila Favonia": Weapon("Aquila Favonia", "Sword", 5, 305),
+    "Absolution": Weapon("Absolution", "Sword", 5, 306),
 
     "Beacon of the Reed Sea": Weapon("Beacon of the Reed Sea", "Claymore", 5, 330),
     "Black Tassel": Weapon("Black Tassel", "Polearm", 3, 1),
@@ -458,6 +462,7 @@ weapons_dict = {
     "Primordial Jade Cutter": Weapon("Primordial Jade Cutter", "Sword", 5, 752),
     "Primordial Jade Winged-Spear": Weapon("Primordial Jade Winged-Spear", "Polearm", 5, 753),
     "Prospector's Drill": Weapon("Prospector's Drill", "Polearm", 4, 754),
+    "Pouring Heartstring": Weapon("Pouring Heartstring", "Bow", 5, 755),
 
     "Rainslasher": Weapon("Rainslasher", "Claymore", 4, 810),
     "Range Gauge": Weapon("Range Gauge", "Bow", 4, 811),
@@ -525,24 +530,23 @@ amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 
 
 # thank you chatgpt for helping me convert paimon moe to this
+
+# need to explicitly state, sometimes gets changed
 standard_5_star_characters = ["Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya"]
-standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",
+standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",  # always unchanged
                            "Skyward Harp", "Skyward Pride", "Skyward Atlas", "Aquila Favonia",
                            "Wolf's Gravestone", "Amos' Bow", "Lost Prayer to the Sacred Winds"]
-standard_4_star_characters = [
-    "Charlotte", "Sayu", "Barbara", "Chongyun", "Collei", "Gaming", "Kuki Shinobu", "Freminet",
-    "Razor", "Rosaria", "Diona", "Candace", "Shikanoin Heizou", "Kirara", "Chevreuse", "Xiangling",
-    "Yaoyao", "Yanfei", "Gorou", "Xingqiu", "Kujou Sara", "Lynette", "Layla", "Bennett", "Beidou",
-    "Dori", "Yun Jin", "Ningguang", "Sucrose", "Xinyan", "Noelle", "Thoma", "Fischl", "Kaveh", "Faruzan",
-    "Mika"
+standard_4_star_characters = [  # automated these guys cuz they change every patch and i dont wanna update it every time
+    characters_dict[char] for char in characters_dict if
+    characters_dict[char].rarity == 4 and characters_dict[char].name not in ("Amber", "Kaeya", "Lisa")
 ]
-standard_4_star_weapons = [
+standard_4_star_weapons = [  # always unchanged
     "The Widsith", "Sacrificial Fragments", "Rust", "Sacrificial Sword", "Favonius Greatsword",
     "Rainslasher", "Dragon's Bane", "The Flute", "Favonius Codex", "Sacrificial Greatsword",
     "Favonius Warbow", "Favonius Lance", "Favonius Sword", "Lion's Roar", "Sacrificial Bow",
     "Eye of Perception", "The Stringless", "The Bell"
 ]
-three_star_weapons = [
+three_star_weapons = [  # always unchanged
     "Black Tassel",
     "Bloodtainted Greatsword",
     "Cool Steel",
@@ -564,6 +568,7 @@ amount_of_three_star_weapons = len(three_star_weapons)
 amount_of_four_star_weapons = len(weapons_dict) - amount_of_five_star_weapons - amount_of_three_star_weapons
 
 
+# ADD NEW CHARACTER BANNERS HERE
 character_banner_list = {  # thank you, @shilva on discord for typing this out BY HAND WHAT THE HELL DID U DO BRO
     "venti-1": (["Venti", "Barbara", "Fischl", "Xiangling"], 1.0),
     "klee-1": (["Klee", "Xingqiu", "Noelle", "Sucrose"], 1.0),
@@ -669,8 +674,16 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "lyney-2": (["Lyney", "Freminet", "Lynette", "Xiangling"], 4.6),
     "baizhu-3": (["Baizhu", "Layla", "Faruzan", "Beidou"], 4.6),
     "wanderer-3": (["Wanderer", "Layla", "Faruzan", "Beidou"], 4.6),
+    # "clorinde-1": (["Clorinde", "Sethos", "", ""], 4.7),
+    # "alhaitham-3": (["Alhaitham", "Sethos", "", ""], 4.7),
+    # "sigewinne-1": (["Sigewinne", "", "", ""], 4.7),
+    # "furina-2": (["Furina", "", "", ""], ),
+
+    # "": (["", "", "", ""], ),
 }
 
+
+# ADD NEW WEAPON BANNERS HERE
 weapon_banner_list = {
     "Aquila Favonia - Amos' Bow": (["Aquila Favonia", "Amos' Bow", "The Flute", "The Bell", "The Widsith", "The Stringless", "Favonius Lance"], 1.0),
     "Lost Prayer to the Sacred Winds - Wolf's Gravestone": (["Lost Prayer to the Sacred Winds", "Wolf's Gravestone", "Sacrificial Sword", "Sacrificial Bow", "Sacrificial Fragments", "Sacrificial Fragments", "Dragon's Bane"], 1.0),
@@ -735,10 +748,15 @@ weapon_banner_list = {
     "Uraku Misugiri - Redhorn Stonethresher": (["Uraku Misugiri", "Redhorn Stonethresher", "The Alley Flash", "Alley Hunter", "The Bell", "Dragon's Bane", "Favonius Codex"], 4.5),
     "Tome of the Eternal Flow - Freedom-Sworn": (["Tome of the Eternal Flow", "Freedom-Sworn", "Wine and Song", "Mitternachts Waltz", "The Flute", "Favonius Greatsword", "Favonius Lance"], 4.5),
     "Crimson Moon's Semblance - The First Great Magic": (["Crimson Moon's Semblance", "The First Great Magic", "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"], 4.6),
-    "Tulaytullah's Remembrance - Jadefall's Splendor": (["Tulaytullah's Remembrance", "Jadefall's Splendor", "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Sacrificial Fragments"], 4.6)
+    "Tulaytullah's Remembrance - Jadefall's Splendor": (["Tulaytullah's Remembrance", "Jadefall's Splendor", "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Sacrificial Fragments"], 4.6),
+    # "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "", "", ""], 4.7),
+    # "Pouring Heartstring - Splendor of Tranquil Waters": (["Pouring Heartstring", "Splendor of Tranquil Waters", "", "", ""], 4.7),
+
+    # "": (["", "", "", "", ""], ),
 }
 
 
+# ADD NEW CHRONICLED BANNERS HERE
 chronicled_banner_list = {
     'mondstadt-1': {
         'characters': {
@@ -771,11 +789,6 @@ for banner in weapon_banner_list:
     for i in range(len(weapon_banner_list[banner][0])):
         weapon_banner_list[banner][0][i] = weapons_dict[weapon_banner_list[banner][0][i]]
 
-
-# replace strings with objects in lists of standard characters
-for chars in (standard_5_star_characters, standard_4_star_characters):
-    for i in range(len(chars)):
-        chars[i] = characters_dict[chars[i]]
 
 # replace strings with objects in lists of weapons
 for i in range(len(standard_5_star_weapons)):
@@ -1667,6 +1680,7 @@ BB#&#GJ7!?YYJJ?JYJ??J5GGGGPPPPPPPPGGGGGBB###BBGPPPPP5555555555555PPPGBB#BBGGPPP5
 PGB##B#5!7YYJ?JYYY5PGGGGGGPPPPPPPPPPGGGGBBBBB##BBBGGGGGGGGGGGGGBBB###BBGGPPP5555555555Y55PPB#&###BB####GGGG5Y?????777777
 ''')
         continue
+
     if user_command == 'ballshd':
         print()
         print(
