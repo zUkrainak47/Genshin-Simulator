@@ -532,7 +532,7 @@ amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 # thank you chatgpt for helping me convert paimon moe to this
 
 # need to explicitly state, sometimes gets changed
-standard_5_star_characters = [characters_dict[char] for char in characters_dict if characters_dict[char].rarity == 5]
+standard_5_star_characters = [characters_dict[char] for char in ("Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya")]
 standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",  # always unchanged
                            "Skyward Harp", "Skyward Pride", "Skyward Atlas", "Aquila Favonia",
                            "Wolf's Gravestone", "Amos' Bow", "Lost Prayer to the Sacred Winds"]
