@@ -532,7 +532,7 @@ amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 # thank you chatgpt for helping me convert paimon moe to this
 
 # need to explicitly state, sometimes gets changed
-standard_5_star_characters = ["Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya"]
+standard_5_star_characters = [characters_dict[char] for char in characters_dict if characters_dict[char].rarity == 5]
 standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",  # always unchanged
                            "Skyward Harp", "Skyward Pride", "Skyward Atlas", "Aquila Favonia",
                            "Wolf's Gravestone", "Amos' Bow", "Lost Prayer to the Sacred Winds"]
@@ -677,7 +677,7 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     # "clorinde-1": (["Clorinde", "Sethos", "", ""], 4.7),
     # "alhaitham-3": (["Alhaitham", "Sethos", "", ""], 4.7),
     # "sigewinne-1": (["Sigewinne", "", "", ""], 4.7),
-    # "furina-2": (["Furina", "", "", ""], ),
+    # "furina-2": (["Furina", "", "", ""], 4.7),
 
     # "": (["", "", "", ""], ),
 }
@@ -1373,7 +1373,9 @@ def print_banner(t1):
         t2 = 'New b'
     else:
         t2 = '???'
-    print(f'\n {t1} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
+    if user_banner_input[0] != 'standard':
+        print()
+    print(f' {t1} banner type: {Fore.CYAN}{user_banner_input[0]}{Style.RESET_ALL}')
     if banner_of_choice[0] == 'character':
         print(f' {t2}anner ID: {user_banner_input[1]}')
         for i in banner_of_choice[1]:
@@ -1445,7 +1447,7 @@ while True:
         print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
-        print(f" {Fore.CYAN}Choose the banner type:{Style.RESET_ALL}")
+        print(f" {Fore.CYAN}Choose type of new banner:{Style.RESET_ALL}")
         for i in m.items():
             print(f" {i[0]} = {i[1]}")
         print('\n (Type 0 to exit)\n')
@@ -1458,17 +1460,17 @@ while True:
             else:
                 print(f' {Fore.RED}Please input either the number or the name of the banner type of choice{Style.RESET_ALL}\n')
         if new1 in ('0', 'exit'):
-            print(' Ok, not changing banner anymore.\n')
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
             continue
         if new1 in m:
             new1 = m[new1]
-        print(f' {new1.capitalize()} banner selected.')
+        print(f' {Fore.MAGENTA}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
 
         if new1 == 'standard':
             user_banner_input = [new1]
 
         else:
-            print(f'\n {Fore.CYAN}Choose the banner now!{Style.RESET_ALL}\n'
+            print(f'\n {Fore.CYAN}Choose the banner!{Style.RESET_ALL}\n'
                   ' List of available banners:\n')
 
             if new1 == 'character':
@@ -1488,11 +1490,11 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {new2} selected")
+                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print(' Ok, not changing banner anymore.\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
                     continue
                 user_banner_input = [new1, new2]
 
@@ -1511,11 +1513,11 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {new2} selected")
+                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print(' Ok, not changing banner anymore.\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
                     continue
                 print(f'\n {Fore.CYAN}Choose your Chronicled Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
@@ -1540,7 +1542,7 @@ while True:
                         break
 
                 if new3 in ('0', 'exit'):
-                    print(' Ok, not choosing Chronicled Path anymore.\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing Chronicled Path anymore{Style.RESET_ALL}\n')
                     continue
                 user_banner_input = [new1, [new2, new3]]
 
@@ -1564,11 +1566,11 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {new2} selected")
+                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
-                    print(' Ok, not changing banner anymore.\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
                     continue
                 print(f'\n {Fore.CYAN}Choose your Epitomized Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
@@ -1591,7 +1593,7 @@ while True:
                         break
 
                 if new3 in ('0', 'exit'):
-                    print(' Ok, not choosing Epitomized Path anymore.\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing Epitomized Path anymore{Style.RESET_ALL}\n')
                     continue
                 user_banner_input = [new1, [new2, new3]]
 
