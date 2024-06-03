@@ -392,9 +392,10 @@ characters_dict = {
     "Xianyun": Character("Xianyun", "Liyue", "Anemo", "Catalyst", 4.4, 5, 90),
     "Chiori": Character("Chiori", "Inazuma", "Geo", "Sword", 4.5, 5, 91),
     "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5, 92),
-    # "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 93),
-    # "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 94),
+    "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 93),
+    "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 94),
     # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 95),
+    # "Emilie": Character("Emilie", "Fontaine", "Dendro", "", 4.8, , 96),
 }
 
 
@@ -674,8 +675,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "lyney-2": (["Lyney", "Freminet", "Lynette", "Xiangling"], 4.6),
     "baizhu-3": (["Baizhu", "Layla", "Faruzan", "Beidou"], 4.6),
     "wanderer-3": (["Wanderer", "Layla", "Faruzan", "Beidou"], 4.6),
-    # "clorinde-1": (["Clorinde", "Sethos", "", ""], 4.7),
-    # "alhaitham-3": (["Alhaitham", "Sethos", "", ""], 4.7),
+    "clorinde-1": (["Clorinde", "Sethos", "Bennett", "Thoma"], 4.7),
+    "alhaitham-3": (["Alhaitham", "Sethos", "Bennett", "Thoma"], 4.7),
     # "sigewinne-1": (["Sigewinne", "", "", ""], 4.7),
     # "furina-2": (["Furina", "", "", ""], 4.7),
 
@@ -749,10 +750,10 @@ weapon_banner_list = {
     "Tome of the Eternal Flow - Freedom-Sworn": (["Tome of the Eternal Flow", "Freedom-Sworn", "Wine and Song", "Mitternachts Waltz", "The Flute", "Favonius Greatsword", "Favonius Lance"], 4.5),
     "Crimson Moon's Semblance - The First Great Magic": (["Crimson Moon's Semblance", "The First Great Magic", "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"], 4.6),
     "Tulaytullah's Remembrance - Jadefall's Splendor": (["Tulaytullah's Remembrance", "Jadefall's Splendor", "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Sacrificial Fragments"], 4.6),
-    # "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "", "", ""], 4.7),
-    # "Pouring Heartstring - Splendor of Tranquil Waters": (["Pouring Heartstring", "Splendor of Tranquil Waters", "", "", ""], 4.7),
+    "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "The Widsith", "The Stringless"], 4.7),
+    # "Pouring Heartstring - Splendor of Tranquil Waters": (["Pouring Heartstring", "Splendor of Tranquil Waters", "", "", "", "", ""], 4.7),
 
-    # "": (["", "", "", "", ""], ),
+    # "": (["", "", "", "", "", "", ""], ),
 }
 
 
@@ -917,10 +918,10 @@ def print_character_archive():
     global sorted_constellations
     if user_banner_input[0] != 'standard':
         sorted_constellations = sorted(list(constellations.items()),
-                                       key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                                       key=lambda x: (x[0].rarity, x[0] in banner_of_choice[1], x[0] not in standard_5_star_characters, x[1]), reverse=True)
     else:
         sorted_constellations = sorted(list(constellations.items()),
-                                       key=lambda x: (-x[0].rarity, -x[1]))
+                                       key=lambda x: (x[0].rarity, x[0] not in standard_5_star_characters, x[1]), reverse=True)
     if sorted_constellations:
         print("\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*23)
         print(f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
@@ -935,10 +936,10 @@ def print_weapon_archive():
     global sorted_refinements
     if user_banner_input[0] != 'standard':
         sorted_refinements = sorted(list(refinements.items()),
-                                    key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                                    key=lambda x: (x[0].rarity, x[0] in banner_of_choice[1], x[0] not in standard_5_star_weapons, x[1]), reverse=True)
     else:
         sorted_refinements = sorted(list(refinements.items()),
-                                    key=lambda x: (-x[0].rarity, -x[1]))
+                                    key=lambda x: (x[0].rarity, x[0] not in standard_5_star_weapons, x[1]), reverse=True)
     if sorted_refinements:
         print("\n " + "="*25 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*25)
         print(f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
