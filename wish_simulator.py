@@ -1397,7 +1397,7 @@ while True:
     else:
         last_banner = False
     not_first = True
-    user_command = input(' Command: ').lower().strip()
+    user_command = input('\n Command: ').lower().strip()
     if not user_command:
         print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
