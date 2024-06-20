@@ -1390,12 +1390,17 @@ def print_banner(t1):
         print(f' {t2}anner ID: {user_banner_input[1][0]}\n Chronicled Path: {color_map[5]}{user_banner_input[1][1]}{Style.RESET_ALL}')
 
 
+not_first = False
 while True:
+    if not_first:
+        last_banner = user_command == 'banner'
+    else:
+        last_banner = False
+    not_first = True
     user_command = input(' Command: ').lower().strip()
     if not user_command:
         print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         continue
-
     if user_command in ('0', 'exit'):
         print(' Exiting Wish Simulator...')
         break
@@ -1438,7 +1443,7 @@ while True:
         print_banner('Chosen')
         print()
         continue
-    
+
     if user_command == 'change':
         if user_banner_input[0] == 'weapon' and pity_info[2]:
             print(f'\n {Fore.RED}NOTE: YOUR EPITOMIZED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
@@ -1446,7 +1451,8 @@ while True:
         elif user_banner_input[0] == 'chronicled' and pity_info[2]:
             print(f'\n {Fore.RED}NOTE: YOUR CHRONICLED PATH WILL RESET IF YOU CHANGE THE BANNER\n'
                   f' (You own 1 Chronicled Point){Style.RESET_ALL}')
-        print_banner('Current')
+        if not last_banner:
+            print_banner('Current')
         print()
         m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
         print(f" {Fore.CYAN}Choose type of new banner:{Style.RESET_ALL}")
