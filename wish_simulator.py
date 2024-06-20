@@ -394,8 +394,8 @@ characters_dict = {
     "Arlecchino": Character("Arlecchino", "Snezhnaya", "Pyro", "Polearm", 4.6, 5, 92),
     "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 93),
     "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 94),
-    # "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 95),
-    # "Emilie": Character("Emilie", "Fontaine", "Dendro", "", 4.8, , 96),
+    "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 95),
+    # "Emilie": Character("Emilie", "Fontaine", "Dendro", "Polearm", 4.8, 5, 96),
 }
 
 
@@ -463,7 +463,7 @@ weapons_dict = {
     "Primordial Jade Cutter": Weapon("Primordial Jade Cutter", "Sword", 5, 752),
     "Primordial Jade Winged-Spear": Weapon("Primordial Jade Winged-Spear", "Polearm", 5, 753),
     "Prospector's Drill": Weapon("Prospector's Drill", "Polearm", 4, 754),
-    "Pouring Heartstring": Weapon("Pouring Heartstring", "Bow", 5, 755),
+    "Silvershower Heartstrings": Weapon("Silvershower Heartstrings", "Bow", 5, 755),
 
     "Rainslasher": Weapon("Rainslasher", "Claymore", 4, 810),
     "Range Gauge": Weapon("Range Gauge", "Bow", 4, 811),
@@ -677,8 +677,9 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "wanderer-3": (["Wanderer", "Layla", "Faruzan", "Beidou"], 4.6),
     "clorinde-1": (["Clorinde", "Sethos", "Bennett", "Thoma"], 4.7),
     "alhaitham-3": (["Alhaitham", "Sethos", "Bennett", "Thoma"], 4.7),
-    # "sigewinne-1": (["Sigewinne", "", "", ""], 4.7),
-    # "furina-2": (["Furina", "", "", ""], 4.7),
+    "sigewinne-1": (["Sigewinne", "Noelle", "Rosaria", "Gaming"], 4.7),
+    "furina-2": (["Furina", "Noelle", "Rosaria", "Gaming"], 4.7),
+    # "emilie-1" : (["Emilie", "", "", ""], ),
 
     # "": (["", "", "", ""], ),
 }
@@ -751,7 +752,7 @@ weapon_banner_list = {
     "Crimson Moon's Semblance - The First Great Magic": (["Crimson Moon's Semblance", "The First Great Magic", "The Dockhand's Assistant", "Portable Power Saw", "Dragon's Bane", "Eye of Perception", "Favonius Warbow"], 4.6),
     "Tulaytullah's Remembrance - Jadefall's Splendor": (["Tulaytullah's Remembrance", "Jadefall's Splendor", "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Sacrificial Fragments"], 4.6),
     "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "The Widsith", "The Stringless"], 4.7),
-    # "Pouring Heartstring - Splendor of Tranquil Waters": (["Pouring Heartstring", "Splendor of Tranquil Waters", "", "", "", "", ""], 4.7),
+    "Silvershower Heartstrings - Splendor of Tranquil Waters": (["Silvershower Heartstrings", "Splendor of Tranquil Waters", "Sacrificial Bow", "Lion's Roar", "Favonius Codex", "Lithic Blade", "Favonius Lance"], 4.7),
 
     # "": (["", "", "", "", "", "", ""], ),
 }
@@ -923,7 +924,7 @@ def print_character_archive():
         sorted_constellations = sorted(list(constellations.items()),
                                        key=lambda x: (x[0].rarity, x[0] not in standard_5_star_characters, x[1]), reverse=True)
     if sorted_constellations:
-        print("\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*23)
+        print("\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*24)
         print(f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
         for a in sorted_constellations:
             print(f' {color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
@@ -1491,7 +1492,7 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
+                        print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
@@ -1514,7 +1515,7 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
+                        print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
@@ -1567,7 +1568,7 @@ while True:
                     else:
                         if new2 in m:
                             new2 = m[new2]
-                        print(f" Ok, {Fore.MAGENTA}{new2}{Style.RESET_ALL} selected")
+                        print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
                         break
 
                 if new2 in ('0', 'exit'):
