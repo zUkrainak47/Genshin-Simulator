@@ -1472,7 +1472,7 @@ while True:
             continue
         if new1 in m:
             new1 = m[new1]
-        print(f' {Fore.MAGENTA}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
+        print(f' {Fore.YELLOW}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
 
         if new1 == 'standard':
             user_banner_input = [new1]
@@ -1950,44 +1950,54 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
                 if cmd[0] == 'n':
                     cmd = cmd.split()
-                    if len(cmd) == 1:
-                        amount = 1
-                    else:
-                        if cmd[1].isnumeric():
-                            amount = min(int(cmd[1]), num_of_pages - page)
+                    if cmd[0] == 'n':
+                        if len(cmd) == 1:
+                            amount = 1
                         else:
-                            print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
-                            continue
-                    if page < num_of_pages:
-                        print()
+                            if cmd[1].isnumeric():
+                                amount = min(int(cmd[1]), num_of_pages - page)
+                            else:
+                                print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
+                                continue
+                        if page < num_of_pages:
+                            print()
 
-                        page += amount
-                        print_history_page()
+                            page += amount
+                            print_history_page()
+
+                        else:
+                            print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the last page{Style.RESET_ALL}\n")
+
+                    elif cmd[0] == 'number':
+                        print('    Input an actual number like 10 instead of typing "number"\n')
 
                     else:
-                        print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the last page{Style.RESET_ALL}\n")
+                        print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
                 elif cmd[0] == 'p':
                     cmd = cmd.split()
-                    if len(cmd) == 1:
-                        amount = 1
-                    else:
-                        if cmd[1].isnumeric():
-                            amount = min(int(cmd[1]), page - 1)
+                    if cmd[0] == 'p':
+                        if len(cmd) == 1:
+                            amount = 1
                         else:
-                            print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
-                            continue
-                    if page > 1:
-                        print()
+                            if cmd[1].isnumeric():
+                                amount = min(int(cmd[1]), page - 1)
+                            else:
+                                print(f'    {Fore.RED}"{cmd[1]}" is not a number{Style.RESET_ALL}\n')
+                                continue
+                        if page > 1:
+                            print()
 
-                        page -= amount
-                        print_history_page()
+                            page -= amount
+                            print_history_page()
 
-                    elif page == 1:
-                        print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the first page{Style.RESET_ALL}\n")
+                        elif page == 1:
+                            print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the first page{Style.RESET_ALL}\n")
 
+                        else:
+                            print(f"    {Fore.LIGHTMAGENTA_EX}You can't go back even further{Style.RESET_ALL}\n")
                     else:
-                        print(f"    {Fore.LIGHTMAGENTA_EX}You can't go back even further{Style.RESET_ALL}\n")
+                        print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
                 elif cmd.isnumeric():
                     page = min(int(cmd), num_of_pages)
