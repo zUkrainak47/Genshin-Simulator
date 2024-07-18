@@ -2084,21 +2084,15 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                     else:
                         print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
-                elif cmd.isnumeric():
-                    page = min(int(cmd), num_of_pages)
-                    print()
-                    if page == 0:
-                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
-                        print(" " + Fore.YELLOW + '                       You found page 0')
-                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
-                        print(f"\n    (Page 0/{num_of_pages})\n")
-                    else:
-                        print_history_page()
-
-                elif cmd == 'e':
+                elif cmd in ('e', '0'):
                     print('    No longer viewing wish history!\n')
                     print('==================================================================\n')
                     break
+
+                elif cmd.isnumeric():
+                    page = min(int(cmd), num_of_pages)
+                    print()
+                    print_history_page()
 
                 elif cmd in ['help', "'help'", '"help"']:
                     print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
