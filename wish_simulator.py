@@ -292,7 +292,7 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
 
 
 # source: https://stackoverflow.com/a/61433559, though slightly modified because it didn't work
-def print_progress_bar(index, total, bar_len=35, title='Please wait'):
+def print_progress_bar(index, total, bar_len=36, title='Please wait'):
     '''
     index is expected to be 0 based index.
     0 <= index < total
@@ -2192,7 +2192,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         if verbose_threshold >= 6:
-            print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete{Style.RESET_ALL}")
+            print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete{Style.RESET_ALL}" + ' '*50)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
