@@ -348,7 +348,7 @@ characters_dict = {
     "Kamisato Ayaka": Character("Ayaka", "Inazuma", "Cryo", "Sword", 2.0, 5, 46),
     "Sayu": Character("Sayu", "Inazuma", "Anemo", "Claymore", 2.0, 4, 47),
     "Yoimiya": Character("Yoimiya", "Inazuma", "Pyro", "Bow", 2.0, 5, 48),
-    # "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 5, 49),
+    "Aloy": Character("Aloy", "None", "Cryo", "Bow", 2.1, 4.5, 49),
     "Kujou Sara": Character("Kujou Sara", "Inazuma", "Electro", "Bow", 2.1, 4, 50),
     "Raiden Shogun": Character("Raiden Shogun", "Inazuma", "Electro", "Polearm", 2.1, 5, 51),
     "Sangonomiya Kokomi": Character("Kokomi", "Inazuma", "Hydro", "Catalyst", 2.1, 5, 52),
@@ -526,7 +526,7 @@ def number_to_item():
 number_to_item_dict = number_to_item()
 
 
-amount_of_five_stars = sum([i.rarity == 5 for i in characters_dict.values()])
+amount_of_five_stars = sum([i.rarity == 5 for i in characters_dict.values()]) + 1  # add 1 for aloy who has 4.5 rarity
 amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 
 
@@ -679,7 +679,10 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "alhaitham-3": (["Alhaitham", "Sethos", "Bennett", "Thoma"], 4.7),
     "sigewinne-1": (["Sigewinne", "Noelle", "Rosaria", "Gaming"], 4.7),
     "furina-2": (["Furina", "Noelle", "Rosaria", "Gaming"], 4.7),
-    # "emilie-1" : (["Emilie", "", "", ""], ),
+    "navia-2": (["Navia", "Ningguang", "Kaveh", "Kirara"], 4.8),
+    "nilou-3": (["Nilou", "Ningguang", "Kaveh", "Kirara"], 4.8),
+    # "yelan-1" : (["Yelan", "", "", ""], 4.8),
+    # "emilie-1" : (["Emilie", "", "", ""], 4.8),
 
     # "": (["", "", "", ""], ),
 }
@@ -753,6 +756,7 @@ weapon_banner_list = {
     "Tulaytullah's Remembrance - Jadefall's Splendor": (["Tulaytullah's Remembrance", "Jadefall's Splendor", "Prospector's Drill", "Range Gauge", "Favonius Sword", "Rainslasher", "Sacrificial Fragments"], 4.6),
     "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "The Widsith", "The Stringless"], 4.7),
     "Silvershower Heartstrings - Splendor of Tranquil Waters": (["Silvershower Heartstrings", "Splendor of Tranquil Waters", "Sacrificial Bow", "Lion's Roar", "Favonius Codex", "Lithic Blade", "Favonius Lance"], 4.7),
+    "Verdict - Key of Khaj-Nisut": (["Verdict", "Key of Khaj-Nisut", "Xiphos' Moonlight", "Rust", "Eye of Perception", "Dragon's Bane", "The Bell"], 4.8),
 
     # "": (["", "", "", "", "", "", ""], ),
 }
@@ -916,6 +920,7 @@ def print_pity(counter, pity_, c5, c4):
 
 
 def print_character_archive():
+    out = ''
     global sorted_constellations
     if user_banner_input[0] != 'standard':
         sorted_constellations = sorted(list(constellations.items()),
@@ -924,16 +929,16 @@ def print_character_archive():
         sorted_constellations = sorted(list(constellations.items()),
                                        key=lambda x: (x[0].rarity, x[0] not in standard_5_star_characters, x[1]), reverse=True)
     if sorted_constellations:
-        print("\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*24)
-        print(f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})")
+        out += ("\n\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*24 + '\n')
+        out += f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})\n"
         for a in sorted_constellations:
-            print(f' {color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
-        print(Style.RESET_ALL)
-        return True
-    return False
+            out += f' {color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
+        out += Style.RESET_ALL
+    return out
 
 
-def print_weapon_archive():
+def print_weapon_archive(extra_indent=False):
+    out = ''
     global sorted_refinements
     if user_banner_input[0] != 'standard':
         sorted_refinements = sorted(list(refinements.items()),
@@ -942,50 +947,56 @@ def print_weapon_archive():
         sorted_refinements = sorted(list(refinements.items()),
                                     key=lambda x: (x[0].rarity, x[0] not in standard_5_star_weapons, x[1]), reverse=True)
     if sorted_refinements:
-        print("\n " + "="*25 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*25)
-        print(f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})")
+        if extra_indent:
+            out += "\n\n"
+        out += ("="*26 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*25 + '\n')
+        out += f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})\n"
         for a in sorted_refinements:
-            print(f' {color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}')
-        print(Style.RESET_ALL)
-        return True
-    return False
+            out += f' {color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
+        out += Style.RESET_ALL
+    return out
 
 
 def print_full_inventory():
-    print()
-    if not print_character_archive():
-        if not print_weapon_archive():
-            print(' Character/weapon archive empty!')
+    chars_inv = print_character_archive()
+    if chars_inv:
+        print(chars_inv)
+        weap_inv = print_weapon_archive()
+        if weap_inv:
+            print(weap_inv)
     else:
-        print_weapon_archive()
-    print()
+        weap_inv = print_weapon_archive(True)
+        if weap_inv:
+            print(weap_inv)
+        else:
+            print(f' {Fore.MAGENTA}Character/weapon archive empty!{Style.RESET_ALL}\n')
 
 
-def print_inventory_box_partial(ttt):
+def print_inventory_box_partial(ttt, extra_indent=False):
+    out = ''
     if ttt == 'character':
         counters = constellations
         item_dict = characters_dict
         letter = 'c'
-        title = "\n" + "=" * 45 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 44
+        title = "\n\n" + "=" * 45 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "=" * 44
 
     else:
         counters = refinements
         item_dict = weapons_dict
         letter = 'r'
-        title = "\n" + "=" * 46 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 46
+        title = "\n" * extra_indent + "\n" + "=" * 46 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "=" * 46
 
     if user_banner_input[0] != 'standard':
         sorted_items = sorted(list(counters.items()),
-                                       key=lambda x: (-x[0].rarity, x[0] not in banner_of_choice[1], -x[1]))
+                                       key=lambda x: (x[0].rarity, x[0] in banner_of_choice[1], x[1]), reverse=True)
     else:
         sorted_items = sorted(list(counters.items()),
-                                       key=lambda x: (-x[0].rarity, -x[1]))
+                                       key=lambda x: (x[0].rarity, x[1]), reverse=True)
     if sorted_items:
-        print(title)
-        print()
+        out += title + '\n\n'
         t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})"
         extra = (104 - len(t) + 18) // 2  # +10 to account for the color change
-        print(" " + ' ' * extra + t + '\n')
+        out += (" " + ' ' * extra + t + '\n\n')
 
         # max_length = max(len(s) for s in strings)
         cell_width = 20
@@ -994,17 +1005,17 @@ def print_inventory_box_partial(ttt):
         num_lines = (len(sorted_items) + 4) // 5
 
         # Print top border
-        print(' +', end='')
+        out += ' +'
         for j in range(5):
-            print('-' * cell_width, end='+')
-        print()
+            out += ('-' * cell_width + '+')
+        out += '\n'
 
         # Iterate through lines
         for i in range(num_lines):
             # Print the horizontal borders
-            print(' |                    |                    |                    |                    |                    |')
+            out += ' |                    |                    |                    |                    |                    |\n'
 
-            print(' |', end='')
+            out += ' |'
             for j in range(5):
                 if i * 5 + j < len(sorted_items):
                     placeholder = sorted_items[i * 5 + j][0].name.split()
@@ -1019,12 +1030,12 @@ def print_inventory_box_partial(ttt):
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[:to_print]))
                     padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
-                    print(padded_string, end='|')
+                    out += (padded_string + '|')
                 else:
-                    print(' ' * cell_width, end='|')
-            print()
+                    out += (' ' * cell_width + '|')
+            out += '\n'
 
-            print(' |', end='')
+            out += ' |'
             for j in range(5):
                 if i * 5 + j < len(sorted_items):
                     placeholder = sorted_items[i * 5 + j][0].name.split()
@@ -1039,42 +1050,54 @@ def print_inventory_box_partial(ttt):
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[to_print:]))
                     padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
-                    print(padded_string, end='|')
+                    out += (padded_string + '|')
                 else:
-                    print(' ' * cell_width, end='|')
-            print()
+                    out += (' ' * cell_width + '|')
+            out += '\n'
 
-            print(' |                    |                    |                    |                    |                    |')
+            out += ' |                    |                    |                    |                    |                    |\n'
 
-            print(' |', end='')
+            out += ' |'
             for j in range(5):
                 if i * 5 + j < len(sorted_items):
                     padded_string = ' ' * ((19-len(str(sorted_items[i * 5 + j][1])))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + letter + str(sorted_items[i * 5 + j][1]) + Style.RESET_ALL + ' ' * (19 - ((19-len(str(sorted_items[i * 5 + j][1])))//2) - len(str(sorted_items[i * 5 + j][1])))
-                    print(padded_string, end='|')
+                    out += (padded_string + '|')
                 else:
-                    print(' ' * cell_width, end='|')
-            print()
+                    out += (' ' * cell_width + '|')
+            out += '\n'
 
-            print(' |                    |                    |                    |                    |                    |')
+            out += ' |                    |                    |                    |                    |                    |\n'
 
             # Print the horizontal border between lines
-            print(' +', end='')
+            out += ' +'
             for j in range(5):
-                print('-' * cell_width, end='+')
-            print()
-        print()
-        return True
-    return False
+                out += ('-' * cell_width + '+')
+            out += '\n'
+        # out += '\n'
+    return out
 
 
 def print_inventory_box():
-    print()
-    if not print_inventory_box_partial('character'):
-        if not print_inventory_box_partial('weapon'):
-            print(' Character/weapon archive empty!')
+    chars_inv = print_inventory_box_partial('character')
+
+    if chars_inv:
+        print(chars_inv)
+        weap_inv = print_inventory_box_partial('weapon')
+        if weap_inv:
+            print(weap_inv)
     else:
-        print_inventory_box_partial('weapon')
-    print()
+        weap_inv = print_inventory_box_partial('weapon', True)
+        if weap_inv:
+            print(weap_inv)
+        else:
+            print(f' {Fore.MAGENTA}Character/weapon archive empty!{Style.RESET_ALL}\n')
+
+    # if not print_inventory_box_partial('character'):
+    #     if not print_inventory_box_partial('weapon'):
+    #         print(f' {Fore.MAGENTA}Character/weapon archive empty!{Style.RESET_ALL}')
+    # else:
+    #     print_inventory_box_partial('weapon')
+    # print()
 
 
 def print_history_page():  # no idea how this works anymore
@@ -1343,7 +1366,7 @@ def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star
 three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
-color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 5: Fore.YELLOW}
+color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
 # color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
 color_map_light = color_map
 win_map = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
@@ -1414,6 +1437,7 @@ while True:
               f' {Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
               f' {Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n\n'
               f' {Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
+              f' {Fore.LIGHTCYAN_EX}aloy{Style.RESET_ALL} = unlock/remove Aloy!!!\n'
               f' {Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive as list\n'
               f' {Fore.LIGHTCYAN_EX}inv box{Style.RESET_ALL} = view character/weapon archive as boxes\n'
               f' {Fore.LIGHTCYAN_EX}h{Style.RESET_ALL} = view wish history, commands to interact with it:\n'
@@ -1437,6 +1461,23 @@ while True:
 
     if 'number' in user_command:
         print(' real funny, input an actual number tho. just type "10" to do 10 wishes\n')
+        continue
+
+    if user_command == 'aloy':
+        if number_to_item_dict[49] not in constellations:
+            constellations[number_to_item_dict[49]] = 0
+            unique_five_char_count += 1
+            save_archive_to_file(constellations, refinements)
+            save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                              unique_four_weap_count)
+            print(f"{Fore.RED} Aloy{Fore.LIGHTGREEN_EX} claimed!{Style.RESET_ALL}\n")
+        else:
+            del constellations[number_to_item_dict[49]]
+            unique_five_char_count -= 1
+            save_archive_to_file(constellations, refinements)
+            save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                              unique_four_weap_count)
+            print(f"{Fore.RED} Aloy {Fore.LIGHTGREEN_EX}removed :({Style.RESET_ALL}\n")
         continue
 
     if user_command == 'banner':
@@ -1820,7 +1861,8 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
     if user_command == 'clear':
         set_defaults()
         pity_info = pities[banner_of_choice[0]]  # pities was reinitialized, need to make the reference again
-        print(' Done\n')
+        # print(' Done')
+        print()
         continue
 
     if user_command == 'pity':
@@ -2025,7 +2067,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 else:
                     print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
         else:
-            print(' Wish history empty!\n')
+            print(f' {Fore.MAGENTA}Wish history empty!{Style.RESET_ALL}\n')
         continue
 
     try:
