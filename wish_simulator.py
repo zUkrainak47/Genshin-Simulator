@@ -291,6 +291,24 @@ def check_for_banner_mismatch_and_save():  # given any user_banner_input, makes 
     return
 
 
+# source: https://stackoverflow.com/a/61433559, though slightly modified because it didn't work
+def print_progress_bar(index, total, bar_len=35, title='Please wait'):
+    '''
+    index is expected to be 0 based index.
+    0 <= index < total
+    '''
+    percent_done = (index+1)/total*100
+    percent_done = round(percent_done, 1)
+
+    done = round(percent_done/(100/bar_len))
+    togo = bar_len-done
+
+    done_str = '█'*int(done)
+    togo_str = '░'*int(togo)
+
+    print(f'\r {title}: [{done_str}{togo_str}] - {percent_done}% done', end='')
+
+
 class Character:
     def __init__(self, name, region, vision, weapon, version, rarity, unique_number):
         self.name = name
@@ -1415,6 +1433,7 @@ def print_banner(t1):
 
 not_first = False
 while True:
+    wished_by_viz = False
     if not_first:
         last_banner = user_command == 'banner'
     else:
@@ -1947,32 +1966,56 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             continue
 
         if t == 'character':
-            if character_distribution[100] and character_distribution[100] < 10000000:
-                print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
-                c = input(' Type "CONFIRM" if you want to see the graph regardless: ')
-                if c != "CONFIRM":
+            if character_distribution[100] < 10000000:
+                print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}\n')
+                c = input(f' Type "{Fore.CYAN}OK{Style.RESET_ALL}" to do the remaining {10000000 - character_distribution[100]} wishes\n'
+                          f' Or type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to see the graph regardless\n\n'
+                          f' Your choice: ').strip()
+                if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
-            if 'visualize_character_distribution' not in sys.modules:
-                import visualize_character_distribution
             else:
-                importlib.reload(visualize_character_distribution)
-            print()
-            continue
+                c = "CONFIRM"
+            if c == "CONFIRM":
+                if 'visualize_character_distribution' not in sys.modules:
+                    import visualize_character_distribution
+                else:
+                    importlib.reload(visualize_character_distribution)
+                print()
+                continue
+            else:
+                if user_banner_input[0] != 'weapon':
+                    user_command = 10000000 - character_distribution[100]
+                    wished_by_viz = True
+                else:
+                    print(f' {Fore.RED}Change your banner type to {Fore.YELLOW}anything other than weapon {Fore.RED}first, then type the "viz" command again{Style.RESET_ALL}')
+                    continue
 
         elif t == 'weapon':
-            if weapon_distribution[100] and weapon_distribution[100] < 10000000:
+            if weapon_distribution[100] < 10000000:
                 print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
-                c = input(' Type "CONFIRM" if you want to see the graph regardless: ')
-                if c != "CONFIRM":
+                c = input(f' Type "{Fore.CYAN}OK{Style.RESET_ALL}" to do the remaining {10000000 - weapon_distribution[100]} wishes\n'
+                          f' Or type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to see the graph regardless\n\n'
+                          f' Your choice: ').strip()
+                if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
-            if 'visualize_weapon_distribution' not in sys.modules:
-                import visualize_weapon_distribution
             else:
-                importlib.reload(visualize_weapon_distribution)
-            print()
-            continue
+                c = "CONFIRM"
+            if c == "CONFIRM":
+                if 'visualize_weapon_distribution' not in sys.modules:
+                    import visualize_weapon_distribution
+                else:
+                    importlib.reload(visualize_weapon_distribution)
+                print()
+                continue
+            else:
+                if user_banner_input[0] == 'weapon':
+                    user_command = 10000000 - weapon_distribution[100]
+                    wished_by_viz = True
+                else:
+                    print(f' {Fore.RED}Change your banner type to {Fore.YELLOW}weapon {Fore.RED}first, then type the "viz" command again{Style.RESET_ALL}')
+                    continue
 
     if user_command == 'h':
         if len(wish_history[banner_of_choice[0]]):
@@ -2087,7 +2130,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
         if user_command > 1000000:  # if number bigger than 1 million
             print(f' Are you sure? Doing {user_command} pulls would take around {round((50+replit*40) * user_command / 10000000)} seconds.')
-            sure = input(' Type "CONFIRM" if you want to proceed: ')  # ask user if they're sure
+            sure = input(f' Type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to proceed: ')  # ask user if they're sure
             if sure != "CONFIRM":  # if they're not sure
                 print(' Aborting\n')  # abort this job
                 continue  # and ask for next command
@@ -2143,10 +2186,13 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             if res.rarity >= verbose_threshold:
                 print(" " + Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % 100000 == 0:
-                print(f' {i//100000}/{user_command//100000} done')
+                print_progress_bar(i//100000, user_command//100000)
+                # print(f'\r {i//100000}/{user_command//100000} done', end='')
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
+        if verbose_threshold >= 6:
+            print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete{Style.RESET_ALL}")
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
@@ -2188,6 +2234,10 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     else:
         print(" I'm not letting you do that. Max 1 billion wishes at a time please")
+
+    if wished_by_viz:
+        print(f'\n{Fore.RED} Now please run the "viz" command again{Style.RESET_ALL}')
+
     print()
 
 if __name__ == '__main__':
