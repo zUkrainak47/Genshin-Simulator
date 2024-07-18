@@ -2192,7 +2192,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
         if verbose_threshold >= 6:
-            print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete{Style.RESET_ALL}" + ' '*50)
+            print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete - 100%{Style.RESET_ALL}" + ' '*50)
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
