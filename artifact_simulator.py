@@ -348,19 +348,16 @@ def sort_inventory(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
 
-def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
+def compare_to_highest_cv(artifact, days_list, artifacts, day_number, artifact_number, cv_want,
                           only_one):
     if artifact.cv() >= min(54.5, cv_want):
         days_list.append(day_number)
         artifacts.append(artifact_number)
 
-        fastest = min(fastest, (day_number, artifact))
-        slowest = max(slowest, (day_number, artifact))
-
         if not only_one:
             print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
 
-    return fastest, slowest, artifact.cv() >= min(54.5, cv_want)
+    return artifact.cv() >= min(54.5, cv_want)
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
@@ -720,11 +717,12 @@ while True:
                         total_generated += 1
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("abyss", highest)
-                        low, high, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
+                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
+                                                     artifacts_generated,
+                                                     day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
+                            low = min(low, (day, art))
+                            high = max(high, (day, art))
                             break
                     if flag:
                         break
@@ -744,11 +742,12 @@ while True:
                         total_generated += 1
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("domain", highest)
-                        low, high, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
+                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
+                                                     artifacts_generated,
+                                                     day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
+                            low = min(low, (day, art))
+                            high = max(high, (day, art))
                             break
                     if flag:
                         break
@@ -760,11 +759,12 @@ while True:
                         total_generated += 1
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("strongbox", highest)
-                        low, high, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
+                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
+                                                     artifacts_generated,
+                                                     day, total_generated, cv_desired, sample_size_is_one)
                         if flag:
+                            low = min(low, (day, art))
+                            high = max(high, (day, art))
                             break
                     # print(f'{inventory} left in inventory')
 
