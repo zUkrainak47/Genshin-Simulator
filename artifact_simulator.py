@@ -660,7 +660,7 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
     flag = False
     print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
 
-    while not flag:
+    while True:
         day += 1
 
         if day % 10000 == 0:
@@ -671,21 +671,19 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
                 inventory += 1
                 total_generated += 1
                 art, highest = create_and_roll_artifact("abyss", highest)
-                flag = art.cv() >= cv_desired
-                if flag:
+                if art.cv() >= cv_desired:
                     days_it_took_to_reach_desired_cv.append(day)
                     artifacts_generated.append(total_generated)
                     if not sample_size_is_one:
                         print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    break
-            if flag:
-                break
+                    return total_generated, art
+
         resin = 180
 
         if day % 7 == 1:  # 1 transient resin from tubby every monday
             resin += 60
 
-        while resin and not flag:
+        while resin:
             # print('domain run')
             resin -= 20
             amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
@@ -695,15 +693,12 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
             for k in range(amount[0]):
                 total_generated += 1
                 art, highest = create_and_roll_artifact("domain", highest)
-                flag = art.cv() >= cv_desired
-                if flag:
+                if art.cv() >= cv_desired:
                     days_it_took_to_reach_desired_cv.append(day)
                     artifacts_generated.append(total_generated)
                     if not sample_size_is_one:
                         print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    break
-            if flag:
-                break
+                    return total_generated, art
 
         else:
             while inventory >= 3:
@@ -711,16 +706,19 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
                 inventory -= 2
                 total_generated += 1
                 art, highest = create_and_roll_artifact("strongbox", highest)
-                flag = art.cv() >= cv_desired
-                if flag:
+                if art.cv() >= cv_desired:
                     days_it_took_to_reach_desired_cv.append(day)
                     artifacts_generated.append(total_generated)
                     if not sample_size_is_one:
                         print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    break
+                    return total_generated, art
             # print(f'{inventory} left in inventory')
-    return total_generated, art
+    raise Exception('should not reach here')
 
+
+# FIXME: more artful name maybe
+def generate_artifact():
+    pass
 
 while True:
     user_command = input(' Command: ').lower().strip()
