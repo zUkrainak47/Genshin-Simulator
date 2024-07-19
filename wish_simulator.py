@@ -1972,7 +1972,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}\n')
                 c = input(f' Type {Fore.CYAN}OK{Style.RESET_ALL} to do the remaining {10000000 - character_distribution[100]} wishes\n'
                           f' Or type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to see the graph regardless\n\n'
-                          f' Your choice (case sensitive): ').strip()
+                          f' Your choice: ').strip()
                 if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
@@ -1998,7 +1998,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
                 c = input(f' Type {Fore.CYAN}OK{Style.RESET_ALL} to do the remaining {10000000 - weapon_distribution[100]} wishes\n'
                           f' Or type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to see the graph regardless\n\n'
-                          f' Your choice (case sensitive): ').strip()
+                          f' Your choice: ').strip()
                 if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
@@ -2127,7 +2127,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         if user_command > 1000000:  # if number bigger than 1 million
             print(f' Are you sure? Doing {user_command} pulls would take around {round((50+replit*40) * user_command / 10000000)} seconds.')
             # ask user if they're sure
-            sure = input(f' Type {Fore.CYAN}CONFIRM{Style.RESET_ALL} (case sensitive) if you want to proceed: ')
+            sure = input(f' Type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to proceed: ')
             if sure != "CONFIRM":  # if they're not sure
                 print(' Aborting\n')  # abort this job
                 continue  # and ask for next command
