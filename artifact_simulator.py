@@ -649,15 +649,12 @@ def print_log():
     print()
 
 day = 0
-def run_simulation(i, days_it_took_to_reach_desired_cv,
-                   artifacts_generated, sample_size_is_one):
-    c = 0
+def run_simulation(i):
     global day
     day = 0
     highest = 0.1
     total_generated = 0
     inventory = 0
-    flag = False
     print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
 
     while True:
@@ -672,11 +669,7 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
                 total_generated += 1
                 art, highest = create_and_roll_artifact("abyss", highest)
                 if art.cv() >= cv_desired:
-                    days_it_took_to_reach_desired_cv.append(day)
-                    artifacts_generated.append(total_generated)
-                    if not sample_size_is_one:
-                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    return total_generated, art
+                    return total_generated, day, art
 
         resin = 180
 
@@ -694,31 +687,18 @@ def run_simulation(i, days_it_took_to_reach_desired_cv,
                 total_generated += 1
                 art, highest = create_and_roll_artifact("domain", highest)
                 if art.cv() >= cv_desired:
-                    days_it_took_to_reach_desired_cv.append(day)
-                    artifacts_generated.append(total_generated)
-                    if not sample_size_is_one:
-                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    return total_generated, art
+                    return total_generated, day, art
 
-        else:
-            while inventory >= 3:
-                # print(f'strongbox {inventory}')
-                inventory -= 2
-                total_generated += 1
-                art, highest = create_and_roll_artifact("strongbox", highest)
-                if art.cv() >= cv_desired:
-                    days_it_took_to_reach_desired_cv.append(day)
-                    artifacts_generated.append(total_generated)
-                    if not sample_size_is_one:
-                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
-                    return total_generated, art
+        while inventory >= 3:
+            # print(f'strongbox {inventory}')
+            inventory -= 2
+            total_generated += 1
+            art, highest = create_and_roll_artifact("strongbox", highest)
+            if art.cv() >= cv_desired:
+                return total_generated, day, art
             # print(f'{inventory} left in inventory')
     raise Exception('should not reach here')
 
-
-# FIXME: more artful name maybe
-def generate_artifact():
-    pass
 
 while True:
     user_command = input(' Command: ').lower().strip()
@@ -754,14 +734,18 @@ while True:
         low = (1000000, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
-        sample_size_is_one = sample_size == 1
 
         for i in range(sample_size):
-            total_generated, art = run_simulation(i, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated, sample_size_is_one)
+            total_generated, day, art = run_simulation(i)
+            
+            artifacts_generated.append(total_generated)
+            days_it_took_to_reach_desired_cv.append(day)
             absolute_generated += total_generated
-            low = min(low, (days_it_took_to_reach_desired_cv[-1], art))
-            high = max(high, (days_it_took_to_reach_desired_cv[-1], art))
+            low = min(low, (day, art))
+            high = max(high, (day, art))
+            if not sample_size == 1:
+                print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
+
         end = time.perf_counter()
         run_time = end - start
         to_hours = time.strftime("%T", time.gmtime(run_time))
