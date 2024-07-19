@@ -1481,7 +1481,7 @@ while True:
         continue
 
     if 'number' in user_command:
-        print(' real funny, input an actual number tho. just type "10" to do 10 wishes\n')
+        print(f' real funny, input an actual number tho. just type {Fore.CYAN}10{Style.RESET_ALL} to do 10 wishes\n')
         continue
 
     if user_command == 'aloy':
@@ -1970,9 +1970,9 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         if t == 'character':
             if character_distribution[100] < 10000000:
                 print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}\n')
-                c = input(f' Type "{Fore.CYAN}OK{Style.RESET_ALL}" to do the remaining {10000000 - character_distribution[100]} wishes\n'
-                          f' Or type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to see the graph regardless\n\n'
-                          f' Your choice: ').strip()
+                c = input(f' Type {Fore.CYAN}OK{Style.RESET_ALL} to do the remaining {10000000 - character_distribution[100]} wishes\n'
+                          f' Or type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to see the graph regardless\n\n'
+                          f' Your choice (case sensitive): ').strip()
                 if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
@@ -1996,9 +1996,9 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         elif t == 'weapon':
             if weapon_distribution[100] < 10000000:
                 print(f' {Fore.YELLOW}To see actual trends I recommend doing at least 10 million wishes{Style.RESET_ALL}')
-                c = input(f' Type "{Fore.CYAN}OK{Style.RESET_ALL}" to do the remaining {10000000 - weapon_distribution[100]} wishes\n'
-                          f' Or type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to see the graph regardless\n\n'
-                          f' Your choice: ').strip()
+                c = input(f' Type {Fore.CYAN}OK{Style.RESET_ALL} to do the remaining {10000000 - weapon_distribution[100]} wishes\n'
+                          f' Or type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to see the graph regardless\n\n'
+                          f' Your choice (case sensitive): ').strip()
                 if c not in ("CONFIRM", "OK"):
                     print(' Aborting\n')
                     continue
@@ -2126,13 +2126,14 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
         if user_command > 1000000:  # if number bigger than 1 million
             print(f' Are you sure? Doing {user_command} pulls would take around {round((50+replit*40) * user_command / 10000000)} seconds.')
-            sure = input(f' Type "{Fore.CYAN}CONFIRM{Style.RESET_ALL}" if you want to proceed: ')  # ask user if they're sure
+            # ask user if they're sure
+            sure = input(f' Type {Fore.CYAN}CONFIRM{Style.RESET_ALL} (case sensitive) if you want to proceed: ')
             if sure != "CONFIRM":  # if they're not sure
                 print(' Aborting\n')  # abort this job
                 continue  # and ask for next command
             else:
                 print()  # otherwise add an extra space cuz pretty
-        count += user_command  # if the program came this far, go on with the job
+        count += user_command
         pity_info[-1][0] += user_command
         if user_banner_input[0] != 'weapon':
             character_distribution[100] += user_command
@@ -2152,7 +2153,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                     saving_dict[banner_of_choice[0]]()
                     print(' backed up the history at least')
                 except:
-                    print(' couldnt even save the wish history')
+                    print(" couldn't even save the wish history")
                 break
             if isinstance(res, Character):
                 if res in constellations:
