@@ -348,18 +348,6 @@ def sort_inventory(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
 
 
-def compare_to_highest_cv(artifact, days_list, artifacts, day_number, artifact_number, cv_want,
-                          only_one):
-    if artifact.cv() >= min(54.5, cv_want):
-        days_list.append(day_number)
-        artifacts.append(artifact_number)
-
-        if not only_one:
-            print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
-
-    return artifact.cv() >= min(54.5, cv_want)
-
-
 def print_inventory(list_of_artifacts, indexes_to_print=None):
     if indexes_to_print is None:
         needed_indexes = range(len(list_of_artifacts))
@@ -660,6 +648,79 @@ def print_log():
             f' {color}{this_index}) {artifact_log[-this_index]} - {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
     print()
 
+day = 0
+def run_simulation(i, days_it_took_to_reach_desired_cv,
+                   artifacts_generated, sample_size_is_one):
+    c = 0
+    global day
+    day = 0
+    highest = 0.1
+    total_generated = 0
+    inventory = 0
+    flag = False
+    print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
+
+    while not flag:
+        day += 1
+
+        if day % 10000 == 0:
+            print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
+
+        if day % 15 == 1:  # 4 artifacts from abyss every 15 days
+            for k in range(4):
+                inventory += 1
+                total_generated += 1
+                art, highest = create_and_roll_artifact("abyss", highest)
+                flag = art.cv() >= cv_desired
+                if flag:
+                    days_it_took_to_reach_desired_cv.append(day)
+                    artifacts_generated.append(total_generated)
+                    if not sample_size_is_one:
+                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
+                    break
+            if flag:
+                break
+        resin = 180
+
+        if day % 7 == 1:  # 1 transient resin from tubby every monday
+            resin += 60
+
+        while resin and not flag:
+            # print('domain run')
+            resin -= 20
+            amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
+            # if amount[0] == 2:
+            #     print('lucky!')
+            inventory += amount[0]
+            for k in range(amount[0]):
+                total_generated += 1
+                art, highest = create_and_roll_artifact("domain", highest)
+                flag = art.cv() >= cv_desired
+                if flag:
+                    days_it_took_to_reach_desired_cv.append(day)
+                    artifacts_generated.append(total_generated)
+                    if not sample_size_is_one:
+                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
+                    break
+            if flag:
+                break
+
+        else:
+            while inventory >= 3:
+                # print(f'strongbox {inventory}')
+                inventory -= 2
+                total_generated += 1
+                art, highest = create_and_roll_artifact("strongbox", highest)
+                flag = art.cv() >= cv_desired
+                if flag:
+                    days_it_took_to_reach_desired_cv.append(day)
+                    artifacts_generated.append(total_generated)
+                    if not sample_size_is_one:
+                        print(f' Artifacts generated: {Fore.MAGENTA}{total_generated}{Style.RESET_ALL}')
+                    break
+            # print(f'{inventory} left in inventory')
+    return total_generated, art
+
 
 while True:
     user_command = input(' Command: ').lower().strip()
@@ -687,6 +748,7 @@ while True:
             continue
         else:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
+            cv_desired = min(54.5, cv_desired)
 
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
@@ -697,77 +759,11 @@ while True:
         sample_size_is_one = sample_size == 1
 
         for i in range(sample_size):
-            c = 0
-            day = 0
-            highest = 0.1
-            total_generated = 0
-            inventory = 0
-            flag = False
-            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
-
-            while not flag:
-                day += 1
-
-                if day % 10000 == 0:
-                    print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
-
-                if day % 15 == 1:  # 4 artifacts from abyss every 15 days
-                    for k in range(4):
-                        inventory += 1
-                        total_generated += 1
-                        absolute_generated += 1
-                        art, highest = create_and_roll_artifact("abyss", highest)
-                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
-                                                     artifacts_generated,
-                                                     day, total_generated, cv_desired, sample_size_is_one)
-                        if flag:
-                            low = min(low, (day, art))
-                            high = max(high, (day, art))
-                            break
-                    if flag:
-                        break
-                resin = 180
-
-                if day % 7 == 1:  # 1 transient resin from tubby every monday
-                    resin += 60
-
-                while resin and not flag:
-                    # print('domain run')
-                    resin -= 20
-                    amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
-                    # if amount[0] == 2:
-                    #     print('lucky!')
-                    inventory += amount[0]
-                    for k in range(amount[0]):
-                        total_generated += 1
-                        absolute_generated += 1
-                        art, highest = create_and_roll_artifact("domain", highest)
-                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
-                                                     artifacts_generated,
-                                                     day, total_generated, cv_desired, sample_size_is_one)
-                        if flag:
-                            low = min(low, (day, art))
-                            high = max(high, (day, art))
-                            break
-                    if flag:
-                        break
-
-                else:
-                    while inventory >= 3:
-                        # print(f'strongbox {inventory}')
-                        inventory -= 2
-                        total_generated += 1
-                        absolute_generated += 1
-                        art, highest = create_and_roll_artifact("strongbox", highest)
-                        flag = compare_to_highest_cv(art, days_it_took_to_reach_desired_cv,
-                                                     artifacts_generated,
-                                                     day, total_generated, cv_desired, sample_size_is_one)
-                        if flag:
-                            low = min(low, (day, art))
-                            high = max(high, (day, art))
-                            break
-                    # print(f'{inventory} left in inventory')
-
+            total_generated, art = run_simulation(i, days_it_took_to_reach_desired_cv,
+                                                  artifacts_generated, sample_size_is_one)
+            absolute_generated += total_generated
+            low = min(low, (days_it_took_to_reach_desired_cv[-1], art))
+            high = max(high, (days_it_took_to_reach_desired_cv[-1], art))
         end = time.perf_counter()
         run_time = end - start
         to_hours = time.strftime("%T", time.gmtime(run_time))
