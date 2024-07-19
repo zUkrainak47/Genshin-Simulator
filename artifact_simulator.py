@@ -354,17 +354,13 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
         days_list.append(day_number)
         artifacts.append(artifact_number)
 
-        if fastest[0] == 0 or day_number < fastest[0]:
-            fastest = (day_number, artifact)
-
-        if day_number > slowest[0]:
-            slowest = (day_number, artifact)
-        # print(artifact.subs())
+        fastest = min(fastest, (day_number, artifact))
+        slowest = max(slowest, (day_number, artifact))
 
         if not only_one:
             print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
 
-    return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
+    return fastest, slowest, artifact.cv() >= min(54.5, cv_want)
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
@@ -698,7 +694,7 @@ while True:
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
         absolute_generated = 0
-        low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
+        low = (1000000, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
@@ -724,7 +720,7 @@ while True:
                         total_generated += 1
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("abyss", highest)
-                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        low, high, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
@@ -743,12 +739,12 @@ while True:
                     amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                     # if amount[0] == 2:
                     #     print('lucky!')
-                    total_generated += amount[0]
-                    absolute_generated += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
+                        total_generated += 1
+                        absolute_generated += 1
                         art, highest = create_and_roll_artifact("domain", highest)
-                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        low, high, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
@@ -764,7 +760,7 @@ while True:
                         total_generated += 1
                         absolute_generated += 1
                         art, highest = create_and_roll_artifact("strongbox", highest)
-                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                        low, high, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
