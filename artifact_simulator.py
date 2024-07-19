@@ -190,7 +190,7 @@ def take_input(defaults=(1, 50)):
 
 def load_inventory():
     try:
-        with open('.\\inventory.txt') as file:
+        with open('inventory.txt') as file:
             data = file.read()
         inv = json.loads(data)
         inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]) for a in inv]
@@ -198,7 +198,7 @@ def load_inventory():
         return inv
 
     except FileNotFoundError:
-        with open('.\\inventory.txt', 'w') as file:
+        with open('inventory.txt', 'w') as file:
             file.write('[]')
         return []
 
@@ -340,7 +340,7 @@ def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):  # 2 - prin
 
 
 def save_inventory_to_file(artifacts):
-    with open(r'.\inventory.txt', 'w') as f:
+    with open('inventory.txt', 'w') as f:
         f.write(json.dumps(artifacts, cls=ArtifactEncoder, separators=(',', ':')))
 
 

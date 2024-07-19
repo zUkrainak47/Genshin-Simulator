@@ -2,6 +2,8 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
+from pathlib import Path
+
 
 def jsonKeys2int(x):
     if isinstance(x, dict):
@@ -10,7 +12,7 @@ def jsonKeys2int(x):
 
 
 try:
-    with open('.\\banner_info\\character_distribution.txt') as file:
+    with open(Path('banner_info', 'character_distribution.txt')) as file:
         data = file.read()
     character_distribution = json.loads(data, object_hook=jsonKeys2int)
     num = character_distribution.pop(100)
