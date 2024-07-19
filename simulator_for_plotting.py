@@ -504,10 +504,11 @@ if __name__ == "__main__":
     print('List:', days_for_plotting)
     print()
 
-    Path(".\\plots").mkdir(parents=True, exist_ok=True)
-    Path(f".\\plots\\sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
+    Path('plots', f'sample size = {sample_size}').mkdir(parents=True, exist_ok=True)
 
-    with open(f'.\\plots\\sample size = {sample_size}\\{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
+    with open(Path('plots')
+              / f'sample size = {sample_size}'
+              / '{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
         file.write(json.dumps(days_for_plotting))
 
     plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size, cv_desired)
