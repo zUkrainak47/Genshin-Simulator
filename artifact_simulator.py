@@ -27,9 +27,9 @@ class Artifact:
         self.last_upgrade = last_upgrade
         self.roll_value = roll_value
 
-        if "Crit RATE%" in self.substats:
-            if self.substats["Crit RATE%"] == 23.0:
-                self.substats["Crit RATE%"] = 22.9
+        if "CRIT Rate%" in self.substats:
+            if self.substats["CRIT Rate%"] == 23.0:
+                self.substats["CRIT Rate%"] = 22.9
 
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
@@ -81,16 +81,16 @@ class Artifact:
 
     def cv(self):
         crit_value = 0
-        if "Crit DMG%" in self.substats:
+        if "CRIT DMG%" in self.substats:
             # for eyeball:
-            crit_value += round(self.substats["Crit DMG%"], 1)
+            crit_value += round(self.substats["CRIT DMG%"], 1)
             # for cv like in akasha:
-            # crit_value += self.substats["Crit DMG%"]
-        if "Crit RATE%" in self.substats:
+            # crit_value += self.substats["CRIT DMG%"]
+        if "CRIT Rate%" in self.substats:
             # for eyeball:
-            crit_value += round(self.substats["Crit RATE%"], 1) * 2
+            crit_value += round(self.substats["CRIT Rate%"], 1) * 2
             # for cv like in akasha:
-            # crit_value += self.substats["Crit RATE%"] * 2
+            # crit_value += self.substats["CRIT Rate%"] * 2
         return round(crit_value, 1)
 
     def rv(self):
@@ -109,10 +109,10 @@ goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
                      'Dendro DMG% Bonus', 'HP%', 'ATK%', 'DEF%', 'EM')
-circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'Crit DMG%', 'Crit RATE%',
+circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'CRIT DMG%', 'CRIT Rate%',
                       'Healing Bonus')
 substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
-            'Crit RATE%', 'Crit DMG%')
+            'CRIT Rate%', 'CRIT DMG%')
 flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
 feather_stats = (47, 100, 152, 205, 258, 311)
 hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
@@ -131,8 +131,8 @@ max_rolls = {
     'DEF%': 7.2899,
     'EM': 23.3099,
     'ER%': 6.4801,
-    'Crit RATE%': 3.8899,
-    'Crit DMG%': 7.7699
+    'CRIT Rate%': 3.8899,
+    'CRIT DMG%': 7.7699
 }
 possible_rolls = (0.7, 0.8, 0.9, 1.0)
 
@@ -273,7 +273,7 @@ def create_artifact(from_where):
 #     if i % 1000000 == 0:
 #         print(i)
 #     a = create_artifact('domain')
-#     if not a.threeliner and "Crit RATE%" in a.substats and "Crit DMG%" in a.substats:
+#     if not a.threeliner and "CRIT Rate%" in a.substats and "CRIT DMG%" in a.substats:
 #         ccc += 1
 # print(f' {ccc / aaamount * 100}%')
 
@@ -609,7 +609,7 @@ def show_index_changes(old_list, new_list):
 sort_order_type = {'Flower': 0, 'Feather': 1, 'Sands': 2, 'Goblet': 3, 'Circlet': 4}
 sort_order_mainstat = {'ATK': 0,
                        'HP': 1,
-                       'Crit DMG%': 2, 'Crit RATE%': 3,
+                       'CRIT DMG%': 2, 'CRIT Rate%': 3,
                        'EM': 4,
                        'Pyro DMG% Bonus': 5, 'Hydro DMG% Bonus': 6, 'Cryo DMG% Bonus': 7, 'Electro DMG% Bonus': 8,
                        'Anemo DMG% Bonus': 9, 'Dendro DMG% Bonus': 10, 'Geo DMG% Bonus': 11, 'Physical DMG% Bonus': 12,
