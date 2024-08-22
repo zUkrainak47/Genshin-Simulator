@@ -1,4 +1,6 @@
 print("""
+THIS APPLIES TO THE PRE-NATLAN SYSTEM, THERE IS NOT ENOUGH INFO ON THE NEW SYSTEM YET
+
 here's some statistical information about getting 5-stars and 4-stars based on pity
 
 d   - percentage of all pulls that will end up being your desired item on a specific pity
@@ -74,7 +76,8 @@ print()
 
 # This is what the program will output:
 
-
+# THIS APPLIES TO THE PRE-NATLAN SYSTEM, THERE IS NOT ENOUGH INFO ON THE NEW SYSTEM YET
+#
 # here's some statistical information about getting 5-stars and 4-stars based on pity
 #
 # d   - percentage of all pulls that will end up being your desired item on a specific pity
