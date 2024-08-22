@@ -4,6 +4,9 @@ With this project, I did my best to replicate Genshin Impact's two major gacha s
 
 If you find any bugs, report them to me :)
 
+# DISCLAIMER
+Genshin Impact changed the chance of getting a rate-up 5-star character when not guaranteed from 50/50 to 55/45 in version 5.0. I need more information in order to implement this change. They also reduced the maximum number of fate points in the weapon banner from 2 to 1 which i will introduce alongside the 55/45 change. Right now this project will be on hiatus until i figure that out, hopefully there will be more information available on this change, right now it's basically a guessing game and I want this simulator to copy the game mechanics without guessing how they work.
+
 ### How do I start simulating Genshin Impact?
 
 First you need to download or clone the repository on your device (i know) \
