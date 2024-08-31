@@ -196,7 +196,7 @@ def load_archive():
 
 
 def set_defaults():
-    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system
+    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system, win_map
 
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
     save_character_history_to_file()
@@ -220,6 +220,7 @@ def set_defaults():
     count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = 0, 0, 0, 0, 0, 0, "new"
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                       unique_four_weap_count, gacha_system)
+    win_map = win_map_new
     print(Fore.LIGHTGREEN_EX + " Everything cleared!" + Style.RESET_ALL)
 
 
@@ -1148,9 +1149,33 @@ def print_history_page():  # no idea how this works anymore
     print(Style.RESET_ALL + '    ' + '-' * 58)
     print(f'\n    (Page {page}/{num_of_pages})\n')
 
+win_map_old = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
+               1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
+               2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
+               (3, 0): f'[{Fore.LIGHTCYAN_EX}S0W{Style.RESET_ALL}] ',
+               (3, 1): f'[{Fore.LIGHTCYAN_EX}S1W{Style.RESET_ALL}] ',
+               (4, 0): f'[{Fore.RED}S0L{Style.RESET_ALL}] ',
+               (4, 1): f'[{Fore.RED}S1L{Style.RESET_ALL}] ',
+               (5, 0): f'[{Fore.LIGHTCYAN_EX}N0W{Style.RESET_ALL}] ',
+               (5, 1): f'[{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}] ',
+               (6, 0): f'[{Fore.RED}N0L{Style.RESET_ALL}] ',
+               (6, 1): f'[{Fore.RED}N1L{Style.RESET_ALL}] ',
+               7: ''
+               }
+win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
+               1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
+               2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
+               (3, 0): f'[{Fore.LIGHTCYAN_EX}SW{Style.RESET_ALL}] ',
+               (4, 0): f'[{Fore.RED}SL{Style.RESET_ALL}] ',
+               (5, 0): f'[{Fore.LIGHTCYAN_EX}NW{Style.RESET_ALL}] ',
+               (6, 0): f'[{Fore.RED}NL{Style.RESET_ALL}] ',
+               7: ''
+               }
+win_map_map = {'new': win_map_new, 'old': win_map_old}
 
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
+    win_map = win_map_map[gacha_system]
     print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)
     info_ok = True
 except:
@@ -1429,19 +1454,6 @@ five_stars = '( ★ ★ ★ ★ ★ )'
 color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
 # color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
 color_map_light = color_map
-win_map = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
-           1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
-           2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
-           (3, 0): f'[{Fore.LIGHTCYAN_EX}S0W{Style.RESET_ALL}] ',
-           (3, 1): f'[{Fore.LIGHTCYAN_EX}S1W{Style.RESET_ALL}] ',
-           (4, 0): f'[{Fore.RED}S0L{Style.RESET_ALL}] ',
-           (4, 1): f'[{Fore.RED}S1L{Style.RESET_ALL}] ',
-           (5, 0): f'[{Fore.LIGHTCYAN_EX}N0W{Style.RESET_ALL}] ',
-           (5, 1): f'[{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}] ',
-           (6, 0): f'[{Fore.RED}N0L{Style.RESET_ALL}] ',
-           (6, 1): f'[{Fore.RED}N1L{Style.RESET_ALL}] ',
-           7: ''
-           }
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
@@ -1645,7 +1657,7 @@ while True:
                         break
                     if new3 not in m and new3 not in m.values():
                         print(f" {Fore.RED}That's not a valid pick! Try again\n"
-                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
@@ -1673,7 +1685,7 @@ while True:
                         break
                     if new2 not in m and new2 not in m.values():
                         print(f" {Fore.RED}That's not a banner that's available! Try again\n"
-                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
                     else:
                         if new2 in m:
                             new2 = m[new2]
@@ -1696,7 +1708,7 @@ while True:
                         break
                     if new3 not in m and new3 not in m.values():
                         print(f" {Fore.RED}That's not a valid pick! Try again\n"
-                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches{Style.RESET_ALL}\n")
+                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
                     else:
                         if new3 in m:
                             new3 = m[new3]
@@ -1954,6 +1966,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             new_system = systems[new_system]
         print(f' {Fore.YELLOW}{new_system.capitalize()} gacha system selected.{Style.RESET_ALL}\n')
         gacha_system = new_system
+        win_map = win_map_map[gacha_system]
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                           unique_four_weap_count, gacha_system)
         continue
