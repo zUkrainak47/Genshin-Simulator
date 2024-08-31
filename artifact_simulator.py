@@ -1088,7 +1088,7 @@ while True:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
 
-                print(f' {Fore.LIGHTGREEN_EX}Saved - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory{Style.RESET_ALL}\n')
+                print(f' {Fore.LIGHTGREEN_EX}Saved (#{artifact_list.index(art)+1}) - {len_artifact_list} artifact{"s" if len_artifact_list > 1 else ""} in inventory{Style.RESET_ALL}\n')
             else:
                 print(f' {Fore.RED}Inventory full (100k artifacts).\n'
                       f' {Fore.LIGHTMAGENTA_EX}Delete some artifacts first to continue saving.\n'
