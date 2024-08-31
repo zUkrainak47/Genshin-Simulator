@@ -533,7 +533,7 @@ weapons_dict = {
     "Uraku Misugiri": Weapon("Uraku Misugiri", "Sword", 5, 900),
 
     "Verdict": Weapon("Verdict", "Claymore", 5, 930),
-    "Vortex Vanquisher": Weapon("Vortex Vanquisher", "Polearm", 5, 587),
+    "Vortex Vanquisher": Weapon("Vortex Vanquisher", "Polearm", 5, 931),
 
     "Wandering Evenstar": Weapon("Wandering Evenstar", "Catalyst", 4, 960),
     "Wavebreaker's Fin": Weapon("Wavebreaker's Fin", "Polearm", 4, 961),
@@ -1207,6 +1207,7 @@ def get_weights(num):
     return [50, 50 - max((num-1), 0)*25, max((num-1), 0)*25]
 
 def make_pull(banner_info, pity):
+    radiance = False
     five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
     rarity = 5 if choices((True, False), (five_star_chance, 100 - five_star_chance))[0] \
         else 4 if choices((True, False), (four_star_chance, 100 - four_star_chance))[0] else 3
@@ -1231,9 +1232,9 @@ def make_pull(banner_info, pity):
                     result = [choices(((featured_five_star, False), (choice(legal_standard_five_stars), False))), pity[0] + 1]
                 # print(result)
                 result[0], radiance = result[0][0][0], result[0][0][1]
-                # print(result)
                 if radiance:
-                    print(f' {Fore.LIGHTMAGENTA_EX}CAPTURING RADIANCE ACTIVATED ({get_weights(consecutive_losses)[-1]}%){Style.RESET_ALL}')
+                    radiance = f' {Fore.LIGHTMAGENTA_EX}CAPTURING RADIANCE ACTIVATED ({get_weights(consecutive_losses)[-1]}%){Style.RESET_ALL}'
+                # print(result)
                 if result[0] != featured_five_star:  # if didnt win 50/50
                     pity[2] = True  # set guarantee to true
                     pity[4] += 1    # consecutive loss counter
@@ -1401,6 +1402,7 @@ def make_pull(banner_info, pity):
 
     wish_history[banner_info[0]].append(result[0].num)
     pities[banner_info[0]] = pity
+    result.append(radiance)
     return result
 
 
@@ -2212,7 +2214,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             weapon_distribution[100] += user_command
         for i in range(user_command):
             try:
-                res, p, w = make_pull(banner_of_choice, pity_info)
+                res, p, w, rad = make_pull(banner_of_choice, pity_info)
             except MemoryError:
                 print(' The program ran out of memory dude what have you DONE')
                 save_archive_to_file(constellations, refinements)
@@ -2259,6 +2261,9 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
+            if user_banner_input[0] == 'character':
+                if verbose_threshold < 6 and rad:
+                    print(rad)
         if verbose_threshold >= 6:
             print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete - 100%{Style.RESET_ALL}" + ' '*50)
         # print(wish_history)
