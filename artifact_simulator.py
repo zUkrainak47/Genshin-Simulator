@@ -111,8 +111,8 @@ goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
                      'Dendro DMG% Bonus', 'HP%', 'ATK%', 'DEF%', 'EM')
 circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'CRIT DMG%', 'CRIT Rate%',
                       'Healing Bonus')
-substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
-            'CRIT Rate%', 'CRIT DMG%')
+substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM', 'CRIT Rate%', 'CRIT DMG%')
+type_to_main_stats = dict(zip(artifact_types, (('HP'), ('ATK'), sands_main_stats, goblet_main_stats, circlet_main_stats)))
 flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
 feather_stats = (47, 100, 152, 205, 258, 311)
 hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
@@ -188,6 +188,148 @@ def take_input(defaults=(1, 50)):
     return size, cv
 
 
+def get_main_stat_value(mainstat):
+    if mainstat == 'HP':
+        return [flower_stats, 0]
+    elif mainstat == 'ATK':
+        return [feather_stats, 0]
+    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
+                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+        return [hp_atk_dmg_stats, 0]
+    elif mainstat == 'DEF%':
+        return [def_stats, 0]
+    elif mainstat == 'ER%':
+        return [er_stats, 0]
+    elif mainstat == 'EM':
+        return [em_stats, 0]
+    elif mainstat == 'Healing Bonus%':
+        return [healing_bonus_stats, 0]
+    elif mainstat == 'CRIT Rate%':
+        return [crit_rate_stats, 0]
+    else:
+        return [crit_dmg_stats, 0]
+
+
+last = 0
+def transmute(preset=[]):
+    if preset:
+        new1, new2, new3, new4 = preset
+        subs_pool = [sub for sub in substats if sub != new2]
+        # print(f' {Fore.YELLOW}{new1.capitalize()} selected.{Style.RESET_ALL}')
+        # print(f' {Fore.YELLOW}Main Stat - {new2} selected.{Style.RESET_ALL}')
+        # print(f' {Fore.YELLOW}{new3} and {new4} selected.{Style.RESET_ALL}')
+        print(f' {Fore.YELLOW}Creating {new2} {new1} with {new3} and {new4}.{Style.RESET_ALL}')
+
+    else:
+        type_dict = dict(zip([str(x+1) for x in range(len(artifact_types))], artifact_types))
+        print(f" {Fore.CYAN}Choose type of artifact:{Style.RESET_ALL}")
+        for i in type_dict.items():
+            print(f" {i[0]} = {i[1]}")
+        print('\n (Type 0 to exit)\n')
+        while True:
+            new1 = input(' Your pick: ').strip().lower()
+            if new1 in ('0', 'exit'):
+                break
+            if new1 in type_dict or new1 in type_dict.values():
+                break
+            else:
+                print(f' {Fore.RED}Please input either the number or the name of the artifact type of choice{Style.RESET_ALL}\n')
+        if new1 in ('0', 'exit'):
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
+            return 0, last
+        if new1 in type_dict:
+            new1 = type_dict[new1]
+        print(f' {Fore.YELLOW}{new1.capitalize()} selected.{Style.RESET_ALL}')
+
+        if new1 == 'Flower':
+            new2 = 'HP'
+        elif new1 == 'Feather':
+            new2 = 'ATK'
+        else:
+            main_stats = type_to_main_stats[new1]
+            main_stats_dict = dict(zip([str(x+1) for x in range(len(main_stats))], main_stats))
+            print(f"\n {Fore.CYAN}Choose artifact Main Stat:{Style.RESET_ALL}")
+            for i in main_stats_dict.items():
+                print(f" {i[0]} = {i[1]}")
+            print('\n (Type 0 to exit)\n')
+            while True:
+                new2 = input(' Your pick: ').strip().lower()
+                if new2 in ('0', 'exit'):
+                    break
+                if new2 in main_stats_dict or new2 in main_stats_dict.values():
+                    break
+                else:
+                    print(f' {Fore.RED}Please input either the number or the name of the main stat of choice{Style.RESET_ALL}\n')
+            if new2 in ('0', 'exit'):
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
+                return 0, last
+            if new2 in main_stats_dict:
+                new2 = main_stats_dict[new2]
+        print(f' {Fore.YELLOW}Main Stat - {new2} selected.{Style.RESET_ALL}')
+        print()
+
+        subs_pool = [sub for sub in substats if sub != new2]
+        subs_dict = dict(enumerate(subs_pool, start=1))
+        print(f" {Fore.CYAN}Choose two artifact Sub Stats (separate with space):{Style.RESET_ALL}")
+        for i in subs_dict.items():
+            print(f" {i[0]} = {i[1]}")
+        print('\n (Type 0 to exit)\n')
+        while True:
+            subs = input(' Your pick: ').strip().lower().split()
+            if (len(subs) == 1 and subs[0] == '0') or (len(subs) == 4 and subs[0] == 'exit'):
+                break
+            if len(subs) != 2:
+                print(f' {Fore.RED}Please input two numbers corresponding to artifact Sub Stats of choice SEPARATED BY SPACE{Style.RESET_ALL}\n')
+                continue
+            new3, new4 = subs
+            if new3.isnumeric() and new4.isnumeric():
+                new3, new4 = int(new3), int(new4)
+            else:
+                print(f' {Fore.RED}Please input TWO NUMBERS corresponding to artifact Sub Stats of choice separated by space{Style.RESET_ALL}\n')
+                continue
+            if new3 in subs_dict and new4 in subs_dict:
+                break
+            else:
+                print(f' {Fore.RED}Please input two numbers CORRESPONDING TO ARTIFACT SUB STATS of choice separated by space{Style.RESET_ALL}\n')
+        if subs[0] in ('0', 'exit'):
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
+            return 0, last
+        new3 = subs_dict[new3]
+        new4 = subs_dict[new4]
+        print(f' {Fore.YELLOW}{new3} and {new4} selected.{Style.RESET_ALL}')
+        preset = [new1, new2, new3, new4]
+
+    fourliner = choices((1, 0), weights=(1, 2))[0]
+
+    new3roll = choice(possible_rolls)
+    new4roll = choice(possible_rolls)
+    rv = new3roll + new4roll
+
+    subs = {new3: max_rolls[new3]*new3roll, new4: max_rolls[new4]*new4roll}
+    subs_weights = dict(zip(substats, substats_weights))
+
+    if new2 in subs_weights:
+        subs_weights.pop(new2)
+
+    subs_weights.pop(new3)
+    subs_weights.pop(new4)
+    subs_pool.remove(new3)
+    subs_pool.remove(new4)
+
+    for _i in range(1 + fourliner):
+        roll = choice(possible_rolls)
+        sub = choices(subs_pool, weights=list(subs_weights.values()))[0]
+        subs_weights.pop(sub)
+        subs_pool.remove(sub)
+        subs[sub] = max_rolls[sub] * roll
+        rv += roll * 100
+    print()
+    threeliner = choices(subs_pool, weights=list(subs_weights.values()))[0] if not fourliner else 0
+    return Artifact(new1, new2, get_main_stat_value(new1), threeliner, subs, 0, "", rv), preset
+
+
 def load_inventory():
     try:
         with open('inventory.txt') as file:
@@ -221,28 +363,7 @@ def create_artifact(from_where):
         mainstat = choices(circlet_main_stats,
                            weights=circlet_main_stats_weights)[0]
 
-    if mainstat == 'HP':
-        mainstat_value = [flower_stats, 0]
-    elif mainstat == 'ATK':
-        mainstat_value = [feather_stats, 0]
-    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
-        mainstat_value = [hp_atk_dmg_stats, 0]
-    elif mainstat == 'DEF%':
-        mainstat_value = [def_stats, 0]
-    elif mainstat == 'ER%':
-        mainstat_value = [er_stats, 0]
-    elif mainstat == 'EM':
-        mainstat_value = [em_stats, 0]
-    elif mainstat == 'Healing Bonus%':
-        mainstat_value = [healing_bonus_stats, 0]
-    elif mainstat == 'CRIT Rate%':
-        mainstat_value = [crit_rate_stats, 0]
-    else:
-        mainstat_value = [crit_dmg_stats, 0]
-
+    mainstat_value = get_main_stat_value(mainstat)
     fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
@@ -551,6 +672,8 @@ def print_controls():
         '----------------------------------------- OTHER COMMANDS ----------------------------------------\n'
         '\n'
         f' {Fore.LIGHTCYAN_EX}auto{Style.RESET_ALL} = enter Automation Mode\n'  # auto
+        '\n'
+        f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
         '\n'
         f' {Fore.LIGHTCYAN_EX}source{Style.RESET_ALL} = view current source\n'
         f' {Fore.CYAN}domain{Style.RESET_ALL} = change artifact source to domain (default)\n'
@@ -1201,6 +1324,21 @@ while True:
         else:
             print(f' {Fore.RED}You did something wrong.\n'
                   f' If you tried inputting multiple indexes, remove spaces between them{Style.RESET_ALL}\n')
+
+    elif user_command in ('transmute', 'tr'):
+        art, last = transmute()
+        if art:
+            artifact_log.append(art)
+            art.print_stats()
+            print(f' {Fore.CYAN}Tip: Type "re" to create an artifact using the same preset!{Style.RESET_ALL}\n')
+
+    elif user_command == 're':
+        if last:
+            art, last = transmute(last)
+            artifact_log.append(art)
+            art.print_stats()
+        else:
+            print(f' {Fore.RED}Run "transmute" first{Style.RESET_ALL}\n')
 
     elif user_command in ('domain', 'strongbox', 'abyss'):
         source = user_command
