@@ -90,9 +90,9 @@ def save_weapon_distribution_to_file():
         f.write(json.dumps(weapon_distribution, separators=(',', ':')))
 
 
-def save_info_to_file(pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_):
+def save_info_to_file(pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_, gacha_system):
     with open(Path('banner_info', 'info.txt'), 'w') as f:
-        f.write(json.dumps([pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_], separators=(',', ':')))
+        f.write(json.dumps([pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_, gacha_system], separators=(',', ':')))
 
 
 def save_banner_to_file():
@@ -123,13 +123,13 @@ def load_info():
 
     except FileNotFoundError:
         pities_ = {
-            'character': [0, 0, False, False, [0, 0, 0]],
+            'character': [0, 0, False, False, 0, [0, 0, 0]],
             'weapon': [0, 0, 0, False, False, [0, 0, 0]],
             'standard': [0, 0, 0, 0, [0, 0, 0]],
             'chronicled': [0, 0, False, [0, 0, 0]]
         }
         with open(Path('banner_info', 'info.txt'), 'w') as file:
-            info = [pities_, 0, 0, 0, 0, 0, 0]
+            info = [pities_, 0, 0, 0, 0, 0, 0, "new"]
             file.write(json.dumps(info, separators=(',', ':')))
         return info
 
@@ -196,7 +196,7 @@ def load_archive():
 
 
 def set_defaults():
-    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count
+    global wish_history, constellations, refinements, pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system
 
     wish_history = {"character": [], "weapon": [], "standard": [], "chronicled": []}
     save_character_history_to_file()
@@ -207,7 +207,7 @@ def set_defaults():
     constellations, refinements = {}, {}
     save_archive_to_file(constellations, refinements)
 
-    pities = {'character': [0, 0, False, False, [0, 0, 0]],
+    pities = {'character': [0, 0, False, False, 0, [0, 0, 0]],
               # 5-star pity / 4-star pity / 5-star guarantee / 4-star guarantee
               'weapon': [0, 0, 0, False, False, [0, 0, 0]],
               # 5-star pity / 4-star pity / epitomized path / last 5 star was standard? / 4-star guarantee
@@ -217,9 +217,9 @@ def set_defaults():
               # 5-star pity / 4-star pity / 5-star guarantee
               # last item is [total pull count, 5-star count, 4-star count]
               }
-    count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = 0, 0, 0, 0, 0, 0
+    count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = 0, 0, 0, 0, 0, 0, "new"
     save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                      unique_four_weap_count)
+                      unique_four_weap_count, gacha_system)
     print(Fore.LIGHTGREEN_EX + " Everything cleared!" + Style.RESET_ALL)
 
 
@@ -415,7 +415,11 @@ characters_dict = {
     "Sethos": Character("Sethos", "Sumeru", "Electro", "Bow", 4.7, 4, 93),
     "Clorinde": Character("Clorinde", "Fontaine", "Electro", "Sword", 4.7, 5, 94),
     "Sigewinne": Character("Sigewinne", "Fontaine", "Hydro", "Bow", 4.7, 5, 95),
-    # "Emilie": Character("Emilie", "Fontaine", "Dendro", "Polearm", 4.8, 5, 96),
+    "Emilie": Character("Emilie", "Fontaine", "Dendro", "Polearm", 4.8, 5, 96),
+    "Mualani": Character("Mualani", "Natlan", "Hydro", "Catalyst", 5.0, 5, 97),
+    "Kachina": Character("Kachina", "Natlan", "Geo", "Polearm", 5.0, 4, 98),
+    #"Kinich": Character("Emilie", "Natlan", "Dendro", "Claymore", 5.0, 5, 99),
+    #"Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
 }
 
 
@@ -455,6 +459,7 @@ weapons_dict = {
     "Favonius Warbow": Weapon("Favonius Warbow", "Bow", 4, 454),
     "Ferrous Shadow": Weapon("Ferrous Shadow", "Claymore", 3, 6),
     "Freedom-Sworn": Weapon("Freedom-Sworn", "Sword", 5, 456),
+    # "Fang of the Mountain King": Weapon("Fang of the Mountain King", "Claymore", 5, 457),
 
     "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
     "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 7),
@@ -470,6 +475,7 @@ weapons_dict = {
     "Lithic Blade": Weapon("Lithic Blade", "Claymore", 4, 632),
     "Lithic Spear": Weapon("Lithic Spear", "Polearm", 4, 633),
     "Lost Prayer to the Sacred Winds": Weapon("Lost Prayer to the Sacred Winds", "Catalyst", 5, 634),
+    "Lumidouce Elegy": Weapon("Lumidouce Elegy", "Polearm", 5, 635),
 
     "Magic Guide": Weapon("Magic Guide", "Catalyst", 3, 8),
     "Makhaira Aquamarine": Weapon("Makhaira Aquamarine", "Claymore", 4, 661),
@@ -483,7 +489,7 @@ weapons_dict = {
     "Primordial Jade Cutter": Weapon("Primordial Jade Cutter", "Sword", 5, 752),
     "Primordial Jade Winged-Spear": Weapon("Primordial Jade Winged-Spear", "Polearm", 5, 753),
     "Prospector's Drill": Weapon("Prospector's Drill", "Polearm", 4, 754),
-    "Silvershower Heartstrings": Weapon("Silvershower Heartstrings", "Bow", 5, 755),
+    # "Peak Patrol Song": Weapon("Peak Patrol Song", "Sword", 5, 755),
 
     "Rainslasher": Weapon("Rainslasher", "Claymore", 4, 810),
     "Range Gauge": Weapon("Range Gauge", "Bow", 4, 811),
@@ -508,6 +514,8 @@ weapons_dict = {
     "Staff of Homa": Weapon("Staff of Homa", "Polearm", 5, 854),
     "Staff of the Scarlet Sands": Weapon("Staff of the Scarlet Sands", "Polearm", 5, 855),
     "Summit Shaper": Weapon("Summit Shaper", "Sword", 5, 856),
+    "Silvershower Heartstrings": Weapon("Silvershower Heartstrings", "Bow", 5, 857),
+    "Surf's Up": Weapon("Surf's Up", "Catalyst", 5, 858),
 
     "The Alley Flash": Weapon("The Alley Flash", "Sword", 4, 870),
     "The Bell": Weapon("The Bell", "Claymore", 4, 871),
@@ -701,8 +709,14 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "furina-2": (["Furina", "Noelle", "Rosaria", "Gaming"], 4.7),
     "navia-2": (["Navia", "Ningguang", "Kaveh", "Kirara"], 4.8),
     "nilou-3": (["Nilou", "Ningguang", "Kaveh", "Kirara"], 4.8),
-    # "yelan-1" : (["Yelan", "", "", ""], 4.8),
-    # "emilie-1" : (["Emilie", "", "", ""], 4.8),
+    "yelan-4": (["Yelan", "Razor", "Xiangling", "Yanfei"], 4.8),
+    "emilie-1": (["Emilie", "Razor", "Xiangling", "Yanfei"], 4.8),
+    "kazuha-5": (["Kazuha", "Bennett", "Xinyan", "Kachina"], 5.0),
+    "mualani-1": (["Mualani", "Bennett", "Xinyan", "Kachina"], 5.0),
+    # "": (["", "", "", ""], 5.0),
+    # "kinich-1": (["Kinich", "", "", ""], 5.0),
+    # "": (["", "", "", ""], 5.1),
+    # "xilonen-1": (["Xilonen", "", "", ""], 5.1),
 
     # "": (["", "", "", ""], ),
 }
@@ -777,6 +791,8 @@ weapon_banner_list = {
     "Absolution - Light of Foliar Incision": (["Absolution", "Light of Foliar Incision", "Lithic Spear", "Sacrificial Sword", "Sacrificial Greatsword", "The Widsith", "The Stringless"], 4.7),
     "Silvershower Heartstrings - Splendor of Tranquil Waters": (["Silvershower Heartstrings", "Splendor of Tranquil Waters", "Sacrificial Bow", "Lion's Roar", "Favonius Codex", "Lithic Blade", "Favonius Lance"], 4.7),
     "Verdict - Key of Khaj-Nisut": (["Verdict", "Key of Khaj-Nisut", "Xiphos' Moonlight", "Rust", "Eye of Perception", "Dragon's Bane", "The Bell"], 4.8),
+    "Aqua Simulacra - Lumidouce Elegy": (["Aqua Simulacra", "Lumidouce Elegy", "Favonius Warbow", "The Flute", "Favonius Lance", "Wandering Evenstar", "Makhaira Aquamarine"], 4.8),
+    "Surf's Up - Freedom-Sworn": (["Surf's Up", "Freedom-Sworn", "Favonius Greatsword", "Favonius Sword", "The Stringless", "Sacrificial Fragments", "Dragon's Bane"], 5.0),
 
     # "": (["", "", "", "", "", "", ""], ),
 }
@@ -902,11 +918,6 @@ def save_new_banner_of_choice():  # needs user_banner_input and pities to work
 
 def print_pity(counter, pity_, c5, c4):
     print("\n" + "="*24 + " PITY INFORMATION " + "="*24)
-    if counter:
-        print(f' {counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
-        print(f' Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
-    print(f' {pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
-    print(f' Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
     if pity_[0] < 10 and pity_[1] < 10:
         insert1, insert2 = '', ''
     else:
@@ -924,7 +935,7 @@ def print_pity(counter, pity_, c5, c4):
         was_standard = 'was standard' if pity_[3] else 'was not standard'
         epitomized_ = f"epitomized points: {pity_[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
-        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2 else "next is guaranteed to be featured"}')
+        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2-(gacha_system == 'new') else "next is guaranteed to be featured"}')
         print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'standard':
         print(f' {Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
@@ -935,6 +946,11 @@ def print_pity(counter, pity_, c5, c4):
             print(f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
         if pity_[2] >= 20 or pity_[3] >= 20:
             print(f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
+    print(f' {pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
+    print(f' Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
+    if counter:
+        print(f' {counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
+        print(f' Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
 
     # print('\n==================================================================')
 
@@ -1134,7 +1150,7 @@ def print_history_page():  # no idea how this works anymore
 
 
 try:
-    pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
+    pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
     print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)
     info_ok = True
 except:
@@ -1182,12 +1198,22 @@ load_distribution()
 # print([c in standard_characters for c in character_banner_list["venti-1"]])
 
 
+def get_weights(num):
+    #            win/loss/Capturing Radiance
+    # 0 losses = 50/50/0
+    # 1 loss   = 50/50/0
+    # 2 losses = 50/25/25
+    # 3 losses = 50/0/50
+    return [50, 50 - max((num-1), 0)*25, max((num-1), 0)*25]
+
 def make_pull(banner_info, pity):
     five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
     rarity = 5 if choices((True, False), (five_star_chance, 100 - five_star_chance))[0] \
         else 4 if choices((True, False), (four_star_chance, 100 - four_star_chance))[0] else 3
 
     if banner_info[0] == 'character':  # banner_info = ['character', banner dictionary, banner version]
+        consecutive_losses = pity[4]
+        # print(consecutive_losses)
         featured_five_star = banner_info[1][0]
         featured_four_stars = banner_info[1][1:]
         if rarity == 5:
@@ -1199,10 +1225,22 @@ def make_pull(banner_info, pity):
                 result.append(2)  # log that guarantee took place
             else:  # if not guaranteed
                 # choose if win 50/50
-                result = [choice((featured_five_star, choice(legal_standard_five_stars))), pity[0] + 1]
+                if gacha_system == 'new':
+                    result = [choices(((featured_five_star, False), (choice(legal_standard_five_stars), False), (featured_five_star, True)), get_weights(consecutive_losses)), pity[0] + 1]
+                else:
+                    result = [choices(((featured_five_star, False), (choice(legal_standard_five_stars), False))), pity[0] + 1]
+                # print(result)
+                result[0], radiance = result[0][0][0], result[0][0][1]
+                # print(result)
+                if radiance:
+                    print(f' {Fore.LIGHTMAGENTA_EX}CAPTURING RADIANCE ACTIVATED ({get_weights(consecutive_losses)[-1]}%){Style.RESET_ALL}')
                 if result[0] != featured_five_star:  # if didnt win 50/50
                     pity[2] = True  # set guarantee to true
-                result.append(int(result[0] == featured_five_star))  # log if you won or not
+                    pity[4] += 1    # consecutive loss counter
+                    result.append(0)  # log if you won or not
+                else:
+                    pity[4] = 0
+                    result.append(1)
             pity[0] = 0
             pity[1] += 1
 
@@ -1258,7 +1296,7 @@ def make_pull(banner_info, pity):
         other_five_star = banner_info[1][0] if banner_info[1][0] != featured_five_star else banner_info[1][1]
         if rarity == 5:
             weapon_distribution[pity[0] + 1] += 1
-            if pity[2] < 2:  # 'weapon': [0, 0, 0, False, False] - 5-star pity, 4-star pity, epitomized path, last 5-star was standard, last 4-star was standard
+            if pity[2] < 2-(gacha_system == 'new'):  # 'weapon': [0, 0, 0, False, False] - 5-star pity, 4-star pity, epitomized path, last 5-star was standard, last 4-star was standard
                 if pity[3]:  # if last 5-star was a standard one
                     result = [choice((featured_five_star, other_five_star)), pity[0] + 1]  # give one of the rate-ups
                     pity[3] = False  # set last 5-star to not be standard
@@ -1457,6 +1495,7 @@ while True:
               f' {Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
               f' {Fore.LIGHTCYAN_EX}banner{Style.RESET_ALL} = view current banner\n'
               f' {Fore.LIGHTCYAN_EX}change{Style.RESET_ALL} = choose a different banner\n\n'
+              f' {Fore.LIGHTCYAN_EX}system{Style.RESET_ALL} = choose a gacha system (new system introduced in v5.0)\n\n'
               f' {Fore.LIGHTCYAN_EX}pity{Style.RESET_ALL} = view pity related information\n'
               f' {Fore.LIGHTCYAN_EX}aloy{Style.RESET_ALL} = unlock/remove Aloy!!!\n'
               f' {Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = view character/weapon archive as list\n'
@@ -1490,14 +1529,14 @@ while True:
             unique_five_char_count += 1
             save_archive_to_file(constellations, refinements)
             save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                              unique_four_weap_count)
+                              unique_four_weap_count, gacha_system)
             print(f"{Fore.RED} Aloy{Fore.LIGHTGREEN_EX} claimed!{Style.RESET_ALL}\n")
         else:
             del constellations[number_to_item_dict[49]]
             unique_five_char_count -= 1
             save_archive_to_file(constellations, refinements)
             save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                              unique_four_weap_count)
+                              unique_four_weap_count, gacha_system)
             print(f"{Fore.RED} Aloy {Fore.LIGHTGREEN_EX}removed :({Style.RESET_ALL}\n")
         continue
 
@@ -1670,7 +1709,7 @@ while True:
         pities['weapon'][2] = 0
         pities['chronicled'][2] = False
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                          unique_four_weap_count)
+                          unique_four_weap_count, gacha_system)
         save_new_banner_of_choice()
         print_banner('New')
         print()
@@ -1891,6 +1930,32 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         print()
         continue
 
+    if user_command == 'system':
+        print(f"\n {Fore.CYAN}Choose gacha system:{Style.RESET_ALL}")
+        print(f" Current system: {Fore.CYAN}{gacha_system}{Style.RESET_ALL}")
+        systems = {"1": 'old', "2": 'new'}
+        for i in systems.items():
+            print(f" {i[0]} = {i[1]}")
+        print('\n (Type 0 to exit)\n')
+        while True:
+            new_system = input(' Your pick: ').strip().lower()
+            if new_system in ('0', 'exit'):
+                break
+            if new_system in systems or new_system in systems.values():
+                break
+            else:
+                print(f' {Fore.RED}Please input either the number or the name of the system of choice{Style.RESET_ALL}\n')
+        if new_system in ('0', 'exit'):
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing gacha system anymore{Style.RESET_ALL}\n')
+            continue
+        if new_system in systems:
+            new_system = systems[new_system]
+        print(f' {Fore.YELLOW}{new_system.capitalize()} gacha system selected.{Style.RESET_ALL}\n')
+        gacha_system = new_system
+        save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
+                          unique_four_weap_count, gacha_system)
+        continue
+
     if user_command == 'inv':
         print_full_inventory()
         continue
@@ -2094,7 +2159,13 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 elif cmd.isnumeric():
                     page = min(int(cmd), num_of_pages)
                     print()
-                    print_history_page()
+                    if page == 0:
+                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
+                        print(" " + Fore.YELLOW + '                       You found page 0')
+                        print(" " + Style.RESET_ALL + '   ' + '-' * 58)
+                        print(f"\n    (Page 0/{num_of_pages})\n")
+                    else:
+                        print_history_page()
 
                 elif cmd in ['help', "'help'", '"help"']:
                     print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
@@ -2121,11 +2192,11 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         # pulls <= 10k = show every pull
         # 10k < pulls <= 100k = show 4* and 5*
         # 100k < pulls <= 1M = show only 5*
-        # 1M < pulls = show progress (10k step) and stop showing "10 PULLS WITHOUT A 4 STAR" message
+        # 1M < pulls = show progress (percentage) and stop showing "10 PULLS WITHOUT A 4 STAR" message
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
-            print(f' Are you sure? Doing {user_command} pulls would take around {round((50+replit*40) * user_command / 10000000)} seconds.')
+            print(f' Are you sure? Doing {user_command} pulls would take around {round((5+replit*4) * user_command / 1000000)} seconds.')
             # ask user if they're sure
             sure = input(f' Type {Fore.CYAN}CONFIRM{Style.RESET_ALL} if you want to proceed: ')
             if sure != "CONFIRM":  # if they're not sure
@@ -2146,7 +2217,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 print(' The program ran out of memory dude what have you DONE')
                 save_archive_to_file(constellations, refinements)
                 save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                                  unique_four_weap_count)
+                                  unique_four_weap_count, gacha_system)
                 save_character_distribution_to_file()
                 save_weapon_distribution_to_file()
                 try:
@@ -2193,7 +2264,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         # print(wish_history)
         save_archive_to_file(constellations, refinements)
         save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
-                          unique_four_weap_count)
+                          unique_four_weap_count, gacha_system)
         save_character_distribution_to_file()
         save_weapon_distribution_to_file()
         print()
@@ -2203,7 +2274,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'weapon':
             epitomized = f"epitomized points: {pity_info[2]}"
-            print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] == 2 else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
+            print(Style.RESET_ALL + f' {pity_info[0]} pity, {epitomized if pity_info[2] >= 2-(gacha_system == 'new') else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
         elif user_banner_input[0] == 'standard':
             recent, not_recent = ('character', 'weapon') if pity_info[0] < pity_info[1] else ('weapon', 'character')
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
