@@ -2206,6 +2206,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 continue  # and ask for next command
             else:
                 print()  # otherwise add an extra space cuz pretty
+        five_star_counter = {}
         count += user_command
         pity_info[-1][0] += user_command
         if user_banner_input[0] != 'weapon':
@@ -2250,6 +2251,10 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 four_count += 1
                 pity_info[-1][2] += 1
             elif res.rarity == 5:
+                if res.name in five_star_counter:
+                    five_star_counter[res.name] += 1
+                else:
+                    five_star_counter[res.name] = 1
                 five_count += 1
                 pity_info[-1][1] += 1
 
@@ -2285,12 +2290,17 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
             print(Style.RESET_ALL + f' {min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
             if pity_info[0] >= 180 or pity_info[1] >= 180:
-                print(
-                    f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
+                print(f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
             if pity_info[2] >= 20 or pity_info[3] >= 20:
-                print(
-                    f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
+                print(f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
 
+        if user_command >= 100:
+            print(f'\n {Fore.YELLOW}5★{Style.RESET_ALL} summary:')
+            for item in five_star_counter:
+                print(f' {Fore.YELLOW}{item}{Style.RESET_ALL} x{five_star_counter[item]}')
+            total_five_stars = sum(five_star_counter.values())
+            if total_five_stars > 10:
+                print(f'\n {Fore.YELLOW}5★{Style.RESET_ALL} total: {total_five_stars}')
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
             print(Fore.LIGHTRED_EX + '\n To save disk space and ensure acceptable simulator performance,\n'
@@ -2298,6 +2308,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                                      ' This does NOT limit the the distribution data size (e.g. character_distribution.txt)',
                   Style.RESET_ALL)
         wish_history[banner_of_choice[0]] = wish_history[banner_of_choice[0]][-2500000:]
+
         try:
             saving_dict[banner_of_choice[0]]()
         except:
