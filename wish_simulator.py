@@ -711,7 +711,7 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "nilou-3": (["Nilou", "Ningguang", "Kaveh", "Kirara"], 4.8),
     "yelan-4": (["Yelan", "Razor", "Xiangling", "Yanfei"], 4.8),
     "emilie-1": (["Emilie", "Razor", "Xiangling", "Yanfei"], 4.8),
-    "kazuha-5": (["Kazuha", "Bennett", "Xinyan", "Kachina"], 5.0),
+    "kazuha-5": (["Kaedehara Kazuha", "Bennett", "Xinyan", "Kachina"], 5.0),
     "mualani-1": (["Mualani", "Bennett", "Xinyan", "Kachina"], 5.0),
     # "": (["", "", "", ""], 5.0),
     # "kinich-1": (["Kinich", "", "", ""], 5.0),
