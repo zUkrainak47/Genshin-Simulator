@@ -305,7 +305,7 @@ def transmute(preset=[]):
 
     new3roll = choice(possible_rolls)
     new4roll = choice(possible_rolls)
-    rv = new3roll + new4roll
+    rv = new3roll*100 + new4roll*100
 
     subs = {new3: max_rolls[new3]*new3roll, new4: max_rolls[new4]*new4roll}
     subs_weights = dict(zip(substats, substats_weights))
@@ -1102,8 +1102,7 @@ while True:
             len_artifact_list = len(artifact_list)
 
             save_inventory_to_file(artifact_list)
-            print(
-                f' {Fore.LIGHTGREEN_EX}Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory{Style.RESET_ALL}\n')
+            print(f' {Fore.LIGHTGREEN_EX}Removed - {len_artifact_list} artifact{"s" if len_artifact_list != 1 else ""} in inventory{Style.RESET_ALL}\n')
 
         else:
             print(f' {Fore.LIGHTMAGENTA_EX}This artifact is not in your inventory{Style.RESET_ALL}\n')
