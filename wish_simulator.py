@@ -1598,14 +1598,14 @@ while True:
             save_archive_to_file(constellations, refinements)
             save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                               unique_four_weap_count, gacha_system)
-            print(f"{Fore.RED} Aloy{Fore.LIGHTGREEN_EX} claimed!{Style.RESET_ALL}\n")
+            print(f"{color_map[4.5]} Aloy{Fore.LIGHTGREEN_EX} claimed!{Style.RESET_ALL}\n")
         else:
             del constellations[number_to_item_dict[49]]
             unique_five_char_count -= 1
             save_archive_to_file(constellations, refinements)
             save_info_to_file(pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count,
                               unique_four_weap_count, gacha_system)
-            print(f"{Fore.RED} Aloy {Fore.LIGHTGREEN_EX}removed :({Style.RESET_ALL}\n")
+            print(f"{color_map[4.5]} Aloy {Fore.LIGHTGREEN_EX}removed :({Style.RESET_ALL}\n")
         continue
 
     if user_command == 'banner':
