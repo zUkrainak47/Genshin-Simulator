@@ -2205,6 +2205,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
                 elif cmd in ['help', "'help'", '"help"']:
                     print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
+                          f'    {Fore.LIGHTMAGENTA_EX}filter {Fore.BLUE}number(s){Style.RESET_ALL} = filter history by rarity\n'
                           f'    {Fore.LIGHTMAGENTA_EX}n {Fore.BLUE}[number]{Style.RESET_ALL} = go forward a number of pages\n'
                           f'    {Fore.LIGHTMAGENTA_EX}p {Fore.BLUE}[number]{Style.RESET_ALL} = go back a number of pages\n'
                           f'    {Fore.LIGHTMAGENTA_EX}number{Style.RESET_ALL} = go to page\n'
