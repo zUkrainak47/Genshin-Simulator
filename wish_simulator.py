@@ -100,6 +100,11 @@ def save_banner_to_file():
         f.write(json.dumps(user_banner_input, separators=(',', ':')))
 
 
+def save_settings_to_file():
+    with open(Path('banner_info', 'settings.txt'), 'w') as f:
+        f.write(json.dumps(settings, separators=(',', ':')))
+
+
 def save_archive_to_file(cons, refs):
 
     numeric_indexes_c = [character.num for character in cons]
@@ -146,6 +151,26 @@ def load_banner():  # always returns a valid banner
         save_new_banner_of_choice()
 
 
+def load_settings():
+    global settings, color_map
+    try:
+        with open(Path('banner_info', 'settings.txt')) as file:
+            data = file.read()
+        settings = json.loads(data)
+        if settings not in ('normal', 'light', 'lighter'):
+            print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
+            settings = 'normal'
+            save_settings_to_file()
+    except FileNotFoundError:
+        settings = 'normal'
+        save_settings_to_file()
+    except:
+        print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
+        settings = 'normal'
+        save_settings_to_file()
+    color_map = color_map_map[settings]
+
+
 def jsonKeys2int(x):
     if isinstance(x, dict):
         return {int(kk): vv for kk, vv in x.items()}
@@ -173,8 +198,6 @@ def load_distribution():
         weapon_distribution = {i: 0 for i in range(1, 78)}
         weapon_distribution[100] = 0
         save_weapon_distribution_to_file()
-
-    print(Fore.LIGHTGREEN_EX + ' Loaded distribution successfully!' + Style.RESET_ALL)
 
 
 def load_archive():
@@ -926,33 +949,33 @@ def print_pity(counter, pity_, c5, c4):
         insert2 = ' ' * (pity_[1] < 10)
     if user_banner_input[0] == 'character':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {fifty if not pity_[2] else "next is guaranteed to be featured"}')
-        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {fifty if not pity_[3] else "next is guaranteed to be featured"}')
+        print(f' {color_map[5]}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f' {color_map[4]}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {fifty if not pity_[3] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'chronicled':
         fifty = "you're on a 50/50"  # python 3.10 breaks if I just put this into the f-string
-        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]}, {fifty if not pity_[2] else "next is guaranteed to be featured"}')
-        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]}')
+        print(f' {color_map[5]}5★{Style.RESET_ALL} pity = {pity_[0]}, {fifty if not pity_[2] else "next is guaranteed to be featured"}')
+        print(f' {color_map[4]}4★{Style.RESET_ALL} pity = {pity_[1]}')
     elif user_banner_input[0] == 'weapon':
         was_standard = 'was standard' if pity_[3] else 'was not standard'
         epitomized_ = f"epitomized points: {pity_[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
         epitomized_points_max = 2-(gacha_system == 'new')
-        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < epitomized_points_max else "next is guaranteed to be featured"}')
-        print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
+        print(f' {color_map[5]}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < epitomized_points_max else "next is guaranteed to be featured"}')
+        print(f' {color_map[4]}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'standard':
-        print(f' {Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
-              f' {Fore.YELLOW}5★ weapon{Style.RESET_ALL}    pity = {pity_[1]}')
-        print(f' {Fore.MAGENTA}4★ character{Style.RESET_ALL} pity = {pity_[2]}\n'
-              f' {Fore.MAGENTA}4★ weapon{Style.RESET_ALL}    pity = {pity_[3]}')
+        print(f' {color_map[5]}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
+              f' {color_map[5]}5★ weapon{Style.RESET_ALL}    pity = {pity_[1]}')
+        print(f' {color_map[4]}4★ character{Style.RESET_ALL} pity = {pity_[2]}\n'
+              f' {color_map[4]}4★ weapon{Style.RESET_ALL}    pity = {pity_[3]}')
         if pity_[0] >= 180 or pity_[1] >= 180:
-            print(f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
+            print(f' Next {color_map[5]}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[0] >= 180 else "weapon"}')
         if pity_[2] >= 20 or pity_[3] >= 20:
-            print(f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
+            print(f' Next {color_map[4]}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_[2] >= 20 else "weapon"}')
     print(f' {pity_[-1][0]:,} pull{"s" if pity_[-1][0] != 1 else ""} done on the {user_banner_input[0]} banner')
-    print(f' Out of them {Fore.YELLOW}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
+    print(f' Out of them {color_map[5]}{pity_[-1][1]:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {color_map[4]}{pity_[-1][2]:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}\n')
     if counter:
         print(f' {counter:,} pull{"s" if counter != 1 else ""} done on all banners combined (${int(round(counter/50.5, 1) * 100):,})')
-        print(f' Out of them {Fore.YELLOW}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {Fore.MAGENTA}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
+        print(f' Out of them {color_map[5]}{c5:,} five-star{"s" if c5 != 1 else ""}{Style.RESET_ALL} and {color_map[4]}{c4:,} four-star{"s" if c4 != 1 else ""}{Style.RESET_ALL}')
 
     # print('\n==================================================================')
 
@@ -968,9 +991,9 @@ def print_character_archive():
                                        key=lambda x: (x[0].rarity, x[0] not in standard_5_star_characters, x[1]), reverse=True)
     if sorted_constellations:
         out += ("\n\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*24 + '\n')
-        out += f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})\n"
+        out += f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})\n"
         for a in sorted_constellations:
-            out += f' {color_map[a[0].rarity]}c{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
+            out += f' {color_map[a[0].rarity]}c{a[1]} {color_map[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
         out += Style.RESET_ALL
     return out
 
@@ -988,9 +1011,9 @@ def print_weapon_archive(extra_indent=False):
         if extra_indent:
             out += "\n\n"
         out += ("="*26 + f" {Fore.CYAN}WEAPON ARCHIVE{Style.RESET_ALL} " + "="*25 + '\n')
-        out += f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {Fore.YELLOW}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {Fore.MAGENTA}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {Fore.BLUE}3★{Style.RESET_ALL})\n"
+        out += f" {len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {color_map[5]}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {color_map[4]}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {color_map[3]}3★{Style.RESET_ALL})\n"
         for a in sorted_refinements:
-            out += f' {color_map[a[0].rarity]}r{a[1]} {color_map_light[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
+            out += f' {color_map[a[0].rarity]}r{a[1]} {color_map[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
         out += Style.RESET_ALL
     return out
 
@@ -1032,7 +1055,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                                        key=lambda x: (x[0].rarity, x[1]), reverse=True)
     if sorted_items:
         out += title + '\n\n'
-        t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {Fore.YELLOW}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {Fore.MAGENTA}4★{Style.RESET_ALL})"
+        t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})"
         extra = (104 - len(t) + 18) // 2  # +10 to account for the color change
         out += (" " + ' ' * extra + t + '\n\n')
 
@@ -1067,7 +1090,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                     else:
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[:to_print]))
-                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
+                    padded_string = ' ' * ((20-len(printing))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
                     out += (padded_string + '|')
                 else:
                     out += (' ' * cell_width + '|')
@@ -1087,7 +1110,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                     else:
                         to_print = len(placeholder)
                     printing = (' '.join(placeholder[to_print:]))
-                    padded_string = ' ' * ((20-len(printing))//2) + color_map_light[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
+                    padded_string = ' ' * ((20-len(printing))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + printing + Style.RESET_ALL + ' ' * (20 - ((20-len(printing))//2) - len(printing))
                     out += (padded_string + '|')
                 else:
                     out += (' ' * cell_width + '|')
@@ -1200,6 +1223,11 @@ win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                7: ''}
 win_map_map = {'new': win_map_new, 'old': win_map_old}
 
+color_map_normal = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
+color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.MAGENTA, 5: Fore.YELLOW}
+color_map_lighter = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
+color_map_map = {'normal': color_map_normal, 'light': color_map_light, 'lighter': color_map_lighter}
+
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
     win_map = win_map_map[gacha_system]
@@ -1237,7 +1265,7 @@ if not (info_ok and history_ok and archive_ok):
 
 # try:
 load_banner()
-print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RESET_ALL)
+print(f' {Fore.LIGHTGREEN_EX}Loaded banner information successfully!{Style.RESET_ALL}')
 # except:
 #     print(Fore.RED + ' Something off with banner file. Setting to default...' + Style.RESET_ALL)
 #     user_banner_input = ['character', 'tao-3']
@@ -1245,6 +1273,10 @@ print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RE
 
 
 load_distribution()
+print(f' {Fore.LIGHTGREEN_EX}Loaded distribution successfully!{Style.RESET_ALL}')
+
+load_settings()
+print(f' {Fore.LIGHTGREEN_EX}Loaded settings successfully!{Style.RESET_ALL}')
 
 
 def get_weights(num):
@@ -1475,9 +1507,7 @@ def get_chances(banner_type, pity):  # returns (% to get 5 star, % to get 4 star
 three_stars = '(   ★ ★ ★   )'
 four_stars = '(  ★ ★ ★ ★  )'
 five_stars = '( ★ ★ ★ ★ ★ )'
-color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
-# color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
-color_map_light = color_map
+
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
@@ -1914,7 +1944,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
     if user_command == 'load':
         Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
         try:
-            pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count = load_info()
+            pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
             print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)
             info_ok = True
         except:
@@ -1943,15 +1973,14 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         if not (info_ok and history_ok and archive_ok):
             set_defaults()
 
-        load_distribution()
+        load_banner()
+        print(f' {Fore.LIGHTGREEN_EX}Loaded banner information successfully!{Style.RESET_ALL}')
 
-        try:
-            load_banner()
-            print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RESET_ALL)
-        except:
-            print(Fore.RED + ' Something off with banner file. Setting to default...' + Style.RESET_ALL)
-            user_banner_input = ['character', 'tao-3']
-            save_new_banner_of_choice()
+        load_distribution()
+        print(f' {Fore.LIGHTGREEN_EX}Loaded distribution successfully!{Style.RESET_ALL}')
+
+        load_settings()
+        print(f' {Fore.LIGHTGREEN_EX}Loaded settings successfully!{Style.RESET_ALL}')
 
         print()
         continue
@@ -1961,6 +1990,41 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         pity_info = pities[banner_of_choice[0]]  # pities was reinitialized, need to make the reference again
         # print(' Done')
         print()
+        continue
+
+    # settings_list = ['3★ color']
+    if user_command == 'settings':
+        normal = f'{Fore.BLUE}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+        light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+        lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
+        current = normal if settings == 'normal' else light if settings == 'light' else lighter
+        print(f' Choose color scheme (current color scheme is {current})')
+        print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n\n (Type 0 to exit)\n')
+        while True:
+            new_color = input(' Your pick: ').lower().strip()
+            if new_color in ('0', 'exit'):
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing color scheme{Style.RESET_ALL}\n')
+                break
+            elif new_color == '1':
+                settings = 'normal'
+                color_map = color_map_normal
+                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[3]}normal{Style.RESET_ALL}\n')
+                save_settings_to_file()
+                break
+            elif new_color == '2':
+                settings = 'light'
+                color_map = color_map_light
+                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[3]}light{Style.RESET_ALL}\n')
+                save_settings_to_file()
+                break
+            elif new_color == '3':
+                settings = 'lighter'
+                color_map = color_map_lighter
+                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[5]}lighter{Style.RESET_ALL}\n')
+                save_settings_to_file()
+                break
+            else:
+                print(f' {Fore.RED}Please input a valid number (1, 2 or 3){Style.RESET_ALL}\n')
         continue
 
     if user_command == 'pity':
@@ -2353,17 +2417,17 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
             print(Style.RESET_ALL + f' {min(pity_info[0], pity_info[1])} {recent} pity{pulls_since_not_recent}')
             if pity_info[0] >= 180 or pity_info[1] >= 180:
-                print(f' Next {Fore.YELLOW}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
+                print(f' Next {color_map[5]}5★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[0] >= 180 else "weapon"}')
             if pity_info[2] >= 20 or pity_info[3] >= 20:
-                print(f' Next {Fore.MAGENTA}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
+                print(f' Next {color_map[4]}4★ item{Style.RESET_ALL} is guaranteed to be a {"character" if pity_info[2] >= 20 else "weapon"}')
 
         if user_command >= 100:
-            print(f'\n {Fore.YELLOW}5★{Style.RESET_ALL} summary:')
+            print(f'\n {color_map[5]}5★{Style.RESET_ALL} summary:')
             for item in five_star_counter:
-                print(f' {Fore.YELLOW}{item}{Style.RESET_ALL} x{five_star_counter[item]}')
+                print(f' {color_map[5]}{item}{Style.RESET_ALL} x{five_star_counter[item]}')
             total_five_stars = sum(five_star_counter.values())
             if total_five_stars > 10:
-                print(f'\n {Fore.YELLOW}5★{Style.RESET_ALL} total: {total_five_stars}')
+                print(f'\n {color_map[5]}5★{Style.RESET_ALL} total: {total_five_stars}')
         if not messaged and len(wish_history[banner_of_choice[0]]) > 2500000:
             messaged = True
             print(Fore.LIGHTRED_EX + '\n To save disk space and ensure acceptable simulator performance,\n'
