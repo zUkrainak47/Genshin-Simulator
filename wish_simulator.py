@@ -1237,7 +1237,6 @@ try:
 except:
     print(Fore.RED + ' Something off with info file. Clearing everything...' + Style.RESET_ALL)
     info_ok = False
-print(f'{Fore.RED}hello {Fore.LIGHTRED_EX}hello')
 
 if info_ok:
     try:  # if I extract this into a method pycharm stops seeing all the variables assigned
