@@ -215,12 +215,12 @@ def get_main_stat_value(mainstat):
 last = 0
 def transmute(preset=[]):
     if preset:
-        new1, new2, new3, new4 = preset
-        subs_pool = [sub for sub in substats if sub != new2]
-        # print(f' {Fore.YELLOW}{new1.capitalize()} selected.{Style.RESET_ALL}')
-        # print(f' {Fore.YELLOW}Main Stat - {new2} selected.{Style.RESET_ALL}')
-        # print(f' {Fore.YELLOW}{new3} and {new4} selected.{Style.RESET_ALL}')
-        print(f' {Fore.YELLOW}Creating {new2} {new1} with {new3} and {new4}.{Style.RESET_ALL}')
+        artifact_type, main_stat, sub_stat_1, sub_stat_2 = preset
+        subs_pool = [sub for sub in substats if sub != main_stat]
+        # print(f' {Fore.YELLOW}{artifact_type.capitalize()} selected.{Style.RESET_ALL}')
+        # print(f' {Fore.YELLOW}Main Stat - {main_stat} selected.{Style.RESET_ALL}')
+        # print(f' {Fore.YELLOW}{sub_stat_1} and {sub_stat_2} selected.{Style.RESET_ALL}')
+        print(f' {Fore.YELLOW}Creating {main_stat} {artifact_type} with {sub_stat_1} and {sub_stat_2}.{Style.RESET_ALL}')
 
     else:
         type_dict = dict(zip([str(x+1) for x in range(len(artifact_types))], artifact_types))
@@ -229,48 +229,48 @@ def transmute(preset=[]):
             print(f" {i[0]} = {i[1]}")
         print('\n (Type 0 to exit)\n')
         while True:
-            new1 = input(' Your pick: ').strip().lower()
-            if new1 in ('0', 'exit'):
+            artifact_type = input(' Your pick: ').strip().lower()
+            if artifact_type in ('0', 'exit'):
                 break
-            if new1 in type_dict or new1 in type_dict.values():
+            if artifact_type in type_dict or artifact_type in type_dict.values():
                 break
             else:
-                print(f' {Fore.RED}Please input either the number or the name of the artifact type of choice{Style.RESET_ALL}\n')
-        if new1 in ('0', 'exit'):
+                print(f' {Fore.RED}Please input either the number or the name of the Artifact Type of choice{Style.RESET_ALL}\n')
+        if artifact_type in ('0', 'exit'):
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
             return 0, last
-        if new1 in type_dict:
-            new1 = type_dict[new1]
-        print(f' {Fore.YELLOW}{new1.capitalize()} selected.{Style.RESET_ALL}')
+        if artifact_type in type_dict:
+            artifact_type = type_dict[artifact_type]
+        print(f' {Fore.YELLOW}{artifact_type.capitalize()} selected.{Style.RESET_ALL}')
 
-        if new1 == 'Flower':
-            new2 = 'HP'
-        elif new1 == 'Feather':
-            new2 = 'ATK'
+        if artifact_type == 'Flower':
+            main_stat = 'HP'
+        elif artifact_type == 'Feather':
+            main_stat = 'ATK'
         else:
-            main_stats = type_to_main_stats[new1]
+            main_stats = type_to_main_stats[artifact_type]
             main_stats_dict = dict(zip([str(x+1) for x in range(len(main_stats))], main_stats))
             print(f"\n {Fore.CYAN}Choose artifact Main Stat:{Style.RESET_ALL}")
             for i in main_stats_dict.items():
                 print(f" {i[0]} = {i[1]}")
             print('\n (Type 0 to exit)\n')
             while True:
-                new2 = input(' Your pick: ').strip().lower()
-                if new2 in ('0', 'exit'):
+                main_stat = input(' Your pick: ').strip().lower()
+                if main_stat in ('0', 'exit'):
                     break
-                if new2 in main_stats_dict or new2 in main_stats_dict.values():
+                if main_stat in main_stats_dict or main_stat in main_stats_dict.values():
                     break
                 else:
-                    print(f' {Fore.RED}Please input either the number or the name of the main stat of choice{Style.RESET_ALL}\n')
-            if new2 in ('0', 'exit'):
+                    print(f' {Fore.RED}Please input either the number or the name of the Main Stat of choice{Style.RESET_ALL}\n')
+            if main_stat in ('0', 'exit'):
                 print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
                 return 0, last
-            if new2 in main_stats_dict:
-                new2 = main_stats_dict[new2]
-        print(f' {Fore.YELLOW}Main Stat - {new2} selected.{Style.RESET_ALL}')
+            if main_stat in main_stats_dict:
+                main_stat = main_stats_dict[main_stat]
+        print(f' {Fore.YELLOW}Main Stat - {main_stat} selected.{Style.RESET_ALL}')
         print()
 
-        subs_pool = [sub for sub in substats if sub != new2]
+        subs_pool = [sub for sub in substats if sub != main_stat]
         subs_dict = dict(enumerate(subs_pool, start=1))
         print(f" {Fore.CYAN}Choose two artifact Sub Stats (separate with space):{Style.RESET_ALL}")
         for i in subs_dict.items():
@@ -283,40 +283,40 @@ def transmute(preset=[]):
             if len(subs) != 2:
                 print(f' {Fore.RED}Please input two numbers corresponding to artifact Sub Stats of choice SEPARATED BY SPACE{Style.RESET_ALL}\n')
                 continue
-            new3, new4 = subs
-            if new3.isnumeric() and new4.isnumeric():
-                new3, new4 = int(new3), int(new4)
+            sub_stat_1, sub_stat_2 = subs
+            if sub_stat_1.isnumeric() and sub_stat_2.isnumeric():
+                sub_stat_1, sub_stat_2 = int(sub_stat_1), int(sub_stat_2)
             else:
                 print(f' {Fore.RED}Please input TWO NUMBERS corresponding to artifact Sub Stats of choice separated by space{Style.RESET_ALL}\n')
                 continue
-            if new3 in subs_dict and new4 in subs_dict:
+            if sub_stat_1 in subs_dict and sub_stat_2 in subs_dict:
                 break
             else:
                 print(f' {Fore.RED}Please input two numbers CORRESPONDING TO ARTIFACT SUB STATS of choice separated by space{Style.RESET_ALL}\n')
         if subs[0] in ('0', 'exit'):
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
             return 0, last
-        new3 = subs_dict[new3]
-        new4 = subs_dict[new4]
-        print(f' {Fore.YELLOW}{new3} and {new4} selected.{Style.RESET_ALL}')
-        preset = [new1, new2, new3, new4]
+        sub_stat_1 = subs_dict[sub_stat_1]
+        sub_stat_2 = subs_dict[sub_stat_2]
+        print(f' {Fore.YELLOW}{sub_stat_1} and {sub_stat_2} selected.{Style.RESET_ALL}')
+        preset = [artifact_type, main_stat, sub_stat_1, sub_stat_2]
 
     fourliner = choices((1, 0), weights=(1, 2))[0]
 
-    new3roll = choice(possible_rolls)
-    new4roll = choice(possible_rolls)
-    rv = new3roll*100 + new4roll*100
+    sub_stat_1_roll = choice(possible_rolls)
+    sub_stat_2_roll = choice(possible_rolls)
+    rv = sub_stat_1_roll*100 + sub_stat_2_roll*100
 
-    subs = {new3: max_rolls[new3]*new3roll, new4: max_rolls[new4]*new4roll}
+    subs = {sub_stat_1: max_rolls[sub_stat_1]*sub_stat_1_roll, sub_stat_2: max_rolls[sub_stat_2]*sub_stat_2_roll}
     subs_weights = dict(zip(substats, substats_weights))
 
-    if new2 in subs_weights:
-        subs_weights.pop(new2)
+    if main_stat in subs_weights:
+        subs_weights.pop(main_stat)
 
-    subs_weights.pop(new3)
-    subs_weights.pop(new4)
-    subs_pool.remove(new3)
-    subs_pool.remove(new4)
+    subs_weights.pop(sub_stat_1)
+    subs_weights.pop(sub_stat_2)
+    subs_pool.remove(sub_stat_1)
+    subs_pool.remove(sub_stat_2)
 
     for _i in range(1 + fourliner):
         roll = choice(possible_rolls)
@@ -327,7 +327,7 @@ def transmute(preset=[]):
         rv += roll * 100
     print()
     threeliner = choices(subs_pool, weights=list(subs_weights.values()))[0] if not fourliner else 0
-    return Artifact(new1, new2, get_main_stat_value(new1), threeliner, subs, 0, "", rv), preset
+    return Artifact(artifact_type, main_stat, get_main_stat_value(main_stat), threeliner, subs, 0, "", rv), preset
 
 
 def load_inventory():
