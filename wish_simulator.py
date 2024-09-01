@@ -936,7 +936,8 @@ def print_pity(counter, pity_, c5, c4):
         was_standard = 'was standard' if pity_[3] else 'was not standard'
         epitomized_ = f"epitomized points: {pity_[2]}, last {was_standard}"
         seventyfive = "you're on a 75/25"
-        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < 2-(gacha_system == 'new') else "next is guaranteed to be featured"}')
+        epitomized_points_max = 2-(gacha_system == 'new')
+        print(f' {Fore.YELLOW}5★{Style.RESET_ALL} pity = {pity_[0]},{insert1} {epitomized_ if pity_[2] < epitomized_points_max else "next is guaranteed to be featured"}')
         print(f' {Fore.MAGENTA}4★{Style.RESET_ALL} pity = {pity_[1]},{insert2} {seventyfive if not pity_[4] else "next is guaranteed to be featured"}')
     elif user_banner_input[0] == 'standard':
         print(f' {Fore.YELLOW}5★ character{Style.RESET_ALL} pity = {pity_[0]}\n'
@@ -1170,7 +1171,7 @@ def print_history_page():  # no idea how this works anymore
     for cc, number in history[print_from:print_to:-1]:
         id_ = len_history - cc
         # print(len_history - history[print_to][0])
-        add_extra_space = len(str(len_history - history[print_to][0])) - len(str(id_))
+        add_extra_space = len(str(len_history - history[print_to][0])) - len(str(id_))  # WHAT DID I DO????
         print(color_map[number_to_item_dict[number].rarity] + f'    {id_}.{add_extra_space * " "}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
