@@ -2346,7 +2346,8 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             print(Style.RESET_ALL + f' {pity_info[0]} pity, {"guaranteed" if pity_info[2] else "50/50"}')
         elif user_banner_input[0] == 'weapon':
             epitomized = f"epitomized points: {pity_info[2]}"
-            print(Style.RESET_ALL + f' {pity_info[0]} pity, {epitomized if pity_info[2] >= 2-(gacha_system == 'new') else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
+            epitomized_points_max = 2-(gacha_system == 'new')
+            print(Style.RESET_ALL + f' {pity_info[0]} pity, {epitomized if pity_info[2] >= epitomized_points_max else "37.5% / 37.5% / 25%, "+epitomized if not pity_info[3] else "50/50, "+epitomized}')
         elif user_banner_input[0] == 'standard':
             recent, not_recent = ('character', 'weapon') if pity_info[0] < pity_info[1] else ('weapon', 'character')
             pulls_since_not_recent = f', {max(pity_info[0], pity_info[1])} {not_recent} pity' if pity_info[0] != pity_info[1] else ''
