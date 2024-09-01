@@ -1137,17 +1137,26 @@ def print_inventory_box():
     # print()
 
 
-def print_history_page():  # no idea how this works anymore
+def print_history_page(rarity):  # no idea how this works anymore
+    global num_of_pages, page
+    if rarity == [3, 4, 5]:
+        history = wish_history[banner_of_choice[0]]
+    else:
+        history = [num for num in wish_history[banner_of_choice[0]] if number_to_item_dict[num].rarity in rarity]
+    num_of_pages = (len(history) - 1) // 25 + 1
+    if page > num_of_pages:
+        page = num_of_pages
     print_from = -((page - 1) * 25) - 1
-    print_to = -(min(page * 25, len(wish_history[banner_of_choice[0]]))) - 1
+    print_to = -(min(page * 25, len(history))) - 1
     cc = -print_from - 1
     print(Style.RESET_ALL + '    ' + '-' * 58)
-    for number in wish_history[banner_of_choice[0]][print_from:print_to:-1]:
+    for number in history[print_from:print_to:-1]:
         cc += 1
         print(color_map[number_to_item_dict[number].rarity] + f'    {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
     print(f'\n    (Page {page}/{num_of_pages})\n')
+
 
 win_map_old = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
@@ -1160,8 +1169,7 @@ win_map_old = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                (5, 1): f'[{Fore.LIGHTCYAN_EX}N1W{Style.RESET_ALL}] ',
                (6, 0): f'[{Fore.RED}N0L{Style.RESET_ALL}] ',
                (6, 1): f'[{Fore.RED}N1L{Style.RESET_ALL}] ',
-               7: ''
-               }
+               7: ''}
 win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                1: f'[{Fore.LIGHTCYAN_EX}W{Style.RESET_ALL}] ',
                2: f'[{Fore.LIGHTGREEN_EX}G{Style.RESET_ALL}] ',
@@ -1169,8 +1177,7 @@ win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                (4, 0): f'[{Fore.RED}SL{Style.RESET_ALL}] ',
                (5, 0): f'[{Fore.LIGHTCYAN_EX}NW{Style.RESET_ALL}] ',
                (6, 0): f'[{Fore.RED}NL{Style.RESET_ALL}] ',
-               7: ''
-               }
+               7: ''}
 win_map_map = {'new': win_map_new, 'old': win_map_old}
 
 try:
@@ -1218,9 +1225,6 @@ print(Fore.LIGHTGREEN_EX + ' Loaded banner information successfully!' + Style.RE
 
 
 load_distribution()
-
-
-# print([c in standard_characters for c in character_banner_list["venti-1"]])
 
 
 def get_weights(num):
@@ -2100,22 +2104,39 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                     continue
 
     if user_command == 'h':
+        rarities = [3, 4, 5]
         if len(wish_history[banner_of_choice[0]]):
-            num_of_pages = (len(wish_history[banner_of_choice[0]]) - 1) // 25 + 1
             print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH HISTORY{Style.RESET_ALL} ===========================\n')
             t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
             extra = (64 - len(t) + 10)//2  # +10 to account for the color change
             print(" " + ' ' * extra + t + '\n')
             page = 1
-            print_history_page()
+            print_history_page(rarities)
 
             while True:
                 cmd = input('    History Command: ').strip().lower()
                 if not cmd:
                     print(f'    Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
                     continue
+                if cmd[:6] == 'filter':
+                    cmd = cmd.split()[1:]
+                    if not (0 < len(cmd) <= 3):
+                        print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: 4 5){Style.RESET_ALL}\n')
+                        continue
+                    for i in range(len(cmd)):
+                        if not cmd[i].isnumeric():
+                            print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: 4 5){Style.RESET_ALL}\n')
+                            break
+                        cmd[i] = int(cmd[i])
+                        if cmd[i] not in (3, 4, 5):
+                            print(f'    {Fore.RED}Possible rarities are 3, 4 and 5{Style.RESET_ALL}\n')
+                            break
+                    else:
+                        rarities = cmd
+                        print(f'    {Fore.GREEN}Successful. Filtered to the following rarities: {str(cmd)[1:-1]}{Style.RESET_ALL}\n')
+                        print_history_page(rarities)
 
-                if cmd[0] == 'n':
+                elif cmd[0] == 'n':
                     cmd = cmd.split()
                     if cmd[0] == 'n':
                         if len(cmd) == 1:
@@ -2130,7 +2151,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                             print()
 
                             page += amount
-                            print_history_page()
+                            print_history_page(rarities)
 
                         else:
                             print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the last page{Style.RESET_ALL}\n")
@@ -2156,7 +2177,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                             print()
 
                             page -= amount
-                            print_history_page()
+                            print_history_page(rarities)
 
                         elif page == 1:
                             print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the first page{Style.RESET_ALL}\n")
@@ -2180,7 +2201,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                         print(" " + Style.RESET_ALL + '   ' + '-' * 58)
                         print(f"\n    (Page 0/{num_of_pages})\n")
                     else:
-                        print_history_page()
+                        print_history_page(rarities)
 
                 elif cmd in ['help', "'help'", '"help"']:
                     print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
