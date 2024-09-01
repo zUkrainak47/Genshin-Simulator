@@ -157,7 +157,7 @@ def load_settings():
         with open(Path('banner_info', 'settings.txt')) as file:
             data = file.read()
         settings = json.loads(data)
-        if settings not in ('normal', 'light', 'lighter'):
+        if settings not in ('normal', 'light', 'lighter', 'lightest'):
             print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
             settings = 'normal'
             save_settings_to_file()
@@ -1224,9 +1224,10 @@ win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
 win_map_map = {'new': win_map_new, 'old': win_map_old}
 
 color_map_normal = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
-color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.MAGENTA, 5: Fore.YELLOW}
-color_map_lighter = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 5: Fore.LIGHTYELLOW_EX}
-color_map_map = {'normal': color_map_normal, 'light': color_map_light, 'lighter': color_map_lighter}
+color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
+color_map_lighter = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 4.5: Fore.RED, 5: Fore.YELLOW}
+color_map_lightest = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 4.5: Fore.LIGHTRED_EX, 5: Fore.LIGHTYELLOW_EX}
+color_map_map = {'normal': color_map_normal, 'light': color_map_light, 'lighter': color_map_lighter, 'lightest': color_map_lightest}
 
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
@@ -1236,7 +1237,7 @@ try:
 except:
     print(Fore.RED + ' Something off with info file. Clearing everything...' + Style.RESET_ALL)
     info_ok = False
-
+print(f'{Fore.RED}hello {Fore.LIGHTRED_EX}hello')
 
 if info_ok:
     try:  # if I extract this into a method pycharm stops seeing all the variables assigned
@@ -1992,14 +1993,15 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         print()
         continue
 
-    # settings_list = ['3★ color']
+    # settings_list = ['color_scheme']
     if user_command == 'settings':
         normal = f'{Fore.BLUE}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
         light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-        lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
-        current = normal if settings == 'normal' else light if settings == 'light' else lighter
+        lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+        lightest = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
+        current = normal if settings == 'normal' else light if settings == 'light' else lighter if settings == 'lighter' else lightest
         print(f' Choose color scheme for item rarities (current color scheme is {current})')
-        print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n\n (Type 0 to exit)\n')
+        print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n 4 = {lightest}\n\n (Type 0 to exit)\n')
         while True:
             new_color = input(' Your pick: ').lower().strip()
             if new_color in ('0', 'exit'):
@@ -2020,11 +2022,18 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             elif new_color == '3':
                 settings = 'lighter'
                 color_map = color_map_lighter
-                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[5]}lighter{Style.RESET_ALL}\n')
+                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[4]}lighter{Style.RESET_ALL}\n')
                 save_settings_to_file()
                 break
+            elif new_color == '4':
+                settings = 'lightest'
+                color_map = color_map_lightest
+                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[5]}lightest{Style.RESET_ALL}\n')
+                save_settings_to_file()
+                break
+
             else:
-                print(f' {Fore.RED}Please input a valid number (1, 2 or 3){Style.RESET_ALL}\n')
+                print(f' {Fore.RED}Please input a valid number (1, 2, 3 or 4){Style.RESET_ALL}\n')
         continue
 
     if user_command == 'pity':
