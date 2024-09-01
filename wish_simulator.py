@@ -1998,7 +1998,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
         lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
         current = normal if settings == 'normal' else light if settings == 'light' else lighter
-        print(f' Choose color scheme (current color scheme is {current})')
+        print(f' Choose color scheme for item rarities (current color scheme is {current})')
         print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n\n (Type 0 to exit)\n')
         while True:
             new_color = input(' Your pick: ').lower().strip()
