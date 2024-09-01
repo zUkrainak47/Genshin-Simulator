@@ -1168,7 +1168,10 @@ def print_history_page():  # no idea how this works anymore
     print_to = -(min(page * 25, len_history)) - 1
     print(Style.RESET_ALL + '    ' + '-' * 58)
     for cc, number in history[print_from:print_to:-1]:
-        print(color_map[number_to_item_dict[number].rarity] + f'    {len_history-cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
+        id_ = len_history - cc
+        # print(len_history - history[print_to][0])
+        add_extra_space = len(str(len_history - history[print_to][0])) - len(str(id_))
+        print(color_map[number_to_item_dict[number].rarity] + f'    {id_}.{add_extra_space * " "}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
     print(f'\n    (Page {page}/{num_of_pages})\n')
