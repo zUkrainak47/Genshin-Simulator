@@ -1137,22 +1137,38 @@ def print_inventory_box():
     # print()
 
 
-def print_history_page(rarity):  # no idea how this works anymore
+# def print_history_page(rarity):  # no idea how this works anymore
+#     global num_of_pages, page
+#     if rarity == [3, 4, 5]:
+#         history = wish_history[banner_of_choice[0]]
+#     else:
+#         history = [num for num in wish_history[banner_of_choice[0]] if number_to_item_dict[num].rarity in rarity]
+#     num_of_pages = (len(history) - 1) // 25 + 1
+#     if page > num_of_pages:
+#         page = num_of_pages
+#     print_from = -((page - 1) * 25) - 1
+#     print_to = -(min(page * 25, len(history))) - 1
+#     cc = -print_from - 1
+#     print(Style.RESET_ALL + '    ' + '-' * 58)
+#     for number in history[print_from:print_to:-1]:
+#         cc += 1
+#         print(color_map[number_to_item_dict[number].rarity] + f'    {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
+#               number_to_item_dict[number].name)
+#     print(Style.RESET_ALL + '    ' + '-' * 58)
+#     print(f'\n    (Page {page}/{num_of_pages})\n')
+
+
+def print_history_page():  # no idea how this works anymore
     global num_of_pages, page
-    if rarity == [3, 4, 5]:
-        history = wish_history[banner_of_choice[0]]
-    else:
-        history = [num for num in wish_history[banner_of_choice[0]] if number_to_item_dict[num].rarity in rarity]
+    len_history = len(wish_history[banner_of_choice[0]])
     num_of_pages = (len(history) - 1) // 25 + 1
     if page > num_of_pages:
         page = num_of_pages
     print_from = -((page - 1) * 25) - 1
-    print_to = -(min(page * 25, len(history))) - 1
-    cc = -print_from - 1
+    print_to = -(min(page * 25, len_history)) - 1
     print(Style.RESET_ALL + '    ' + '-' * 58)
-    for number in history[print_from:print_to:-1]:
-        cc += 1
-        print(color_map[number_to_item_dict[number].rarity] + f'    {cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
+    for cc, number in history[print_from:print_to:-1]:
+        print(color_map[number_to_item_dict[number].rarity] + f'    {len_history-cc}.{" " if len(str(cc)) < len(str(-print_to - 1)) else ""}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
     print(f'\n    (Page {page}/{num_of_pages})\n')
@@ -2105,13 +2121,14 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     if user_command == 'h':
         rarities = [3, 4, 5]
+        history = list(enumerate(wish_history[banner_of_choice[0]]))
         if len(wish_history[banner_of_choice[0]]):
             print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH HISTORY{Style.RESET_ALL} ===========================\n')
             t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
             extra = (64 - len(t) + 10)//2  # +10 to account for the color change
             print(" " + ' ' * extra + t + '\n')
             page = 1
-            print_history_page(rarities)
+            print_history_page()
 
             while True:
                 cmd = input('    History Command: ').strip().lower()
@@ -2134,7 +2151,13 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                     else:
                         rarities = cmd
                         print(f'    {Fore.GREEN}Successful. Filtered to the following rarities: {str(cmd)[1:-1]}{Style.RESET_ALL}\n')
-                        print_history_page(rarities)
+                        if rarities == [3, 4, 5]:
+                            history = list(enumerate(wish_history[banner_of_choice[0]]))
+                        else:
+                            history = [(num, unique_id) for num, unique_id in
+                                       enumerate(wish_history[banner_of_choice[0]]) if
+                                       number_to_item_dict[unique_id].rarity in rarities]
+                        print_history_page()
 
                 elif cmd[0] == 'n':
                     cmd = cmd.split()
@@ -2151,7 +2174,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                             print()
 
                             page += amount
-                            print_history_page(rarities)
+                            print_history_page()
 
                         else:
                             print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the last page{Style.RESET_ALL}\n")
@@ -2177,7 +2200,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                             print()
 
                             page -= amount
-                            print_history_page(rarities)
+                            print_history_page()
 
                         elif page == 1:
                             print(f"    {Fore.LIGHTMAGENTA_EX}You're already at the first page{Style.RESET_ALL}\n")
@@ -2201,7 +2224,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                         print(" " + Style.RESET_ALL + '   ' + '-' * 58)
                         print(f"\n    (Page 0/{num_of_pages})\n")
                     else:
-                        print_history_page(rarities)
+                        print_history_page()
 
                 elif cmd in ['help', "'help'", '"help"']:
                     print(f'    {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n'
