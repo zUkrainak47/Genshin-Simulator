@@ -158,17 +158,17 @@ def load_settings():
             data = file.read()
         settings = json.loads(data)
         if (
-          (settings[0] not in ('normal', 'light', 'lighter', 'lightest')) or
-          (len(settings[1]) != 3) or
-          (False in [isinstance(x, int) for x in settings[1]])
+          (len(settings[0]) != 3) or not all(color in (0, 1) for color in settings[0]) or
+          not isinstance(settings[0], list) or
+          (len(settings[1]) != 3) or (False in [isinstance(x, int) for x in settings[1]])
         ):
             print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-            settings = ['normal', [10000, 100000, 1000000]]
+            settings = [[0, 0, 0], [10000, 100000, 1000000]]
             save_settings_to_file()
         else:
             if not (settings[1][0] < settings[1][1] < settings[1][2]):
                 print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
-                settings = ['normal', [10000, 100000, 1000000]]
+                settings = [[0, 0, 0], [10000, 100000, 1000000]]
                 save_settings_to_file()
             else:
                 settings[1][0] = max(10, min(settings[1][0], 999999998))
@@ -176,13 +176,16 @@ def load_settings():
                 settings[1][2] = max(1000, min(settings[1][2], 1000000000))
                 save_settings_to_file()
     except FileNotFoundError:
-        settings = ['normal', [10000, 100000, 1000000]]
+        settings = [[0, 0, 0], [10000, 100000, 1000000]]
         save_settings_to_file()
     except:
         print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-        settings = ['normal', [10000, 100000, 1000000]]
+        settings = [[0, 0, 0], [10000, 100000, 1000000]]
         save_settings_to_file()
-    color_map = color_map_map[settings[0]]
+    color_map_3 = {0: Fore.BLUE, 1: Fore.LIGHTBLUE_EX}
+    color_map_4 = {0: Fore.MAGENTA, 1: Fore.LIGHTMAGENTA_EX}
+    color_map_5 = {0: Fore.YELLOW, 1: Fore.LIGHTYELLOW_EX}
+    color_map = {3: color_map_3[settings[0][0]], 4: color_map_4[settings[0][1]], 5: color_map_5[settings[0][2]]}
     threshold1, threshold2, threshold3 = settings[1]
 
 
@@ -1238,11 +1241,7 @@ win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                7: ''}
 win_map_map = {'new': win_map_new, 'old': win_map_old}
 
-color_map_normal = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
-color_map_light = {3: Fore.LIGHTBLUE_EX, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
-color_map_lighter = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 4.5: Fore.RED, 5: Fore.YELLOW}
-color_map_lightest = {3: Fore.LIGHTBLUE_EX, 4: Fore.LIGHTMAGENTA_EX, 4.5: Fore.LIGHTRED_EX, 5: Fore.LIGHTYELLOW_EX}
-color_map_map = {'normal': color_map_normal, 'light': color_map_light, 'lighter': color_map_lighter, 'lightest': color_map_lightest}
+color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
 
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
@@ -2036,52 +2035,25 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             print(f' {Fore.YELLOW}{setting.capitalize()} selected.{Style.RESET_ALL}')
 
             if setting == 'color scheme':
-                normal = f'{Fore.BLUE}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-                light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-                lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-                lightest = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
-                current = normal if settings[0] == 'normal' else light if settings[0] == 'light' else lighter if settings[0] == 'lighter' else lightest
+                current = f'{color_map[3]}Emerald Orb {color_map[4]}Xingqiu {color_map[5]}Furina{Style.RESET_ALL}'
                 print(f'\n Current color scheme: {current}\n')
-                print(f' {Fore.CYAN}Choose new color scheme for item rarities:{Style.RESET_ALL}')
-                print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n 4 = {lightest}\n\n (Type 0 to go back to settings)\n')
+                print(f' {Fore.CYAN}Choose color to change:{Style.RESET_ALL}')
+                print(f' 1 = {color_map[3]}blue{Style.RESET_ALL}\n 2 = {color_map[4]}purple{Style.RESET_ALL}\n 3 = {color_map[5]}yellow{Style.RESET_ALL}\n\n (Type 0 to go back to settings)\n')
                 goback = False
                 while True:
-                    new_color = input(' Your pick: ').lower().strip()
-                    if new_color in ('0', 'exit'):
+                    change_color = input(' Pick a color: ').lower().strip()
+                    if change_color in ('0', 'exit'):
                         print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing color scheme{Style.RESET_ALL}\n\n')
-                        goback = True
                         break
-                    # god i need to make this a function
-                    elif new_color == '1':
-                        settings[0] = 'normal'
-                        color_map = color_map_normal
-                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[3]}normal{Style.RESET_ALL}\n')
+                    elif change_color in ('1', '2', '3'):
+                        # this turns 0 into 1 and vice versa
+                        settings[0][int(change_color)-1] = int(not settings[0][int(change_color)-1])
                         save_settings_to_file()
-                        break
-                    elif new_color == '2':
-                        settings[0] = 'light'
-                        color_map = color_map_light
-                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[3]}light{Style.RESET_ALL}\n')
-                        save_settings_to_file()
-                        break
-                    elif new_color == '3':
-                        settings[0] = 'lighter'
-                        color_map = color_map_lighter
-                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[4]}lighter{Style.RESET_ALL}\n')
-                        save_settings_to_file()
-                        break
-                    elif new_color == '4':
-                        settings[0] = 'lightest'
-                        color_map = color_map_lightest
-                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[5]}lightest{Style.RESET_ALL}\n')
-                        save_settings_to_file()
-                        break
-
+                        load_settings()
+                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL}\n New color scheme: {color_map[3]}Emerald Orb {color_map[4]}Xingqiu {color_map[5]}Furina{Style.RESET_ALL}\n')
                     else:
-                        print(f' {Fore.RED}Please input a valid number (1, 2, 3 or 4){Style.RESET_ALL}\n')
-                if goback:
-                    continue
-                break
+                        print(f' {Fore.RED}Please input a valid number (1, 2 or 3), or 0 to exit{Style.RESET_ALL}\n')
+                continue
 
             else:
                 line0 = f'number <= {Fore.RED}{settings[1][0]:,}{Style.RESET_ALL}'
