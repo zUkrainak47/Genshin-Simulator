@@ -1325,6 +1325,7 @@ while True:
                   f' If you tried inputting multiple indexes, remove spaces between them{Style.RESET_ALL}\n')
 
     elif user_command in ('transmute', 'tr'):
+        print()
         art, last = transmute()
         if art:
             artifact_log.append(art)
