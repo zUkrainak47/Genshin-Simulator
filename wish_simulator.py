@@ -152,23 +152,38 @@ def load_banner():  # always returns a valid banner
 
 
 def load_settings():
-    global settings, color_map
+    global settings, color_map, threshold1, threshold2, threshold3
     try:
         with open(Path('banner_info', 'settings.txt')) as file:
             data = file.read()
         settings = json.loads(data)
-        if settings not in ('normal', 'light', 'lighter', 'lightest'):
+        if (
+          (settings[0] not in ('normal', 'light', 'lighter', 'lightest')) or
+          (len(settings[1]) != 3) or
+          (False in [isinstance(x, int) for x in settings[1]])
+        ):
             print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-            settings = 'normal'
+            settings = ['normal', [10000, 100000, 1000000]]
             save_settings_to_file()
+        else:
+            if not (settings[1][0] < settings[1][1] < settings[1][2]):
+                print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
+                settings = ['normal', [10000, 100000, 1000000]]
+                save_settings_to_file()
+            else:
+                settings[1][0] = max(10, min(settings[1][0], 999999998))
+                settings[1][1] = max(90, min(settings[1][1], 999999999))
+                settings[1][2] = max(1000, min(settings[1][2], 1000000000))
+                save_settings_to_file()
     except FileNotFoundError:
-        settings = 'normal'
+        settings = ['normal', [10000, 100000, 1000000]]
         save_settings_to_file()
     except:
         print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-        settings = 'normal'
+        settings = ['normal', [10000, 100000, 1000000]]
         save_settings_to_file()
-    color_map = color_map_map[settings]
+    color_map = color_map_map[settings[0]]
+    threshold1, threshold2, threshold3 = settings[1]
 
 
 def jsonKeys2int(x):
@@ -1994,45 +2009,196 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     # settings_list = ['color_scheme']
     if user_command == 'settings':
-        normal = f'{Fore.BLUE}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-        light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-        lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
-        lightest = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
-        current = normal if settings == 'normal' else light if settings == 'light' else lighter if settings == 'lighter' else lightest
-        print(f' Choose color scheme for item rarities (current color scheme is {current})')
-        print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n 4 = {lightest}\n\n (Type 0 to exit)\n')
+        print(' Entering settings...' + '\n\n ' + '='*28 + f' {Fore.LIGHTCYAN_EX}SETTINGS{Style.RESET_ALL} '+'='*27+'\n')
+        settings_map = {"1": "color scheme", "2": "wish results verbose thresholds"}
         while True:
-            new_color = input(' Your pick: ').lower().strip()
-            if new_color in ('0', 'exit'):
-                print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing color scheme{Style.RESET_ALL}\n')
+            print(f" {Fore.CYAN}Choose setting:{Style.RESET_ALL}")
+            for i in settings_map.items():
+                print(f" {i[0]} = {i[1]}")
+            print('\n (Type 0 to exit)\n')
+
+            while True:
+                setting = input(' Your pick: ').strip().lower()
+                if setting in ('0', 'exit'):
+                    break
+                if setting in settings_map or setting in settings_map.values():
+                    break
+                else:
+                    print(f' {Fore.RED}Please input either the number or the name of a setting{Style.RESET_ALL}\n')
+
+            if setting in ('0', 'exit'):
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing setting anymore{Style.RESET_ALL}\n')
                 break
-            elif new_color == '1':
-                settings = 'normal'
-                color_map = color_map_normal
-                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[3]}normal{Style.RESET_ALL}\n')
-                save_settings_to_file()
-                break
-            elif new_color == '2':
-                settings = 'light'
-                color_map = color_map_light
-                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[3]}light{Style.RESET_ALL}\n')
-                save_settings_to_file()
-                break
-            elif new_color == '3':
-                settings = 'lighter'
-                color_map = color_map_lighter
-                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[4]}lighter{Style.RESET_ALL}\n')
-                save_settings_to_file()
-                break
-            elif new_color == '4':
-                settings = 'lightest'
-                color_map = color_map_lightest
-                print(f' {Fore.LIGHTGREEN_EX}Successfully set color scheme to {color_map[5]}lightest{Style.RESET_ALL}\n')
-                save_settings_to_file()
+
+            if setting in settings_map:
+                setting = settings_map[setting]
+            print(f' {Fore.YELLOW}{setting.capitalize()} selected.{Style.RESET_ALL}')
+
+            if setting == 'color scheme':
+                normal = f'{Fore.BLUE}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+                light = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.MAGENTA}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+                lighter = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.YELLOW}Furina{Style.RESET_ALL}'
+                lightest = f'{Fore.LIGHTBLUE_EX}Emerald Orb {Fore.LIGHTMAGENTA_EX}Xingqiu {Fore.LIGHTYELLOW_EX}Furina{Style.RESET_ALL}'
+                current = normal if settings[0] == 'normal' else light if settings[0] == 'light' else lighter if settings[0] == 'lighter' else lightest
+                print(f'\n Current color scheme: {current}\n')
+                print(f' {Fore.CYAN}Choose new color scheme for item rarities:{Style.RESET_ALL}')
+                print(f' 1 = {normal}\n 2 = {light}\n 3 = {lighter}\n 4 = {lightest}\n\n (Type 0 to go back to settings)\n')
+                goback = False
+                while True:
+                    new_color = input(' Your pick: ').lower().strip()
+                    if new_color in ('0', 'exit'):
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing color scheme{Style.RESET_ALL}\n\n')
+                        goback = True
+                        break
+                    # god i need to make this a function
+                    elif new_color == '1':
+                        settings[0] = 'normal'
+                        color_map = color_map_normal
+                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[3]}normal{Style.RESET_ALL}\n')
+                        save_settings_to_file()
+                        break
+                    elif new_color == '2':
+                        settings[0] = 'light'
+                        color_map = color_map_light
+                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[3]}light{Style.RESET_ALL}\n')
+                        save_settings_to_file()
+                        break
+                    elif new_color == '3':
+                        settings[0] = 'lighter'
+                        color_map = color_map_lighter
+                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[4]}lighter{Style.RESET_ALL}\n')
+                        save_settings_to_file()
+                        break
+                    elif new_color == '4':
+                        settings[0] = 'lightest'
+                        color_map = color_map_lightest
+                        print(f' {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} Color scheme set to {color_map[5]}lightest{Style.RESET_ALL}\n')
+                        save_settings_to_file()
+                        break
+
+                    else:
+                        print(f' {Fore.RED}Please input a valid number (1, 2, 3 or 4){Style.RESET_ALL}\n')
+                if goback:
+                    continue
                 break
 
             else:
-                print(f' {Fore.RED}Please input a valid number (1, 2, 3 or 4){Style.RESET_ALL}\n')
+                line0 = f'number <= {Fore.RED}{settings[1][0]:,}{Style.RESET_ALL}'
+                line1 = f'{Fore.RED}{settings[1][0]:,}{Style.RESET_ALL} < number <= {Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL}'
+                line2 = f'{Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL} < number <= {Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL}'
+                line3 = f'{Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL} < number'
+                line0_length = len(str(line0))
+                line1_length = len(str(line1))
+                line2_length = len(str(line2))
+                line3_length = len(str(line3))
+                line_length = line2_length
+                print(f'''\n These numbers affect the wishing behavior in the following way:
+ ("number" is the number of wishes you input when wishing)
+ 
+ {line0}{(line_length - line0_length - 9) * " "} = show {color_map[3]}3★{Style.RESET_ALL}, {color_map[4]}4★{Style.RESET_ALL} and {color_map[5]}5★{Style.RESET_ALL} 
+ {line1}{(line_length - line1_length) * " "} = show {color_map[4]}4★{Style.RESET_ALL} and {color_map[5]}5★{Style.RESET_ALL}
+ {line2}{(line_length - line2_length) * " "} = show only {color_map[5]}5★{Style.RESET_ALL}
+ {line3}{(line_length - line3_length - 9) * " "} = show progress bar instead and stop showing capturing
+ {(line_length - 18) * " "}   radiance and "10 PULLS WITHOUT A 4★" messages
+
+ The numbers used in the above explanation are the ones currently in effect\n''')
+
+                print(f' {Fore.CYAN}Choose new verbose thresholds{Style.RESET_ALL} (0 to go back to settings, leave blank to set default value):')
+                tr1_done, tr2_done, tr3_done = False, False, False
+                while True:
+                    tr1 = input(f' {Fore.RED}New red number: ').strip()
+                    if not tr1:
+                        tr1 = '10000'
+                        print(f' Set to {Fore.RED}10,000{Style.RESET_ALL}')
+                        tr1_done = True
+                        break
+                    if tr1 in ('0', 'exit'):
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting verbose thresholds settings{Style.RESET_ALL}\n\n')
+                        break
+                    if tr1.isnumeric():
+                        if int(tr1) < 10 or int(tr1) > 999999998:
+                            tr1 = max(10, min(int(tr1), 999999998))
+                            print(f' Adjusted to {tr1:,}')
+                        else:
+                            print(f' Set to {Fore.RED}{int(tr1):,}{Style.RESET_ALL}')
+                        tr1_done = True
+                        break
+                    print(f' {Fore.LIGHTRED_EX}Input must be a number. Try again{Style.RESET_ALL}\n')
+
+                while tr1_done:
+                    tr2 = input(f'\n {Fore.GREEN}New green number: ').strip()
+                    if not tr2:
+                        if int(tr1) < 100000:
+                            tr2 = '100000'
+                            print(f' Set to {Fore.GREEN}100,000{Style.RESET_ALL}')
+                            tr2_done = True
+                            break
+                        else:
+                            print(f' {Style.RESET_ALL}Can\'t set to default ({Fore.GREEN}100,000{Style.RESET_ALL}) because a greater or equal red number is set ({Fore.RED}{int(tr1):,}{Style.RESET_ALL})')
+                            continue
+                    if tr2 in ('0', 'exit'):
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting verbose thresholds settings{Style.RESET_ALL}\n\n')
+                        break
+                    if tr2.isnumeric():
+                        if int(tr2) < 90 or int(tr2) > 999999999:
+                            if max(90, min(int(tr2), 999999999)) > int(tr1):
+                                tr2 = max(90, min(int(tr2), 999999999))
+                                print(f' Adjusted to {tr2:,}')
+                                tr2_done = True
+                                break
+                            else:
+                                print(f' {Fore.LIGHTRED_EX}Green number must be greater than red number. Try again{Style.RESET_ALL}')
+                                continue
+                        if int(tr2) > int(tr1):
+                            print(f' Set to {Fore.GREEN}{int(tr2):,}{Style.RESET_ALL}')
+                            tr2_done = True
+                            break
+                        print(f' {Fore.LIGHTRED_EX}Green number must be greater than red number. Try again{Style.RESET_ALL}')
+                    else:
+                        print(f' {Fore.LIGHTRED_EX}Input must be a number. Try again{Style.RESET_ALL}')
+
+                while tr1_done and tr2_done:
+                    tr3 = input(f'\n {Fore.BLUE}New blue number: ').strip()
+                    if not tr3:
+                        if int(tr2) < 1000000:
+                            tr3 = '1000000'
+                            print(f' Set to {Fore.BLUE}1,000,000{Style.RESET_ALL}')
+                            tr3_done = True
+                            break
+                        else:
+                            print(f' {Style.RESET_ALL}Can\'t set to default ({Fore.BLUE}1,000,000{Style.RESET_ALL}) because a greater or equal green number is set ({Fore.GREEN}{int(tr2):,}{Style.RESET_ALL})')
+                            continue
+                    if tr3 in ('0', 'exit'):
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting verbose thresholds settings{Style.RESET_ALL}\n\n')
+                        break
+                    if tr3.isnumeric():
+                        if int(tr3) < 1000 or int(tr3) > 1000000000:
+                            if max(1000, min(int(tr3), 1000000000)) > int(tr2):
+                                tr3 = max(1000, min(int(tr3), 1000000000))
+                                print(f' Adjusted to {tr3:,}')
+                                tr3_done = True
+                                break
+                            else:
+                                print(f' {Fore.LIGHTRED_EX}Blue number must be greater than green number. Try again{Style.RESET_ALL}')
+                        if int(tr3) > int(tr2):
+                            print(f' Set to {Fore.BLUE}{int(tr3):,}{Style.RESET_ALL}')
+                            tr3_done = True
+                            break
+                        print(f' {Fore.LIGHTRED_EX}Blue number must be greater than green number. Try again{Style.RESET_ALL}')
+                    else:
+                        print(f' {Fore.LIGHTRED_EX}Input must be a number. Try again{Style.RESET_ALL}')
+
+                if tr1_done and tr2_done and tr3_done:
+                    settings[1][0] = max(10, min(int(tr1), 999999998))
+                    settings[1][1] = max(90, min(int(tr2), 999999999))
+                    settings[1][2] = max(1000, min(int(tr3), 1000000000))
+                    save_settings_to_file()
+                    load_settings()
+                    print(f'\n {Fore.LIGHTGREEN_EX}Successful!{Style.RESET_ALL} New thresholds: {Fore.RED}{settings[1][0]:,}{Style.RESET_ALL}, {Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL}, {Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL}')
+                    if settings[1] != [int(tr1), int(tr2), int(tr3)]:
+                        print(f' (Some values were adjusted due to being too low or too high)')
+                    break
+                continue
         continue
 
     if user_command == 'pity':
@@ -2324,11 +2490,13 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     if user_command <= 1000000000:
         print()
-        verbose_threshold = 7 - (user_command <= 10000000) - (user_command <= 1000000) - (user_command <= 100000) - (user_command <= 10000)
+        verbose_threshold = (7 - (user_command <= 10000000) - (user_command <= threshold3) -
+                             (user_command <= threshold2) - (user_command <= threshold1))
+        # (default values used for readability)
         # pulls <= 10k = show every pull
         # 10k < pulls <= 100k = show 4* and 5*
         # 100k < pulls <= 1M = show only 5*
-        # 1M < pulls = show progress (percentage) and stop showing "10 PULLS WITHOUT A 4 STAR" message
+        # 1M < pulls = show progress bar instead and stop showing "10 PULLS WITHOUT A 4★" and radiance messages
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
@@ -2347,6 +2515,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             character_distribution[100] += user_command
         else:
             weapon_distribution[100] += user_command
+        progress_bar_number = user_command//1000
         for i in range(user_command):
             try:
                 res, p, w, rad = make_pull(banner_of_choice, pity_info)
@@ -2394,12 +2563,12 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
             if res.rarity >= verbose_threshold:
                 print(" " + Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
-            if verbose_threshold >= 6 and i % 100000 == 0:
-                print_progress_bar(i//100000, user_command//100000)
+            if verbose_threshold >= 6 and i % progress_bar_number == 0:
+                print_progress_bar(i//progress_bar_number, user_command//progress_bar_number)
                 # print(f'\r {i//100000}/{user_command//100000} done', end='')
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
-                    print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4-STAR!" + Style.RESET_ALL)
+                    print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4★!" + Style.RESET_ALL)
             if user_banner_input[0] == 'character':
                 if verbose_threshold < 6 and rad:
                     print(rad)
