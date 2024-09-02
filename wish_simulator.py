@@ -1295,12 +1295,13 @@ print(f' {Fore.LIGHTGREEN_EX}Loaded settings successfully!{Style.RESET_ALL}')
 
 
 def get_weights(num):
-    #            win/loss/Capturing Radiance
+    #            win/loss/Capturing Radiance - none of this is 100% confirmed though, just assumptions unfortunately
     # 0 losses = 50/50/0
-    # 1 loss   = 50/50/0
+    # 1 loss   = 50/45/5
     # 2 losses = 50/25/25
     # 3 losses = 50/0/50
-    return [50, 50 - max((num-1), 0)*25, max((num-1), 0)*25]
+    i_caved_and_made_this_a_dictionary = {0: [50, 50, 0], 1: [50, 47.5, 2.5], 2: [50, 25, 25], 3: [50, 0, 50]}
+    return i_caved_and_made_this_a_dictionary[num]
 
 def make_pull(banner_info, pity):
     radiance = False
