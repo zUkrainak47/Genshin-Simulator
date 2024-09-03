@@ -50,7 +50,8 @@ class Artifact:
 
     def short(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
-        return f"{val} {self.mainstat} {self.type} (+{self.level}) - {sets_short_dict[self.set]}"
+        result = f"{val} {self.mainstat} {self.type} (+{self.level})"
+        return result + ' '*(36 - len(result)) + f' - {sets_short_dict[self.set]} - '
 
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
@@ -699,9 +700,16 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
+    first = '-'*41
+    second = '-'*67
+    flowers =  f'--- {Fore.LIGHTCYAN_EX}Flowers{Style.RESET_ALL} ----'
+    feathers = f'--- {Fore.LIGHTCYAN_EX}Feathers{Style.RESET_ALL} ---'
+    sands =    f'---- {Fore.LIGHTCYAN_EX}Sands{Style.RESET_ALL} -----'
+    goblets =  f'--- {Fore.LIGHTCYAN_EX}Goblets{Style.RESET_ALL} ----'
+    circlets = f'--- {Fore.LIGHTCYAN_EX}Circlets{Style.RESET_ALL} ---'
+    t_map = {'Flower': flowers, 'Feather': feathers, 'Sands': sands, 'Goblet': goblets, 'Circlet': circlets}
     if indexes_to_print is None:
         needed_indexes = range(len(list_of_artifacts))
-
     else:
         for current_index in indexes_to_print:
             if current_index == -1 or current_index >= len(artifact_list):
@@ -717,7 +725,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
 
     print(f" {Fore.LIGHTMAGENTA_EX}Inventory:{Style.RESET_ALL}\n")
     t1 = list_of_artifacts[needed_indexes[0]].type
-    print('-' * 44, f'{Fore.LIGHTCYAN_EX}{t1}{"s" if t1 != "Sands" else ""}{Style.RESET_ALL}', '-' * 44)
+    print(f'{first}{t_map[t1]}{second}')
 
     for this_index in range(len(needed_indexes)):
         current_index = int(needed_indexes[this_index])
@@ -727,7 +735,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
             t_now = list_of_artifacts[needed_indexes[this_index]].type
 
             if t_now != t_last:
-                print('\n' + '-' * 44, f'{Fore.LIGHTCYAN_EX}{t_now}{"s" if t_now != "Sands" else ""}{Style.RESET_ALL}', '-' * 44)
+                print(f'{(len(str(current_index + 1))-1)*'-'}{first}{t_map[t_now]}{second}')
 
         print(f' {current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
 
