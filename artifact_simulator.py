@@ -180,7 +180,7 @@ sets_short = ('    Glad    ', '   Troupe   ',
               '   Whimsy   ', '  Reverie   ',
               '    SHCC    ', '  Obsidian  ',)
 sets_short_dict = dict(zip(sets, sets_short))
-domains = list(zip(sets[2::2], sets[3::2]))
+domains = list(list(s) for s in (zip(sets[2::2], sets[3::2])))
 # print(domains)
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
 sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
@@ -436,6 +436,37 @@ def load_inventory():
         return []
 
 
+def load_settings():
+    global settings, source
+    try:
+        with open(Path('artifact_simulator_resources', 'settings.txt')) as file:
+            data = file.read()
+        settings = json.loads(data)
+        if (
+          (len(settings) != 2) or  # length must be 2
+          not isinstance(settings, list) or  # must be a tuple
+          not  # if neither of the following three cases is true, settings are invalid:
+          (  # first item included in domains and 2nd item = 'domain'
+            ((settings[0] in domains) and (settings[1] == 'domain')) or
+             # first item included in sets and 2nd item = 'strongbox'
+            (settings[0] in sets and (settings[1] == 'strongbox')) or
+             # first item is a list of first two items in sets and 2nd item = 'boss'
+            (settings[0] == list(sets[:2]) and (settings[1] == 'boss'))
+          )
+        ):
+            print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
+            settings = ["Shimenawa's Reminiscence", 'strongbox']
+            save_settings_to_file()
+    except FileNotFoundError:
+        settings = ["Shimenawa's Reminiscence", 'strongbox']
+        save_settings_to_file()
+    except:
+        print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
+        settings = ["Shimenawa's Reminiscence", 'strongbox']
+        save_settings_to_file()
+    source = settings
+
+
 def create_artifact(full_source):
     exact_source, from_where = full_source
     art_type = choice(artifact_types)
@@ -556,6 +587,11 @@ def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):  # 2 - prin
 def save_inventory_to_file(artifacts):
     with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as f:
         f.write(json.dumps(artifacts, cls=ArtifactEncoder, separators=(',', ':')))
+
+
+def save_settings_to_file():
+    with open(Path('artifact_simulator_resources', 'settings.txt'), 'w') as f:
+        f.write(json.dumps(settings, cls=ArtifactEncoder, separators=(',', ':')))
 
 
 def sort_inventory(artifacts):
@@ -855,6 +891,9 @@ except json.decoder.JSONDecodeError:
     save_inventory_to_file(artifact_list)
     print(f' {Fore.LIGHTGREEN_EX}Inventory cleared{Style.RESET_ALL}')
 
+load_settings()
+print(f' {Fore.LIGHTGREEN_EX}Loaded settings successfully!{Style.RESET_ALL}')
+
 # while True:
 #     print_menu()
 #
@@ -869,7 +908,6 @@ except json.decoder.JSONDecodeError:
 print()
 print(f'======================== {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} ======================')
 
-source = ("Shimenawa's Reminiscence", 'strongbox')
 print(f'\n Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 art = create_artifact(source)
 artifact_log = [art]
@@ -1475,10 +1513,12 @@ while True:
                    'natlan': '17', 'scroll': '17',
                    'codex': '17', 'mualani': '17'
                    }
-        print(f' {Fore.CYAN}Choose new domain (some aliases are supported){Style.RESET_ALL}')
-        new_source = (choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases), 'domain')
+        print(f'\n {Fore.CYAN}Choose new domain (some aliases are supported):{Style.RESET_ALL}')
+        new_source = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases), 'domain']
         if new_source[0]:
-            source = new_source
+            settings = new_source
+            save_settings_to_file()
+            source = settings
             joined_source = ', '.join(source[0])
             print(f' Source set to Domain: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
         else:
@@ -1519,16 +1559,20 @@ while True:
                    'codex': '36', 'mualani': '36'
                    }
 
-        print(f' {Fore.CYAN}Choose new artifact set (some aliases are supported){Style.RESET_ALL}')
-        new_source = (choose_one(sets, "That's not a set that is available! Try again", aliases), 'strongbox')
+        print(f'\n {Fore.CYAN}Choose new artifact set (some aliases are supported):{Style.RESET_ALL}')
+        new_source = [choose_one(sets, "That's not a set that is available! Try again", aliases), 'strongbox']
         if new_source[0]:
+            settings = new_source
+            save_settings_to_file()
+            source = settings
             print(f' Source set to Strongbox: {Fore.LIGHTGREEN_EX}{source[0]}{Style.RESET_ALL}\n')
-            source = new_source
         else:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing strongbox{Style.RESET_ALL}\n')
 
     elif user_command == 'boss':
-        source = ((sets[0], sets[1]), 'boss')
+        settings = [(sets[0], sets[1]), 'boss']
+        save_settings_to_file()
+        source = settings
         joined_source = ', '.join(source[0])
         print(f' Source set to Boss: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
 
