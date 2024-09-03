@@ -150,7 +150,7 @@ def choose_one(items, error_message, alias={}):
     return new1
 
 
-sets = ("Gladiator's Finale", "Wanderer's Troupe",  # bosses
+sets = ("Gladiator's Finale", "Wanderer's Troupe",                                                             # bosses
         "Noblesse Oblige", "Bloodstained Chivalry", "Maiden Beloved", "Viridescent Venerer", "Archaic Petra",  # 1.x
         "Retracing Bolide", "Thundersoother", "Thundering Fury", "Lavawalker", "Crimson Witch of Flames",
         "Blizzard Strayer", "Heart of Depth", "Tenacity of the Millelith", "Pale Flame",
@@ -179,6 +179,73 @@ sets_short = ('    Glad    ', '   Troupe   ',
               '    SoDP    ', '    NWEW    ',
               '   Whimsy   ', '  Reverie   ',
               '    SHCC    ', '  Obsidian  ',)
+aliases_domain = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
+                  'vv': '2', 'kazuha': '2',
+                  'maidens': '2',
+                  'ap': '3', 'petra': '3',
+                  'bolide': '3',
+                  'tf': '4', 'keqing': '4', 'razor': '4',
+                  'cw': '5',
+                  'blizzard': '6', 'ayaka': '6',
+                  'hod': '6', 'childe': '6', 'tartaglia': '6',
+                  'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
+                  'eula': '7',
+                  'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8',
+                  'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8',
+                  'xq': '8',
+                  'husk': '9',
+                  'clam': '9', 'kokomi': '9', 'kok': '9',
+                  'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
+                  'echoes': '10', 'ayato': '10',
+                  'deepwood': '11', 'dm': '11', 'nahida': '11',
+                  'gilded': '11', 'gd': '11', 'alhaihtam': '11',
+                  'dpc': '12', 'scara': '12', 'wanderer': '12', 'xіangling': '12',
+                  'fopl': '12', 'flop': '12',
+                  'vg': '13', 'dehya': '13',
+                  'mh': '14', 'neuv': '14', 'neuvillette': '14', 'bat': '14',
+                  'gt': '14', 'furina': '14', 'fischl': '14',
+                  'sodp': '15', 'bird': '15', 'xianyun': '15', 'xy': '15',
+                  'navia': '15',
+                  'whimsy': '16', 'arle': '16', 'arlecchino': '16', 'father': '16', 'clorinde': '16',
+                  'emilie': '16',
+                  'natlan': '17', 'scroll': '17',
+                  'codex': '17', 'mualani': '17'
+                  }
+aliases_sets = {'glad': '1',
+                'troupe': '2',
+                'no': '3', 'nob': '3', 'noblesse': '3', 'bennett': '3',
+                'maidens': '5',
+                'vv': '6', 'kazuha': '6',
+                'ap': '7', 'petra': '7',
+                'bolide': '8',
+                'tf': '10', 'keqing': '10', 'razor': '10',
+                'cw': '12',
+                'blizzard': '13', 'ayaka': '13',
+                'hod': '14', 'childe': '14', 'tartaglia': '14',
+                'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
+                'eula': '16',
+                'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17",
+                'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18',
+                'xq': '18',
+                'husk': '19',
+                'clam': '20', 'kokomi': '20', 'kok': '20',
+                'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
+                'echoes': '22', 'ayato': '22',
+                'deepwood': '23', 'dm': '23', 'nahida': '23',
+                'gilded': '24', 'gd': '24', 'alhaihtam': '24',
+                'dpc': '25', 'scara': '25', 'wanderer': '25', 'xіangling': '25',
+                'fopl': '26', 'flop': '26',
+                'vg': "28", 'dehya': "28",
+                'mh': '29', 'neuv': '29', 'neuvillette': '29', 'bat': '29',
+                'gt': '30', 'furina': '30', 'fischl': '30',
+                'sodp': '31', 'bird': '31', 'xianyun': '31', 'xy': '31',
+                'navia': '32',
+                'whimsy': '33', 'arle': '33', 'arlecchino': '33', 'father': '33', 'clorinde': '33',
+                'emilie': '34',
+                'natlan': '35', 'scroll': '35',
+                'codex': '36', 'mualani': '36'
+                }
+
 sets_short_dict = dict(zip(sets, sets_short))
 domains = list(list(s) for s in (zip(sets[2::2], sets[3::2])))
 # print(domains)
@@ -294,15 +361,23 @@ def get_main_stat_value(mainstat):
 last = 0
 def transmute(preset=[]):
     if preset:
-        artifact_type, main_stat, sub_stat_1, sub_stat_2 = preset
+        artifact_type, main_stat, sub_stat_1, sub_stat_2, artifact_set = preset
         subs_pool = [sub for sub in substats if sub != main_stat]
         # print(f' {Fore.YELLOW}{artifact_type.capitalize()} selected.{Style.RESET_ALL}')
         # print(f' {Fore.YELLOW}Main Stat - {main_stat} selected.{Style.RESET_ALL}')
         # print(f' {Fore.YELLOW}{sub_stat_1} and {sub_stat_2} selected.{Style.RESET_ALL}')
-        print(f' {Fore.YELLOW}Creating {main_stat} {artifact_type} with {sub_stat_1} and {sub_stat_2}.{Style.RESET_ALL}')
+        print(f' {Fore.YELLOW}Creating a {artifact_set} {main_stat} {artifact_type} with {sub_stat_1} and {sub_stat_2}.{Style.RESET_ALL}')
 
     else:
-        print(f" {Fore.CYAN}Choose type of artifact:{Style.RESET_ALL}")
+        print(f" {Fore.CYAN}Choose artifact set:{Style.RESET_ALL}")
+        artifact_set = choose_one(sets, "That's not a set that is available! Try again", aliases_sets)
+        if not artifact_set:
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
+            return 0, last
+        print(f' {Fore.YELLOW}{artifact_set} selected.{Style.RESET_ALL}')
+
+
+        print(f"\n {Fore.CYAN}Choose type of artifact:{Style.RESET_ALL}")
 
         # type_dict = dict(zip([str(x+1) for x in range(len(artifact_types))], artifact_types))
         # for i in type_dict.items():
@@ -381,7 +456,7 @@ def transmute(preset=[]):
         sub_stat_1 = subs_dict[sub_stat_1]
         sub_stat_2 = subs_dict[sub_stat_2]
         print(f' {Fore.YELLOW}{sub_stat_1} and {sub_stat_2} selected.{Style.RESET_ALL}')
-        preset = [artifact_type, main_stat, sub_stat_1, sub_stat_2]
+        preset = [artifact_type, main_stat, sub_stat_1, sub_stat_2, artifact_set]
 
     fourliner = choices((1, 0), weights=(1, 2))[0]
 
@@ -409,7 +484,7 @@ def transmute(preset=[]):
         rv += roll * 100
     print()
     threeliner = choices(subs_pool, weights=list(subs_weights.values()))[0] if not fourliner else 0
-    return Artifact(artifact_type, main_stat, get_main_stat_value(main_stat), threeliner, subs, 0, "", rv), preset
+    return Artifact(artifact_type, main_stat, get_main_stat_value(main_stat), threeliner, subs, 0, artifact_set, "", rv), preset
 
 
 def load_inventory():
@@ -803,6 +878,7 @@ def print_help():
         f' {Fore.LIGHTCYAN_EX}auto{Style.RESET_ALL} = enter Automation Mode\n'  # auto
         '\n'
         f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
+        f' {Fore.LIGHTCYAN_EX}daily {Fore.BLUE}save{Style.RESET_ALL} = spend 180 resin in a domain of choice, save if specified\n'  # daily s
         '\n'
         f' {Fore.LIGHTCYAN_EX}source{Style.RESET_ALL} = view current source\n'
         f' {Fore.CYAN}domain{Style.RESET_ALL} = change artifact source to domain\n'
@@ -983,7 +1059,7 @@ while True:
                         inventory += 1
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact((strongbox_set, "strongbox"), highest)
+                        art, highest = create_and_roll_artifact([strongbox_set, "strongbox"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1007,7 +1083,7 @@ while True:
                     absolute_generated += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
-                        art, highest = create_and_roll_artifact((domain_set, "domain"), highest)
+                        art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1023,7 +1099,7 @@ while True:
                         inventory -= 2
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact((strongbox_set, "strongbox"), highest)
+                        art, highest = create_and_roll_artifact([strongbox_set, "strongbox"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1072,7 +1148,8 @@ while True:
         art = create_artifact(source)
         artifact_log.append(art)
         if len(artifact_log) > 10:
-            artifact_log = artifact_log[1:]
+            log_start = len(artifact_log)-10
+            artifact_log = artifact_log[log_start:]
         art.print_stats()
 
     elif user_command in ('r++', 'r ++'):
@@ -1080,7 +1157,8 @@ while True:
         art, _ = create_and_roll_artifact(source)
         artifact_log.append(art)
         if len(artifact_log) > 10:
-            artifact_log = artifact_log[1:]
+            log_start = len(artifact_log)-10
+            artifact_log = artifact_log[log_start:]
 
     elif 'log-' in user_command:
         if user_command[:4] == 'log-':
@@ -1481,6 +1559,9 @@ while True:
         art, last = transmute()
         if art:
             artifact_log.append(art)
+            if len(artifact_log) > 10:
+                log_start = len(artifact_log) - 10
+                artifact_log = artifact_log[log_start:]
             art.print_stats()
             print(f' {Fore.CYAN}Tip: Type "re" to create an artifact using the same preset!{Style.RESET_ALL}\n')
 
@@ -1488,45 +1569,17 @@ while True:
         if last:
             art, last = transmute(last)
             artifact_log.append(art)
+            if len(artifact_log) > 10:
+                log_start = len(artifact_log) - 10
+                artifact_log = artifact_log[log_start:]
             art.print_stats()
         else:
             print(f' {Fore.RED}Run "transmute" first{Style.RESET_ALL}\n')
 
     elif user_command == 'domain':
         # unsure why i added this lol felt like coming up with aliases
-        aliases = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
-                   'vv': '2', 'kazuha': '2',
-                   'maidens': '2',
-                   'ap': '3', 'petra': '3',
-                   'bolide': '3',
-                   'tf': '4', 'keqing': '4', 'razor': '4',
-                   'cw': '5',
-                   'blizzard': '6', 'ayaka': '6',
-                   'hod': '6', 'childe': '6', 'tartaglia': '6',
-                   'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
-                   'eula': '7',
-                   'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8',
-                   'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8', 'xq': '8',
-                   'husk': '9',
-                   'clam': '9', 'kokomi': '9', 'kok': '9',
-                   'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
-                   'echoes': '10', 'ayato': '10',
-                   'deepwood': '11', 'dm': '11', 'nahida': '11',
-                   'gilded': '11', 'gd': '11', 'alhaihtam': '11',
-                   'dpc': '12', 'scara': '12', 'wanderer': '12', 'xіangling': '12',
-                   'fopl': '12', 'flop': '12',
-                   'vg': '13', 'dehya': '13',
-                   'mh': '14', 'neuv': '14', 'neuvillette': '14', 'bat': '14',
-                   'gt': '14', 'furina': '14', 'fischl': '14',
-                   'sodp': '15', 'bird': '15', 'xianyun': '15', 'xy': '15',
-                   'navia': '15',
-                   'whimsy': '16', 'arle': '16', 'arlecchino': '16', 'father': '16', 'clorinde': '16',
-                   'emilie': '16',
-                   'natlan': '17', 'scroll': '17',
-                   'codex': '17', 'mualani': '17'
-                   }
         print(f'\n {Fore.CYAN}Choose new domain (some aliases are supported):{Style.RESET_ALL}')
-        new_source = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases), 'domain']
+        new_source = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain), 'domain']
         if new_source[0]:
             settings = new_source
             save_settings_to_file()
@@ -1537,42 +1590,9 @@ while True:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing domain{Style.RESET_ALL}\n')
 
     elif user_command == 'strongbox':
-        aliases = {'glad': '1',
-                   'troupe': '2',
-                   'no': '3', 'nob': '3', 'noblesse': '3', 'bennett': '3',
-                   'maidens': '5',
-                   'vv': '6', 'kazuha': '6',
-                   'ap': '7', 'petra': '7',
-                   'bolide': '8',
-                   'tf': '10', 'keqing': '10', 'razor': '10',
-                   'cw': '12',
-                   'blizzard': '13', 'ayaka': '13',
-                   'hod': '14', 'childe': '14', 'tartaglia': '14',
-                   'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
-                   'eula': '16',
-                   'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17",
-                   'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18', 'xq': '18',
-                   'husk': '19',
-                   'clam': '20', 'kokomi': '20', 'kok': '20',
-                   'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
-                   'echoes': '22', 'ayato': '22',
-                   'deepwood': '23', 'dm': '23', 'nahida': '23',
-                   'gilded': '24', 'gd': '24', 'alhaihtam': '24',
-                   'dpc': '25', 'scara': '25', 'wanderer': '25', 'xіangling': '25',
-                   'fopl': '26', 'flop': '26',
-                   'vg': "28", 'dehya': "28",
-                   'mh': '29', 'neuv': '29', 'neuvillette': '29', 'bat': '29',
-                   'gt': '30', 'furina': '30', 'fischl': '30',
-                   'sodp': '31', 'bird': '31', 'xianyun': '31', 'xy': '31',
-                   'navia': '32',
-                   'whimsy': '33', 'arle': '33', 'arlecchino': '33', 'father': '33', 'clorinde': '33',
-                   'emilie': '34',
-                   'natlan': '35', 'scroll': '35',
-                   'codex': '36', 'mualani': '36'
-                   }
 
         print(f'\n {Fore.CYAN}Choose new artifact set (some aliases are supported):{Style.RESET_ALL}')
-        new_source = [choose_one(sets, "That's not a set that is available! Try again", aliases), 'strongbox']
+        new_source = [choose_one(sets, "That's not a set that is available! Try again", aliases_sets), 'strongbox']
         if new_source[0]:
             settings = new_source
             save_settings_to_file()
@@ -1595,8 +1615,42 @@ while True:
             joined_source = ', '.join(source[0])
             print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
 
-    elif user_command == 'daily':
-        pass
+    elif user_command[:5] == 'daily':
+        if user_command.split() in (['daily', 's'], ['daily', 'save']):
+            save = True
+        elif user_command == 'daily':
+            save = False
+        else:
+            print(f' {Fore.RED}You did something wrong.{Style.RESET_ALL}\n')
+            continue
+        print(f'\n {Fore.CYAN}Choose a domain (some aliases are supported):{Style.RESET_ALL}')
+        domain_set = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain), 'domain']
+        if domain_set[0]:
+            resin = 180
+            artifact_log = []
+            while resin:
+                resin -= 20
+                amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
+                for k in range(amount[0]):
+                    art = create_artifact(domain_set)
+                    artifact_log.append(art)
+                    if save and len(artifact_list) < 100000:
+                        artifact_list.append(art)
+            if save and len(artifact_list) < 100000:
+                artifact_list = sort_inventory(artifact_list)
+                save_inventory_to_file(artifact_list)
+
+                for i in range(1, len(artifact_log)+1):
+                    print(f' {Fore.LIGHTGREEN_EX}Saved (#{artifact_list.index(artifact_log[-i]) + 1})')
+                len_artifact_list = len(artifact_list)
+                print(f' {len_artifact_list} artifacts in inventory{Style.RESET_ALL}\n')
+
+            print(f' {Fore.LIGHTCYAN_EX}Daily resin spent successfully!{Style.RESET_ALL}\n'
+                  f' You can move up and down in the list by typing log+ and log- (optional number after, e.g. "log- 5")\n')
+            print_log()
+
+        else:
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, not spending daily resin anymore{Style.RESET_ALL}\n')
 
     elif user_command in ('a rv', 'rv'):
         print(f' RV: {art.rv()}%\n')
