@@ -537,7 +537,7 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     if highest_cv and artifact.cv() > highest_cv:
         highest_cv = artifact.cv()
         if not silent:
-            print(f' Day {day}: {artifact.cv()} CV ({artifact}) - {artifact.subs()}')
+            print(f' Day {day}: {artifact.cv()} CV ({artifact.short()}) - {artifact.subs()}')
 
     if silent:
         artifact.last_upgrade = ""
@@ -955,19 +955,22 @@ while True:
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
         absolute_generated = 0
-        low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
-        high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
+        low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
+        high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
 
         for i in range(sample_size):
+            strongbox_set = choice(sets)
+            domain_set = choice(domains)
+            joined_domain = ', '.join(domain_set)
             c = 0
             day = 0
             highest = 0.1
             total_generated = 0
             inventory = 0
             flag = False
-            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}:{Style.RESET_ALL}' if sample_size > 1 else '')
+            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:\n Strongbox/Abyss set: {Fore.CYAN}{strongbox_set}{Style.RESET_ALL}\n Domain: {Fore.CYAN}{joined_domain}{Style.RESET_ALL}' if sample_size > 1 else '')
 
             while not flag:
                 day += 1
@@ -980,7 +983,7 @@ while True:
                         inventory += 1
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact("abyss", highest)
+                        art, highest = create_and_roll_artifact((strongbox_set, "strongbox"), highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1004,7 +1007,7 @@ while True:
                     absolute_generated += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
-                        art, highest = create_and_roll_artifact("domain", highest)
+                        art, highest = create_and_roll_artifact((domain_set, "domain"), highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1020,7 +1023,7 @@ while True:
                         inventory -= 2
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact("strongbox", highest)
+                        art, highest = create_and_roll_artifact((strongbox_set, "strongbox"), highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
@@ -1038,18 +1041,15 @@ while True:
         days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
 
         if sample_size > 1:
-            print(
-                f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
+            print(f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
             print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].subs()}')
-            print(
-                f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
+            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
 
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
 
         print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL}\n')
-        print(
-            f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
+        print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f' Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
         print('=' * 27 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 26)
@@ -1582,6 +1582,9 @@ while True:
         else:
             joined_source = ', '.join(source[0])
             print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
+
+    elif user_command == 'daily':
+        pass
 
     elif user_command in ('a rv', 'rv'):
         print(f' RV: {art.rv()}%\n')
