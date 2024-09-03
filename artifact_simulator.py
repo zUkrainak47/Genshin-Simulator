@@ -128,7 +128,8 @@ def choose_one(items, error_message, alias={}):
     items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
     if isinstance(items_dict['1'], tuple) or isinstance(items_dict['1'], list):
         for item in items_dict.items():
-            print(f" {item[0]} = {', '.join(item[1])}")
+            joined_item = ', '.join(item[1])
+            print(f" {item[0]} = {joined_item}")
     else:
         for item in items_dict.items():
             print(f" {item[0]} = {item[1]}")
@@ -1477,7 +1478,8 @@ while True:
         new_source = (choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases), 'domain')
         if new_source[0]:
             source = new_source
-            print(f' Source set to Domain: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
+            joined_source = ', '.join(source[0])
+            print(f' Source set to Domain: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
         else:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing domain{Style.RESET_ALL}\n')
 
@@ -1526,13 +1528,15 @@ while True:
 
     elif user_command == 'boss':
         source = ((sets[0], sets[1]), 'boss')
-        print(f' Source set to Boss: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
+        joined_source = ', '.join(source[0])
+        print(f' Source set to Boss: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
 
     elif user_command == 'source':
         if source[1] == 'strongbox':
             print(f' Current source is Strongbox: {Fore.LIGHTGREEN_EX}{source[0]}{Style.RESET_ALL}\n')
         else:
-            print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
+            joined_source = ', '.join(source[0])
+            print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
 
     elif user_command in ('a rv', 'rv'):
         print(f' RV: {art.rv()}%\n')
