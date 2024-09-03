@@ -116,7 +116,7 @@ def choose_one(items, error_message):
         if new1 in items_dict or new1 in items_dict.values():
             break
         else:
-            print(f' {Fore.RED}Please input either the number or the name of the {word} {optional_word}of choice{Style.RESET_ALL}\n')
+            print(f' {Fore.RED}{error_message}{Style.RESET_ALL}\n')
     if new1 in items_dict:
         new1 = items_dict[new1]
     return new1
