@@ -427,9 +427,10 @@ def load_inventory():
         return []
 
     except IndexError:
-        print(f' {Fore.RED}So sorry, your artifacts have been sacrificed to the Artifact Muncher\n'
-              f' This is most likely due to your artifacts not having a set, which I added in an update\n'
-              f' The update added a new artifact trait and old artifacts are no longer able to be read from the save file :smoge:')
+        print(f' {Fore.RED}Your artifacts have been sacrificed to the Artifact Muncher\n'
+              f' This is most likely due to your artifacts not having a set, which\n'
+              f' is a new artifact trait I added in an update. Old artifacts\n'
+              f' are no longer possible to be read from the save file :smoge:')
         with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
             file.write('[]')
         return []
