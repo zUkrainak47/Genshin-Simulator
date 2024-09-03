@@ -512,34 +512,40 @@ def load_inventory():
 
 
 def load_settings():
-    global settings, source
+    global settings, source, resin_max
     try:
         with open(Path('artifact_simulator_resources', 'settings.txt')) as file:
             data = file.read()
         settings = json.loads(data)
-        if (
-          (len(settings) != 2) or  # length must be 2
-          not isinstance(settings, list) or  # must be a tuple
-          not  # if neither of the following three cases is true, settings are invalid:
-          (  # first item included in domains and 2nd item = 'domain'
-            ((settings[0] in domains) and (settings[1] == 'domain')) or
-             # first item included in sets and 2nd item = 'strongbox'
-            (settings[0] in sets and (settings[1] == 'strongbox')) or
-             # first item is a list of first two items in sets and 2nd item = 'boss'
-            (settings[0] == list(sets[:2]) and (settings[1] == 'boss'))
-          )
-        ):
-            print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
-            settings = ["Shimenawa's Reminiscence", 'strongbox']
-            save_settings_to_file()
+        if (len(settings) == 2) and isinstance(settings, list):
+            artifact_source, resin_maximum = settings
+            if (
+              (len(artifact_source) != 2) or  # length must be 2
+              not isinstance(artifact_source, list) or  # must be a tuple
+              not  # if neither of the following three cases is true, settings are invalid:
+              (  # first item included in domains and 2nd item = 'domain'
+                ((artifact_source[0] in domains) and (artifact_source[1] == 'domain')) or
+                 # first item included in sets and 2nd item = 'strongbox'
+                (artifact_source[0] in sets and (artifact_source[1] == 'strongbox')) or
+                 # first item is a list of first two items in sets and 2nd item = 'boss'
+                (artifact_source[0] == list(sets[:2]) and (artifact_source[1] == 'boss'))
+              )
+            ):
+                print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
+                settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+                save_settings_to_file()
+            elif not isinstance(resin_maximum, int) or resin_maximum < 180:
+                print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
+                settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+                save_settings_to_file()
     except FileNotFoundError:
-        settings = ["Shimenawa's Reminiscence", 'strongbox']
+        settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
         save_settings_to_file()
     except:
         print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-        settings = ["Shimenawa's Reminiscence", 'strongbox']
+        settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
         save_settings_to_file()
-    source = settings
+    source, resin_max = settings
 
 
 def create_artifact(full_source):
@@ -880,6 +886,7 @@ def print_help():
         f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
         f' {Fore.LIGHTCYAN_EX}daily {Fore.BLUE}save{Style.RESET_ALL} = spend 180 resin in a domain of choice, save if specified\n'  # daily s
         '\n'
+        f' {Fore.LIGHTCYAN_EX}resin{Style.RESET_ALL} = change amount of daily resin\n'
         f' {Fore.LIGHTCYAN_EX}source{Style.RESET_ALL} = view current source\n'
         f' {Fore.CYAN}domain{Style.RESET_ALL} = change artifact source to domain\n'
         f' {Fore.CYAN}strongbox{Style.RESET_ALL} = change artifact source to strongbox\n'
@@ -1581,9 +1588,9 @@ while True:
         print(f'\n {Fore.CYAN}Choose new domain (some aliases are supported):{Style.RESET_ALL}')
         new_source = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain), 'domain']
         if new_source[0]:
-            settings = new_source
+            settings = [new_source, resin_max]
             save_settings_to_file()
-            source = settings
+            source = new_source
             joined_source = ', '.join(source[0])
             print(f' Source set to Domain: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
         else:
@@ -1594,17 +1601,17 @@ while True:
         print(f'\n {Fore.CYAN}Choose new artifact set (some aliases are supported):{Style.RESET_ALL}')
         new_source = [choose_one(sets, "That's not a set that is available! Try again", aliases_sets), 'strongbox']
         if new_source[0]:
-            settings = new_source
+            settings = [new_source, resin_max]
             save_settings_to_file()
-            source = settings
+            source = new_source
             print(f' Source set to Strongbox: {Fore.LIGHTGREEN_EX}{source[0]}{Style.RESET_ALL}\n')
         else:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing strongbox{Style.RESET_ALL}\n')
 
     elif user_command == 'boss':
-        settings = [(sets[0], sets[1]), 'boss']
+        settings = [[(sets[0], sets[1]), 'boss'], resin_max]
         save_settings_to_file()
-        source = settings
+        source = settings[0]
         joined_source = ', '.join(source[0])
         print(f' Source set to Boss: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
 
@@ -1614,6 +1621,30 @@ while True:
         else:
             joined_source = ', '.join(source[0])
             print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{joined_source}{Style.RESET_ALL}\n')
+
+    elif user_command == 'resin':
+        print(f' {Fore.CYAN}Choose how much resin you use per day{Style.RESET_ALL} (180 default, {resin_max} current)\n')
+        print(' (Type 0 to exit)\n')
+        while True:
+            try:
+                max_resin = int(input(' Resin: '))
+            except ValueError:
+                print(f' {Fore.RED}Must be a number. Try again{Style.RESET_ALL}\n')
+                continue
+            if not max_resin:
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing resin per day{Style.RESET_ALL}\n')
+                break
+            if max_resin < 180:
+                print(f' {Fore.RED}Must be >= 180. Try again{Style.RESET_ALL}\n')
+                continue
+            if max_resin > 1000:
+                print(f" {Fore.RED}Alright man, let's keep this reasonable. No more than 1000. Try again{Style.RESET_ALL}\n")
+                continue
+            resin_max = max_resin
+            print(f' {Fore.LIGHTGREEN_EX}Daily resin set to {resin_max}{Style.RESET_ALL}\n')
+            settings[1] = resin_max
+            save_settings_to_file()
+            break
 
     elif user_command[:5] == 'daily':
         if user_command.split() in (['daily', 's'], ['daily', 'save']):
@@ -1626,10 +1657,10 @@ while True:
         print(f'\n {Fore.CYAN}Choose a domain (some aliases are supported):{Style.RESET_ALL}')
         domain_set = [choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain), 'domain']
         if domain_set[0]:
-            resin = 180
+            runs = resin_max//20
             artifact_log = []
-            while resin:
-                resin -= 20
+            while runs:
+                runs -= 1
                 amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                 for k in range(amount[0]):
                     art = create_artifact(domain_set)
