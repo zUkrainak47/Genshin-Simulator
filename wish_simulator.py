@@ -359,7 +359,7 @@ def choose_one(items, error_message):
         print(f" {item[0]} = {item[1]}")
     print('\n (Type 0 to exit)\n')
     while True:
-        new1 = input(' Your pick: ').strip().lower()
+        new1 = input(' Your pick: ').strip()
         if new1 in ('0', 'exit'):
             return 0
         if new1 in items_dict or new1 in items_dict.values():

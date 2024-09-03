@@ -110,7 +110,7 @@ def choose_one(items, error_message):
         print(f" {item[0]} = {item[1]}")
     print('\n (Type 0 to exit)\n')
     while True:
-        new1 = input(' Your pick: ').strip().lower()
+        new1 = input(' Your pick: ').strip()
         if new1 in ('0', 'exit'):
             return 0
         if new1 in items_dict or new1 in items_dict.values():
@@ -306,10 +306,10 @@ def transmute(preset=[]):
                 print(f' {Fore.RED}Please input two numbers corresponding to artifact Sub Stats of choice SEPARATED BY SPACE{Style.RESET_ALL}\n')
                 continue
             sub_stat_1, sub_stat_2 = subs
-            if sub_stat_1.isnumeric() and sub_stat_2.isnumeric():
+            if sub_stat_1.isnumeric() and sub_stat_2.isnumeric() and sub_stat_1 != sub_stat_2:
                 sub_stat_1, sub_stat_2 = int(sub_stat_1), int(sub_stat_2)
             else:
-                print(f' {Fore.RED}Please input TWO NUMBERS corresponding to artifact Sub Stats of choice separated by space{Style.RESET_ALL}\n')
+                print(f' {Fore.RED}Please input TWO DIFFERENT NUMBERS corresponding to artifact Sub Stats of choice separated by space{Style.RESET_ALL}\n')
                 continue
             if sub_stat_1 in subs_dict and sub_stat_2 in subs_dict:
                 break
