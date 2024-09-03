@@ -1130,10 +1130,10 @@ while True:
                         break
 
                 artifact_list = sort_inventory(artifact_list)
-                show_index_changes(artifact_list_old, artifact_list)
                 save_inventory_to_file(artifact_list)
 
                 print(f' {Fore.LIGHTGREEN_EX}{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
+                show_index_changes(artifact_list_old, artifact_list)
                 continue
                 # print_inventory(artifact_list)
                 # print()
@@ -1168,10 +1168,10 @@ while True:
                         break
 
                 artifact_list = sort_inventory(artifact_list)
-                show_index_changes(artifact_list_old, artifact_list)
                 save_inventory_to_file(artifact_list)
 
                 print(f' {Fore.LIGHTGREEN_EX}{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
+                show_index_changes(artifact_list_old, artifact_list)
                 continue
                 # print_inventory(artifact_list)
                 # print()
