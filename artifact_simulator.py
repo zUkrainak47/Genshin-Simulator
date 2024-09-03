@@ -32,8 +32,8 @@ if file_to_move.exists():
 
 
 class Artifact:
-    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, last_upgrade="",
-                 roll_value=0):
+    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, artifact_set,
+                 last_upgrade="", roll_value=0):
         self.type = artifact_type
         self.mainstat = mainstat
         self.mainstat_value = mainstat_value
@@ -41,15 +41,21 @@ class Artifact:
         self.substats = sub_stats
         self.level = level
         self.last_upgrade = last_upgrade
+        self.set = artifact_set
         self.roll_value = roll_value
 
         if "CRIT Rate%" in self.substats:
             if self.substats["CRIT Rate%"] == 23.0:
                 self.substats["CRIT Rate%"] = 22.9
 
+    def short(self):
+        val = (self.mainstat_value[0])[self.mainstat_value[1]]
+        return f"{val} {self.mainstat} {self.type} (+{self.level}) - {sets_short_dict[self.set]}"
+
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
-        return f"{val} {self.mainstat} {self.type} (+{self.level})"
+        return f"{self.set}\n {val} {self.mainstat} {self.type} (+{self.level})"
+
 
     def subs(self):
         return {
@@ -70,8 +76,7 @@ class Artifact:
 
         for sub in self.substats:
             is_percentage = '%' in sub
-            print(
-                f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
+            print(f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
         print()
@@ -116,19 +121,26 @@ class Artifact:
 class ArtifactEncoder(json.JSONEncoder):
     def default(self, artifact):
         return [artifact.type, artifact.mainstat, artifact.mainstat_value, artifact.threeliner, artifact.substats,
-                artifact.level, artifact.last_upgrade, artifact.roll_value]
+                artifact.level, artifact.set, artifact.last_upgrade, artifact.roll_value]
 
 
-def choose_one(items, error_message):
+def choose_one(items, error_message, alias={}):
     items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
-    for item in items_dict.items():
-        print(f" {item[0]} = {item[1]}")
+    if isinstance(items_dict['1'], tuple) or isinstance(items_dict['1'], list):
+        for item in items_dict.items():
+            print(f" {item[0]} = {', '.join(item[1])}")
+    else:
+        for item in items_dict.items():
+            print(f" {item[0]} = {item[1]}")
     print('\n (Type 0 to exit)\n')
     while True:
         new1 = input(' Your pick: ').strip()
         if new1 in ('0', 'exit'):
             return 0
         if new1 in items_dict or new1 in items_dict.values():
+            break
+        if alias and new1.lower() in alias:
+            new1 = alias[new1]
             break
         else:
             print(f' {Fore.RED}{error_message}{Style.RESET_ALL}\n')
@@ -137,6 +149,38 @@ def choose_one(items, error_message):
     return new1
 
 
+sets = ("Gladiator's Finale", "Wanderer's Troupe",  # bosses
+        "Noblesse Oblige", "Bloodstained Chivalry", "Maiden Beloved", "Viridescent Venerer", "Archaic Petra",  # 1.x
+        "Retracing Bolide", "Thundersoother", "Thundering Fury", "Lavawalker", "Crimson Witch of Flames",
+        "Blizzard Strayer", "Heart of Depth", "Tenacity of the Millelith", "Pale Flame",
+        "Shimenawa's Reminiscence", "Emblem of Severed Fate", "Husk of Opulent Dreams", "Ocean-Hued Clam",     # 2.x
+        "Vermillion Hereafter", "Echoes of an Offering",
+        "Deepwood Memories", "Gilded Dreams", "Desert Pavilion Chronicle", "Flower of Paradise Lost",          # 3.x
+        "Nymph's Dream", "Vourukasha's Glow",
+        "Marechaussee Hunter", "Golden Troupe", "Song of Days Past",                                           # 4.x
+        "Nighttime Whispers in the Echoing Woods", "Fragment of Harmonic Whimsy", "Unfinished Reverie",
+        "Scroll of the Hero of Cinder City", "Obsidian Codex", )                                               # 5.x
+sets_short = ('    Glad    ', '   Troupe   ',
+              '  Noblesse  ', 'Bloodstained',
+              '  Maidens   ', '     VV     ',
+              '  Archaic   ', '   Bolide   ',
+              '     TS     ', '     TF     ',
+              ' Lavawalker ', '     CW     ',
+              '  Blizzard  ', '    HoD     ',
+              '    TotM    ', ' Pale Flame ',
+              "Shimenawa's ", '    EoSF    ',
+              '    Husk    ', '    Clam    ',
+              ' Vermillion ', '   Echoes   ',
+              '  Deepwood  ', '   Gilded   ',
+              ' Desert Pav ', '    FoPL    ',
+              "  Nymph's   ", "Vourukasha's",
+              '     MH     ', 'GoldenTroupe',
+              '    SoDP    ', '    NWEW    ',
+              '   Whimsy   ', '  Reverie   ',
+              '    SHCC    ', '  Obsidian  ',)
+sets_short_dict = dict(zip(sets, sets_short))
+domains = list(zip(sets[2::2], sets[3::2]))
+print(domains)
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
 sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
 goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
@@ -372,7 +416,7 @@ def load_inventory():
         with open(Path('artifact_simulator_resources', 'inventory.txt')) as file:
             data = file.read()
         inv = json.loads(data)
-        inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]) for a in inv]
+        inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]) for a in inv]
         inv = sort_inventory(inv)
         return inv
 
@@ -381,8 +425,17 @@ def load_inventory():
             file.write('[]')
         return []
 
+    except IndexError:
+        print(f' {Fore.RED}So sorry, your artifacts have been sacrificed to the Artifact Muncher\n'
+              f' This is most likely due to your artifacts not having a set, which I added in an update\n'
+              f' The update added a new artifact trait and old artifacts are no longer able to be read from the save file :smoge:')
+        with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
+            file.write('[]')
+        return []
 
-def create_artifact(from_where):
+
+def create_artifact(full_source):
+    exact_source, from_where = full_source
     art_type = choice(artifact_types)
     rv = 0
 
@@ -402,6 +455,7 @@ def create_artifact(from_where):
 
     mainstat_value = get_main_stat_value(mainstat)
     fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
+    artifact_set = exact_source if from_where == 'strongbox' else choice(exact_source)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
 
@@ -422,7 +476,7 @@ def create_artifact(from_where):
 
     threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
+    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, artifact_set, "", rv)
 
 
 # ccc = 0
@@ -556,7 +610,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
             if t_now != t_last:
                 print('\n' + '-' * 44, f'{Fore.LIGHTCYAN_EX}{t_now}{"s" if t_now != "Sands" else ""}{Style.RESET_ALL}', '-' * 44)
 
-        print(f' {current_index + 1}) {list_of_artifacts[current_index]} - {list_of_artifacts[current_index].subs()}')
+        print(f' {current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
 
 
 def get_indexes(user_input):
@@ -663,7 +717,7 @@ def print_empty_inv():
           f' try "r 5" to save 5 random artifacts or "s" to save the generated one\n')
 
 
-def print_controls():
+def print_help():
     print(
         '\n' + '=' * 44 + f' {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} ' + '=' * 44 + '\n'  # aliases included next to each command
         '\n'
@@ -713,9 +767,9 @@ def print_controls():
         f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
         '\n'
         f' {Fore.LIGHTCYAN_EX}source{Style.RESET_ALL} = view current source\n'
-        f' {Fore.CYAN}domain{Style.RESET_ALL} = change artifact source to domain (default)\n'
+        f' {Fore.CYAN}domain{Style.RESET_ALL} = change artifact source to domain\n'
         f' {Fore.CYAN}strongbox{Style.RESET_ALL} = change artifact source to strongbox\n'
-        f' {Fore.CYAN}abyss{Style.RESET_ALL} = change artifact source to abyss (same rate as strongbox)\n'
+        f' {Fore.CYAN}boss{Style.RESET_ALL} = change artifact source to bosses\n'
         '\n'
         f' {Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Artifact Simulator\n'  # 0, menu
         '\n'
@@ -813,7 +867,7 @@ except json.decoder.JSONDecodeError:
 print()
 print(f'======================== {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} ======================')
 
-source = 'domain'
+source = ("Shimenawa's Reminiscence", 'strongbox')
 print(f'\n Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 art = create_artifact(source)
 artifact_log = [art]
@@ -827,14 +881,14 @@ def print_log():
         else:
             color = ''
         print(
-            f' {color}{this_index}) {artifact_log[-this_index]} - {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
+            f' {color}{this_index}) {artifact_log[-this_index].short()} {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
     print()
 
 
 while True:
     user_command = input(' Command: ').lower().strip()
     if user_command in valid_help:
-        print_controls()
+        print_help()
 
     elif '"' in user_command or "'" in user_command:
         print(f' {Fore.LIGHTMAGENTA_EX}Remove the quotation marks{Style.RESET_ALL}\n')
@@ -1099,6 +1153,7 @@ while True:
 
                 s = len(artifact_list)
                 artifact_list_old = artifact_list.copy()
+
                 for i in range(cmd):
                     if s < 100000:
                         art = create_artifact(source)
@@ -1112,6 +1167,7 @@ while True:
                         break
 
                 artifact_list = sort_inventory(artifact_list)
+                show_index_changes(artifact_list_old, artifact_list)
                 save_inventory_to_file(artifact_list)
 
                 print(f' {Fore.LIGHTGREEN_EX}{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
@@ -1384,12 +1440,99 @@ while True:
         else:
             print(f' {Fore.RED}Run "transmute" first{Style.RESET_ALL}\n')
 
-    elif user_command in ('domain', 'strongbox', 'abyss'):
-        source = user_command
-        print(f' Source set to {Fore.LIGHTGREEN_EX}{source}{Style.RESET_ALL}\n')
+    elif user_command == 'domain':
+        # unsure why i added this lol felt like coming up with aliases
+        aliases = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
+                   'vv': '2', 'kazuha': '2',
+                   'maidens': '2',
+                   'ap': '3', 'petra': '3',
+                   'bolide': '3',
+                   'tf': '4', 'keqing': '4', 'razor': '4',
+                   'cw': '5',
+                   'blizzard': '6', 'ayaka': '6',
+                   'hod': '6', 'childe': '6', 'tartaglia': '6',
+                   'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
+                   'eula': '7',
+                   'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8',
+                   'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8', 'xq': '8',
+                   'husk': '9',
+                   'clam': '9', 'kokomi': '9', 'kok': '9',
+                   'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
+                   'echoes': '10', 'ayato': '10',
+                   'deepwood': '11', 'dm': '11', 'nahida': '11',
+                   'gilded': '11', 'gd': '11', 'alhaihtam': '11',
+                   'dpc': '12', 'scara': '12', 'wanderer': '12', 'xіangling': '12',
+                   'fopl': '12', 'flop': '12',
+                   'vg': '13', 'dehya': '13',
+                   'mh': '14', 'neuv': '14', 'neuvillette': '14', 'bat': '14',
+                   'gt': '14', 'furina': '14', 'fischl': '14',
+                   'sodp': '15', 'bird': '15', 'xianyun': '15', 'xy': '15',
+                   'navia': '15',
+                   'whimsy': '16', 'arle': '16', 'arlecchino': '16', 'father': '16', 'clorinde': '16',
+                   'emilie': '16',
+                   'natlan': '17', 'scroll': '17',
+                   'codex': '17', 'mualani': '17'
+                   }
+        print(f' {Fore.CYAN}Choose new domain (some aliases are supported){Style.RESET_ALL}')
+        new_source = (choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases), 'domain')
+        if new_source[0]:
+            source = new_source
+            print(f' Source set to Domain: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
+        else:
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing domain{Style.RESET_ALL}\n')
+
+    elif user_command == 'strongbox':
+        aliases = {'glad': '1',
+                   'troupe': '2',
+                   'no': '3', 'nob': '3', 'noblesse': '3', 'bennett': '3',
+                   'maidens': '5',
+                   'vv': '6', 'kazuha': '6',
+                   'ap': '7', 'petra': '7',
+                   'bolide': '8',
+                   'tf': '10', 'keqing': '10', 'razor': '10',
+                   'cw': '12',
+                   'blizzard': '13', 'ayaka': '13',
+                   'hod': '14', 'childe': '14', 'tartaglia': '14',
+                   'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
+                   'eula': '16',
+                   'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17",
+                   'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18', 'xq': '18',
+                   'husk': '19',
+                   'clam': '20', 'kokomi': '20', 'kok': '20',
+                   'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
+                   'echoes': '22', 'ayato': '22',
+                   'deepwood': '23', 'dm': '23', 'nahida': '23',
+                   'gilded': '24', 'gd': '24', 'alhaihtam': '24',
+                   'dpc': '25', 'scara': '25', 'wanderer': '25', 'xіangling': '25',
+                   'fopl': '26', 'flop': '26',
+                   'vg': "28", 'dehya': "28",
+                   'mh': '29', 'neuv': '29', 'neuvillette': '29', 'bat': '29',
+                   'gt': '30', 'furina': '30', 'fischl': '30',
+                   'sodp': '31', 'bird': '31', 'xianyun': '31', 'xy': '31',
+                   'navia': '32',
+                   'whimsy': '33', 'arle': '33', 'arlecchino': '33', 'father': '33', 'clorinde': '33',
+                   'emilie': '34',
+                   'natlan': '35', 'scroll': '35',
+                   'codex': '36', 'mualani': '36'
+                   }
+
+        print(f' {Fore.CYAN}Choose new artifact set (some aliases are supported){Style.RESET_ALL}')
+        new_source = (choose_one(sets, "That's not a set that is available! Try again", aliases), 'strongbox')
+        if new_source[0]:
+            print(f' Source set to Strongbox: {Fore.LIGHTGREEN_EX}{source[0]}{Style.RESET_ALL}\n')
+            source = new_source
+        else:
+            print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing strongbox{Style.RESET_ALL}\n')
+
+    elif user_command == 'boss':
+        source = ((sets[0], sets[1]), 'boss')
+        print(f' Source set to Boss: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
 
     elif user_command == 'source':
-        print(f' Current source: {Fore.LIGHTGREEN_EX}{source}{Style.RESET_ALL}\n')
+        if source[1] == 'strongbox':
+            print(f' Current source is Strongbox: {Fore.LIGHTGREEN_EX}{source[0]}{Style.RESET_ALL}\n')
+        else:
+            print(f' Current source is {source[1].capitalize()}: {Fore.LIGHTGREEN_EX}{', '.join(source[0])}{Style.RESET_ALL}\n')
 
     elif user_command in ('a rv', 'rv'):
         print(f' RV: {art.rv()}%\n')
