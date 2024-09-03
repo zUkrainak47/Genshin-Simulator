@@ -884,7 +884,7 @@ def print_help():
         f' {Fore.LIGHTCYAN_EX}auto{Style.RESET_ALL} = enter Automation Mode\n'  # auto
         '\n'
         f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
-        f' {Fore.LIGHTCYAN_EX}daily {Fore.BLUE}save{Style.RESET_ALL} = spend 180 resin in a domain of choice, save if specified\n'  # daily s
+        f' {Fore.LIGHTCYAN_EX}daily {Fore.BLUE}save{Style.RESET_ALL} = spend daily resin in a domain of choice, save if specified\n'  # daily s
         '\n'
         f' {Fore.LIGHTCYAN_EX}resin{Style.RESET_ALL} = change amount of daily resin\n'
         f' {Fore.LIGHTCYAN_EX}source{Style.RESET_ALL} = view current source\n'
