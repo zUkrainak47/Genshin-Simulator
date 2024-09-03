@@ -496,7 +496,7 @@ def load_inventory():
         inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]) for a in inv]
         inv = sort_inventory(inv)
         if False in [a.set in sets for a in inv]:
-            print(f' {Fore.RED}Some artifacts have invalid sets. Clearing inventory{Style.RESET_ALL}\n')
+            print(f' {Fore.RED}Some artifacts have invalid sets. Clearing inventory{Style.RESET_ALL}')
             with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
                 file.write('[]')
             return []
@@ -1067,7 +1067,8 @@ while True:
             total_generated = 0
             inventory = 0
             flag = False
-            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:\n Strongbox/Abyss set: {Fore.CYAN}{strongbox_set}{Style.RESET_ALL}\n Domain: {Fore.CYAN}{joined_domain}{Style.RESET_ALL}' if sample_size > 1 else '')
+            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
+            print(f' Strongbox/Abyss set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}\n Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
 
             while not flag:
                 day += 1
