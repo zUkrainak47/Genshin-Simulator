@@ -1093,21 +1093,27 @@ while True:
                     continue
             else:
                 back = 1
-            if artifact_log.index(art) - back >= 0:
-                art = artifact_log[artifact_log.index(art) - back]
-                # print(f' {Fore.LIGHTGREEN_EX}Ok, moved back {back} artifact{"s" if back != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
-                print_log()
-                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
-                art.print_stats()
-            elif artifact_log.index(art) != 0:
-                art = artifact_log[0]
-                print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move back {back} spot{"s" if back != 1 else ""}{Style.RESET_ALL}\n'
-                      f' {Fore.MAGENTA}Moved back to the start of the artifact log instead{Style.RESET_ALL}\n')
-                print_log()
-                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
-                art.print_stats()
+            if art in artifact_log:
+                if artifact_log.index(art) - back >= 0:
+                    art = artifact_log[artifact_log.index(art) - back]
+                    # print(f' {Fore.LIGHTGREEN_EX}Ok, moved back {back} artifact{"s" if back != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
+                    print_log()
+                    print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                    art.print_stats()
+                elif artifact_log.index(art) != 0:
+                    art = artifact_log[0]
+                    print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move back {back} spot{"s" if back != 1 else ""}{Style.RESET_ALL}\n'
+                          f' {Fore.MAGENTA}Moved back to the start of the artifact log instead{Style.RESET_ALL}\n')
+                    print_log()
+                    print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                    art.print_stats()
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the beginning of the artifact log!{Style.RESET_ALL}\n')
             else:
-                print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the beginning of the artifact log!{Style.RESET_ALL}\n')
+                art = artifact_log[-1]
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
         else:
             print(f' {Fore.RED}Command must start with "log-" to move back inside of the artifact log!{Style.RESET_ALL}\n')
 
@@ -1122,21 +1128,27 @@ while True:
                     continue
             else:
                 forward = 1
-            if artifact_log.index(art) + forward < len(artifact_log):
-                art = artifact_log[artifact_log.index(art) + forward]
-                # print(f' {Fore.LIGHTGREEN_EX}Ok, moved forward {forward} artifact{"s" if forward != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
-                print_log()
-                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
-                art.print_stats()
-            elif artifact_log.index(art) != len(artifact_log) - 1:
-                art = artifact_log[-1]
-                print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move forward {forward} spot{"s" if forward != 1 else ""}{Style.RESET_ALL}\n'
-                      f' {Fore.MAGENTA}Moved to the end of the artifact log instead{Style.RESET_ALL}\n')
-                print_log()
-                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
-                art.print_stats()
+            if art in artifact_log:
+                if artifact_log.index(art) + forward < len(artifact_log):
+                    art = artifact_log[artifact_log.index(art) + forward]
+                    # print(f' {Fore.LIGHTGREEN_EX}Ok, moved forward {forward} artifact{"s" if forward != 1 else ""} inside of the artifact log{Style.RESET_ALL}\n')
+                    print_log()
+                    print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                    art.print_stats()
+                elif artifact_log.index(art) != len(artifact_log) - 1:
+                    art = artifact_log[-1]
+                    print(f' {Fore.LIGHTMAGENTA_EX}Not enough artifacts in the log to move forward {forward} spot{"s" if forward != 1 else ""}{Style.RESET_ALL}\n'
+                          f' {Fore.MAGENTA}Moved to the end of the artifact log instead{Style.RESET_ALL}\n')
+                    print_log()
+                    print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                    art.print_stats()
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the end of the artifact log!{Style.RESET_ALL}\n')
             else:
-                print(f' {Fore.LIGHTMAGENTA_EX}You\'re already at the end of the artifact log!{Style.RESET_ALL}\n')
+                art = artifact_log[-1]
+                print_log()
+                print(f' {Fore.CYAN}Selected artifact:{Style.RESET_ALL}')
+                art.print_stats()
         else:
             print(f' {Fore.RED}Command must start with "log+" to move forward inside of the artifact log!{Style.RESET_ALL}\n')
 
