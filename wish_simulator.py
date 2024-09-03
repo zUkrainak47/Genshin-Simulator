@@ -21,26 +21,30 @@ except KeyError:
 
 print(f'\n===================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} =====================\n')
 init()
-Path('banner_info').mkdir(parents=True, exist_ok=True)
+
+if Path('banner_info').exists():
+    Path('banner_info').rename(Path('wish_simulator_resources'))
+
+Path('wish_simulator_resources').mkdir(parents=True, exist_ok=True)
 
 
 def save_character_history_to_file():
-    with open(Path('banner_info', 'character_wish_history.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'character_wish_history.txt'), 'w') as f:
         f.write(json.dumps(wish_history["character"], separators=(',', ':')))
 
 
 def save_weapon_history_to_file():
-    with open(Path('banner_info', 'weapon_wish_history.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'weapon_wish_history.txt'), 'w') as f:
         f.write(json.dumps(wish_history["weapon"], separators=(',', ':')))
 
 
 def save_standard_history_to_file():
-    with open(Path('banner_info', 'standard_wish_history.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'standard_wish_history.txt'), 'w') as f:
         f.write(json.dumps(wish_history["standard"], separators=(',', ':')))
 
 
 def save_chronicled_history_to_file():
-    with open(Path('banner_info', 'chronicled_wish_history.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'chronicled_wish_history.txt'), 'w') as f:
         f.write(json.dumps(wish_history["chronicled"], separators=(',', ':')))
 
 
@@ -52,16 +56,16 @@ saving_dict = {"character": save_character_history_to_file,
 
 def load_history():
     try:
-        with open(Path('banner_info', 'character_wish_history.txt')) as file:
+        with open(Path('wish_simulator_resources', 'character_wish_history.txt')) as file:
             data = file.read()
         character_history = json.loads(data)
-        with open(Path('banner_info', 'weapon_wish_history.txt')) as file:
+        with open(Path('wish_simulator_resources', 'weapon_wish_history.txt')) as file:
             data = file.read()
         weapon_history = json.loads(data)
-        with open(Path('banner_info', 'standard_wish_history.txt')) as file:
+        with open(Path('wish_simulator_resources', 'standard_wish_history.txt')) as file:
             data = file.read()
         standard_history = json.loads(data)
-        with open(Path('banner_info', 'chronicled_wish_history.txt')) as file:
+        with open(Path('wish_simulator_resources', 'chronicled_wish_history.txt')) as file:
             data = file.read()
         chronicled_history = json.loads(data)
         for i in character_history + weapon_history + standard_history + chronicled_history:
@@ -81,27 +85,27 @@ def load_history():
 
 
 def save_character_distribution_to_file():
-    with open(Path('banner_info', 'character_distribution.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'character_distribution.txt'), 'w') as f:
         f.write(json.dumps(character_distribution, separators=(',', ':')))
 
 
 def save_weapon_distribution_to_file():
-    with open(Path('banner_info', 'weapon_distribution.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'weapon_distribution.txt'), 'w') as f:
         f.write(json.dumps(weapon_distribution, separators=(',', ':')))
 
 
 def save_info_to_file(pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_, gacha_system):
-    with open(Path('banner_info', 'info.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'info.txt'), 'w') as f:
         f.write(json.dumps([pity, count_, five_count_, four_count_, unique_five_char_count_, unique_five_weap_count_, unique_four_weap_count_, gacha_system], separators=(',', ':')))
 
 
 def save_banner_to_file():
-    with open(Path('banner_info', 'banner.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'banner.txt'), 'w') as f:
         f.write(json.dumps(user_banner_input, separators=(',', ':')))
 
 
 def save_settings_to_file():
-    with open(Path('banner_info', 'settings.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'settings.txt'), 'w') as f:
         f.write(json.dumps(settings, separators=(',', ':')))
 
 
@@ -111,7 +115,7 @@ def save_archive_to_file(cons, refs):
     numeric_indexes_w = [weapon.num for weapon in refs]
     new_dict_c = dict(zip(numeric_indexes_c, list(cons.values())))
     new_dict_w = dict(zip(numeric_indexes_w, list(refs.values())))
-    with open(Path('banner_info', 'archive.txt'), 'w') as f:
+    with open(Path('wish_simulator_resources', 'archive.txt'), 'w') as f:
         data = (new_dict_c, new_dict_w)
         f.write(json.dumps(data, separators=(',', ':')))
 
@@ -121,7 +125,7 @@ banner_types = ["character", "weapon", "standard", "chronicled"]
 
 def load_info():
     try:
-        with open(Path('banner_info', 'info.txt')) as file:
+        with open(Path('wish_simulator_resources', 'info.txt')) as file:
             data = file.read()
         pity_and_other_info = json.loads(data)
         return pity_and_other_info
@@ -133,7 +137,7 @@ def load_info():
             'standard': [0, 0, 0, 0, [0, 0, 0]],
             'chronicled': [0, 0, False, [0, 0, 0]]
         }
-        with open(Path('banner_info', 'info.txt'), 'w') as file:
+        with open(Path('wish_simulator_resources', 'info.txt'), 'w') as file:
             info = [pities_, 0, 0, 0, 0, 0, 0, "new"]
             file.write(json.dumps(info, separators=(',', ':')))
         return info
@@ -142,7 +146,7 @@ def load_info():
 def load_banner():  # always returns a valid banner
     global user_banner_input
     try:  # if can read, read.
-        with open(Path('banner_info', 'banner.txt')) as file:
+        with open(Path('wish_simulator_resources', 'banner.txt')) as file:
             data = file.read()
         user_banner_input = json.loads(data)
         check_for_banner_mismatch_and_save()  # make sure what was read is a valid banner and save variables
@@ -154,7 +158,7 @@ def load_banner():  # always returns a valid banner
 def load_settings():
     global settings, color_map, threshold1, threshold2, threshold3
     try:
-        with open(Path('banner_info', 'settings.txt')) as file:
+        with open(Path('wish_simulator_resources', 'settings.txt')) as file:
             data = file.read()
         settings = json.loads(data)
         if (
@@ -198,7 +202,7 @@ def jsonKeys2int(x):
 def load_distribution():
     global character_distribution, weapon_distribution
     try:
-        with open(Path('banner_info', 'character_distribution.txt')) as file:
+        with open(Path('wish_simulator_resources', 'character_distribution.txt')) as file:
             data = file.read()
         character_distribution = json.loads(data, object_hook=jsonKeys2int)
 
@@ -208,7 +212,7 @@ def load_distribution():
         save_character_distribution_to_file()
 
     try:
-        with open(Path('banner_info', 'weapon_distribution.txt')) as file:
+        with open(Path('wish_simulator_resources', 'weapon_distribution.txt')) as file:
             data = file.read()
         weapon_distribution = json.loads(data, object_hook=jsonKeys2int)
 
@@ -220,7 +224,7 @@ def load_distribution():
 
 def load_archive():
     try:
-        with open(Path('banner_info', 'archive.txt')) as file:
+        with open(Path('wish_simulator_resources', 'archive.txt')) as file:
             data = file.read()
         archive = json.loads(data, object_hook=jsonKeys2int)
 
@@ -231,7 +235,7 @@ def load_archive():
         return new_dict_c, new_dict_w
 
     except FileNotFoundError:
-        with open(Path('banner_info', 'archive.txt'), 'w') as file:
+        with open(Path('wish_simulator_resources', 'archive.txt'), 'w') as file:
             file.write("[{}, {}]")
         return {}, {}
 

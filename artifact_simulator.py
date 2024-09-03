@@ -13,7 +13,22 @@ from colorama import init, Fore, Style
 from operator import itemgetter
 from random import choice, choices
 
+from pathlib import Path
+
 init()
+
+# File and folder paths
+file_to_move = Path('inventory.txt')
+new_folder = Path('artifact_simulator_resources')
+new_folder.mkdir(parents=True, exist_ok=True)
+
+# Check if the file exists
+if file_to_move.exists():
+    # Define the new file path
+    new_file_location = new_folder / file_to_move.name
+
+    # Move the file
+    file_to_move.rename(new_file_location)
 
 
 class Artifact:
@@ -354,7 +369,7 @@ def transmute(preset=[]):
 
 def load_inventory():
     try:
-        with open('inventory.txt') as file:
+        with open(Path('artifact_simulator_resources', 'inventory.txt')) as file:
             data = file.read()
         inv = json.loads(data)
         inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7]) for a in inv]
@@ -362,7 +377,7 @@ def load_inventory():
         return inv
 
     except FileNotFoundError:
-        with open('inventory.txt', 'w') as file:
+        with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
             file.write('[]')
         return []
 
@@ -483,7 +498,7 @@ def upgrade_to_max_tier(artifact, do_we_print=2, extra_space=False):  # 2 - prin
 
 
 def save_inventory_to_file(artifacts):
-    with open('inventory.txt', 'w') as f:
+    with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as f:
         f.write(json.dumps(artifacts, cls=ArtifactEncoder, separators=(',', ':')))
 
 
@@ -731,16 +746,19 @@ def print_menu():
 def show_index_changes(old_list, new_list):
     # ty chatgpt this is actually a cool approach
     index_differences = []
-    artifact_map = {artifact: i for i, artifact in enumerate(old_list)}
+    artifact_map = {artifact: i for i, artifact in enumerate(new_list)}
 
-    for i, artifact in enumerate(new_list):
-        if artifact != old_list[i]:
+    for i, artifact in enumerate(old_list):
+        try:
+            if artifact != new_list[i]:
+                index_differences.append((artifact_map.get(artifact, -1), i))
+        except IndexError:
             index_differences.append((artifact_map.get(artifact, -1), i))
 
     if index_differences:
         counter = 0
         print(f' {Fore.LIGHTMAGENTA_EX}SOME INVENTORY INDEXES CHANGED:{Style.RESET_ALL}')
-        for old, new in index_differences:
+        for new, old in index_differences:
             counter += 1
             print(f' {old + 1} -> {new + 1}', end='')
             if counter >= 25:
@@ -1042,6 +1060,8 @@ while True:
             if cmd.isnumeric():
                 cmd = int(cmd)
                 s = len(artifact_list)
+                artifact_list_old = artifact_list.copy()
+
                 for i in range(cmd):
                     if s < 100000:
                         art, _ = create_and_roll_artifact(source, 0, True)
@@ -1055,6 +1075,7 @@ while True:
                         break
 
                 artifact_list = sort_inventory(artifact_list)
+                show_index_changes(artifact_list_old, artifact_list)
                 save_inventory_to_file(artifact_list)
 
                 print(f' {Fore.LIGHTGREEN_EX}{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
@@ -1077,6 +1098,7 @@ while True:
                 cmd = int(cmd)
 
                 s = len(artifact_list)
+                artifact_list_old = artifact_list.copy()
                 for i in range(cmd):
                     if s < 100000:
                         art = create_artifact(source)

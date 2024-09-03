@@ -3,5 +3,6 @@ venv/
 /.idea/
 /plots/
 /inventory.txt
-/banner_info
+/wish_simulator_resources
+/artifact_simulator_resources
 *.pyc
