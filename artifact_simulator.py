@@ -15,6 +15,7 @@ from random import choice, choices
 
 init()
 
+
 class Artifact:
     def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, last_upgrade="",
                  roll_value=0):
@@ -101,6 +102,24 @@ class ArtifactEncoder(json.JSONEncoder):
     def default(self, artifact):
         return [artifact.type, artifact.mainstat, artifact.mainstat_value, artifact.threeliner, artifact.substats,
                 artifact.level, artifact.last_upgrade, artifact.roll_value]
+
+
+def choose_one(items, error_message):
+    items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
+    for item in items_dict.items():
+        print(f" {item[0]} = {item[1]}")
+    print('\n (Type 0 to exit)\n')
+    while True:
+        new1 = input(' Your pick: ').strip().lower()
+        if new1 in ('0', 'exit'):
+            return 0
+        if new1 in items_dict or new1 in items_dict.values():
+            break
+        else:
+            print(f' {Fore.RED}Please input either the number or the name of the {word} {optional_word}of choice{Style.RESET_ALL}\n')
+    if new1 in items_dict:
+        new1 = items_dict[new1]
+    return new1
 
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
@@ -223,50 +242,53 @@ def transmute(preset=[]):
         print(f' {Fore.YELLOW}Creating {main_stat} {artifact_type} with {sub_stat_1} and {sub_stat_2}.{Style.RESET_ALL}')
 
     else:
-        type_dict = dict(zip([str(x+1) for x in range(len(artifact_types))], artifact_types))
         print(f" {Fore.CYAN}Choose type of artifact:{Style.RESET_ALL}")
-        for i in type_dict.items():
-            print(f" {i[0]} = {i[1]}")
-        print('\n (Type 0 to exit)\n')
-        while True:
-            artifact_type = input(' Your pick: ').strip().lower()
-            if artifact_type in ('0', 'exit'):
-                break
-            if artifact_type in type_dict or artifact_type in type_dict.values():
-                break
-            else:
-                print(f' {Fore.RED}Please input either the number or the name of the Artifact Type of choice{Style.RESET_ALL}\n')
-        if artifact_type in ('0', 'exit'):
+
+        # type_dict = dict(zip([str(x+1) for x in range(len(artifact_types))], artifact_types))
+        # for i in type_dict.items():
+        #     print(f" {i[0]} = {i[1]}")
+        # print('\n (Type 0 to exit)\n')
+        # while True:
+        #     artifact_type = input(' Your pick: ').strip().lower()
+        #     if artifact_type in ('0', 'exit'):
+        #         break
+        #     if artifact_type in type_dict or artifact_type in type_dict.values():
+        #         break
+        #     else:
+        #         print(f' {Fore.RED}Please input either the number or the name of the Artifact Type of choice{Style.RESET_ALL}\n')
+        # if artifact_type in ('0', 'exit'):
+
+        artifact_type = choose_one(artifact_types, 'Please input either the number or the name of the Artifact Type of choice')
+        if not artifact_type:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
             return 0, last
-        if artifact_type in type_dict:
-            artifact_type = type_dict[artifact_type]
         print(f' {Fore.YELLOW}{artifact_type.capitalize()} selected.{Style.RESET_ALL}')
-
         if artifact_type == 'Flower':
             main_stat = 'HP'
         elif artifact_type == 'Feather':
             main_stat = 'ATK'
         else:
             main_stats = type_to_main_stats[artifact_type]
-            main_stats_dict = dict(zip([str(x+1) for x in range(len(main_stats))], main_stats))
             print(f"\n {Fore.CYAN}Choose artifact Main Stat:{Style.RESET_ALL}")
-            for i in main_stats_dict.items():
-                print(f" {i[0]} = {i[1]}")
-            print('\n (Type 0 to exit)\n')
-            while True:
-                main_stat = input(' Your pick: ').strip().lower()
-                if main_stat in ('0', 'exit'):
-                    break
-                if main_stat in main_stats_dict or main_stat in main_stats_dict.values():
-                    break
-                else:
-                    print(f' {Fore.RED}Please input either the number or the name of the Main Stat of choice{Style.RESET_ALL}\n')
-            if main_stat in ('0', 'exit'):
+
+            # main_stats_dict = dict(zip([str(x+1) for x in range(len(main_stats))], main_stats))
+            # for i in main_stats_dict.items():
+            #     print(f" {i[0]} = {i[1]}")
+            # print('\n (Type 0 to exit)\n')
+            # while True:
+            #     main_stat = input(' Your pick: ').strip().lower()
+            #     if main_stat in ('0', 'exit'):
+            #         break
+            #     if main_stat in main_stats_dict or main_stat in main_stats_dict.values():
+            #         break
+            #     else:
+            #         print(f' {Fore.RED}Please input either the number or the name of the Main Stat of choice{Style.RESET_ALL}\n')
+            # if main_stat in ('0', 'exit'):
+
+            main_stat = choose_one(main_stats, 'Please input either the number or the name of the Main Stat of choice')
+            if not main_stat:
                 print(f' {Fore.LIGHTMAGENTA_EX}Ok, not transmuting artifact anymore{Style.RESET_ALL}\n')
                 return 0, last
-            if main_stat in main_stats_dict:
-                main_stat = main_stats_dict[main_stat]
         print(f' {Fore.YELLOW}Main Stat - {main_stat} selected.{Style.RESET_ALL}')
         print()
 

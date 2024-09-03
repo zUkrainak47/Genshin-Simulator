@@ -185,7 +185,7 @@ def load_settings():
     color_map_3 = {0: Fore.BLUE, 1: Fore.LIGHTBLUE_EX}
     color_map_4 = {0: Fore.MAGENTA, 1: Fore.LIGHTMAGENTA_EX}
     color_map_5 = {0: Fore.YELLOW, 1: Fore.LIGHTYELLOW_EX}
-    color_map = {3: color_map_3[settings[0][0]], 4: color_map_4[settings[0][1]], 5: color_map_5[settings[0][2]]}
+    color_map = {3: color_map_3[settings[0][0]], 4: color_map_4[settings[0][1]], 5: color_map_5[settings[0][2]], 4.5: Fore.RED}
     threshold1, threshold2, threshold3 = settings[1]
 
 
@@ -351,6 +351,24 @@ def print_progress_bar(index, total, bar_len=36, title='Please wait'):
     togo_str = '░'*int(togo)
 
     print(f'\r {title}: [{done_str}{togo_str}] - {percent_done}% done', end='')
+
+
+def choose_one(items, error_message):
+    items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
+    for item in items_dict.items():
+        print(f" {item[0]} = {item[1]}")
+    print('\n (Type 0 to exit)\n')
+    while True:
+        new1 = input(' Your pick: ').strip().lower()
+        if new1 in ('0', 'exit'):
+            return 0
+        if new1 in items_dict or new1 in items_dict.values():
+            break
+        else:
+            print(f' {Fore.RED}{error_message}{Style.RESET_ALL}\n')
+    if new1 in items_dict:
+        new1 = items_dict[new1]
+    return new1
 
 
 class Character:
@@ -1241,8 +1259,6 @@ win_map_new = {0: f'[{Fore.RED}L{Style.RESET_ALL}] ',
                7: ''}
 win_map_map = {'new': win_map_new, 'old': win_map_old}
 
-color_map = {3: Fore.BLUE, 4: Fore.MAGENTA, 4.5: Fore.RED, 5: Fore.YELLOW}
-
 try:
     pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
     win_map = win_map_map[gacha_system]
@@ -1639,26 +1655,31 @@ while True:
         if not last_banner:
             print_banner('Current')
         print()
-        m = {"1": "character", "2": "weapon", "3": "chronicled", "4": "standard"}
         print(f" {Fore.CYAN}Choose type of new banner:{Style.RESET_ALL}")
-        for i in m.items():
-            print(f" {i[0]} = {i[1]}")
-        print('\n (Type 0 to exit)\n')
-        while True:
-            new1 = input(' Your pick: ').strip().lower()
-            if new1 in ('0', 'exit'):
-                break
-            if new1 in m or new1 in m.values():
-                break
-            else:
-                print(f' {Fore.RED}Please input either the number or the name of the banner type of choice{Style.RESET_ALL}\n')
-        if new1 in ('0', 'exit'):
+        new1 = choose_one(['character', 'weapon', 'chronicled', 'standard'], 'Please input either the number or the name of the banner type of choice')
+        # for i in m.items():
+        #     print(f" {i[0]} = {i[1]}")
+        # print('\n (Type 0 to exit)\n')
+        # while True:
+        #     new1 = input(' Your pick: ').strip().lower()
+        #     if new1 in ('0', 'exit'):
+        #         break
+        #     if new1 in m or new1 in m.values():
+        #         break
+        #     else:
+        #         print(f' {Fore.RED}Please input either the number or the name of the banner type of choice{Style.RESET_ALL}\n')
+        # if new1 in ('0', 'exit'):
+        #     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
+        #     continue
+        # if new1 in m:
+        #     new1 = m[new1]
+        # print(f' {Fore.YELLOW}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
+
+        if not new1:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
             continue
-        if new1 in m:
-            new1 = m[new1]
-        print(f' {Fore.YELLOW}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
 
+        print(f' {Fore.YELLOW}{new1.capitalize()} banner selected.{Style.RESET_ALL}')
         if new1 == 'standard':
             user_banner_input = [new1]
 
@@ -1692,51 +1713,56 @@ while True:
                 user_banner_input = [new1, new2]
 
             elif new1 == 'chronicled':
-                m = {str(q): w for q, w in zip(range(1, len(chronicled_banner_list)+1), chronicled_banner_list.keys())}
-                for i in m.items():
-                    print(f" {i[0]} = {i[1]}")
-                print('\n (Type 0 to exit)\n')
+                new2 = choose_one(chronicled_banner_list.keys(), "That's not a banner that's available! Try again")
+                # m = {str(q): w for q, w in zip(range(1, len(chronicled_banner_list)+1), chronicled_banner_list.keys())}
+                # for i in m.items():
+                #     print(f" {i[0]} = {i[1]}")
+                # print('\n (Type 0 to exit)\n')
+                #
+                # while True:
+                #     new2 = input(' Choose one: ').strip().lower()
+                #     if new2 in ('0', 'exit'):
+                #         break
+                #     if new2 not in m and new2 not in m.values():
+                #         print(f" {Fore.RED}That's not a banner that's available! Try again{Style.RESET_ALL}\n")
+                #     else:
+                #         if new2 in m:
+                #             new2 = m[new2]
+                #         print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
+                #         break
 
-                while True:
-                    new2 = input(' Choose one: ').strip().lower()
-                    if new2 in ('0', 'exit'):
-                        break
-                    if new2 not in m and new2 not in m.values():
-                        print(f" {Fore.RED}That's not a banner that's available! Try again{Style.RESET_ALL}\n")
-                    else:
-                        if new2 in m:
-                            new2 = m[new2]
-                        print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
-                        break
-
-                if new2 in ('0', 'exit'):
+                if not new2:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
                     continue
+                print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
+
                 print(f'\n {Fore.CYAN}Choose your Chronicled Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
                 options = ([i.name for i in chronicled_banner_list[new2]['characters']['5-stars']] +
                            [i.name for i in chronicled_banner_list[new2]['weapons']['5-stars']])
-                m = {str(q): w for q, w in zip(range(1, len(options)+1), options)}
-                for i in m.items():
-                    print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
-                print('\n (Type 0 to exit)\n')
-
-                while True:
-                    new3 = input(' Choose one: ').strip()
-                    if new3 in ('0', 'exit'):
-                        break
-                    if new3 not in m and new3 not in m.values():
-                        print(f" {Fore.RED}That's not a valid pick! Try again\n"
-                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
-                    else:
-                        if new3 in m:
-                            new3 = m[new3]
-                        print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
-                        break
+                new3 = choose_one(options, f"That's not a valid pick! Try again\n {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number)")
+                # m = {str(q): w for q, w in zip(range(1, len(options)+1), options)}
+                # for i in m.items():
+                #     print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
+                # print('\n (Type 0 to exit)\n')
+                #
+                # while True:
+                #     new3 = input(' Choose one: ').strip()
+                #     if new3 in ('0', 'exit'):
+                #         break
+                #     if new3 not in m and new3 not in m.values():
+                #         print(f" {Fore.RED}That's not a valid pick! Try again\n"
+                #               f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
+                #     else:
+                #         if new3 in m:
+                #             new3 = m[new3]
+                #         print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
+                #         break
 
                 if new3 in ('0', 'exit'):
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing Chronicled Path anymore{Style.RESET_ALL}\n')
                     continue
+                print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                 user_banner_input = [new1, [new2, new3]]
 
             elif new1 == 'weapon':
@@ -1761,33 +1787,35 @@ while True:
                             new2 = m[new2]
                         print(f" Ok, {Fore.YELLOW}{new2}{Style.RESET_ALL} selected")
                         break
-
                 if new2 in ('0', 'exit'):
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not changing banner anymore{Style.RESET_ALL}\n')
                     continue
+
                 print(f'\n {Fore.CYAN}Choose your Epitomized Path now!{Style.RESET_ALL}\n'
                       f' List of available options:\n')
-                m = {"1": weapon_banner_list[new2][0][0].name, "2": weapon_banner_list[new2][0][1].name}
-                for i in m.items():
-                    print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
-                print('\n (Type 0 to exit)\n')
-
-                while True:
-                    new3 = input(' Choose one: ').strip()
-                    if new3 in ('0', 'exit'):
-                        break
-                    if new3 not in m and new3 not in m.values():
-                        print(f" {Fore.RED}That's not a valid pick! Try again\n"
-                              f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
-                    else:
-                        if new3 in m:
-                            new3 = m[new3]
-                        print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
-                        break
+                new3 = choose_one([weapon_banner_list[new2][0][0].name, weapon_banner_list[new2][0][1].name], f"That's not a valid pick! Try again\n {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number)")
+                # m = {"1": weapon_banner_list[new2][0][0].name, "2": weapon_banner_list[new2][0][1].name}
+                # for i in m.items():
+                #     print(f" {i[0]} = {Fore.YELLOW}{i[1]}{Style.RESET_ALL}")
+                # print('\n (Type 0 to exit)\n')
+                #
+                # while True:
+                #     new3 = input(' Choose one: ').strip()
+                #     if new3 in ('0', 'exit'):
+                #         break
+                #     if new3 not in m and new3 not in m.values():
+                #         print(f" {Fore.RED}That's not a valid pick! Try again\n"
+                #               f" {Fore.LIGHTMAGENTA_EX}Please make sure the capitalization matches (you can also input the number){Style.RESET_ALL}\n")
+                #     else:
+                #         if new3 in m:
+                #             new3 = m[new3]
+                #         print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
+                #         break
 
                 if new3 in ('0', 'exit'):
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing Epitomized Path anymore{Style.RESET_ALL}\n')
                     continue
+                print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                 user_banner_input = [new1, [new2, new3]]
 
         pities['weapon'][2] = 0
