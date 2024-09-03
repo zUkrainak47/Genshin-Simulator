@@ -181,7 +181,7 @@ sets_short = ('    Glad    ', '   Troupe   ',
               '    SHCC    ', '  Obsidian  ',)
 sets_short_dict = dict(zip(sets, sets_short))
 domains = list(zip(sets[2::2], sets[3::2]))
-print(domains)
+# print(domains)
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
 sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
 goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
