@@ -495,6 +495,11 @@ def load_inventory():
         inv = json.loads(data)
         inv = [Artifact(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8]) for a in inv]
         inv = sort_inventory(inv)
+        if False in [a.set in sets for a in inv]:
+            print(f' {Fore.RED}Some artifacts have invalid sets. Clearing inventory{Style.RESET_ALL}\n')
+            with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
+                file.write('[]')
+            return []
         return inv
 
     except FileNotFoundError:
