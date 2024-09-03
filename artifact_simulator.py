@@ -735,7 +735,8 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
             t_now = list_of_artifacts[needed_indexes[this_index]].type
 
             if t_now != t_last:
-                print(f'{(len(str(current_index + 1))-1)*'-'}{first}{t_map[t_now]}{second}')
+                extra_lines = (len(str(current_index + 1))-1)*'-'
+                print(f'{extra_lines}{first}{t_map[t_now]}{second}')
 
         print(f' {current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
 
