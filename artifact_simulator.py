@@ -51,7 +51,7 @@ class Artifact:
     def short(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
         result = f"{val} {self.mainstat} {self.type} (+{self.level})"
-        return result + ' '*(36 - len(result)) + f' - {sets_short_dict[self.set]} - '
+        return result + ' '*(38 - len(result)) + f' - {sets_short_dict[self.set]} - '
 
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
@@ -706,7 +706,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
-    first = '-'*41
+    first = '-'*43
     second = '-'*67
     flowers =  f'--- {Fore.LIGHTCYAN_EX}Flowers{Style.RESET_ALL} ----'
     feathers = f'--- {Fore.LIGHTCYAN_EX}Feathers{Style.RESET_ALL} ---'
