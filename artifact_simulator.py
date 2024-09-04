@@ -162,6 +162,7 @@ sets = ("Gladiator's Finale", "Wanderer's Troupe",                              
         "Marechaussee Hunter", "Golden Troupe", "Song of Days Past",                                           # 4.x
         "Nighttime Whispers in the Echoing Woods", "Fragment of Harmonic Whimsy", "Unfinished Reverie",
         "Scroll of the Hero of Cinder City", "Obsidian Codex", )                                               # 5.x
+sort_order_sets = {set_name: len(sets)-number for number, set_name in enumerate(sets)}
 sets_short = ('    Glad    ', '   Troupe   ',
               '  Noblesse  ', 'Bloodstained',
               '  Maidens   ', '     VV     ',
@@ -682,7 +683,7 @@ def save_settings_to_file():
 
 
 def sort_inventory(artifacts):
-    return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level))
+    return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level, sort_order_sets[x.set]))
 
 
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
