@@ -8,7 +8,7 @@ If you find any bugs, please report them to me :)
 
 I made a [tutorial](https://youtu.be/SREP-kVmuGo)!
 
-Alternatively, you can access the simulator in replit. In order to do that click this button and Fork & Run (though I recommend setting it up locally)
+Alternatively, you can access the simulator in replit. In order to do that click this button and Fork & Run (though I recommend setting it up locally as shown in the tutorial above)
 
 [![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator?v=1)
 
