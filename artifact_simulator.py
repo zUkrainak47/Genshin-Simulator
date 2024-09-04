@@ -541,7 +541,7 @@ def load_settings():
                 print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
                 settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
                 save_settings_to_file()
-            elif not isinstance(resin_maximum, int) or resin_maximum < 180:
+            elif not isinstance(resin_maximum, int) or resin_maximum < 180 or resin_maximum > 1000:
                 print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
                 settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
                 save_settings_to_file()
