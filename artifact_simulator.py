@@ -683,7 +683,7 @@ def save_settings_to_file():
 
 
 def sort_inventory(artifacts):
-    return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_mainstat[x.mainstat], -x.level, sort_order_sets[x.set]))
+    return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_sets[x.set], sort_order_mainstat[x.mainstat], -x.level))
 
 
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
