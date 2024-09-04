@@ -2,15 +2,13 @@
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
 With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wish System and the Artifact System.
 
-If you find any bugs, report them to me :)
+If you find any bugs, please report them to me :)
 
 ### How do I start simulating Genshin Impact?
 
-First you need to download or clone the repository on your device (i know) \
-Next, locate `simulator.py`. You can access both simulators from there! \
-Alternatively, you can run `wish_simulator.py` or `artifact_simulator.py` to access the respective simulator directly.
+I made a [tutorial](https://youtu.be/SREP-kVmuGo)!
 
-Or  click this button and Fork & Run on replit
+Alternatively, you can access the simulator in replit. In order to do that click this button and Fork & Run (though I recommend setting it up locally)
 
 [![Run on Replit](https://user-images.githubusercontent.com/50180265/221977287-4622854b-8c89-4f75-81af-eee6058a20fa.png)](https://replit.com/@zUkrainak47/Genshin-Simulator?v=1)
 
