@@ -165,7 +165,7 @@ sets = ("Gladiator's Finale", "Wanderer's Troupe",                              
 sort_order_sets = {set_name: len(sets)-number for number, set_name in enumerate(sets)}
 sets_short = ('    Glad    ', '   Troupe   ',
               '  Noblesse  ', 'Bloodstained',
-              '  Maidens   ', '     VV     ',
+              '   Maiden   ', '     VV     ',
               '  Archaic   ', '   Bolide   ',
               '     TS     ', '     TF     ',
               ' Lavawalker ', '     CW     ',
@@ -176,7 +176,7 @@ sets_short = ('    Glad    ', '   Troupe   ',
               ' Vermillion ', '   Echoes   ',
               '  Deepwood  ', '   Gilded   ',
               ' Desert Pav ', '    FoPL    ',
-              "  Nymph's   ", "Vourukasha's",
+              "   Nymphs   ", "Vourukasha's",
               '     MH     ', 'GoldenTroupe',
               '    SoDP    ', '    NWEW    ',
               '   Whimsy   ', '  Reverie   ',
@@ -539,18 +539,18 @@ def load_settings():
               )
             ):
                 print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
-                settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+                settings = [[domains[-1], 'domain'], 180]
                 save_settings_to_file()
             elif not isinstance(resin_maximum, int) or resin_maximum < 180 or resin_maximum > 1000:
                 print(f' {Fore.RED}Invalid settings, setting to default{Style.RESET_ALL}')
-                settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+                settings = [[domains[-1], 'domain'], 180]
                 save_settings_to_file()
     except FileNotFoundError:
-        settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+        settings = [[domains[-1], 'domain'], 180]
         save_settings_to_file()
     except:
         print(f' {Fore.RED}Failed to load settings, setting to default{Style.RESET_ALL}')
-        settings = [["Shimenawa's Reminiscence", 'strongbox'], 180]
+        settings = [[domains[-1], 'domain'], 180]
         save_settings_to_file()
     source, resin_max = settings
 
