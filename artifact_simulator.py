@@ -686,6 +686,11 @@ def sort_inventory(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_type[x.type], sort_order_sets[x.set], sort_order_mainstat[x.mainstat], -x.level))
 
 
+def sort_daily(artifacts):
+    # return sorted(artifacts, key=lambda x: (sort_order_sets[x.set], -sort_order_type[x.type], -sort_order_mainstat[x.mainstat]))
+    return sorted(artifacts, key=lambda x: (sort_order_sets[x.set], sort_order_type[x.type],  sort_order_mainstat[x.mainstat]))[::-1]  # yes there is a reason i didn't use reverse=True
+
+
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
                           only_one):
     if artifact.cv() >= min(54.5, cv_want):
@@ -706,8 +711,8 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
-    first = '-'*43
-    second = '-'*67
+    first = '-'*44
+    second = '-'*68
     flowers =  f'--- {Fore.LIGHTCYAN_EX}Flowers{Style.RESET_ALL} ----'
     feathers = f'--- {Fore.LIGHTCYAN_EX}Feathers{Style.RESET_ALL} ---'
     sands =    f'---- {Fore.LIGHTCYAN_EX}Sands{Style.RESET_ALL} -----'
@@ -731,7 +736,8 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
 
     print(f" {Fore.LIGHTMAGENTA_EX}Inventory:{Style.RESET_ALL}\n")
     t1 = list_of_artifacts[needed_indexes[0]].type
-    print(f'{first}{t_map[t1]}{second}')
+    extra_lines = (len(str(needed_indexes[0] + 1))-1)*'-'
+    print(f'{extra_lines}{first}{t_map[t1]}{second}')
 
     for this_index in range(len(needed_indexes)):
         current_index = int(needed_indexes[this_index])
@@ -744,7 +750,7 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
                 extra_lines = (len(str(current_index + 1))-1)*'-'
                 print(f'{extra_lines}{first}{t_map[t_now]}{second}')
 
-        print(f' {current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
+        print(f' #{current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
 
 
 def get_indexes(user_input):
@@ -864,7 +870,7 @@ def print_help():
         f' {Fore.BLUE}+{Style.RESET_ALL} = upgrade it to next tier\n'     # a+, a +
         f' {Fore.BLUE}++{Style.RESET_ALL} = upgrade it to +20\n'          # a++, a ++
         '\n'
-        f' {Fore.BLUE}s{Style.RESET_ALL} = save to inventory\n'        # save
+        f' {Fore.BLUE}s{Style.RESET_ALL} = save to inventory (shows index of artifact if it is already saved)\n'        # save
         f' {Fore.BLUE}del{Style.RESET_ALL} = remove/delete from inventory\n'  # d, delete, rm, remove
         f'\n'
         f' {Fore.LIGHTCYAN_EX}r{Style.RESET_ALL} = re-roll artifact\n'
@@ -881,7 +887,7 @@ def print_help():
         f' {Fore.LIGHTCYAN_EX}inv{Style.RESET_ALL} = show inventory\n'  # inventory
         # this is true for every other inventory command too
         '\n'
-        f' {Fore.CYAN}inv {Fore.MAGENTA}[indexes]{Style.RESET_ALL} = view artifacts from inventory (use indexes from \'inv\' view)\n'
+        f' {Fore.CYAN}inv {Fore.MAGENTA}[indexes]{Style.RESET_ALL} = view artifacts from inventory. Using 1 index also selects the artifact\n'
         f' {Fore.CYAN}inv {Fore.MAGENTA}[indexes]{Fore.BLUE} +/++/cv/rv/del{Style.RESET_ALL} = perform action with artifacts from the inventory (pick one)\n'
         '\n'
         f' {Fore.GREEN}VALID INDEXING:{Style.RESET_ALL} inv 3 | inv 1,4 | inv 1-5 | inv 9,2-6 | inv 5-35\n'
@@ -948,10 +954,12 @@ def show_index_changes(old_list, new_list):
     if index_differences:
         counter = 0
         print(f' {Fore.LIGHTMAGENTA_EX}SOME INVENTORY INDEXES CHANGED:{Style.RESET_ALL}')
-        for new, old in index_differences:
+        for new, old in index_differences[::-1]:
+            if new+1 == 0:
+                continue
             counter += 1
             print(f' {old + 1} -> {new + 1}', end='')
-            if counter >= 25:
+            if counter >= 5:
                 print('...')
                 print(f' Check your inventory to see all {len(index_differences)} changes')
                 break
@@ -1014,12 +1022,9 @@ art.print_stats()
 
 def print_log():
     for this_index in range(1, len(artifact_log) + 1):
-        if art == artifact_log[-this_index]:
-            color = Fore.GREEN
-        else:
-            color = ''
-        print(
-            f' {color}{this_index}) {artifact_log[-this_index].short()} {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
+        color = Fore.GREEN if art == artifact_log[-this_index] else ''
+        index_to_show = this_index if not artifact_log[-this_index] in artifact_list else '#' + str(artifact_list.index(artifact_log[-this_index]) + 1)
+        print(f' {color}{index_to_show}) {artifact_log[-this_index].short()} {artifact_log[-this_index].subs()}{Style.RESET_ALL}')
     print()
 
 
@@ -1155,16 +1160,38 @@ while True:
         print()
 
     elif user_command in ('+', 'a+', 'a +'):
-        upgrade_to_next_tier(art, True, True)
         if art in artifact_list:
-            artifact_list = sort_inventory(artifact_list)
+            old_index = artifact_list.index(art)
+            upgrade_to_next_tier(art, True, True)
+
+            artifact_list_new = sort_inventory(artifact_list)
+            new_index = artifact_list_new.index(art)
+            show_index_changes(artifact_list, artifact_list_new)
+
+            artifact_list = artifact_list_new
             save_inventory_to_file(artifact_list)
 
+            if old_index != new_index:
+                print(f' New inventory index: #{new_index+1}\n')
+        else:
+            upgrade_to_next_tier(art, True, True)
+
     elif user_command in ('++', 'a++', 'a ++'):
-        upgrade_to_max_tier(art, 2, True)
         if art in artifact_list:
-            artifact_list = sort_inventory(artifact_list)
+            old_index = artifact_list.index(art)
+            upgrade_to_max_tier(art, 2, True)
+
+            artifact_list_new = sort_inventory(artifact_list)
+            new_index = artifact_list_new.index(art)
+            show_index_changes(artifact_list, artifact_list_new)
+
+            artifact_list = artifact_list_new
             save_inventory_to_file(artifact_list)
+
+            if old_index != new_index:
+                print(f' New inventory index: #{new_index+1}\n')
+        else:
+            upgrade_to_max_tier(art, 2, True)
 
     elif user_command == 'r':
         print(f' {Fore.LIGHTMAGENTA_EX}Re-rolling...{Style.RESET_ALL}\n')
@@ -1284,7 +1311,7 @@ while True:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
 
-                print(f' {Fore.LIGHTGREEN_EX}{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
+                print(f' {Fore.LIGHTGREEN_EX}{cmd} new +20 artifact{"s" if cmd > 1 else ""} added to inventory. {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory{Style.RESET_ALL}\n')
                 show_index_changes(artifact_list_old, artifact_list)
                 continue
                 # print_inventory(artifact_list)
@@ -1322,7 +1349,7 @@ while True:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
 
-                print(f' {Fore.LIGHTGREEN_EX}{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory{Style.RESET_ALL}\n')
+                print(f' {Fore.LIGHTGREEN_EX}{cmd} new +0 artifact{"s" if cmd > 1 else ""} added to inventory\n {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory{Style.RESET_ALL}\n')
                 show_index_changes(artifact_list_old, artifact_list)
                 continue
                 # print_inventory(artifact_list)
@@ -1347,7 +1374,7 @@ while True:
                       f' {Fore.LIGHTMAGENTA_EX}Delete some artifacts first to continue saving.\n'
                       f' You may still generate artifacts without saving them.{Style.RESET_ALL}\n')
         else:
-            print(f' {Fore.LIGHTMAGENTA_EX}Already saved this artifact{Style.RESET_ALL}\n')
+            print(f' {Fore.LIGHTMAGENTA_EX}Already saved this artifact - #{artifact_list.index(art)+1}{Style.RESET_ALL}\n')
 
     elif user_command in ('d', 'del', 'delete', 'rm', 'remove'):
         if art in artifact_list:
@@ -1426,19 +1453,21 @@ while True:
                 for index, iterative_index in zip(indexes, range(len(arti_list))):
                     if cmd == '+':
                         if do_print:
-                            print(f' {index + 1})', end='')
+                            print(f' #{index + 1})', end='')
                         upgrade_to_next_tier(arti_list[iterative_index], do_print)
+                        old_index = artifact_list.index(arti_list[iterative_index])
 
                     elif cmd == '++':
                         if do_print:
-                            print(f' {index + 1})', end='')
+                            print(f' #{index + 1})', end='')
                         upgrade_to_max_tier(arti_list[iterative_index], do_print)
+                        old_index = artifact_list.index(arti_list[iterative_index])
 
                     elif cmd == 'rv':
-                        print(f' {index + 1}) RV: {arti_list[iterative_index].rv()}%')
+                        print(f' #{index + 1}) RV: {arti_list[iterative_index].rv()}%')
 
                     elif cmd == 'cv':
-                        print(f' {index + 1}) CV: {arti_list[iterative_index].cv()}')
+                        print(f' #{index + 1}) CV: {arti_list[iterative_index].cv()}')
 
                     elif cmd in ('d', 'del', 'delete', 'rm', 'remove'):
                         if arti_list[iterative_index] in artifact_list:
@@ -1454,15 +1483,28 @@ while True:
 
                 if cmd in ('+', '++'):
                     if not do_print:
-                        print(f" {Fore.LIGHTGREEN_EX}Done! Artifacts upgraded{Style.RESET_ALL}\n")
-                    elif len(indexes) > 1:
+                        print(f" {Fore.LIGHTGREEN_EX}Done! Artifacts upgraded{Style.RESET_ALL}")
+
+                    if len(indexes) != 1:
+                        artifact_list_new = sort_inventory(artifact_list)
+                        show_index_changes(artifact_list, artifact_list_new)
+
+                        artifact_list = artifact_list_new
+                        save_inventory_to_file(artifact_list)
+
                         print()
 
-                    artifact_list_new = sort_inventory(artifact_list)
-                    show_index_changes(artifact_list, artifact_list_new)
+                    else:
+                        artifact_list_new = sort_inventory(artifact_list)
+                        show_index_changes(artifact_list, artifact_list_new)
 
-                    artifact_list = artifact_list_new
-                    save_inventory_to_file(artifact_list)
+                        artifact_list = artifact_list_new
+                        save_inventory_to_file(artifact_list)
+
+                        new_index = artifact_list_new.index(arti_list[iterative_index])
+
+                        if old_index != new_index:
+                            print(f' New inventory index: #{new_index + 1}\n')
 
                 if cmd in ('cv', 'rv'):
                     print()
@@ -1495,6 +1537,7 @@ while True:
 
                 if cmd <= len(artifact_list) and cmd != 0:
                     print()
+                    art = artifact_list[int(cmd) - 1]
                     artifact_list[int(cmd) - 1].print_stats()
 
                 else:
@@ -1513,13 +1556,13 @@ while True:
 
             elif cmd == 'cv':
                 big_cv = max(artifact_list, key=lambda x: x.cv())
-                print(f' {artifact_list.index(big_cv) + 1}) {big_cv} - {big_cv.subs()}')
+                print(f' #{artifact_list.index(big_cv) + 1}) {big_cv} - {big_cv.subs()}')
                 print(f' CV: {big_cv.cv()}')
                 print()
 
             elif cmd == 'rv':
                 big_rv = max(artifact_list, key=lambda x: x.rv())
-                print(f' {artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
+                print(f' #{artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
                 print(f' RV: {big_rv.rv()}%')
                 print()
 
@@ -1656,7 +1699,7 @@ while True:
             if max_resin > 1000:
                 print(f" {Fore.RED}Alright man, let's keep this reasonable. No more than 1000. Try again{Style.RESET_ALL}\n")
                 continue
-            resin_max = max_resin
+            resin_max = max_resin - max_resin % 20
             print(f' {Fore.LIGHTGREEN_EX}Daily resin set to {resin_max}{Style.RESET_ALL}\n')
             settings[1] = resin_max
             save_settings_to_file()
@@ -1675,25 +1718,33 @@ while True:
         if domain_set[0]:
             runs = resin_max//20
             artifact_log = []
+            amount = 0
+            save_success_message = ''
+            save_success = True
             while runs:
                 runs -= 1
-                amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
-                for k in range(amount[0]):
-                    art = create_artifact(domain_set)
-                    artifact_log.append(art)
-                    if save and len(artifact_list) < 100000:
+                amount += choices((1, 2), weights=(28, 2))[0]  # 6.66% chance for 2 artifacts
+            for k in range(amount):
+                art = create_artifact(domain_set)
+                artifact_log.append(art)
+                if save:
+                    if len(artifact_list) < 100000:
                         artifact_list.append(art)
-            if save and len(artifact_list) < 100000:
+                    else:
+                        save_success = False
+            artifact_log = sort_daily(artifact_log)
+            if save:
                 artifact_list = sort_inventory(artifact_list)
                 save_inventory_to_file(artifact_list)
+                if save_success:
+                    save_success_message = f' {Fore.LIGHTGREEN_EX}Saving successful! {len(artifact_list)} artifact{"s" if len(artifact_list) != 1 else ""} in inventory{Style.RESET_ALL}\n'
+                else:
+                    print(f' {Fore.RED}Saving of one or more artifacts unsuccessful, inventory full (100k){Style.RESET_ALL}\n')
 
-                for i in range(1, len(artifact_log)+1):
-                    print(f' {Fore.LIGHTGREEN_EX}Saved (#{artifact_list.index(artifact_log[-i]) + 1})')
-                len_artifact_list = len(artifact_list)
-                print(f' {len_artifact_list} artifacts in inventory{Style.RESET_ALL}\n')
-
-            print(f' {Fore.LIGHTCYAN_EX}Daily resin spent successfully!{Style.RESET_ALL}\n'
-                  f' You can move up and down in the list by typing log+ and log- (optional number after, e.g. "log- 5")\n')
+            print(f' {Fore.LIGHTCYAN_EX}Daily {resin_max} resin spent successfully! You got {amount} artifacts!{Style.RESET_ALL}')
+            print(save_success_message, end='')
+            print(f' You can move up and down in the list by typing log+ and log- (optional number after, e.g. "log- 5")\n')
+            art = artifact_log[-1]
             print_log()
 
         else:
