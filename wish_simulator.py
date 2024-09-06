@@ -1234,7 +1234,7 @@ def print_history_page():  # no idea how this works anymore
     for cc, number in history[print_from:print_to:-1]:
         id_ = len_history - cc
         # print(len_history - history[print_to][0])
-        add_extra_space = len(str(len_history - history[print_to][0])) - len(str(id_))  # WHAT DID I DO????
+        add_extra_space = len(str(len_history - history[print_to+1][0])) - len(str(id_))  # WHAT DID I DO????
         print(color_map[number_to_item_dict[number].rarity] + f'    {id_}.{add_extra_space * " "}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
