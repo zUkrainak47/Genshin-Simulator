@@ -1991,7 +1991,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         continue
 
     if user_command == 'load':
-        Path(".\\banner_info").mkdir(parents=True, exist_ok=True)
+        Path('wish_simulator_resources').mkdir(parents=True, exist_ok=True)
         try:
             pities, count, five_count, four_count, unique_five_char_count, unique_five_weap_count, unique_four_weap_count, gacha_system = load_info()
             print(Fore.LIGHTGREEN_EX + ' Loaded additional information successfully!' + Style.RESET_ALL)

@@ -12,7 +12,7 @@ def jsonKeys2int(x):
 
 
 try:
-    with open(Path('banner_info', 'character_distribution.txt')) as file:
+    with open(Path('wish_simulator_resources', 'character_distribution.txt')) as file:
         data = file.read()
     character_distribution = json.loads(data, object_hook=jsonKeys2int)
     num = character_distribution.pop(100)
@@ -28,7 +28,8 @@ try:
     plt.title(f'Distribution of 5★ characters per pity (size = {num:,} pulls)')
     plt.grid()
     plt.tight_layout()
-    plt.savefig(f'.\\banner_info\\character distribution (size = {num}).png', dpi=500)
+    Path('wish_simulator_resources', 'visualizations').mkdir(parents=True, exist_ok=True)
+    plt.savefig(Path('wish_simulator_resources', 'visualizations', f'character distribution (size = {num}).png'), dpi=500)
     plt.show()
     print(' Done')
 
