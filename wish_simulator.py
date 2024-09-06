@@ -2090,10 +2090,10 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 continue
 
             else:
-                line0 = f'number <= {Fore.RED}{settings[1][0]:,}{Style.RESET_ALL}'
-                line1 = f'{Fore.RED}{settings[1][0]:,}{Style.RESET_ALL} < number <= {Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL}'
-                line2 = f'{Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL} < number <= {Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL}'
-                line3 = f'{Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL} < number'
+                line0 = f'number < {Fore.RED}{settings[1][0]:,}{Style.RESET_ALL}'
+                line1 = f'{Fore.RED}{settings[1][0]:,}{Style.RESET_ALL} <= number < {Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL}'
+                line2 = f'{Fore.GREEN}{settings[1][1]:,}{Style.RESET_ALL} <= number < {Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL}'
+                line3 = f'{Fore.BLUE}{settings[1][2]:,}{Style.RESET_ALL} <= number'
                 line0_length = len(str(line0))
                 line1_length = len(str(line1))
                 line2_length = len(str(line2))
@@ -2497,13 +2497,13 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     if user_command <= 1000000000:
         print()
-        verbose_threshold = (7 - (user_command <= 10000000) - (user_command <= threshold3) -
-                             (user_command <= threshold2) - (user_command <= threshold1))
+        verbose_threshold = (7 - (user_command < 10000000) - (user_command < threshold3) -
+                             (user_command < threshold2) - (user_command < threshold1))
         # (default values used for readability)
-        # pulls <= 10k = show every pull
-        # 10k < pulls <= 100k = show 4* and 5*
-        # 100k < pulls <= 1M = show only 5*
-        # 1M < pulls = show progress bar instead and stop showing "10 PULLS WITHOUT A 4★" and radiance messages
+        # pulls < 10k = show every pull
+        # 10k <= pulls < 100k = show 4* and 5*
+        # 100k <= pulls < 1M = show only 5*
+        # 1M <= pulls = show progress bar instead and stop showing "10 PULLS WITHOUT A 4★" and radiance messages
         # comparison to 10M is made just in case ill need it in the future
 
         if user_command > 1000000:  # if number bigger than 1 million
