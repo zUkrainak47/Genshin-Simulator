@@ -1322,6 +1322,7 @@ def get_weights(num):
     i_caved_and_made_this_a_dictionary = {0: [50, 50, 0], 1: [50, 47.5, 2.5], 2: [50, 25, 25], 3: [50, 0, 50]}
     return i_caved_and_made_this_a_dictionary[num]
 
+
 def make_pull(banner_info, pity):
     radiance = False
     five_star_chance, four_star_chance = get_chances(banner_info[0], pity)
@@ -2367,7 +2368,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                     print(f' {Fore.RED}Change your banner type to {Fore.YELLOW}weapon {Fore.RED}first, then type the "viz" command again{Style.RESET_ALL}')
                     continue
 
-    if user_command == 'h':
+    if user_command in ('h', 'history'):
         rarities = [3, 4, 5]
         history = list(enumerate(wish_history[banner_of_choice[0]]))
         if len(wish_history[banner_of_choice[0]]):
@@ -2567,6 +2568,9 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 five_count += 1
                 pity_info[-1][1] += 1
 
+            if user_banner_input[0] == 'character':
+                if verbose_threshold < 6 and rad:
+                    print(rad)
             if res.rarity >= verbose_threshold:
                 print(" " + Style.RESET_ALL + f'{win_map[w]}{color_map[res.rarity]}{res.name}{f", {p} pity" if res.rarity >= 4 else ""}')
             if verbose_threshold >= 6 and i % progress_bar_number == 0:
@@ -2575,9 +2579,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
             if user_banner_input[0] != 'standard':
                 if verbose_threshold < 6 and pity_info[1] >= (10 - (user_banner_input[0] == 'weapon')):
                     print(" " + Fore.CYAN + f"{pity_info[1]} PULLS WITHOUT A 4★!" + Style.RESET_ALL)
-            if user_banner_input[0] == 'character':
-                if verbose_threshold < 6 and rad:
-                    print(rad)
+
         if verbose_threshold >= 6:
             print(f"\r {Fore.LIGHTGREEN_EX}Wishing complete - 100%{Style.RESET_ALL}" + ' '*50)
         # print(wish_history)
