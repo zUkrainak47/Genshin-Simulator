@@ -1224,17 +1224,19 @@ def print_inventory_box():
 
 def print_history_page():  # no idea how this works anymore
     global num_of_pages, page
-    len_history = len(wish_history[banner_of_choice[0]])
-    num_of_pages = (len(history) - 1) // 25 + 1
+    len_whole_history = len(wish_history[banner_of_choice[0]])
+    len_history = len(history)
+    num_of_pages = (len_history - 1) // 25 + 1
     if page > num_of_pages:
         page = num_of_pages
     print_from = -((page - 1) * 25) - 1
     print_to = -(min(page * 25, len_history)) - 1
+    # print(print_to)
     print(Style.RESET_ALL + '    ' + '-' * 58)
     for cc, number in history[print_from:print_to:-1]:
-        id_ = len_history - cc
+        id_ = len_whole_history - cc
         # print(len_history - history[print_to][0])
-        add_extra_space = len(str(len_history - history[print_to+1][0])) - len(str(id_))  # WHAT DID I DO????
+        add_extra_space = len(str(len_whole_history - history[print_to+1][0])) - len(str(id_))  # WHAT DID I DO????
         print(color_map[number_to_item_dict[number].rarity] + f'    {id_}.{add_extra_space * " "}',
               number_to_item_dict[number].name)
     print(Style.RESET_ALL + '    ' + '-' * 58)
