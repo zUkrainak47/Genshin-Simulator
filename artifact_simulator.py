@@ -1152,6 +1152,9 @@ while True:
         absolute_generated_domain = 0
         absolute_generated_strongbox = 0
         absolute_generated_abyss = 0
+        win_generated_domain = 0
+        win_generated_strongbox = 0
+        win_generated_abyss = 0
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
@@ -1189,6 +1192,7 @@ while True:
                         if flag:
                             break
                     if flag:
+                        win_generated_abyss += 1
                         break
                 resin = 180
 
@@ -1213,6 +1217,7 @@ while True:
                         if flag:
                             break
                     if flag:
+                        win_generated_domain += 1
                         break
 
                 else:
@@ -1227,6 +1232,7 @@ while True:
                                                   artifacts_generated,
                                                   day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
+                            win_generated_strongbox += 1
                             break
                     # print(f'{inventory} left in inventory')
 
@@ -1240,13 +1246,14 @@ while True:
 
         if sample_size > 1:
             print(f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
-            print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""} - artifact #{low[1]}: {low[2].short(True)}{low[2].subs()}')
-            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years) - artifact #{high[1]}: {high[2].short(True)}{high[2].subs()}')
-
+            print(f' Fastest - {Fore.GREEN}{low[0]} day{"s" if low[0] > 1 else ""}{Style.RESET_ALL} - artifact #{low[1]}: {low[2].short(True)}{low[2].subs()}')
+            print(f' Slowest - {Fore.RED}{high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years){Style.RESET_ALL} - artifact #{high[1]}: {high[2].short(True)}{high[2].subs()}')
+            print()
+            print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} were from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
 
-        print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL} (Domains: {Fore.MAGENTA}{absolute_generated_domain}{Style.RESET_ALL}, Strongbox: {Fore.MAGENTA}{absolute_generated_strongbox}{Style.RESET_ALL}, Abyss: {Fore.MAGENTA}{absolute_generated_abyss}{Style.RESET_ALL})\n')
+        print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL} (Domains: {Fore.CYAN}{absolute_generated_domain}{Style.RESET_ALL}, Strongbox: {Fore.CYAN}{absolute_generated_strongbox}{Style.RESET_ALL}, Abyss: {Fore.CYAN}{absolute_generated_abyss}{Style.RESET_ALL})\n')
         print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f' Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
