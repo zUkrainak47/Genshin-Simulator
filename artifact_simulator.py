@@ -9,6 +9,10 @@
 
 import json
 import time
+import datetime
+
+import numpy as np
+import matplotlib.pyplot as plt
 from colorama import init, Fore, Style
 from operator import itemgetter
 from random import choice, choices
@@ -56,7 +60,6 @@ class Artifact:
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
         return f"{self.set}\n {val} {self.mainstat} {self.type} (+{self.level})"
-
 
     def subs(self):
         return {
@@ -113,6 +116,20 @@ class Artifact:
             crit_value += round(self.substats["CRIT Rate%"], 1) * 2
             # for cv like in akasha:
             # crit_value += self.substats["CRIT Rate%"] * 2
+        return round(crit_value, 1)
+
+    def cv_real(self):
+        crit_value = 0
+        if "CRIT DMG%" in self.substats:
+            # for eyeball:
+            # crit_value += round(self.substats["CRIT DMG%"], 1)
+            # for cv like in akasha:
+            crit_value += self.substats["CRIT DMG%"]
+        if "CRIT Rate%" in self.substats:
+            # for eyeball:
+            # crit_value += round(self.substats["CRIT Rate%"], 1) * 2
+            # for cv like in akasha:
+            crit_value += self.substats["CRIT Rate%"] * 2
         return round(crit_value, 1)
 
     def rv(self):
@@ -283,6 +300,7 @@ max_rolls = {
     'CRIT DMG%': 7.7699
 }
 possible_rolls = (0.7, 0.8, 0.9, 1.0)
+possible_cvs = [i / 10 for i in range(545)]
 
 sands_main_stats_weights = (26.68, 26.66, 26.66, 10.0, 10.0)
 goblet_main_stats_weights = (5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 19.25,
@@ -698,10 +716,10 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
         artifacts.append(artifact_number)
 
         if fastest[0] == 0 or day_number < fastest[0]:
-            fastest = (day_number, artifact)
+            fastest = (day_number, artifact_number, artifact)
 
         if day_number > slowest[0]:
-            slowest = (day_number, artifact)
+            slowest = (day_number, artifact_number, artifact)
         # print(artifact.subs())
 
         if not only_one:
@@ -751,6 +769,23 @@ def print_inventory(list_of_artifacts, indexes_to_print=None):
                 print(f'{extra_lines}{first}{t_map[t_now]}{second}')
 
         print(f' #{current_index + 1}) {list_of_artifacts[current_index].short()} {list_of_artifacts[current_index].subs()}')
+
+
+def print_progress_bar(ind, total, bar_len=36, title='Please wait'):
+    '''
+    index is expected to be 0 based index.
+    0 <= index < total
+    '''
+    percent_done = (ind+1)/total*100
+    percent_done = round(percent_done, 1)
+
+    done = round(percent_done/(100/bar_len))
+    togo = bar_len-done
+
+    done_str = '█'*int(done)
+    togo_str = '░'*int(togo)
+
+    print(f'\r {title}: [{done_str}{togo_str}] - {percent_done}% done', end='')
 
 
 def get_indexes(user_input):
@@ -903,6 +938,7 @@ def print_help():
         '----------------------------------------- OTHER COMMANDS ----------------------------------------\n'
         '\n'
         f' {Fore.LIGHTCYAN_EX}auto{Style.RESET_ALL} = enter Automation Mode\n'  # auto
+        f' {Fore.LIGHTCYAN_EX}plot{Style.RESET_ALL} = generate a number of artifacts and plot their Crit Values\n'
         '\n'
         f' {Fore.LIGHTCYAN_EX}tr{Style.RESET_ALL} = transmute artifact\n'  # transmute
         f' {Fore.LIGHTCYAN_EX}daily {Fore.BLUE}save{Style.RESET_ALL} = spend daily resin in a domain of choice, save if specified\n'  # daily s
@@ -917,6 +953,62 @@ def print_help():
         '\n'
         '==================================================================================================\n'
         )
+
+
+def insert_average(arr, num):
+    if (num != 12) and (arr[-1] - arr[-2] <= 1):
+        return arr
+    arr = arr[arr >= 0]
+    # Calculate the number of elements in the output array
+    n = arr.shape[0]
+    # Create an array to hold the result, initially twice the size of the input array
+    result = np.empty(2 * n - 1)
+    # Fill the odd indices with the original elements of the array
+    result[::2] = arr
+    # Fill the even indices with the average of adjacent elements
+
+    result[1::2] = (arr[:-1] + arr[1:]) / 2
+
+    if len(result) <= num:
+        return insert_average(result, num)
+
+    return result
+
+
+def plot_that(plot_cv):
+    amount_of_artifacts = sum(plot_cv)
+    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+    ax[0].bar(possible_cvs, plot_cv, label='Data')
+    ax[1].plot(possible_cvs, plot_cv, label='Data')
+    # Plot for the False value (left subplot)
+    ax[0].set_title('Regular')
+    ax[0].set_xlabel("Crit Value")
+    ax[0].set_ylabel("Number of artifacts")
+    ax[0].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+
+    # Plot for the True value (right subplot)
+    ax[1].set_title('Logarithmic')
+    ax[1].set_xlabel("Crit Value")
+    ax[1].set_yscale('log')
+    ax[1].tick_params(axis='x', rotation=60)  # Rotate x-axis labels
+
+    for a in ax:
+        a.grid(True)
+
+    ax[0].set_xticks(possible_cvs[::20])
+    ax[0].set_yticks(insert_average(ax[0].get_yticks(), 11))
+    ax[1].set_xticks(possible_cvs[::20])
+    s = 's' if amount_of_artifacts > 1 else ''
+    ap = 's' if amount_of_artifacts == 1 else ''
+    fig.suptitle(f"Crit Value distribution of {amount_of_artifacts:,} artifact{s}")
+    plt.tight_layout()
+    # plt.grid()
+    Path('artifact_simulator_resources', 'plots', f'(CV distribution) {amount_of_artifacts} sample size').mkdir(parents=True, exist_ok=True)
+    plt.savefig(Path('artifact_simulator_resources', 'plots', f'(CV distribution) {amount_of_artifacts} sample size', f"Plot of {amount_of_artifacts} artifact{s}'{ap} CV{s} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.png"),
+                dpi=900)
+
+    print(" Here you go. This was also saved as a .png file.\n")
+    plt.show()
 
 
 def flatten_list(nested_list):  # thanks saturncloud.io
@@ -1146,8 +1238,8 @@ while True:
 
         if sample_size > 1:
             print(f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
-            print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].short(True)}{low[1].subs()}')
-            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].short(True)}{high[1].subs()}')
+            print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""} - artifact #{low[1]}: {low[2].short(True)}{low[2].subs()}')
+            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years) - artifact #{high[1]}: {high[2].short(True)}{high[2].subs()}')
 
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
@@ -1158,6 +1250,39 @@ while True:
         print()
         print('=' * 27 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 26)
         print()
+
+    elif user_command == 'plot':
+        f = True
+        print(' This allows you to generate a number of artifacts and plot the Crit Values of those artifacts!\n'
+              f' Artifacts are generated from your currently active source (type {Fore.CYAN}source{Style.RESET_ALL} to check)\n')
+        while True:
+            num = input(' How many artifacts to generate: ').strip()
+            if num == '0':
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer plotting (insert racoon gif){Style.RESET_ALL}\n')
+                f = False
+                break
+            elif num == 'source':
+                print(f' Current source is {source[1].capitalize()}\n')
+            elif num.isnumeric():
+                num = int(num)
+                break
+            else:
+                print(f' {Fore.RED}Please input a number{Style.RESET_ALL}\n')
+        if f:
+            print()
+            cvs = {i: 0 for i in possible_cvs}
+            progress_bar_number = num//1000
+            for i in range(num):
+                art, _ = create_and_roll_artifact(source, 0, True)
+                cvs[art.cv_real()] += 1
+                print_progress_bar(i // progress_bar_number, num // progress_bar_number)
+            print(f"\r {Fore.LIGHTGREEN_EX}Generation complete - 100%{Style.RESET_ALL}" + ' '*47+'\n')
+            # plt.bar(cvs.keys(), cvs.values())
+            # plt.show()
+            print(' Ok!')
+            print(' Raw values:', cvs)
+            plot_that(cvs.values())
+
 
     elif user_command in ('+', 'a+', 'a +'):
         if art in artifact_list:
@@ -1656,7 +1781,6 @@ while True:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no longer choosing domain{Style.RESET_ALL}\n')
 
     elif user_command == 'strongbox':
-
         print(f'\n {Fore.CYAN}Choose new artifact set (some aliases are supported):{Style.RESET_ALL}')
         new_source = [choose_one(sets, "That's not a set that is available! Try again", aliases_sets), 'strongbox']
         if new_source[0]:
