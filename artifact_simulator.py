@@ -1005,7 +1005,8 @@ def plot_that(plot_cv):
     plt.tight_layout()
     # plt.grid()
     Path('artifact_simulator_resources', 'plots', f'(CV distribution) {amount_of_artifacts} sample size').mkdir(parents=True, exist_ok=True)
-    plt.savefig(Path('artifact_simulator_resources', 'plots', f'(CV distribution) {amount_of_artifacts} sample size', f"Plot of {amount_of_artifacts} artifact{s}'{ap} CV{s} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.png"),
+    exact_time = str(datetime.datetime.now())[:-7].replace(":", "-")
+    plt.savefig(Path('artifact_simulator_resources', 'plots', f'(CV distribution) {amount_of_artifacts} sample size', f"Plot of {amount_of_artifacts} artifact{s}'{ap} CV{s} at {exact_time}.png"),
                 dpi=900)
 
     print(" Here you go. This was also saved as a .png file.\n")

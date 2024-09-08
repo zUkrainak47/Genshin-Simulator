@@ -505,8 +505,8 @@ if __name__ == "__main__":
     print('Dict:', dict_of_days_average)
     print('List:', days_for_plotting)
     print()
-
-    with open(Path('artifact_simulator_resources', 'plots', f'(Days distribution) {sample_size} sample size', f'{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt'), 'w') as file:
+    exact_time = str(datetime.datetime.now())[:-7].replace(":", "-")
+    with open(Path('artifact_simulator_resources', 'plots', f'(Days distribution) {sample_size} sample size', f'{cv_desired}CV - {sample_size} at {exact_time}.txt'), 'w') as file:
         file.write(json.dumps(days_for_plotting))
 
     plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size, cv_desired)
