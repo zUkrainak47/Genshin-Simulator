@@ -1062,7 +1062,7 @@ while True:
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
-
+        abyss_sets = sets[-2:]
         for i in range(sample_size):
             strongbox_set = choice(sets)
             domain_set = choice(domains)
@@ -1074,7 +1074,7 @@ while True:
             inventory = 0
             flag = False
             print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
-            print(f' Strongbox/Abyss set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}\n Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
+            print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}\n Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}\n Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
 
             while not flag:
                 day += 1
@@ -1082,12 +1082,12 @@ while True:
                 if day % 10000 == 0:
                     print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
 
-                if day % 15 == 1:  # 4 artifacts from abyss every 15 days
+                if day % 30 == 0:  # 4 artifacts from abyss every 30 days
                     for k in range(4):
                         inventory += 1
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact([strongbox_set, "strongbox"], highest)
+                        art, highest = create_and_roll_artifact([choice(abyss_sets), "strongbox"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
