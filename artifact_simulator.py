@@ -142,7 +142,7 @@ class ArtifactEncoder(json.JSONEncoder):
                 artifact.level, artifact.set, artifact.last_upgrade, artifact.roll_value]
 
 
-def choose_one(items, error_message, alias={}):
+def choose_one(items, error_message, alias={}, blank_ok=False):
     items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
     if isinstance(items_dict['1'], tuple) or isinstance(items_dict['1'], list):
         for item in items_dict.items():
@@ -156,6 +156,8 @@ def choose_one(items, error_message, alias={}):
         new1 = input(' Your pick: ').strip()
         if new1 in ('0', 'exit'):
             return 0
+        if not new1 and blank_ok:
+            return 'blank'
         if new1 in items_dict or new1 in items_dict.values():
             break
         if alias and new1.lower() in alias:
@@ -350,8 +352,6 @@ def take_input(defaults=(1, 50)):
             ok2 = True
             cv = defaults[1]
 
-    print(f' Ok, will look for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv))}{Style.RESET_ALL} cv\n')
-    print(f" Running {Fore.LIGHTCYAN_EX}{int(size)}{Style.RESET_ALL} simulation{'s' if int(size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv))}{Style.RESET_ALL} CV.")
     return size, cv
 
 
@@ -644,7 +644,7 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     if highest_cv and artifact.cv() > highest_cv:
         highest_cv = artifact.cv()
         if not silent:
-            print(f' Day {day}: {artifact.cv()} CV ({artifact.short()}) - {artifact.subs()}')
+            print(f' Day {day}: {artifact.cv()} CV ({artifact.short()} {artifact.subs()}')
 
     if silent:
         artifact.last_upgrade = ""
@@ -1137,18 +1137,72 @@ while True:
 
     elif user_command in ('automate', 'auto'):
         print(' Entering Automation Mode...\n')
-        print('='*25 + f' {Fore.LIGHTCYAN_EX}AUTOMATION MODE{Style.RESET_ALL} ' + '='*24)
+        print('='*50 + f' {Fore.LIGHTCYAN_EX}AUTOMATION MODE{Style.RESET_ALL} ' + '='*50)
         sample_size, cv_desired = take_input()
 
         if sample_size == 'exit' or cv_desired == 'exit':
             print(" Going back to normal mode...")
             print()
-            print('=' * 27 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 26)
+            print('=' * 52 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 52)
             print()
             continue
         else:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
+            print(f' Ok, will look for at least {Fore.LIGHTCYAN_EX}{min(54.5, cv_desired)}{Style.RESET_ALL} cv\n')
 
+        print(f' Would you like to view {Fore.CYAN}advanced settings{Style.RESET_ALL}? (leave blank to skip and use defaults)')
+        while True:
+            yesno = input(' Y/n: ').strip().lower()
+            if not yesno or yesno in ('n', '0'):
+                advanced = False
+                print(' Ok, using defaults\n')
+                break
+            if yesno == 'y':
+                advanced = True
+                break
+            else:
+                print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
+        if advanced:
+            print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (blank to use default, 0 to exit advanced settings)')
+            auto_source = choose_one(['Only domains', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1 or 2)!', {}, True)
+            if not auto_source:
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            elif auto_source == 'blank':
+                print(f' {Fore.LIGHTMAGENTA_EX}Setting default: Domains, Strongbox, Abyss{Style.RESET_ALL}\n')
+                auto_source = 'Domains, Strongbox, Abyss'
+            if auto_source == 'Only domains':
+                strongbox_abyss_use = 0
+            else:
+                strongbox_abyss_use = 1
+
+            if auto_source:
+                print(f'\n {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
+                auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
+                if auto_domain == 'blank':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain for every simulation{Style.RESET_ALL}\n')
+                    auto_domain = 'random'
+                if not auto_domain:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+
+                if strongbox_abyss_use:
+                    print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
+                    auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
+                    if auto_strongbox == 'blank':
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
+                        auto_strongbox = 'random'
+                    if not auto_strongbox:
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                else:
+                    auto_strongbox = 'random'
+            else:
+                auto_domain = 'random'
+                auto_strongbox = 'random'
+        else:
+            strongbox_abyss_use = 1
+            auto_domain = 'random'
+            auto_strongbox = 'random'
+
+        print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV.")
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
         absolute_generated_domain = 0
@@ -1163,8 +1217,9 @@ while True:
         sample_size_is_one = sample_size == 1
         abyss_sets = sets[-2:]
         for i in range(sample_size):
-            strongbox_set = choice(sets)
-            domain_set = choice(domains)
+            strongbox_set = choice(sets) if auto_strongbox == 'random' else auto_strongbox
+            domain_set = choice(domains) if auto_domain == 'random' else auto_domain
+
             joined_domain = ', '.join(domain_set)
             c = 0
             day = 0
@@ -1173,7 +1228,10 @@ while True:
             inventory = 0
             flag = False
             print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
-            print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}\n Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}\n Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
+            if strongbox_abyss_use:
+                print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
+                print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
+            print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
 
             while not flag:
                 day += 1
@@ -1181,7 +1239,7 @@ while True:
                 if day % 10000 == 0:
                     print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
 
-                if day % 30 == 0:  # 4 artifacts from abyss every 30 days
+                if strongbox_abyss_use and day % 30 == 0:  # 4 artifacts from abyss every 30 days
                     for k in range(4):
                         inventory += 1
                         total_generated += 1
@@ -1223,7 +1281,7 @@ while True:
                         break
 
                 else:
-                    while inventory >= 3:
+                    while strongbox_abyss_use and inventory >= 3:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
                         total_generated += 1
@@ -1260,7 +1318,7 @@ while True:
         print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f' Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
-        print('=' * 27 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 26)
+        print('=' * 52 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 52)
         print()
 
     elif user_command == 'plot':
