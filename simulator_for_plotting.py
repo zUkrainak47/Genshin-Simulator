@@ -460,7 +460,7 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless
     ax[0].set_yticks(insert_average(ax[0].get_yticks(), 11))
     ax[1].set_xticks(insert_average(ax[1].get_xticks(), 12))
 
-    fig.suptitle(f"Average time to reach Crit Value (sample size = {amount_of_tests})")
+    fig.suptitle(f"Average time to reach Crit Value (sample size = {amount_of_tests:,})")
     plt.tight_layout()
     # plt.grid()
 
@@ -475,7 +475,7 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless
         to_cv = min(int(range_cv[1]), is_int)
     else:
         to_cv = min(range_cv[1], is_int)
-    plt.savefig(Path('artifact_simulator_resources', 'plots', f'sample size = {amount_of_tests}', f'Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png'),
+    plt.savefig(Path('artifact_simulator_resources', 'plots', f'(Days distribution) {amount_of_tests} sample size', f'Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png'),
                 dpi=900)
 
     print("Here you go. This was also saved as a .png file.")
@@ -497,7 +497,7 @@ if __name__ == "__main__":
     sample_size, cv_desired = int(sample_size), float(cv_desired)
     days_it_took_to_reach_desired_cv = []
     artifacts_generated = []
-    Path('artifact_simulator_resources', 'plots', f'sample size = {sample_size}').mkdir(parents=True, exist_ok=True)
+    Path('artifact_simulator_resources', 'plots', f'(Days distribution) {sample_size} sample size').mkdir(parents=True, exist_ok=True)
 
     low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
     high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
@@ -610,7 +610,7 @@ if __name__ == "__main__":
     print('List:', days_for_plotting)
     print()
 
-    with open(Path('artifact_simulator_resources', 'plots', f'sample size = {sample_size}', f'{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt'), 'w') as file:
+    with open(Path('artifact_simulator_resources', 'plots', f'(Days distribution) {sample_size} sample size', f'{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt'), 'w') as file:
         file.write(json.dumps(days_for_plotting))
 
     plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size, cv_desired)
