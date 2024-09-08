@@ -17,6 +17,111 @@ from random import choices, choice
 import matplotlib.pyplot as plt
 import numpy as np
 
+Path('artifact_simulator_resources', 'plots').mkdir(exist_ok=True)
+
+# sets = ("Gladiator's Finale", "Wanderer's Troupe",                                                             # bosses
+#         "Noblesse Oblige", "Bloodstained Chivalry", "Maiden Beloved", "Viridescent Venerer", "Archaic Petra",  # 1.x
+#         "Retracing Bolide", "Thundersoother", "Thundering Fury", "Lavawalker", "Crimson Witch of Flames",
+#         "Blizzard Strayer", "Heart of Depth", "Tenacity of the Millelith", "Pale Flame",
+#         "Shimenawa's Reminiscence", "Emblem of Severed Fate", "Husk of Opulent Dreams", "Ocean-Hued Clam",     # 2.x
+#         "Vermillion Hereafter", "Echoes of an Offering",
+#         "Deepwood Memories", "Gilded Dreams", "Desert Pavilion Chronicle", "Flower of Paradise Lost",          # 3.x
+#         "Nymph's Dream", "Vourukasha's Glow",
+#         "Marechaussee Hunter", "Golden Troupe", "Song of Days Past",                                           # 4.x
+#         "Nighttime Whispers in the Echoing Woods", "Fragment of Harmonic Whimsy", "Unfinished Reverie",
+#         "Scroll of the Hero of Cinder City", "Obsidian Codex", )                                               # 5.x
+# sort_order_sets = {set_name: len(sets)-number for number, set_name in enumerate(sets)}
+# sets_short = ('    Glad    ', '   Troupe   ',
+#               '  Noblesse  ', 'Bloodstained',
+#               '   Maiden   ', '     VV     ',
+#               '  Archaic   ', '   Bolide   ',
+#               '     TS     ', '     TF     ',
+#               ' Lavawalker ', '     CW     ',
+#               '  Blizzard  ', '    HoD     ',
+#               '    TotM    ', ' Pale Flame ',
+#               " Shimenawas ", '    EoSF    ',
+#               '    Husk    ', '    Clam    ',
+#               ' Vermillion ', '   Echoes   ',
+#               '  Deepwood  ', '   Gilded   ',
+#               ' Desert Pav ', '    FoPL    ',
+#               "   Nymphs   ", "Vourukasha's",
+#               '     MH     ', 'GoldenTroupe',
+#               '    SoDP    ', '    NWEW    ',
+#               '   Whimsy   ', '  Reverie   ',
+#               '   Scroll   ', '  Obsidian  ',)
+# aliases_domain = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
+#                   'vv': '2', 'kazuha': '2',
+#                   'maidens': '2',
+#                   'ap': '3', 'petra': '3',
+#                   'bolide': '3',
+#                   'tf': '4', 'keqing': '4', 'razor': '4',
+#                   'cw': '5',
+#                   'blizzard': '6', 'ayaka': '6',
+#                   'hod': '6', 'childe': '6', 'tartaglia': '6',
+#                   'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
+#                   'eula': '7',
+#                   'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8',
+#                   'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8',
+#                   'xq': '8',
+#                   'husk': '9',
+#                   'clam': '9', 'kokomi': '9', 'kok': '9',
+#                   'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
+#                   'echoes': '10', 'ayato': '10',
+#                   'deepwood': '11', 'dm': '11', 'nahida': '11',
+#                   'gilded': '11', 'gd': '11', 'alhaihtam': '11',
+#                   'dpc': '12', 'scara': '12', 'wanderer': '12', 'xіangling': '12',
+#                   'fopl': '12', 'flop': '12',
+#                   'vg': '13', 'dehya': '13',
+#                   'mh': '14', 'neuv': '14', 'neuvillette': '14', 'bat': '14',
+#                   'gt': '14', 'furina': '14', 'fischl': '14',
+#                   'sodp': '15', 'bird': '15', 'xianyun': '15', 'xy': '15',
+#                   'navia': '15',
+#                   'whimsy': '16', 'arle': '16', 'arlecchino': '16', 'father': '16', 'clorinde': '16',
+#                   'emilie': '16',
+#                   'natlan': '17', 'scroll': '17',
+#                   'codex': '17', 'mualani': '17'
+#                   }
+# aliases_sets = {'glad': '1',
+#                 'troupe': '2',
+#                 'no': '3', 'nob': '3', 'noblesse': '3', 'bennett': '3',
+#                 'maidens': '5',
+#                 'vv': '6', 'kazuha': '6',
+#                 'ap': '7', 'petra': '7',
+#                 'bolide': '8',
+#                 'tf': '10', 'keqing': '10', 'razor': '10',
+#                 'cw': '12',
+#                 'blizzard': '13', 'ayaka': '13',
+#                 'hod': '14', 'childe': '14', 'tartaglia': '14',
+#                 'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
+#                 'eula': '16',
+#                 'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17",
+#                 'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18',
+#                 'xq': '18',
+#                 'husk': '19',
+#                 'clam': '20', 'kokomi': '20', 'kok': '20',
+#                 'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
+#                 'echoes': '22', 'ayato': '22',
+#                 'deepwood': '23', 'dm': '23', 'nahida': '23',
+#                 'gilded': '24', 'gd': '24', 'alhaihtam': '24',
+#                 'dpc': '25', 'scara': '25', 'wanderer': '25', 'xіangling': '25',
+#                 'fopl': '26', 'flop': '26',
+#                 'vg': "28", 'dehya': "28",
+#                 'mh': '29', 'neuv': '29', 'neuvillette': '29', 'bat': '29',
+#                 'gt': '30', 'furina': '30', 'fischl': '30',
+#                 'sodp': '31', 'bird': '31', 'xianyun': '31', 'xy': '31',
+#                 'navia': '32',
+#                 'whimsy': '33', 'arle': '33', 'arlecchino': '33', 'father': '33', 'clorinde': '33',
+#                 'emilie': '34',
+#                 'natlan': '35', 'scroll': '35',
+#                 'codex': '36', 'mualani': '36'
+#                 }
+#
+# sets_short_dict = dict(zip(sets, sets_short))
+# domains = list(list(s) for s in (zip(sets[2::2], sets[3::2])))
+#
+# strongbox_set = choice(sets)
+# domain_set = choice(domains)
+# abyss_sets = sets[-2:]
 
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
 sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
@@ -24,10 +129,10 @@ goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
                      'Dendro DMG% Bonus', 'HP%', 'ATK%', 'DEF%', 'EM')
-circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'Crit DMG%', 'Crit RATE%',
+circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'CRIT DMG%', 'CRIT Rate%',
                       'Healing Bonus')
 substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM',
-            'Crit RATE%', 'Crit DMG%')
+            'CRIT Rate%', 'CRIT DMG%')
 flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
 feather_stats = (47, 100, 152, 205, 258, 311)
 hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
@@ -46,8 +151,8 @@ max_rolls = {
     'DEF%': 7.289999,
     'EM': 23.309999,
     'ER%': 6.4800001,
-    'Crit RATE%': 3.889999,
-    'Crit DMG%': 7.769999
+    'CRIT Rate%': 3.889999,
+    'CRIT DMG%': 7.769999
 }
 possible_rolls = (0.7, 0.8, 0.9, 1.0)
 
@@ -59,7 +164,7 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 
 
 class Artifact:
-    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, artifact_set,
+    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level,
                  last_upgrade="", roll_value=0):
         self.type = artifact_type
         self.mainstat = mainstat
@@ -68,22 +173,15 @@ class Artifact:
         self.substats = sub_stats
         self.level = level
         self.last_upgrade = last_upgrade
-        self.set = artifact_set
         self.roll_value = roll_value
 
         if "CRIT Rate%" in self.substats:
             if self.substats["CRIT Rate%"] == 23.0:
                 self.substats["CRIT Rate%"] = 22.9
 
-    def short(self):
-        val = (self.mainstat_value[0])[self.mainstat_value[1]]
-        result = f"{val} {self.mainstat} {self.type} (+{self.level})"
-        return result + ' '*(38 - len(result)) + f' - {sets_short_dict[self.set]} - '
-
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
         return f"{self.set}\n {val} {self.mainstat} {self.type} (+{self.level})"
-
 
     def subs(self):
         return {
@@ -96,7 +194,7 @@ class Artifact:
 
         # 311 ATK Feather (+20)
         # - HP: 418
-        # - Crit DMG%: 14.8
+        # - CRIT DMG%: 14.8
         # - HP%: 14.6
         # - DEF%: 5.8
         print(" ", end='')
@@ -104,7 +202,7 @@ class Artifact:
 
         for sub in self.substats:
             is_percentage = '%' in sub
-            print(f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
+            print(f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{' (+)' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
         print()
@@ -219,8 +317,7 @@ def get_main_stat_value(mainstat):
         return [crit_dmg_stats, 0]
 
 
-def create_artifact(full_source):
-    exact_source, from_where = full_source
+def create_artifact(from_where):
     art_type = choice(artifact_types)
     rv = 0
 
@@ -240,7 +337,7 @@ def create_artifact(full_source):
 
     mainstat_value = get_main_stat_value(mainstat)
     fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
-    artifact_set = exact_source if from_where == 'strongbox' else choice(exact_source)
+    # artifact_set = exact_source if from_where == 'strongbox' else choice(exact_source)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
 
@@ -261,7 +358,7 @@ def create_artifact(full_source):
 
     threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, artifact_set, "", rv)
+    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
 
 
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
@@ -378,10 +475,8 @@ def plot_this(plot_cv, plot_days, range_cv, amount_of_tests, desired_cv, endless
         to_cv = min(int(range_cv[1]), is_int)
     else:
         to_cv = min(range_cv[1], is_int)
-
-    plt.savefig(
-        f'.\\plots\\sample size = {amount_of_tests}\\Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png',
-        dpi=900)
+    plt.savefig(Path('artifact_simulator_resources', 'plots', f'sample size = {amount_of_tests}', f'Plot of {from_cv}CV to {to_cv}CV (size = {amount_of_tests}).png'),
+                dpi=900)
 
     print("Here you go. This was also saved as a .png file.")
     if endless:
@@ -402,6 +497,7 @@ if __name__ == "__main__":
     sample_size, cv_desired = int(sample_size), float(cv_desired)
     days_it_took_to_reach_desired_cv = []
     artifacts_generated = []
+    Path('artifact_simulator_resources', 'plots', f'sample size = {sample_size}').mkdir(parents=True, exist_ok=True)
 
     low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
     high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0))
@@ -435,11 +531,11 @@ if __name__ == "__main__":
             if day % 10000 == 0:
                 print(f'Day {day} - still going')
 
-            if day % 15 == 1:  # 4 artifacts from abyss every 15 days
+            if day % 30 == 0:  # 4 artifacts from abyss every 30 days
                 for k in range(4):
                     inventory += 1
                     total_generated += 1
-                    art, highest = create_and_roll_artifact("abyss", highest, cv_desired, day)
+                    art, highest = create_and_roll_artifact('abyss', highest, cv_desired, day)
                     low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                         compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv, artifacts_generated,
                                               day, total_generated, cv_desired, sample_size_is_one))
@@ -514,11 +610,7 @@ if __name__ == "__main__":
     print('List:', days_for_plotting)
     print()
 
-    Path('plots', f'sample size = {sample_size}').mkdir(parents=True, exist_ok=True)
-
-    with open(Path('plots')
-              / f'sample size = {sample_size}'
-              / '{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt', 'w') as file:
+    with open(Path('artifact_simulator_resources', 'plots', f'sample size = {sample_size}', f'{cv_desired}CV - {sample_size} at {str(datetime.datetime.now())[:-7].replace(":", "-")}.txt'), 'w') as file:
         file.write(json.dumps(days_for_plotting))
 
     plot_this(cv_for_plotting, days_for_plotting, [0.0, cv_desired], sample_size, cv_desired)
