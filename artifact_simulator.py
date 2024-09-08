@@ -209,9 +209,10 @@ aliases_domain = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
                   'hod': '6', 'childe': '6', 'tartaglia': '6',
                   'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
                   'eula': '7',
-                  'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8',
+                  'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8', 'hutao': '8',
                   'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8',
                   'xq': '8',
+                  'yelan': '8',
                   'husk': '9',
                   'clam': '9', 'kokomi': '9', 'kok': '9',
                   'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
@@ -243,9 +244,9 @@ aliases_sets = {'glad': '1',
                 'hod': '14', 'childe': '14', 'tartaglia': '14',
                 'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
                 'eula': '16',
-                'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17",
+                'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17", 'hutao': "17",
                 'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18',
-                'xq': '18',
+                'xq': '18', 'yelan': '18',
                 'husk': '19',
                 'clam': '20', 'kokomi': '20', 'kok': '20',
                 'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
@@ -1249,7 +1250,7 @@ while True:
             print(f' Fastest - {Fore.GREEN}{low[0]} day{"s" if low[0] > 1 else ""}{Style.RESET_ALL} - artifact #{low[1]}: {low[2].short(True)}{low[2].subs()}')
             print(f' Slowest - {Fore.RED}{high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years){Style.RESET_ALL} - artifact #{high[1]}: {high[2].short(True)}{high[2].subs()}')
             print()
-            print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} were from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
+            print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} {'were' if win_generated_domain != 1 else 'was'} from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
 
