@@ -1087,7 +1087,7 @@ while True:
                         inventory += 1
                         total_generated += 1
                         absolute_generated += 1
-                        art, highest = create_and_roll_artifact([choice(abyss_sets), "strongbox"], highest)
+                        art, highest = create_and_roll_artifact([abyss_sets, "abyss"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
                                                   artifacts_generated,
