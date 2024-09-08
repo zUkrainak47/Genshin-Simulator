@@ -1313,6 +1313,9 @@ while True:
             print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} {word} from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
+            print()
+            win_source = 'a domain' if win_generated_domain else 'the strongbox' if win_generated_strongbox else 'the abyss'
+            print(f' The winning artifact was from {Fore.LIGHTCYAN_EX}{win_source}{Style.RESET_ALL}')
 
         print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL} (Domains: {Fore.CYAN}{absolute_generated_domain}{Style.RESET_ALL}, Strongbox: {Fore.CYAN}{absolute_generated_strongbox}{Style.RESET_ALL}, Abyss: {Fore.CYAN}{absolute_generated_abyss}{Style.RESET_ALL})\n')
         print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
