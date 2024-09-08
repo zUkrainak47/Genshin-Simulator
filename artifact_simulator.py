@@ -1149,7 +1149,9 @@ while True:
 
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
-        absolute_generated = 0
+        absolute_generated_domain = 0
+        absolute_generated_strongbox = 0
+        absolute_generated_abyss = 0
         low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
@@ -1178,7 +1180,7 @@ while True:
                     for k in range(4):
                         inventory += 1
                         total_generated += 1
-                        absolute_generated += 1
+                        absolute_generated_abyss += 1
                         art, highest = create_and_roll_artifact([abyss_sets, "abyss"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
@@ -1200,7 +1202,7 @@ while True:
                     # if amount[0] == 2:
                     #     print('lucky!')
                     total_generated += amount[0]
-                    absolute_generated += amount[0]
+                    absolute_generated_domain += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
                         art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
@@ -1218,7 +1220,7 @@ while True:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
                         total_generated += 1
-                        absolute_generated += 1
+                        absolute_generated_strongbox += 1
                         art, highest = create_and_roll_artifact([strongbox_set, "strongbox"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
@@ -1244,7 +1246,7 @@ while True:
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
 
-        print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL}\n')
+        print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL} (Domains: {Fore.MAGENTA}{absolute_generated_domain}{Style.RESET_ALL}, Strongbox: {Fore.MAGENTA}{absolute_generated_strongbox}{Style.RESET_ALL}, Abyss: {Fore.MAGENTA}{absolute_generated_abyss}{Style.RESET_ALL})\n')
         print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f' Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
