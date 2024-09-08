@@ -48,10 +48,10 @@ class Artifact:
             if self.substats["CRIT Rate%"] == 23.0:
                 self.substats["CRIT Rate%"] = 22.9
 
-    def short(self):
+    def short(self, really_short=False):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
         result = f"{val} {self.mainstat} {self.type} (+{self.level})"
-        return result + ' '*(38 - len(result)) + f' - {sets_short_dict[self.set]} - '
+        return result + ' '*(38 - len(result) - really_short*38) + f' - {sets_short_dict[self.set]} - '
 
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
@@ -1146,8 +1146,8 @@ while True:
 
         if sample_size > 1:
             print(f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
-            print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].subs()}')
-            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].subs()}')
+            print(f' Fastest - {low[0]} day{"s" if low[0] > 1 else ""}: {low[1].short(True)}{low[1].subs()}')
+            print(f' Slowest - {high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years): {high[1].short(True)}{high[1].subs()}')
 
         else:
             print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')

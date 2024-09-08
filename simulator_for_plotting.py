@@ -59,8 +59,8 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 
 
 class Artifact:
-    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, last_upgrade="",
-                 roll_value=0):
+    def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, artifact_set,
+                 last_upgrade="", roll_value=0):
         self.type = artifact_type
         self.mainstat = mainstat
         self.mainstat_value = mainstat_value
@@ -68,15 +68,22 @@ class Artifact:
         self.substats = sub_stats
         self.level = level
         self.last_upgrade = last_upgrade
+        self.set = artifact_set
         self.roll_value = roll_value
 
-        if "Crit RATE%" in self.substats:
-            if self.substats["Crit RATE%"] == 23.0:
-                self.substats["Crit RATE%"] = 22.9
+        if "CRIT Rate%" in self.substats:
+            if self.substats["CRIT Rate%"] == 23.0:
+                self.substats["CRIT Rate%"] = 22.9
+
+    def short(self):
+        val = (self.mainstat_value[0])[self.mainstat_value[1]]
+        result = f"{val} {self.mainstat} {self.type} (+{self.level})"
+        return result + ' '*(38 - len(result)) + f' - {sets_short_dict[self.set]} - '
 
     def __str__(self):
         val = (self.mainstat_value[0])[self.mainstat_value[1]]
-        return f"{val} {self.mainstat} {self.type} (+{self.level})"
+        return f"{self.set}\n {val} {self.mainstat} {self.type} (+{self.level})"
+
 
     def subs(self):
         return {
@@ -92,13 +99,12 @@ class Artifact:
         # - Crit DMG%: 14.8
         # - HP%: 14.6
         # - DEF%: 5.8
-
+        print(" ", end='')
         print(self)
 
         for sub in self.substats:
             is_percentage = '%' in sub
-            print(
-                f"- {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{' (+)' if sub == self.last_upgrade else ''}")
+            print(f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
         print()
@@ -124,16 +130,16 @@ class Artifact:
 
     def cv(self):
         crit_value = 0
-        if "Crit DMG%" in self.substats:
+        if "CRIT DMG%" in self.substats:
             # for eyeball:
-            crit_value += round(self.substats["Crit DMG%"], 1)
+            crit_value += round(self.substats["CRIT DMG%"], 1)
             # for cv like in akasha:
-            # crit_value += self.substats["Crit DMG%"]
-        if "Crit RATE%" in self.substats:
+            # crit_value += self.substats["CRIT DMG%"]
+        if "CRIT Rate%" in self.substats:
             # for eyeball:
-            crit_value += round(self.substats["Crit RATE%"], 1) * 2
+            crit_value += round(self.substats["CRIT Rate%"], 1) * 2
             # for cv like in akasha:
-            # crit_value += self.substats["Crit RATE%"] * 2
+            # crit_value += self.substats["CRIT Rate%"] * 2
         return round(crit_value, 1)
 
     def rv(self):
@@ -185,12 +191,36 @@ def take_input(defaults=(1, 50)):
             ok2 = True
             cv = defaults[1]
 
-    print(
-        f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {min(54.5, float(cv))} CV.")
+    print(f"Running {int(size)} simulation{'s' if int(size) != 1 else ''}, looking for at least {min(54.5, float(cv))} CV.")
     return size, cv
 
 
-def create_artifact(from_where):
+def get_main_stat_value(mainstat):
+    if mainstat == 'HP':
+        return [flower_stats, 0]
+    elif mainstat == 'ATK':
+        return [feather_stats, 0]
+    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
+                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
+                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
+                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
+        return [hp_atk_dmg_stats, 0]
+    elif mainstat == 'DEF%':
+        return [def_stats, 0]
+    elif mainstat == 'ER%':
+        return [er_stats, 0]
+    elif mainstat == 'EM':
+        return [em_stats, 0]
+    elif mainstat == 'Healing Bonus%':
+        return [healing_bonus_stats, 0]
+    elif mainstat == 'CRIT Rate%':
+        return [crit_rate_stats, 0]
+    else:
+        return [crit_dmg_stats, 0]
+
+
+def create_artifact(full_source):
+    exact_source, from_where = full_source
     art_type = choice(artifact_types)
     rv = 0
 
@@ -208,29 +238,9 @@ def create_artifact(from_where):
         mainstat = choices(circlet_main_stats,
                            weights=circlet_main_stats_weights)[0]
 
-    if mainstat == 'HP':
-        mainstat_value = [flower_stats, 0]
-    elif mainstat == 'ATK':
-        mainstat_value = [feather_stats, 0]
-    elif mainstat in ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
-                      'Electro DMG% Bonus', 'Anemo DMG% Bonus',
-                      'Geo DMG% Bonus', 'Physical DMG% Bonus',
-                      'Dendro DMG% Bonus', 'HP%', 'ATK%'):
-        mainstat_value = [hp_atk_dmg_stats, 0]
-    elif mainstat == 'DEF%':
-        mainstat_value = [def_stats, 0]
-    elif mainstat == 'ER%':
-        mainstat_value = [er_stats, 0]
-    elif mainstat == 'EM':
-        mainstat_value = [em_stats, 0]
-    elif mainstat == 'Healing Bonus%':
-        mainstat_value = [healing_bonus_stats, 0]
-    elif mainstat == 'CRIT Rate%':
-        mainstat_value = [crit_rate_stats, 0]
-    else:
-        mainstat_value = [crit_dmg_stats, 0]
-
+    mainstat_value = get_main_stat_value(mainstat)
     fourliner_weights = (1, 4) if from_where == 'domain' else (1, 2)  # 20% or 33.33% chance for artifact to be 4-liner
+    artifact_set = exact_source if from_where == 'strongbox' else choice(exact_source)
     fourliner = choices((1, 0), weights=fourliner_weights)[0]
     subs = {}
 
@@ -251,7 +261,7 @@ def create_artifact(from_where):
 
     threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
-    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, "", rv)
+    return Artifact(art_type, mainstat, mainstat_value, threeliner, subs, 0, artifact_set, "", rv)
 
 
 def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
