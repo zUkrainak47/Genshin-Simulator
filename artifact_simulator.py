@@ -1217,12 +1217,13 @@ while True:
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
             print(f" Source set to: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
-            if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
-                print(message)
-            if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
-                print(message)
+            if sample_size > 1:
+                if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
+                    message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+                    print(message)
+                if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
+                    message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
+                    print(message)
 
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
