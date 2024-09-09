@@ -219,7 +219,7 @@ aliases_domain = {'no': ['Noblesse Oblige', 'Bloodstained Chivalry'], 'nob': ['N
                   'echoes': ['Vermillion Hereafter', 'Echoes of an Offering'], 'ayato': ['Vermillion Hereafter', 'Echoes of an Offering'],
                   'deepwood': ['Deepwood Memories', 'Gilded Dreams'], 'dm': ['Deepwood Memories', 'Gilded Dreams'], 'nahida': ['Deepwood Memories', 'Gilded Dreams'],
                   'gilded': ['Deepwood Memories', 'Gilded Dreams'], 'gd': ['Deepwood Memories', 'Gilded Dreams'], 'alhaihtam': ['Deepwood Memories', 'Gilded Dreams'],
-                  'dpc': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'scara': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'wanderer': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'xіangling': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'],
+                  'dpc': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'scara': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'wanderer': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'xіangling': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'sami': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'],
                   'fopl': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'flop': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'],
                   'vg': ["Nymph's Dream", "Vourukasha's Glow"], 'dehya': ["Nymph's Dream", "Vourukasha's Glow"],
                   'mh': ['Marechaussee Hunter', 'Golden Troupe'], 'neuv': ['Marechaussee Hunter', 'Golden Troupe'], 'neuvillette': ['Marechaussee Hunter', 'Golden Troupe'], 'bat': ['Marechaussee Hunter', 'Golden Troupe'],
@@ -253,7 +253,7 @@ aliases_sets = {'glad': "Gladiator's Finale",
                 'echoes': "Echoes of an Offering", 'ayato': "Echoes of an Offering",
                 'deepwood': "Deepwood Memories", 'dm': "Deepwood Memories", 'nahida': "Deepwood Memories",
                 'gilded': "Gilded Dreams", 'gd': "Gilded Dreams", 'alhaihtam': "Gilded Dreams",
-                'dpc': "Desert Pavilion Chronicle", 'scara': "Desert Pavilion Chronicle", 'wanderer': "Desert Pavilion Chronicle", 'xіangling': "Desert Pavilion Chronicle",
+                'dpc': "Desert Pavilion Chronicle", 'scara': "Desert Pavilion Chronicle", 'wanderer': "Desert Pavilion Chronicle", 'xіangling': "Desert Pavilion Chronicle", 'sami': "Desert Pavilion Chronicle",
                 'fopl': "Flower of Paradise Lost", 'flop': "Flower of Paradise Lost",
                 'vg': "Vourukasha's Glow", 'dehya': "Vourukasha's Glow",
                 'mh': "Marechaussee Hunter", 'neuv': "Marechaussee Hunter", 'neuvillette': "Marechaussee Hunter", 'bat': "Marechaussee Hunter",
@@ -1196,11 +1196,12 @@ while True:
 
                 print(f' {Fore.LIGHTMAGENTA_EX}Source set to {auto_source}{Style.RESET_ALL}\n')
 
+            everysim = ' for every simulation' if sample_size > 1 else ''
             if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
                 print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
                 auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
                 if auto_domain == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain for every simulation{Style.RESET_ALL}\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain{everysim}{Style.RESET_ALL}\n')
                     auto_domain = 'random'
                 elif not auto_domain:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
@@ -1213,7 +1214,7 @@ while True:
                 print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
                 auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
                 if auto_strongbox == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set{everysim}{Style.RESET_ALL}\n')
                     auto_strongbox = 'random'
                 elif not auto_strongbox:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
