@@ -165,7 +165,7 @@ def choose_one(items, error_message, alias={}, blank_ok=False):
             break
         else:
             print(f' {Fore.RED}{error_message}{Style.RESET_ALL}\n')
-    if new1 in items_dict:
+    if isinstance(new1, str) and new1 in items_dict:
         new1 = items_dict[new1]
     return new1
 
@@ -200,72 +200,70 @@ sets_short = ('    Glad    ', '   Troupe   ',
               '    SoDP    ', '    NWEW    ',
               '   Whimsy   ', '  Reverie   ',
               '   Scroll   ', '  Obsidian  ',)
-aliases_domain = {'no': '1', 'nob': '1', 'noblesse': '1', 'bennett': '1',
-                  'vv': '2', 'kazuha': '2',
-                  'maidens': '2',
-                  'ap': '3', 'petra': '3',
-                  'bolide': '3',
-                  'tf': '4', 'keqing': '4', 'razor': '4',
-                  'cw': '5',
-                  'blizzard': '6', 'ayaka': '6',
-                  'hod': '6', 'childe': '6', 'tartaglia': '6',
-                  'tom': '7', 'totm': '7', 'zl': '7', 'zhongli': '7',
-                  'eula': '7',
-                  'shim': '8', 'shime': '8', 'sr': '8', 'hu tao': '8', 'tao': '8', 'hutao': '8',
-                  'emblem': '8', 'eosf': '8', 'oppa': '8', 'xl': '8', 'raiden': '8', 'xiangling': '8', 'xingqiu': '8',
-                  'xq': '8',
-                  'yelan': '8',
-                  'husk': '9',
-                  'clam': '9', 'kokomi': '9', 'kok': '9',
-                  'vermillion': '10', 'vh': '10', 'zyox': '10', 'zy0x': '10', 'xiao': '10',
-                  'echoes': '10', 'ayato': '10',
-                  'deepwood': '11', 'dm': '11', 'nahida': '11',
-                  'gilded': '11', 'gd': '11', 'alhaihtam': '11',
-                  'dpc': '12', 'scara': '12', 'wanderer': '12', 'xіangling': '12',
-                  'fopl': '12', 'flop': '12',
-                  'vg': '13', 'dehya': '13',
-                  'mh': '14', 'neuv': '14', 'neuvillette': '14', 'bat': '14',
-                  'gt': '14', 'furina': '14', 'fischl': '14',
-                  'sodp': '15', 'bird': '15', 'xianyun': '15', 'xy': '15',
-                  'navia': '15',
-                  'whimsy': '16', 'arle': '16', 'arlecchino': '16', 'father': '16', 'clorinde': '16',
-                  'emilie': '16',
-                  'natlan': '17', 'scroll': '17',
-                  'codex': '17', 'mualani': '17'
+aliases_domain = {'no': ['Noblesse Oblige', 'Bloodstained Chivalry'], 'nob': ['Noblesse Oblige', 'Bloodstained Chivalry'], 'noblesse': ['Noblesse Oblige', 'Bloodstained Chivalry'], 'bennett': ['Noblesse Oblige', 'Bloodstained Chivalry'],
+                  'vv': ['Maiden Beloved', 'Viridescent Venerer'], 'kazuha': ['Maiden Beloved', 'Viridescent Venerer'], 'sucrose': ['Maiden Beloved', 'Viridescent Venerer'],
+                  'maidens': ['Maiden Beloved', 'Viridescent Venerer'], 'maiden': ['Maiden Beloved', 'Viridescent Venerer'],
+                  'ap': ['Archaic Petra', 'Retracing Bolide'], 'petra': ['Archaic Petra', 'Retracing Bolide'],
+                  'bolide': ['Archaic Petra', 'Retracing Bolide'],
+                  'tf': ['Thundersoother', 'Thundering Fury'], 'keqing': ['Thundersoother', 'Thundering Fury'], 'razor': ['Thundersoother', 'Thundering Fury'],
+                  'cw': ['Lavawalker', 'Crimson Witch of Flames'],
+                  'blizzard': ['Blizzard Strayer', 'Heart of Depth'], 'ayaka': ['Blizzard Strayer', 'Heart of Depth'],
+                  'hod': ['Blizzard Strayer', 'Heart of Depth'], 'childe': ['Blizzard Strayer', 'Heart of Depth'], 'tartaglia': ['Blizzard Strayer', 'Heart of Depth'],
+                  'tom': ['Tenacity of the Millelith', 'Pale Flame'], 'totm': ['Tenacity of the Millelith', 'Pale Flame'], 'zl': ['Tenacity of the Millelith', 'Pale Flame'], 'zhongli': ['Tenacity of the Millelith', 'Pale Flame'],
+                  'eula': ['Tenacity of the Millelith', 'Pale Flame'],
+                  'shim': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'shime': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'sr': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'hu tao': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'tao': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'hutao': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'],
+                  'emblem': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'eosf': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'oppa': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xl': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'raiden': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xiangling': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xingqiu': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xq': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'yelan': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'],
+                  'husk': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'],
+                  'clam': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'], 'kokomi': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'], 'kok': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'],
+                  'vermillion': ['Vermillion Hereafter', 'Echoes of an Offering'], 'vh': ['Vermillion Hereafter', 'Echoes of an Offering'], 'zyox': ['Vermillion Hereafter', 'Echoes of an Offering'], 'zy0x': ['Vermillion Hereafter', 'Echoes of an Offering'], 'xiao': ['Vermillion Hereafter', 'Echoes of an Offering'],
+                  'echoes': ['Vermillion Hereafter', 'Echoes of an Offering'], 'ayato': ['Vermillion Hereafter', 'Echoes of an Offering'],
+                  'deepwood': ['Deepwood Memories', 'Gilded Dreams'], 'dm': ['Deepwood Memories', 'Gilded Dreams'], 'nahida': ['Deepwood Memories', 'Gilded Dreams'],
+                  'gilded': ['Deepwood Memories', 'Gilded Dreams'], 'gd': ['Deepwood Memories', 'Gilded Dreams'], 'alhaihtam': ['Deepwood Memories', 'Gilded Dreams'],
+                  'dpc': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'scara': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'wanderer': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'xіangling': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'],
+                  'fopl': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'], 'flop': ['Desert Pavilion Chronicle', 'Flower of Paradise Lost'],
+                  'vg': ["Nymph's Dream", "Vourukasha's Glow"], 'dehya': ["Nymph's Dream", "Vourukasha's Glow"],
+                  'mh': ['Marechaussee Hunter', 'Golden Troupe'], 'neuv': ['Marechaussee Hunter', 'Golden Troupe'], 'neuvillette': ['Marechaussee Hunter', 'Golden Troupe'], 'bat': ['Marechaussee Hunter', 'Golden Troupe'],
+                  'gt': ['Marechaussee Hunter', 'Golden Troupe'], 'furina': ['Marechaussee Hunter', 'Golden Troupe'], 'fischl': ['Marechaussee Hunter', 'Golden Troupe'],
+                  'sodp': ['Song of Days Past', 'Nighttime Whispers in the Echoing Woods'], 'bird': ['Song of Days Past', 'Nighttime Whispers in the Echoing Woods'], 'xianyun': ['Song of Days Past', 'Nighttime Whispers in the Echoing Woods'], 'xy': ['Song of Days Past', 'Nighttime Whispers in the Echoing Woods'],
+                  'navia': ['Song of Days Past', 'Nighttime Whispers in the Echoing Woods'],
+                  'whimsy': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'], 'arle': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'], 'arlecchino': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'], 'father': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'], 'clorinde': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'],
+                  'emilie': ['Fragment of Harmonic Whimsy', 'Unfinished Reverie'],
+                  'natlan': ['Scroll of the Hero of Cinder City', 'Obsidian Codex'], 'scroll': ['Scroll of the Hero of Cinder City', 'Obsidian Codex'],
+                  'codex': ['Scroll of the Hero of Cinder City', 'Obsidian Codex'], 'mualani': ['Scroll of the Hero of Cinder City', 'Obsidian Codex'],
                   }
-aliases_sets = {'glad': '1',
-                'troupe': '2',
-                'no': '3', 'nob': '3', 'noblesse': '3', 'bennett': '3',
-                'maidens': '5',
-                'vv': '6', 'kazuha': '6',
-                'ap': '7', 'petra': '7',
-                'bolide': '8',
-                'tf': '10', 'keqing': '10', 'razor': '10',
-                'cw': '12',
-                'blizzard': '13', 'ayaka': '13',
-                'hod': '14', 'childe': '14', 'tartaglia': '14',
-                'tom': '15', 'totm': '15', 'zl': '15', 'zhongli': '15',
-                'eula': '16',
-                'shim': "17", 'shime': "17", 'sr': "17", 'hu tao': "17", 'tao': "17", 'hutao': "17",
-                'emblem': '18', 'eosf': '18', 'oppa': '18', 'xl': '18', 'raiden': '18', 'xiangling': '18', 'xingqiu': '18',
-                'xq': '18', 'yelan': '18',
-                'husk': '19',
-                'clam': '20', 'kokomi': '20', 'kok': '20',
-                'vermillion': '21', 'vh': '21', 'zyox': '21', 'zy0x': '21', 'xiao': '21',
-                'echoes': '22', 'ayato': '22',
-                'deepwood': '23', 'dm': '23', 'nahida': '23',
-                'gilded': '24', 'gd': '24', 'alhaihtam': '24',
-                'dpc': '25', 'scara': '25', 'wanderer': '25', 'xіangling': '25',
-                'fopl': '26', 'flop': '26',
-                'vg': "28", 'dehya': "28",
-                'mh': '29', 'neuv': '29', 'neuvillette': '29', 'bat': '29',
-                'gt': '30', 'furina': '30', 'fischl': '30',
-                'sodp': '31', 'bird': '31', 'xianyun': '31', 'xy': '31',
-                'navia': '32',
-                'whimsy': '33', 'arle': '33', 'arlecchino': '33', 'father': '33', 'clorinde': '33',
-                'emilie': '34',
-                'natlan': '35', 'scroll': '35',
-                'codex': '36', 'mualani': '36'
+aliases_sets = {'glad': "Gladiator's Finale",
+                'troupe': "Wanderer's Troupe",
+                'no': "Noblesse Oblige", 'nob': "Noblesse Oblige", 'noblesse': "Noblesse Oblige", 'bennett': "Noblesse Oblige",
+                'maidens': "Maiden Beloved", 'maiden': "Maiden Beloved",
+                'vv': "Viridescent Venerer", 'kazuha': "Viridescent Venerer", 'sucrose': "Viridescent Venerer",
+                'ap': "Archaic Petra", 'petra': "Archaic Petra",
+                'bolide': "Retracing Bolide",
+                'tf': "Thundering Fury", 'keqing': "Thundering Fury", 'razor': "Thundering Fury",
+                'cw': "Crimson Witch of Flames",
+                'blizzard': "Blizzard Strayer", 'ayaka': "Blizzard Strayer",
+                'hod': "Heart of Depth", 'childe': "Heart of Depth", 'tartaglia': "Heart of Depth",
+                'tom': "Tenacity of the Millelith", 'totm': "Tenacity of the Millelith", 'zl': "Tenacity of the Millelith", 'zhongli': "Tenacity of the Millelith",
+                'eula': "Pale Flame",
+                'shim': "Shimenawa's Reminiscence", 'shime': "Shimenawa's Reminiscence", 'sr': "Shimenawa's Reminiscence", 'hu tao': "Shimenawa's Reminiscence", 'tao': "Shimenawa's Reminiscence", 'hutao': "Shimenawa's Reminiscence",
+                'emblem': "Emblem of Severed Fate", 'eosf': "Emblem of Severed Fate", 'oppa': "Emblem of Severed Fate", 'xl': "Emblem of Severed Fate", 'raiden': "Emblem of Severed Fate", 'xiangling': "Emblem of Severed Fate", 'xingqiu': "Emblem of Severed Fate",
+                'xq': "Emblem of Severed Fate", 'yelan': "Emblem of Severed Fate",
+                'husk': "Husk of Opulent Dreams",
+                'clam': "Ocean-Hued Clam", 'kokomi': "Ocean-Hued Clam", 'kok': "Ocean-Hued Clam",
+                'vermillion': "Vermillion Hereafter", 'vh': "Vermillion Hereafter", 'zyox': "Vermillion Hereafter", 'zy0x': "Vermillion Hereafter", 'xiao': "Vermillion Hereafter",
+                'echoes': "Echoes of an Offering", 'ayato': "Echoes of an Offering",
+                'deepwood': "Deepwood Memories", 'dm': "Deepwood Memories", 'nahida': "Deepwood Memories",
+                'gilded': "Gilded Dreams", 'gd': "Gilded Dreams", 'alhaihtam': "Gilded Dreams",
+                'dpc': "Desert Pavilion Chronicle", 'scara': "Desert Pavilion Chronicle", 'wanderer': "Desert Pavilion Chronicle", 'xіangling': "Desert Pavilion Chronicle",
+                'fopl': "Flower of Paradise Lost", 'flop': "Flower of Paradise Lost",
+                'vg': "Vourukasha's Glow", 'dehya': "Vourukasha's Glow",
+                'mh': "Marechaussee Hunter", 'neuv': "Marechaussee Hunter", 'neuvillette': "Marechaussee Hunter", 'bat': "Marechaussee Hunter",
+                'gt': "Golden Troupe", 'furina': "Golden Troupe", 'fischl': "Golden Troupe",
+                'sodp': "Song of Days Past", 'bird': "Song of Days Past", 'xianyun': "Song of Days Past", 'xy': "Song of Days Past",
+                'navia': "Nighttime Whispers in the Echoing Woods",
+                'whimsy': "Fragment of Harmonic Whimsy", 'arle': "Fragment of Harmonic Whimsy", 'arlecchino': "Fragment of Harmonic Whimsy", 'father': "Fragment of Harmonic Whimsy", 'clorinde': "Fragment of Harmonic Whimsy",
+                'emilie': "Unfinished Reverie",
+                'natlan': "Scroll of the Hero of Cinder City", 'scroll': "Scroll of the Hero of Cinder City",
+                'codex': "Obsidian Codex", 'mualani': "Obsidian Codex",
                 }
 
 sets_short_dict = dict(zip(sets, sets_short))
@@ -641,7 +639,7 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
         if not highest_cv and not silent:
             artifact.print_stats()
 
-    if highest_cv and artifact.cv() > highest_cv:
+    if highest_cv and artifact.cv() > highest_cv and (set_requirement == 'none' or artifact.set == set_requirement):
         highest_cv = artifact.cv()
         if not silent:
             print(f' Day {day}: {artifact.cv()} CV ({artifact.short()} {artifact.subs()}')
@@ -710,9 +708,10 @@ def sort_daily(artifacts):
     return sorted(artifacts, key=lambda x: (sort_order_sets[x.set], sort_order_type[x.type],  sort_order_mainstat[x.mainstat]))[::-1]  # yes there is a reason i didn't use reverse=True
 
 
-def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
-                          only_one):
-    if artifact.cv() >= min(54.5, cv_want):
+def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
+                         only_one):
+    new_winner = (artifact.cv() >= min(54.5, cv_want)) and (set_requirement == 'none' or artifact.set == set_requirement)
+    if new_winner:
         days_list.append(day_number)
         artifacts.append(artifact_number)
 
@@ -726,7 +725,7 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
         if not only_one:
             print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
 
-    return fastest, slowest, days_list, artifacts, artifact.cv() >= min(54.5, cv_want)
+    return fastest, slowest, days_list, artifacts, new_winner
 
 
 def print_inventory(list_of_artifacts, indexes_to_print=None):
@@ -1169,6 +1168,7 @@ while True:
         abyss_use = 1
         auto_domain = 'random'
         auto_strongbox = 'random'
+        set_requirement = 'none'
 
         if advanced:
             exited = False
@@ -1182,15 +1182,19 @@ while True:
                 exited = True
 
             elif auto_source == 'blank':
+                auto_source = 'Domains, Strongbox, Abyss'
                 print(f' {Fore.LIGHTMAGENTA_EX}Setting default: Domains, Strongbox, Abyss{Style.RESET_ALL}\n')
 
-            elif auto_source == 'Only Domains':
-                strongbox_use = 0
-                abyss_use = 0
+            else:
+                if auto_source == 'Only Domains':
+                    strongbox_use = 0
+                    abyss_use = 0
 
-            elif auto_source == 'Only Strongbox':
-                domain_use = 0
-                abyss_use = 0
+                elif auto_source == 'Only Strongbox':
+                    domain_use = 0
+                    abyss_use = 0
+
+                print(f' {Fore.LIGHTMAGENTA_EX}Source set to {auto_source}{Style.RESET_ALL}\n')
 
             if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
                 print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
@@ -1198,10 +1202,12 @@ while True:
                 if auto_domain == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain for every simulation{Style.RESET_ALL}\n')
                     auto_domain = 'random'
-                if not auto_domain:
+                elif not auto_domain:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
                     auto_domain = 'random'
                     exited = True
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Domain: {auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}\n')
 
             if not exited and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
                 print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
@@ -1209,21 +1215,68 @@ while True:
                 if auto_strongbox == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
                     auto_strongbox = 'random'
-                if not auto_strongbox:
+                elif not auto_strongbox:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
                     auto_strongbox = 'random'
                     exited = True
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Strongbox set: {auto_strongbox}{Style.RESET_ALL}\n')
+
+            # ask for set requirement only if
+            # - a domain is chosen
+            # - source is not strongbox only
+            if not exited and auto_domain != 'random' and auto_source != 'Only Strongbox':
+                # - either strongbox is not used
+                if not strongbox_use:
+                    print(f' {Fore.CYAN}Do your artifacts need to be from a specific set?{Style.RESET_ALL} (leave blank to set no requirements)')
+                    set_requirement = choose_one(auto_domain, "That's not a set that is available! Try again", aliases_sets, True)
+                    if set_requirement == 'blank':
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
+                        set_requirement = 'none'
+                    elif not set_requirement:
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                        set_requirement = 'none'
+                        exited = True
+                    else:
+                        print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
+
+                # - or strongbox set is one of the domain sets
+                elif auto_strongbox in auto_domain:
+                    print(f' {Fore.CYAN}Do you need your artifact to be a {auto_strongbox} piece?{Style.RESET_ALL} (leave blank to set no requirements)')
+
+                    while True:
+                        yesno = input(' Y/n: ').strip().lower()
+                        if not yesno or yesno == 'n':
+                            set_requirement = 'none'
+                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
+                            break
+                        if yesno == 'y':
+                            set_requirement = auto_strongbox
+                            print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
+                            break
+                        if yesno in ('0', 'exit'):
+                            set_requirement = 'none'
+                            exited = True
+                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                            break
+                        else:
+                            print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
+
 
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
-            print(f" Source set to: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
-            if sample_size > 1:
+            print(f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
+            if sample_size > 1 or auto_domain == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
                     message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
                     print(message)
+            if sample_size > 1 or auto_strongbox == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
                     message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
                     print(message)
+            if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
+                message = f' {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f' Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
+                print(message)
 
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
@@ -1238,6 +1291,10 @@ while True:
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
         abyss_sets = sets[-2:]
+        if abyss_use and set_requirement != 'none' and set_requirement not in abyss_sets:
+            abyss_use = 0
+            print(f" {Fore.RED}Abyss will be skipped since neither {abyss_sets[0]} nor {abyss_sets[1]} fit the artifact set requirement{Style.RESET_ALL}")
+
         for i in range(sample_size):
             strongbox_set = choice(sets) if auto_strongbox == 'random' else auto_strongbox
             domain_set = choice(domains) if auto_domain == 'random' else auto_domain
@@ -1250,12 +1307,12 @@ while True:
             inventory = 0
             flag = False
             print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
+            if domain_use:
+                print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
             if strongbox_use:
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
             if abyss_use:
                 print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
-            if domain_use:
-                print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
 
             while not flag:
                 day += 1
@@ -1270,9 +1327,9 @@ while True:
                         absolute_generated_abyss += 1
                         art, highest = create_and_roll_artifact([abyss_sets, "abyss"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
+                            compare_to_wanted_cv(art, low, high, days_it_took_to_reach_desired_cv,
+                                                 artifacts_generated,
+                                                 day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
                             break
                     if flag:
@@ -1295,9 +1352,9 @@ while True:
                                 total_generated += 1
                                 art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
                                 low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                          artifacts_generated,
-                                                          day, total_generated, cv_desired, sample_size_is_one))
+                                    compare_to_wanted_cv(art, low, high, days_it_took_to_reach_desired_cv,
+                                                         artifacts_generated,
+                                                         day, total_generated, cv_desired, sample_size_is_one))
                                 if flag:
                                     break
                             if flag:
@@ -1312,9 +1369,9 @@ while True:
                         absolute_generated_strongbox += 1
                         art, highest = create_and_roll_artifact([strongbox_set, "strongbox"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
+                            compare_to_wanted_cv(art, low, high, days_it_took_to_reach_desired_cv,
+                                                 artifacts_generated,
+                                                 day, total_generated, cv_desired, sample_size_is_one))
                         if flag:
                             win_generated_strongbox += 1
                             break
