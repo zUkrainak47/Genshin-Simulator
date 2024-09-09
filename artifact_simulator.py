@@ -1313,6 +1313,7 @@ while True:
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
             if abyss_use:
                 print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
+            print()
 
             while not flag:
                 day += 1
