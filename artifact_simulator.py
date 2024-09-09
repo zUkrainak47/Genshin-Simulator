@@ -716,10 +716,10 @@ def compare_to_highest_cv(artifact, fastest, slowest, days_list, artifacts, day_
         days_list.append(day_number)
         artifacts.append(artifact_number)
 
-        if fastest[0] == 0 or day_number < fastest[0]:
+        if fastest[0] == 0 or artifact_number < fastest[1]:
             fastest = (day_number, artifact_number, artifact)
 
-        if day_number > slowest[0]:
+        if artifact_number > slowest[1]:
             slowest = (day_number, artifact_number, artifact)
         # print(artifact.subs())
 
@@ -1211,8 +1211,8 @@ while True:
         win_generated_domain = 0
         win_generated_strongbox = 0
         win_generated_abyss = 0
-        low = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
-        high = (0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
+        low = (0, 0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
+        high = (0, 0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
         abyss_sets = sets[-2:]
@@ -1265,10 +1265,10 @@ while True:
                     amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                     # if amount[0] == 2:
                     #     print('lucky!')
-                    total_generated += amount[0]
                     absolute_generated_domain += amount[0]
                     inventory += amount[0]
                     for k in range(amount[0]):
+                        total_generated += 1
                         art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
                         low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
                             compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
