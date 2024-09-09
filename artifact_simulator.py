@@ -1218,10 +1218,10 @@ while True:
         if advanced:
             print(f" Source set to: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
             if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain set to {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+                message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
                 print(message)
             if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set set to {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
+                message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
                 print(message)
 
         days_it_took_to_reach_desired_cv = []
