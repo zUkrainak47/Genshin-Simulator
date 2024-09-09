@@ -1172,7 +1172,7 @@ while True:
 
         if advanced:
             exited = False
-            print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (blank to use default, 0 to exit advanced settings)')
+            print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (leave blank to use default)')
             # ARTIFACT SOURCE CHOICE
             auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True)
 
@@ -1193,7 +1193,7 @@ while True:
                 abyss_use = 0
 
             if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
-                print(f'\n {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
+                print(f'\n {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
                 auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
                 if auto_domain == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain for every simulation{Style.RESET_ALL}\n')
@@ -1204,7 +1204,7 @@ while True:
                     exited = True
 
             if not exited and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
-                print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
+                print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
                 auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
                 if auto_strongbox == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
