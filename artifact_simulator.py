@@ -1162,20 +1162,37 @@ while True:
                 break
             else:
                 print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
+
+        auto_source = 'Domains, Strongbox, Abyss'
+        domain_use = 1
+        strongbox_use = 1
+        abyss_use = 1
+        auto_domain = 'random'
+        auto_strongbox = 'random'
+
         if advanced:
+            exited = False
             print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (blank to use default, 0 to exit advanced settings)')
-            auto_source = choose_one(['Only domains', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1 or 2)!', {}, True)
-            if not auto_source:
+            # ARTIFACT SOURCE CHOICE
+            auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True)
+
+            if not auto_source:  # user input 0
+                auto_source = 'Domains, Strongbox, Abyss'
                 print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                exited = True
+
             elif auto_source == 'blank':
                 print(f' {Fore.LIGHTMAGENTA_EX}Setting default: Domains, Strongbox, Abyss{Style.RESET_ALL}\n')
-                auto_source = 'Domains, Strongbox, Abyss'
-            if auto_source == 'Only domains':
-                strongbox_abyss_use = 0
-            else:
-                strongbox_abyss_use = 1
 
-            if auto_source:
+            elif auto_source == 'Only Domains':
+                strongbox_use = 0
+                abyss_use = 0
+
+            elif auto_source == 'Only Strongbox':
+                domain_use = 0
+                abyss_use = 0
+
+            if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
                 print(f'\n {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
                 auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
                 if auto_domain == 'blank':
@@ -1183,26 +1200,30 @@ while True:
                     auto_domain = 'random'
                 if not auto_domain:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    auto_domain = 'random'
+                    exited = True
 
-                if strongbox_abyss_use:
-                    print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
-                    auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
-                    if auto_strongbox == 'blank':
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
-                        auto_strongbox = 'random'
-                    if not auto_strongbox:
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                else:
+            if not exited and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
+                print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (blank to randomize, 0 to exit advanced settings)')
+                auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
+                if auto_strongbox == 'blank':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set for every simulation{Style.RESET_ALL}\n')
                     auto_strongbox = 'random'
-            else:
-                auto_domain = 'random'
-                auto_strongbox = 'random'
-        else:
-            strongbox_abyss_use = 1
-            auto_domain = 'random'
-            auto_strongbox = 'random'
+                if not auto_strongbox:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    auto_strongbox = 'random'
+                    exited = True
 
-        print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV.")
+        print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
+        if advanced:
+            print(f" Source set to: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
+            if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
+                message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain set to {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+                print(message)
+            if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
+                message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Strongbox set set to {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
+                print(message)
+
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
         absolute_generated_domain = 0
@@ -1228,10 +1249,12 @@ while True:
             inventory = 0
             flag = False
             print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
-            if strongbox_abyss_use:
+            if strongbox_use:
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
+            if abyss_use:
                 print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
-            print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
+            if domain_use:
+                print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
 
             while not flag:
                 day += 1
@@ -1239,7 +1262,7 @@ while True:
                 if day % 10000 == 0:
                     print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
 
-                if strongbox_abyss_use and day % 30 == 0:  # 4 artifacts from abyss every 30 days
+                if abyss_use and day % 30 == 0:  # 4 artifacts from abyss every 30 days
                     for k in range(4):
                         inventory += 1
                         total_generated += 1
@@ -1254,34 +1277,34 @@ while True:
                     if flag:
                         win_generated_abyss += 1
                         break
-                resin = 180
 
-                if day % 7 == 1:  # 1 transient resin from tubby every monday
-                    resin += 60
+                if not flag:
+                    resin = 240 if day % 7 == 1 else 180  # 1 transient resin from tubby every monday
 
-                while resin and not flag:
-                    # print('domain run')
-                    resin -= 20
-                    amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
-                    # if amount[0] == 2:
-                    #     print('lucky!')
-                    absolute_generated_domain += amount[0]
-                    inventory += amount[0]
-                    for k in range(amount[0]):
-                        total_generated += 1
-                        art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
-                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                  artifacts_generated,
-                                                  day, total_generated, cv_desired, sample_size_is_one))
-                        if flag:
-                            break
-                    if flag:
-                        win_generated_domain += 1
-                        break
+                    while resin:
+                        # print('domain run')
+                        resin -= 20
+                        amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
+                        # if amount[0] == 2:
+                        #     print('lucky!')
+                        absolute_generated_domain += amount[0]
+                        inventory += amount[0]
+                        if domain_use:
+                            for k in range(amount[0]):
+                                total_generated += 1
+                                art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
+                                low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                                    compare_to_highest_cv(art, low, high, days_it_took_to_reach_desired_cv,
+                                                          artifacts_generated,
+                                                          day, total_generated, cv_desired, sample_size_is_one))
+                                if flag:
+                                    break
+                            if flag:
+                                win_generated_domain += 1
+                                break
 
-                else:
-                    while strongbox_abyss_use and inventory >= 3:
+                if strongbox_use and not flag:
+                    while inventory >= 3:
                         # print(f'strongbox {inventory}')
                         inventory -= 2
                         total_generated += 1
