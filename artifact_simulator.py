@@ -160,7 +160,7 @@ def choose_one(items, error_message, alias={}, blank_ok=False):
             return 'blank'
         if new1 in items_dict or new1 in items_dict.values():
             break
-        if alias and new1.lower() in alias:
+        if alias and new1.lower() in alias and alias[new1] in items:
             new1 = alias[new1]
             break
         else:
@@ -215,7 +215,7 @@ aliases_domain = {'no': ['Noblesse Oblige', 'Bloodstained Chivalry'], 'nob': ['N
                   'emblem': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'eosf': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'oppa': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xl': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'raiden': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xiangling': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xingqiu': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'xq': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'], 'yelan': ["Shimenawa's Reminiscence", 'Emblem of Severed Fate'],
                   'husk': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'],
                   'clam': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'], 'kokomi': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'], 'kok': ['Husk of Opulent Dreams', 'Ocean-Hued Clam'],
-                  'vermillion': ['Vermillion Hereafter', 'Echoes of an Offering'], 'vh': ['Vermillion Hereafter', 'Echoes of an Offering'], 'verm': ['Vermillion Hereafter', 'Echoes of an Offering'], 'peam': ['Vermillion Hereafter', 'Echoes of an Offering'],'zyox': ['Vermillion Hereafter', 'Echoes of an Offering'], 'zy0x': ['Vermillion Hereafter', 'Echoes of an Offering'], 'xiao': ['Vermillion Hereafter', 'Echoes of an Offering'],
+                  'vermillion': ['Vermillion Hereafter', 'Echoes of an Offering'], 'vh': ['Vermillion Hereafter', 'Echoes of an Offering'], 'verm': ['Vermillion Hereafter', 'Echoes of an Offering'], 'peam': ['Vermillion Hereafter', 'Echoes of an Offering'], 'zyox': ['Vermillion Hereafter', 'Echoes of an Offering'], 'zy0x': ['Vermillion Hereafter', 'Echoes of an Offering'], 'xiao': ['Vermillion Hereafter', 'Echoes of an Offering'],
                   'echoes': ['Vermillion Hereafter', 'Echoes of an Offering'], 'ayato': ['Vermillion Hereafter', 'Echoes of an Offering'],
                   'deepwood': ['Deepwood Memories', 'Gilded Dreams'], 'dm': ['Deepwood Memories', 'Gilded Dreams'], 'nahida': ['Deepwood Memories', 'Gilded Dreams'],
                   'gilded': ['Deepwood Memories', 'Gilded Dreams'], 'gd': ['Deepwood Memories', 'Gilded Dreams'], 'alhaihtam': ['Deepwood Memories', 'Gilded Dreams'],
