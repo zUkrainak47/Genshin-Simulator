@@ -1193,7 +1193,7 @@ while True:
                 abyss_use = 0
 
             if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
-                print(f'\n {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
+                print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
                 auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
                 if auto_domain == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain for every simulation{Style.RESET_ALL}\n')
