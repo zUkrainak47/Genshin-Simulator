@@ -1308,7 +1308,7 @@ while True:
             flag = False
             print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
             if domain_use:
-                print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}\n')
+                print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}')
             if strongbox_use:
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
             if abyss_use:
