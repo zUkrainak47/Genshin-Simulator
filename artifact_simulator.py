@@ -1320,18 +1320,19 @@ while True:
                 if day % 10000 == 0:
                     print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
 
-                if abyss_use and day % 30 == 0:  # 4 artifacts from abyss every 30 days
+                if day % 30 == 0:  # 4 artifacts from abyss every 30 days
                     for k in range(4):
                         inventory += 1
-                        total_generated += 1
-                        absolute_generated_abyss += 1
-                        art, highest = create_and_roll_artifact([abyss_sets, "abyss"], highest)
-                        low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
-                            compare_to_wanted_cv(art, low, high, days_it_took_to_reach_desired_cv,
-                                                 artifacts_generated,
-                                                 day, total_generated, cv_desired, sample_size_is_one))
-                        if flag:
-                            break
+                        if abyss_use:
+                            total_generated += 1
+                            absolute_generated_abyss += 1
+                            art, highest = create_and_roll_artifact([abyss_sets, "abyss"], highest)
+                            low, high, days_it_took_to_reach_desired_cv, artifacts_generated, flag = (
+                                compare_to_wanted_cv(art, low, high, days_it_took_to_reach_desired_cv,
+                                                     artifacts_generated,
+                                                     day, total_generated, cv_desired, sample_size_is_one))
+                            if flag:
+                                break
                     if flag:
                         win_generated_abyss += 1
                         break
@@ -1345,9 +1346,9 @@ while True:
                         amount = choices((1, 2), weights=(28, 2))  # 6.66% chance for 2 artifacts
                         # if amount[0] == 2:
                         #     print('lucky!')
-                        absolute_generated_domain += amount[0]
                         inventory += amount[0]
                         if domain_use:
+                            absolute_generated_domain += amount[0]
                             for k in range(amount[0]):
                                 total_generated += 1
                                 art, highest = create_and_roll_artifact([domain_set, "domain"], highest)
