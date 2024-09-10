@@ -1097,7 +1097,10 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                                        key=lambda x: (x[0].rarity, x[1]), reverse=True)
     if sorted_items:
         out += title + '\n\n'
-        t = f"{len(counters)}/{len(item_dict)} {ttt}s ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(counters) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})"
+        if letter == 'c':
+            t = f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})\n"
+        else:
+            t = f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {color_map[5]}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {color_map[4]}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {color_map[3]}3★{Style.RESET_ALL})\n"
         extra = (104 - len(t) + 18) // 2  # +10 to account for the color change
         out += (" " + ' ' * extra + t + '\n\n')
 
