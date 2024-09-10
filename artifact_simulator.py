@@ -1158,15 +1158,24 @@ while True:
         print(f' Would you like to view {Fore.CYAN}advanced settings{Style.RESET_ALL}? (leave blank to skip and use defaults)')
         while True:
             yesno = input(' Y/n: ').strip().lower()
-            if not yesno or yesno in ('n', '0'):
+            if not yesno or yesno == 'n':
                 advanced = False
                 print(' Ok, using defaults\n')
+                break
+            if yesno == '0':
                 break
             if yesno == 'y':
                 advanced = True
                 break
             else:
                 print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
+
+        if yesno == '0':
+            print(" Going back to normal mode...")
+            print()
+            print('=' * 52 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 52)
+            print()
+            continue
 
         auto_source = 'Domains, Strongbox, Abyss'
         domain_use = 1
