@@ -314,16 +314,16 @@ substats_weights = (6, 6, 6, 4, 4, 4, 4, 4, 3, 3)
 
 
 def take_input(defaults=(1, 50)):
-    valid_exit = ('exit', "'exit'", '"exit"', '0', 'O')
+    valid_exit = ['exit', "'exit'", '"exit"']
     ok1 = False
     ok2 = False
-    print("\n Please input conditions. Type 0 to go back.\n"
-          f" Leave blank to use defaults ({defaults[0]} test{'s' if defaults[0] != 1 else ''}, {defaults[1]} CV).\n")
+    print('\n Please input conditions. Type "exit" to go back\n'
+          f" Leave blank to use defaults ({defaults[0]} test{'s' if defaults[0] != 1 else ''}, {defaults[1]} CV)\n")
 
     while not ok1:
         size = input(" Number of tests to run: ")
         if size:
-            if size.lower() in valid_exit:
+            if size.lower() in valid_exit+['0']:
                 return 'exit', 0
 
             if size.isnumeric():
@@ -632,6 +632,7 @@ def create_artifact(full_source):
 
 
 def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
+    # highest_cv is only 0 when it's not passed
     artifact = create_artifact(arti_source)
 
     if not highest_cv and not silent:
@@ -641,15 +642,16 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
         artifact.upgrade()
         if not highest_cv and not silent:
             artifact.print_stats()
-
-    if (highest_cv and artifact.cv() > highest_cv and
+    art_cv = artifact.cv()
+    if (highest_cv and art_cv > highest_cv and
             (set_requirement == 'none' or artifact.set == set_requirement) and
             (type_requirement == 'none' or artifact.type == type_requirement) and
             (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
             (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement))):
-        highest_cv = artifact.cv()
+        # even if highest_cv is supposed to be set to 0 it's set to 1
+        highest_cv = art_cv + (art_cv == 0)
         if not silent:
-            print(f' Day {day}: {artifact.cv()} CV ({artifact.short()} {artifact.subs()}')
+            print(f' Day {day}: {art_cv} CV - {artifact.short()} {artifact.subs()}')
 
     if silent:
         artifact.last_upgrade = ""
@@ -1440,7 +1442,7 @@ while True:
             joined_domain = ', '.join(domain_set)
             c = 0
             day = 0
-            highest = 0.1
+            highest = -0.1
             total_generated = 0
             inventory = 0
             flag = False
@@ -1533,7 +1535,8 @@ while True:
             word = 'were' if win_generated_domain != 1 else 'was'
             print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} {word} from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
         else:
-            print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} days{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
+            day_s = 'days' if low[0] != 1 else 'day'
+            print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} {day_s}{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
             print()
             win_source = 'a domain' if win_generated_domain else 'the strongbox' if win_generated_strongbox else 'the abyss'
             print(f' The winning artifact was from {Fore.LIGHTCYAN_EX}{win_source}{Style.RESET_ALL}')
@@ -1567,7 +1570,7 @@ while True:
             cvs = {i: 0 for i in possible_cvs}
             progress_bar_number = num//1000
             for i in range(num):
-                art, _ = create_and_roll_artifact(source, 0, True)
+                art, _ = create_and_roll_artifact(source, silent=True)
                 cvs[art.cv_real()] += 1
                 print_progress_bar(i // progress_bar_number, num // progress_bar_number)
             print(f"\r {Fore.LIGHTGREEN_EX}Generation complete - 100%{Style.RESET_ALL}" + ' '*47+'\n')
@@ -1717,7 +1720,7 @@ while True:
 
                 for i in range(cmd):
                     if s < 100000:
-                        art, _ = create_and_roll_artifact(source, 0, True)
+                        art, _ = create_and_roll_artifact(source, silent=True)
                         artifact_list.append(art)
                         s += 1
                     else:
