@@ -142,7 +142,7 @@ class ArtifactEncoder(json.JSONEncoder):
                 artifact.level, artifact.set, artifact.last_upgrade, artifact.roll_value]
 
 
-def choose_one(items, error_message, alias={}, blank_ok=False):
+def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False):
     items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
     if isinstance(items_dict['1'], tuple) or isinstance(items_dict['1'], list):
         for item in items_dict.items():
@@ -151,11 +151,14 @@ def choose_one(items, error_message, alias={}, blank_ok=False):
     else:
         for item in items_dict.items():
             print(f" {item[0]} = {item[1]}")
-    print('\n (Type 0 to exit)\n')
+    skip = ' or "skip" to skip all advanced settings' if skip_ok else ''
+    print(f'\n (Type 0 to exit{skip})\n')
     while True:
         new1 = input(' Your pick: ').strip()
         if new1 in ('0', 'exit'):
             return 0
+        if new1 == 'skip' and skip_ok:
+            return 'skip'
         if not new1 and blank_ok:
             return 'blank'
         if new1 in items_dict or new1 in items_dict.values():
@@ -642,7 +645,8 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
     if (highest_cv and artifact.cv() > highest_cv and
             (set_requirement == 'none' or artifact.set == set_requirement) and
             (type_requirement == 'none' or artifact.type == type_requirement) and
-            (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement)):
+            (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
+            (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement))):
         highest_cv = artifact.cv()
         if not silent:
             print(f' Day {day}: {artifact.cv()} CV ({artifact.short()} {artifact.subs()}')
@@ -716,7 +720,8 @@ def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_n
     new_winner = ((artifact.cv() >= min(54.5, cv_want)) and
                   (set_requirement == 'none' or artifact.set == set_requirement) and
                   (type_requirement == 'none' or artifact.type == type_requirement) and
-                  (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement))
+                  (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
+                  (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)))
     if new_winner:
         days_list.append(day_number)
         artifacts.append(artifact_number)
@@ -1155,7 +1160,7 @@ while True:
             sample_size, cv_desired = int(sample_size), float(cv_desired)
             print(f' Ok, will look for at least {Fore.LIGHTCYAN_EX}{min(54.5, cv_desired)}{Style.RESET_ALL} cv\n')
 
-        print(f' Would you like to view {Fore.CYAN}advanced settings{Style.RESET_ALL}? (leave blank to skip and use defaults)')
+        print(f' Would you like to view {Fore.CYAN}advanced settings{Style.RESET_ALL}? (leave blank to skip and use defaults, type 0 to exit)')
         while True:
             yesno = input(' Y/n: ').strip().lower()
             if not yesno or yesno == 'n':
@@ -1186,17 +1191,22 @@ while True:
         set_requirement = 'none'
         type_requirement = 'none'
         main_stat_requirement = 'none'
+        sub_stat_requirement = []
 
+        exited = False
         if advanced:
-            exited = False
+            skipped = False
             print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (leave blank to use default)')
             # ARTIFACT SOURCE CHOICE
-            auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True)
+            auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True, True)
 
             if not auto_source:  # user input 0
-                auto_source = 'Domains, Strongbox, Abyss'
-                print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
                 exited = True
+
+            elif auto_source == 'skip':
+                auto_source = 'Domains, Strongbox, Abyss'
+                print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                skipped = True
 
             elif auto_source == 'blank':
                 auto_source = 'Domains, Strongbox, Abyss'
@@ -1214,73 +1224,140 @@ while True:
                 print(f' {Fore.LIGHTMAGENTA_EX}Source set to {auto_source}{Style.RESET_ALL}\n')
 
             everysim = ' for every simulation' if sample_size > 1 else ''
-            if not exited and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
+            if not exited and not skipped and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
                 print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
-                auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True)
+                auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True, True)
                 if auto_domain == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain{everysim}{Style.RESET_ALL}\n')
                     auto_domain = 'random'
                 elif not auto_domain:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    auto_domain = 'random'
                     exited = True
+                elif auto_domain == 'skip':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    auto_domain = 'random'
+                    skipped = True
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Domain: {auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}\n')
 
-            if not exited and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
+            if not exited and not skipped and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
                 print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
-                auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True)
+                auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True, True)
                 if auto_strongbox == 'blank':
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set{everysim}{Style.RESET_ALL}\n')
                     auto_strongbox = 'random'
                 elif not auto_strongbox:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    auto_strongbox = 'random'
                     exited = True
+                elif auto_strongbox == 'skip':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    auto_strongbox = 'random'
+                    skipped = True
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Strongbox set: {auto_strongbox}{Style.RESET_ALL}\n')
 
-            if not exited:
+            if not exited and not skipped:
                 print(f' {Fore.CYAN}Do your artifacts need to be a specific type?{Style.RESET_ALL} (leave blank to set no requirements)')
-                type_requirement = choose_one(artifact_types, "That's not a type that is available! Try again", {}, True)
+                type_requirement = choose_one(artifact_types, "That's not a type that is available! Try again", {}, True, True)
                 if type_requirement == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact type requirement{everysim}{Style.RESET_ALL}\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact type requirement{Style.RESET_ALL}\n')
                     type_requirement = 'none'
                 elif not type_requirement:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    type_requirement = 'none'
                     exited = True
+                elif type_requirement == 'skip':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    type_requirement = 'none'
+                    skipped = True
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {type_requirement}{Style.RESET_ALL}\n')
 
-            if not exited and type_requirement != 'none':
+            if not exited and not skipped and type_requirement != 'none':
                 print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
-                main_stat_requirement = choose_one(type_to_main_stats[type_requirement], "That's not a stat that is available! Try again", {}, True)
+                eligible_mains = list(type_to_main_stats[type_requirement])
+                if cv_desired > 46.8 and type_requirement == 'Circlet':
+                    eligible_mains.remove('CRIT Rate%')
+                    eligible_mains.remove('CRIT DMG%')
+                main_stat_requirement = choose_one(eligible_mains, "That's not a stat that is available! Try again", {}, True, True)
                 if main_stat_requirement == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Main Stat requirement{everysim}{Style.RESET_ALL}\n')
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Main Stat requirement{Style.RESET_ALL}\n')
                     main_stat_requirement = 'none'
                 elif not main_stat_requirement:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    main_stat_requirement = 'none'
                     exited = True
+                elif main_stat_requirement == 'skip':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    main_stat_requirement = 'none'
+                    skipped = True
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {main_stat_requirement}{Style.RESET_ALL}\n')
+
+            if not exited and not skipped:
+                print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
+                eligible_subs = [x for x in substats if x != main_stat_requirement]
+                subs_dict = dict(zip([str(ind) for ind in range(1, len(eligible_subs) + 1)], eligible_subs))
+                for item in subs_dict.items():
+                    print(f" {item[0]} = {item[1]}")
+                print('\n (Type 0 to exit or "skip" to skip all advanced settings)\n')
+                while True:
+                    sub_stat_requirement = input(' Your pick: ').split()
+
+                    if not sub_stat_requirement:
+                        sub_stat_requirement = []
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
+                        break
+
+                    if sub_stat_requirement[0] in ('0', 'exit'):
+                        exited = True
+                        break
+
+                    elif sub_stat_requirement[0] == 'skip':
+                        sub_stat_requirement = []
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                        skipped = True
+                        break
+
+                    if len(sub_stat_requirement) > 4:
+                        print(f' {Fore.RED}Please input up to 4 sub stats! Try again{Style.RESET_ALL}\n')
+                        continue
+
+                    if all((i in subs_dict) or (i in subs_dict.values()) for i in sub_stat_requirement):
+                        for i in range(len(sub_stat_requirement)):
+                            if sub_stat_requirement[i] in subs_dict:
+                                sub_stat_requirement[i] = subs_dict[sub_stat_requirement[i]]
+                        if len(set(sub_stat_requirement)) != len(sub_stat_requirement):
+                            print(f' {Fore.RED}Please input different sub stats :){Style.RESET_ALL}\n')
+
+                            '''
+                            impossible to hit cv requirement if
+                            atk hp atk% hp%    1 cv
+                            atk hp atk%       47 cv
+                            atk hp atk% crit  47 cv
+                            '''
+                        elif ((len(sub_stat_requirement) == 4 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 0) or
+                              (len(sub_stat_requirement) == 3 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 46.8) or
+                              (len(sub_stat_requirement) == 4 and ('CRIT DMG%' not in sub_stat_requirement or 'CRIT Rate%' not in sub_stat_requirement) and cv_desired > 46.8)):
+                            print(f' {Fore.RED}Impossible to hit CV requirement with the chosen Sub Stats.\n Choose a different set of Sub Stats or a different CV requirement{Style.RESET_ALL}\n')
+                        else:
+                            joined_subs_requirement = ', '.join(sub_stat_requirement)
+                            print(f' {Fore.LIGHTMAGENTA_EX}Sub Stat requirement: {joined_subs_requirement}{Style.RESET_ALL}\n')
+                            break
+                    else:
+                        print(f' {Fore.RED}Please input Sub Stats separated by space! Try again{Style.RESET_ALL}\n')
 
             # ask for set requirement only if
             # - a domain is chosen
             # - source is not strongbox only
-            if not exited and auto_domain != 'random' and auto_source != 'Only Strongbox':
+            if not exited and not skipped and auto_domain != 'random' and auto_source != 'Only Strongbox':
                 # - either strongbox is not used
                 if not strongbox_use:
-                    print(f' {Fore.CYAN}Do your artifacts need to be from a specific set?{Style.RESET_ALL} (leave blank to set no requirements)')
-                    set_requirement = choose_one(auto_domain, "That's not a set that is available! Try again", aliases_sets, True)
+                    print(f' {Fore.CYAN}Does your artifact need to be from a specific set?{Style.RESET_ALL} (leave blank to set no requirements)')
+                    set_requirement = choose_one(auto_domain, "That's not a set that is available! Try again", aliases_sets, True, True)
                     if set_requirement == 'blank':
                         print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
                         set_requirement = 'none'
                     elif not set_requirement:
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                        set_requirement = 'none'
                         exited = True
+                    elif set_requirement == 'skip':
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                        set_requirement = 'none'
+                        skipped = True
                     else:
                         print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
 
@@ -1299,13 +1376,22 @@ while True:
                             print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
                             break
                         if yesno in ('0', 'exit'):
-                            set_requirement = 'none'
                             exited = True
-                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                            break
+                        elif yesno == 'skip':
+                            set_requirement = 'none'
+                            skipped = True
+                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
                             break
                         else:
                             print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
 
+        if exited:
+            print(" Going back to normal mode...")
+            print()
+            print('=' * 52 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 52)
+            print()
+            continue
 
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
@@ -1323,6 +1409,9 @@ while True:
             if type_requirement != 'none':
                 color = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
                 print(f" Main Stat requirement: {color}{main_stat_requirement}{Style.RESET_ALL}")
+            color = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
+            joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'none'
+            print(f" Sub Stat requirements: {color}{joined_subs_requirement}{Style.RESET_ALL}")
             if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
                 message = f' {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f' Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
                 print(message)
