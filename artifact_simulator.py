@@ -1271,7 +1271,7 @@ while True:
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {type_requirement}{Style.RESET_ALL}\n')
 
-            if not exited and not skipped and type_requirement != 'none':
+            if not exited and not skipped and type_requirement not in ('none', 'Feather', 'Flower'):
                 print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
                 eligible_mains = list(type_to_main_stats[type_requirement])
                 if cv_desired > 46.8 and type_requirement == 'Circlet':
