@@ -2397,11 +2397,11 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 if cmd[:6] == 'filter':
                     cmd = cmd.split()[1:]
                     if not (0 < len(cmd) <= 3):
-                        print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: 4 5){Style.RESET_ALL}\n')
+                        print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: filter 4 5){Style.RESET_ALL}\n')
                         continue
                     for i in range(len(cmd)):
                         if not cmd[i].isnumeric():
-                            print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: 4 5){Style.RESET_ALL}\n')
+                            print(f'    {Fore.RED}Please input rarities separated by space when filtering (ex: filter 4 5){Style.RESET_ALL}\n')
                             break
                         cmd[i] = int(cmd[i])
                         if cmd[i] not in (3, 4, 5):
