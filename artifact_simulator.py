@@ -639,7 +639,10 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
         if not highest_cv and not silent:
             artifact.print_stats()
 
-    if highest_cv and artifact.cv() > highest_cv and (set_requirement == 'none' or artifact.set == set_requirement):
+    if (highest_cv and artifact.cv() > highest_cv and
+            (set_requirement == 'none' or artifact.set == set_requirement) and
+            (type_requirement == 'none' or artifact.type == type_requirement) and
+            (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement)):
         highest_cv = artifact.cv()
         if not silent:
             print(f' Day {day}: {artifact.cv()} CV ({artifact.short()} {artifact.subs()}')
@@ -710,7 +713,10 @@ def sort_daily(artifacts):
 
 def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
                          only_one):
-    new_winner = (artifact.cv() >= min(54.5, cv_want)) and (set_requirement == 'none' or artifact.set == set_requirement)
+    new_winner = ((artifact.cv() >= min(54.5, cv_want)) and
+                  (set_requirement == 'none' or artifact.set == set_requirement) and
+                  (type_requirement == 'none' or artifact.type == type_requirement) and
+                  (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement))
     if new_winner:
         days_list.append(day_number)
         artifacts.append(artifact_number)
@@ -1169,6 +1175,8 @@ while True:
         auto_domain = 'random'
         auto_strongbox = 'random'
         set_requirement = 'none'
+        type_requirement = 'none'
+        main_stat_requirement = 'none'
 
         if advanced:
             exited = False
@@ -1223,6 +1231,32 @@ while True:
                 else:
                     print(f' {Fore.LIGHTMAGENTA_EX}Strongbox set: {auto_strongbox}{Style.RESET_ALL}\n')
 
+            if not exited:
+                print(f' {Fore.CYAN}Do your artifacts need to be a specific type?{Style.RESET_ALL} (leave blank to set no requirements)')
+                type_requirement = choose_one(artifact_types, "That's not a type that is available! Try again", {}, True)
+                if type_requirement == 'blank':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact type requirement{everysim}{Style.RESET_ALL}\n')
+                    type_requirement = 'none'
+                elif not type_requirement:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    type_requirement = 'none'
+                    exited = True
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {type_requirement}{Style.RESET_ALL}\n')
+
+            if not exited and type_requirement != 'none':
+                print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
+                main_stat_requirement = choose_one(type_to_main_stats[type_requirement], "That's not a stat that is available! Try again", {}, True)
+                if main_stat_requirement == 'blank':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Main Stat requirement{everysim}{Style.RESET_ALL}\n')
+                    main_stat_requirement = 'none'
+                elif not main_stat_requirement:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, exiting advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    main_stat_requirement = 'none'
+                    exited = True
+                else:
+                    print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {main_stat_requirement}{Style.RESET_ALL}\n')
+
             # ask for set requirement only if
             # - a domain is chosen
             # - source is not strongbox only
@@ -1269,12 +1303,17 @@ while True:
             print(f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
             if sample_size > 1 or auto_domain == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                    message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.CYAN}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+                    message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
                     print(message)
             if sample_size > 1 or auto_strongbox == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                    message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.CYAN}{auto_strongbox}{Style.RESET_ALL}'
+                    message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
                     print(message)
+            color = Fore.LIGHTCYAN_EX if type_requirement != 'none' else Fore.CYAN
+            print(f" Artifact type requirement: {color}{type_requirement}{Style.RESET_ALL}")
+            if type_requirement != 'none':
+                color = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
+                print(f" Main Stat requirement: {color}{main_stat_requirement}{Style.RESET_ALL}")
             if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
                 message = f' {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f' Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
                 print(message)
