@@ -1033,7 +1033,9 @@ def print_character_archive():
         out += ("\n\n" + "="*24 + f" {Fore.CYAN}CHARACTER ARCHIVE{Style.RESET_ALL} " + "="*24 + '\n')
         out += f" {len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})\n"
         for a in sorted_constellations:
-            out += f' {color_map[a[0].rarity]}c{a[1]} {color_map[a[0].rarity]}{a[0].name}{Style.RESET_ALL}\n'
+            con = min(a[1], 6)
+            actual_num = f' (x{a[1]+1})' if a[1] >= 6 else ''
+            out += f' {color_map[a[0].rarity]}c{con} {color_map[a[0].rarity]}{a[0].name}{actual_num}{Style.RESET_ALL}\n'
         out += Style.RESET_ALL
     return out
 
@@ -1161,7 +1163,10 @@ def print_inventory_box_partial(ttt, extra_indent=False):
             out += ' |'
             for j in range(5):
                 if i * 5 + j < len(sorted_items):
-                    padded_string = ' ' * ((19-len(str(sorted_items[i * 5 + j][1])))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + letter + str(sorted_items[i * 5 + j][1]) + Style.RESET_ALL + ' ' * (19 - ((19-len(str(sorted_items[i * 5 + j][1])))//2) - len(str(sorted_items[i * 5 + j][1])))
+                    con_ref_display = str(min(sorted_items[i * 5 + j][1], 6)) if letter == 'c' else str(sorted_items[i * 5 + j][1])
+                    if letter == 'c' and sorted_items[i * 5 + j][1] >= 6:
+                        con_ref_display += ' - x' + str(sorted_items[i * 5 + j][1]+1)
+                    padded_string = ' ' * ((19-len(con_ref_display))//2) + color_map[sorted_items[i * 5 + j][0].rarity] + letter + str(con_ref_display) + Style.RESET_ALL + ' ' * (19 - ((19-len(con_ref_display))//2) - len(con_ref_display))
                     out += (padded_string + '|')
                 else:
                     out += (' ' * cell_width + '|')
@@ -2543,8 +2548,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
                 break
             if isinstance(res, Character):
                 if res in constellations:
-                    if constellations[res] < 6:
-                        constellations[res] += 1
+                    constellations[res] += 1
                 else:
                     constellations[res] = 0
                     if res.rarity == 5:
