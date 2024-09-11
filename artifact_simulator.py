@@ -1293,6 +1293,10 @@ while True:
             if not exited and not skipped:
                 print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
                 eligible_subs = [x for x in substats if x != main_stat_requirement]
+                if type_requirement == 'Feather':
+                    eligible_subs.remove('ATK')
+                if type_requirement == 'Flower':
+                    eligible_subs.remove('HP')
                 subs_dict = dict(zip([str(ind) for ind in range(1, len(eligible_subs) + 1)], eligible_subs))
                 for item in subs_dict.items():
                     print(f" {item[0]} = {item[1]}")
