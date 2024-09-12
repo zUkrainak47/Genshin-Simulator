@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from colorama import init, Fore, Style
 from operator import itemgetter
 from random import choice, choices
-
+from math import ceil
 from pathlib import Path
 
 init()
@@ -34,10 +34,16 @@ if file_to_move.exists():
     # Move the file
     file_to_move.rename(new_file_location)
 
+if not Path('res').exists():
+    Path('res').mkdir(parents=True, exist_ok=True)
+    print(f' {Fore.RED}Inventory sacrificed due to an update. o7{Style.RESET_ALL}')
+    with open(Path('artifact_simulator_resources', 'inventory.txt'), 'w') as file:
+        file.write('[]')
+
 
 class Artifact:
     def __init__(self, artifact_type, mainstat, mainstat_value, threeliner, sub_stats, level, artifact_set,
-                 last_upgrade="", roll_value=0):
+                 last_upgrade="", roll_value={}):
         self.type = artifact_type
         self.mainstat = mainstat
         self.mainstat_value = mainstat_value
@@ -68,7 +74,7 @@ class Artifact:
             for sub in self.substats
         }
 
-    def print_stats(self):
+    def print_stats(self, show_rv=False):
 
         # 311 ATK Feather (+20)
         # - HP: 418
@@ -80,9 +86,12 @@ class Artifact:
 
         for sub in self.substats:
             is_percentage = '%' in sub
-            print(f" - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
+            rv_num = f' ({self.roll_value[sub]}%)' + (self.roll_value[sub] < 100)*' ' if show_rv else ''
+            print(f"{rv_num} - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
+        if show_rv:
+            print(f' {Fore.CYAN}RV: {self.rv()}%{Style.RESET_ALL}')
         print()
 
     def upgrade(self):
@@ -90,19 +99,19 @@ class Artifact:
             roll = choice(possible_rolls)
 
             if self.threeliner:
-                self.substats[self.threeliner] = max_rolls[
-                                                     self.threeliner] * roll
+                self.substats[self.threeliner] = max_rolls[self.threeliner] * roll
                 self.last_upgrade = self.threeliner
+                self.roll_value[self.threeliner] = roll * 100
                 self.threeliner = 0
 
             else:
                 sub = choice(list(self.substats.keys()))
                 self.substats[sub] += max_rolls[sub] * roll
                 self.last_upgrade = sub
+                self.roll_value[sub] += roll * 100
 
             self.level += 4
             self.mainstat_value[1] += 1
-            self.roll_value += roll * 100
 
     def cv(self):
         crit_value = 0
@@ -133,7 +142,7 @@ class Artifact:
         return round(crit_value, 1)
 
     def rv(self):
-        return int(self.roll_value)
+        return sum(self.roll_value.values())
 
 
 class ArtifactEncoder(json.JSONEncoder):
@@ -484,7 +493,7 @@ def transmute(preset=[]):
 
     sub_stat_1_roll = choice(possible_rolls)
     sub_stat_2_roll = choice(possible_rolls)
-    rv = sub_stat_1_roll*100 + sub_stat_2_roll*100
+    rv = {sub_stat_1: sub_stat_1_roll * 100, sub_stat_2: sub_stat_2_roll * 100}
 
     subs = {sub_stat_1: max_rolls[sub_stat_1]*sub_stat_1_roll, sub_stat_2: max_rolls[sub_stat_2]*sub_stat_2_roll}
     subs_weights = dict(zip(substats, substats_weights))
@@ -503,7 +512,7 @@ def transmute(preset=[]):
         subs_weights.pop(sub)
         subs_pool.remove(sub)
         subs[sub] = max_rolls[sub] * roll
-        rv += roll * 100
+        rv[sub] = roll * 100
     print()
     threeliner = choices(subs_pool, weights=list(subs_weights.values()))[0] if not fourliner else 0
     return Artifact(artifact_type, main_stat, get_main_stat_value(main_stat), threeliner, subs, 0, artifact_set, "", rv), preset
@@ -578,7 +587,7 @@ def load_settings():
 def create_artifact(full_source):
     exact_source, from_where = full_source
     art_type = choice(artifact_types)
-    rv = 0
+    rv = {}
 
     if art_type == 'Flower':
         mainstat = 'HP'
@@ -613,7 +622,7 @@ def create_artifact(full_source):
         subs_weights.remove(subs_weights[subs_pool.index(sub)])
         subs_pool.remove(sub)
         subs[sub] = max_rolls[sub] * roll
-        rv += roll * 100
+        rv[sub] = roll * 100
 
     threeliner = choices(subs_pool, weights=subs_weights)[0] if not fourliner else 0
 
@@ -647,7 +656,8 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
             (set_requirement == 'none' or artifact.set == set_requirement) and
             (type_requirement == 'none' or artifact.type == type_requirement) and
             (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
-            (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement))):
+            (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
+            (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement)):
         # even if highest_cv is supposed to be set to 0 it's set to 1
         highest_cv = art_cv + (art_cv == 0)
         if not silent:
@@ -723,7 +733,8 @@ def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_n
                   (set_requirement == 'none' or artifact.set == set_requirement) and
                   (type_requirement == 'none' or artifact.type == type_requirement) and
                   (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
-                  (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)))
+                  (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
+                  (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement))
     if new_winner:
         days_list.append(day_number)
         artifacts.append(artifact_number)
@@ -1194,6 +1205,7 @@ while True:
         type_requirement = 'none'
         main_stat_requirement = 'none'
         sub_stat_requirement = []
+        rv_requirement = 0
 
         exited = False
         if advanced:
@@ -1274,7 +1286,7 @@ while True:
             if not exited and not skipped and type_requirement not in ('none', 'Feather', 'Flower'):
                 print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
                 eligible_mains = list(type_to_main_stats[type_requirement])
-                if cv_desired > 46.8 and type_requirement == 'Circlet':
+                if cv_desired > 46.6 and type_requirement == 'Circlet':
                     eligible_mains.remove('CRIT Rate%')
                     eligible_mains.remove('CRIT DMG%')
                 main_stat_requirement = choose_one(eligible_mains, "That's not a stat that is available! Try again", {}, True, True)
@@ -1337,8 +1349,8 @@ while True:
                             atk hp atk% crit  47 cv
                             '''
                         elif ((len(sub_stat_requirement) == 4 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 0) or
-                              (len(sub_stat_requirement) == 3 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 46.8) or
-                              (len(sub_stat_requirement) == 4 and ('CRIT DMG%' not in sub_stat_requirement or 'CRIT Rate%' not in sub_stat_requirement) and cv_desired > 46.8)):
+                              (len(sub_stat_requirement) == 3 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 46.6) or
+                              (len(sub_stat_requirement) == 4 and ('CRIT DMG%' not in sub_stat_requirement or 'CRIT Rate%' not in sub_stat_requirement) and cv_desired > 46.6)):
                             print(f' {Fore.RED}Impossible to hit CV requirement with the chosen Sub Stats.\n Choose a different set of Sub Stats or a different CV requirement{Style.RESET_ALL}\n')
                         else:
                             joined_subs_requirement = ', '.join(sub_stat_requirement)
@@ -1346,6 +1358,54 @@ while True:
                             break
                     else:
                         print(f' {Fore.RED}Please input Sub Stats separated by space! Try again{Style.RESET_ALL}\n')
+
+            if not exited and not skipped and sub_stat_requirement:
+                print(f' {Fore.CYAN}Do you want to set a minimum RV requirement for the chosen Sub Stats?{Style.RESET_ALL} (leave blank to set no requirement)')
+                rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - ("CRIT DMG%" not in sub_stat_requirement or "CRIT Rate%" not in sub_stat_requirement)) * 100, 0)
+                # print(rv_needed_for_cv_req)
+                max_rv_for_given_stats = 900 - (4 - len(sub_stat_requirement))*100 - rv_needed_for_cv_req * ('CRIT Rate%' not in sub_stat_requirement and 'CRIT DMG%' not in sub_stat_requirement) #+ (cv_desired > 46.6) * ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * 100
+                # print(max_rv_for_given_stats)
+                # at_least_one_crit_required = ('CRIT Rate%' in sub_stat_requirement or 'CRIT DMG%' in sub_stat_requirement) * min(rv_needed_for_cv_req - 100, 0)
+                # both_crits_required = ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * (rv_needed_for_cv_req != 0) * 100
+                # max_possible_rv_requirement = remaining_rv_for_other_stats + at_least_one_crit_required + both_crits_required
+                max_possible_rv_requirement = max_rv_for_given_stats
+                rv_s = 's' if len(sub_stat_requirement) > 1 else ''
+                while True:
+                    rv_requirement = input(' Your pick: ')
+                    if not rv_requirement:
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no RV requirement{Style.RESET_ALL}\n')
+                        rv_requirement = 0
+                        break
+
+                    elif rv_requirement == '0':
+                        print(f' {Fore.LIGHTCYAN_EX}Really not sure how to treat this lmao, did you mean 0 RV or exit?{Style.RESET_ALL}\n'
+                              ' Type "exit" to exit. Type "zero" or leave blank to set 0 RV\n')
+
+                    elif rv_requirement == 'zero':
+                        print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: 0%{Style.RESET_ALL}\n')
+                        rv_requirement = 0
+                        break
+
+                    elif rv_requirement == 'exit':
+                        exited = True
+                        break
+
+                    elif rv_requirement == 'skip':
+                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                        rv_requirement = 0
+                        skipped = True
+                        break
+
+                    elif rv_requirement.isnumeric():
+                        rv_requirement = int(rv_requirement)
+                        if rv_requirement > max_possible_rv_requirement:
+                            print(f' {Fore.RED}Max RV requirement for the chosen Sub Stat{rv_s} is {max_possible_rv_requirement}. Try again{Style.RESET_ALL}\n')
+                        else:
+                            print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: {rv_requirement}{Style.RESET_ALL}\n')
+                            break
+
+                    else:
+                        print(f' {Fore.RED}Please input a number! Try again{Style.RESET_ALL}\n')
 
             # ask for set requirement only if
             # - a domain is chosen
@@ -1399,6 +1459,8 @@ while True:
             print()
             continue
 
+        print('=' * 117)
+        print()
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
             print(f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
@@ -1412,12 +1474,15 @@ while True:
                     print(message)
             color = Fore.LIGHTCYAN_EX if type_requirement != 'none' else Fore.CYAN
             print(f" Artifact type requirement: {color}{type_requirement}{Style.RESET_ALL}")
-            if type_requirement != 'none':
+            if type_requirement not in ('none', 'Flower', 'Feather'):
                 color = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
                 print(f" Main Stat requirement: {color}{main_stat_requirement}{Style.RESET_ALL}")
             color = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
             joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'none'
             print(f" Sub Stat requirements: {color}{joined_subs_requirement}{Style.RESET_ALL}")
+            if sub_stat_requirement:
+                color = Fore.LIGHTCYAN_EX if rv_requirement else Fore.CYAN
+                print(f" Roll Value requirement for chosen Sub Stats: {color}{rv_requirement}%{Style.RESET_ALL}")
             if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
                 message = f' {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f' Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
                 print(message)
@@ -1988,9 +2053,10 @@ while True:
 
             elif cmd == 'rv':
                 big_rv = max(artifact_list, key=lambda x: x.rv())
-                print(f' #{artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
-                print(f' RV: {big_rv.rv()}%')
+                # print(f' #{artifact_list.index(big_rv) + 1}) {big_rv} - {big_rv.subs()}')
+                # print(f' RV: {big_rv.rv()}%')
                 print()
+                big_rv.print_stats(True)
 
             elif cmd in ('size', 'len', 'length'):
                 print(
@@ -2176,7 +2242,9 @@ while True:
             print(f' {Fore.LIGHTMAGENTA_EX}Ok, not spending daily resin anymore{Style.RESET_ALL}\n')
 
     elif user_command in ('a rv', 'rv'):
-        print(f' RV: {art.rv()}%\n')
+        # print(f' RV: {art.rv()}%\n')
+        print()
+        art.print_stats(True)
 
     elif user_command in ('a cv', 'cv'):
         print(f' CV: {art.cv()}\n')
