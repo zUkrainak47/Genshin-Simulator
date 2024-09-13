@@ -390,6 +390,7 @@ def get_main_stat_value(mainstat):
 
 
 last = 0
+# last_auto = 0
 def transmute(preset=[]):
     if preset:
         artifact_type, main_stat, sub_stat_1, sub_stat_2, artifact_set = preset
@@ -656,7 +657,7 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
             (set_requirement == 'none' or artifact.set == set_requirement) and
             (type_requirement == 'none' or artifact.type == type_requirement) and
             (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
-            (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
+            (sub_stat_mode != '0' or not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
             (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement)):
         # even if highest_cv is supposed to be set to 0 it's set to 1
         highest_cv = art_cv + (art_cv == 0)
@@ -733,7 +734,7 @@ def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_n
                   (set_requirement == 'none' or artifact.set == set_requirement) and
                   (type_requirement == 'none' or artifact.type == type_requirement) and
                   (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
-                  (not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
+                  (sub_stat_mode != '0' or not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
                   (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement))
     if new_winner:
         days_list.append(day_number)
@@ -745,7 +746,8 @@ def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_n
         if artifact_number > slowest[1]:
             slowest = (day_number, artifact_number, artifact)
         # print(artifact.subs())
-
+        if rv_requirement:
+            print(f' {Fore.LIGHTCYAN_EX}{int(sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]))}% RV{Style.RESET_ALL} ({int(artifact.rv())}% Total)')
         if not only_one:
             print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
 
@@ -1206,6 +1208,7 @@ while True:
         main_stat_requirement = 'none'
         sub_stat_requirement = []
         rv_requirement = 0
+        sub_stat_mode = "2"
 
         exited = False
         if advanced:
@@ -1304,6 +1307,24 @@ while True:
 
             if not exited and not skipped:
                 print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
+                sub_stat_mode_options = ['Yes, I want to choose Sub Stats, ALL of which must be present in my artifact (max 4)',
+                                         'Yes, I want to choose Sub Stats only to base the RV requirement off of',
+                                         "No, I don't want to choose Sub Stats"]
+                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the 3 options please. Try again", {}, True, True)
+                sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
+                if not sub_stat_mode:
+                    exited = True
+                    break
+                if sub_stat_mode in ('blank', "2"):
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
+                    sub_stat_mode = "2"
+                elif sub_stat_mode == 'skip':
+                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+                    sub_stat_mode = "2"
+                    skipped = True
+
+            if not exited and not skipped and sub_stat_mode != "2":
+                print(f' {Fore.CYAN}Ok, choose the Sub Stats!{Style.RESET_ALL} (leave blank to set no requirements)')
                 eligible_subs = [x for x in substats if x != main_stat_requirement]
                 if type_requirement == 'Feather':
                     eligible_subs.remove('ATK')
@@ -1331,7 +1352,7 @@ while True:
                         skipped = True
                         break
 
-                    if len(sub_stat_requirement) > 4:
+                    if len(sub_stat_requirement) > 4 and sub_stat_mode == "0":
                         print(f' {Fore.RED}Please input up to 4 sub stats! Try again{Style.RESET_ALL}\n')
                         continue
 
@@ -1360,7 +1381,7 @@ while True:
                         print(f' {Fore.RED}Please input Sub Stats separated by space! Try again{Style.RESET_ALL}\n')
 
             if not exited and not skipped and sub_stat_requirement:
-                print(f' {Fore.CYAN}Do you want to set a minimum RV requirement for the chosen Sub Stats?{Style.RESET_ALL} (leave blank to set no requirement)')
+                print(f' {Fore.CYAN}Do you want to set a minimum combined RV requirement for the chosen Sub Stats?{Style.RESET_ALL} (leave blank to set no requirement)')
                 rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - ("CRIT DMG%" not in sub_stat_requirement or "CRIT Rate%" not in sub_stat_requirement)) * 100, 0)
                 # print(rv_needed_for_cv_req)
                 max_rv_for_given_stats = 900 - (4 - len(sub_stat_requirement))*100 - rv_needed_for_cv_req * ('CRIT Rate%' not in sub_stat_requirement and 'CRIT DMG%' not in sub_stat_requirement) #+ (cv_desired > 46.6) * ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * 100
@@ -1401,7 +1422,7 @@ while True:
                         if rv_requirement > max_possible_rv_requirement:
                             print(f' {Fore.RED}Max RV requirement for the chosen Sub Stat{rv_s} is {max_possible_rv_requirement}. Try again{Style.RESET_ALL}\n')
                         else:
-                            print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: {rv_requirement}{Style.RESET_ALL}\n')
+                            print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: {rv_requirement}%{Style.RESET_ALL}\n')
                             break
 
                     else:
