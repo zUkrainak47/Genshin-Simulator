@@ -752,7 +752,7 @@ def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_n
         if rv_requirement:
             print(f' {Fore.LIGHTCYAN_EX}{int(sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]))}% RV{Style.RESET_ALL} ({int(artifact.rv())}% Total)')
         if not only_one:
-            print(f' Artifacts generated: {Fore.MAGENTA}{artifact_number}{Style.RESET_ALL}')
+            print(f' Artifacts generated: {Fore.LIGHTMAGENTA_EX}{artifact_number}{Style.RESET_ALL}')
 
     return fastest, slowest, days_list, artifacts, new_winner
 
@@ -1489,29 +1489,27 @@ while True:
         print()
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
-            print(f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}")
+            information = f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}"
             if sample_size > 1 or auto_domain == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                    message = f' Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f' Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
-                    print(message)
+                    information += f'\n Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f'\n Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
             if sample_size > 1 or auto_strongbox == 'random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                    message = f' Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f' Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
-                    print(message)
-            color = Fore.LIGHTCYAN_EX if type_requirement != 'none' else Fore.CYAN
-            print(f" Artifact type requirement: {color}{type_requirement}{Style.RESET_ALL}")
+                    information += f'\n Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f'\n Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
+            color1 = Fore.LIGHTCYAN_EX if type_requirement != 'none' else Fore.CYAN
+            information += f"\n Artifact type requirement: {color1}{type_requirement}{Style.RESET_ALL}"
             if type_requirement not in ('none', 'Flower', 'Feather'):
-                color = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
-                print(f" Main Stat requirement: {color}{main_stat_requirement}{Style.RESET_ALL}")
-            color = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
+                color2 = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
+                information += f"\n Main Stat requirement: {color2}{main_stat_requirement}{Style.RESET_ALL}"
+            color3 = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
             joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'none'
-            print(f" Sub Stat requirements: {color}{joined_subs_requirement}{Style.RESET_ALL}")
+            information += f"\n Sub Stat requirements: {color3}{joined_subs_requirement}{Style.RESET_ALL}"
             if sub_stat_requirement:
-                color = Fore.LIGHTCYAN_EX if rv_requirement else Fore.CYAN
-                print(f" Roll Value requirement for chosen Sub Stats: {color}{rv_requirement}%{Style.RESET_ALL}")
+                color4 = Fore.LIGHTCYAN_EX if rv_requirement else Fore.CYAN
+                information += f"\n Roll Value requirement for chosen Sub Stats: {color4}{rv_requirement}%{Style.RESET_ALL}"
             if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
-                message = f' {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f' Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
-                print(message)
+                information += f'\n {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f'\n Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
+            print(information)
 
         days_it_took_to_reach_desired_cv = []
         artifacts_generated = []
@@ -1541,14 +1539,19 @@ while True:
             total_generated = 0
             inventory = 0
             flag = False
-            print(f'\n {Fore.LIGHTMAGENTA_EX}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '')
-            if domain_use:
+            print(f'\n\n {Fore.YELLOW}Simulation {i + 1}{Style.RESET_ALL}:' if sample_size > 1 else '\n')
+            # if domain_use:
+            #     print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}')
+            # if strongbox_use:
+            #     print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
+            # if abyss_use:
+            #     print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
+            if domain_use and auto_domain == 'random':
                 print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}')
-            if strongbox_use:
+            if strongbox_use and auto_strongbox == 'random':
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
-            if abyss_use:
-                print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
-            print()
+            if (auto_domain == 'random') or (auto_strongbox == 'random'):
+                print()
 
             while not flag:
                 day += 1
@@ -1623,20 +1626,24 @@ while True:
         days = round(sum(days_it_took_to_reach_desired_cv) / sample_size, 2)
 
         if sample_size > 1:
-            print(f' Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV.')
+            print(f'\n Out of {sample_size} simulations, it took an average of {Fore.LIGHTCYAN_EX}{days}{Style.RESET_ALL} days ({round(days / 365.25, 2)} years) to reach at least {cv_desired} CV')
             print(f' Fastest - {Fore.GREEN}{low[0]} day{"s" if low[0] > 1 else ""}{Style.RESET_ALL} - artifact #{low[1]}: {low[2].short(True)}{low[2].subs()}')
             print(f' Slowest - {Fore.RED}{high[0]} day{"s" if high[0] > 1 else ""} ({round(high[0] / 365.25, 2)} years){Style.RESET_ALL} - artifact #{high[1]}: {high[2].short(True)}{high[2].subs()}')
             print()
             word = 'were' if win_generated_domain != 1 else 'was'
-            print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} {word} from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss.')
+            print(f' Out of {sample_size} winning artifacts {Fore.LIGHTCYAN_EX}{win_generated_domain}{Style.RESET_ALL} {word} from domains, {Fore.LIGHTCYAN_EX}{win_generated_strongbox}{Style.RESET_ALL} from strongbox and {Fore.LIGHTCYAN_EX}{win_generated_abyss}{Style.RESET_ALL} from abyss boxes.')
         else:
             day_s = 'days' if low[0] != 1 else 'day'
-            print(f' It took {Fore.LIGHTCYAN_EX}{low[0]} {day_s}{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
+            print(f'\n It took {Fore.LIGHTCYAN_EX}{low[0]} {day_s}{Style.RESET_ALL} (or {round(high[0] / 365.25, 2)} years)!')
             print()
-            win_source = 'a domain' if win_generated_domain else 'the strongbox' if win_generated_strongbox else 'the abyss'
+            win_source = 'a domain' if win_generated_domain else 'the strongbox' if win_generated_strongbox else 'an abyss box'
             print(f' The winning artifact was from {Fore.LIGHTCYAN_EX}{win_source}{Style.RESET_ALL}')
 
-        print(f' Total artifacts generated: {Fore.MAGENTA}{sum(artifacts_generated)}{Style.RESET_ALL} (Domains: {Fore.CYAN}{absolute_generated_domain}{Style.RESET_ALL}, Strongbox: {Fore.CYAN}{absolute_generated_strongbox}{Style.RESET_ALL}, Abyss: {Fore.CYAN}{absolute_generated_abyss}{Style.RESET_ALL})\n')
+        print(f' Total artifacts generated: {Fore.LIGHTMAGENTA_EX}{sum(artifacts_generated):,}{Style.RESET_ALL} (Domains: {Fore.CYAN}{absolute_generated_domain:,}{Style.RESET_ALL} | Strongbox: {Fore.CYAN}{absolute_generated_strongbox:,}{Style.RESET_ALL} | Abyss: {Fore.CYAN}{absolute_generated_abyss:,}{Style.RESET_ALL})\n')
+        if advanced and sample_size > 1:
+            print(' Conditions:')
+            print(information)
+            print()
         print(f' The simulation{"s" if sample_size > 1 else ""} took {to_hours}:{str(decimals)[2:]} ({run_time:.3f} seconds)')
         print(f' Performance: {round(sum(artifacts_generated) / run_time / 1000, 2)} artifacts per ms')
         print()
