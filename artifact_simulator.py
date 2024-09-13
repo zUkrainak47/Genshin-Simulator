@@ -1314,7 +1314,7 @@ while True:
                                          'Yes, I want to choose Sub Stats only to base the RV requirement off of',
                                          "No, I don't want to choose Sub Stats",
                                          "WHAT DOES THE 2ND OPTION MEAN???"]
-                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", {}, True, True, what=('4', 'https://youtu.be/5vsiECFNxXU\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
+                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", {}, True, True, what=('4', 'https://youtu.be/aaj7lAzC4zs\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
                 if sub_stat_mode in sub_stat_mode_options:
                     sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
                 if not sub_stat_mode:
