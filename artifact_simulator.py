@@ -1548,7 +1548,7 @@ while True:
                         break
 
                 if not flag:
-                    resin = 240 if day % 7 == 1 else 180  # 1 transient resin from tubby every monday
+                    resin = resin_max + (day % 7 == 1) * 60  # 1 transient resin from tubby every monday
 
                     while resin:
                         # print('domain run')
