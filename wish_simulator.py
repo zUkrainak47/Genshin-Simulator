@@ -482,7 +482,7 @@ characters_dict = {
     "Emilie": Character("Emilie", "Fontaine", "Dendro", "Polearm", 4.8, 5, 96),
     "Mualani": Character("Mualani", "Natlan", "Hydro", "Catalyst", 5.0, 5, 97),
     "Kachina": Character("Kachina", "Natlan", "Geo", "Polearm", 5.0, 4, 98),
-    #"Kinich": Character("Emilie", "Natlan", "Dendro", "Claymore", 5.0, 5, 99),
+    "Kinich": Character("Kinich", "Natlan", "Dendro", "Claymore", 5.0, 5, 99),
     #"Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
 }
 
@@ -523,7 +523,7 @@ weapons_dict = {
     "Favonius Warbow": Weapon("Favonius Warbow", "Bow", 4, 454),
     "Ferrous Shadow": Weapon("Ferrous Shadow", "Claymore", 3, 6),
     "Freedom-Sworn": Weapon("Freedom-Sworn", "Sword", 5, 456),
-    # "Fang of the Mountain King": Weapon("Fang of the Mountain King", "Claymore", 5, 457),
+    "Fang of the Mountain King": Weapon("Fang of the Mountain King", "Claymore", 5, 457),
 
     "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
     "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 7),
@@ -777,8 +777,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "emilie-1": (["Emilie", "Razor", "Xiangling", "Yanfei"], 4.8),
     "kazuha-5": (["Kaedehara Kazuha", "Bennett", "Xinyan", "Kachina"], 5.0),
     "mualani-1": (["Mualani", "Bennett", "Xinyan", "Kachina"], 5.0),
-    # "": (["", "", "", ""], 5.0),
-    # "kinich-1": (["Kinich", "", "", ""], 5.0),
+    "shogun-5": (["Raiden Shogun", "Chevreuse", "Kujou Sara", "Thoma"], 5.0),
+    "kinich-1": (["Kinich", "Chevreuse", "Kujou Sara", "Thoma"], 5.0),
     # "": (["", "", "", ""], 5.1),
     # "xilonen-1": (["Xilonen", "", "", ""], 5.1),
 
@@ -857,7 +857,7 @@ weapon_banner_list = {
     "Verdict - Key of Khaj-Nisut": (["Verdict", "Key of Khaj-Nisut", "Xiphos' Moonlight", "Rust", "Eye of Perception", "Dragon's Bane", "The Bell"], 4.8),
     "Aqua Simulacra - Lumidouce Elegy": (["Aqua Simulacra", "Lumidouce Elegy", "Favonius Warbow", "The Flute", "Favonius Lance", "Wandering Evenstar", "Makhaira Aquamarine"], 4.8),
     "Surf's Up - Freedom-Sworn": (["Surf's Up", "Freedom-Sworn", "Favonius Greatsword", "Favonius Sword", "The Stringless", "Sacrificial Fragments", "Dragon's Bane"], 5.0),
-
+    "Fang of the Mountain King - Engulfing Lightning": (["Fang of the Mountain King", "Engulfing Lightning", "Sacrificial Sword", "Rainslasher", "Favonius Lance", "The Widsith", "Sacrificial Bow"], 5.0),
     # "": (["", "", "", "", "", "", ""], ),
 }
 
