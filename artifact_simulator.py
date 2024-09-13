@@ -86,7 +86,7 @@ class Artifact:
 
         for sub in self.substats:
             is_percentage = '%' in sub
-            rv_num = f' ({self.roll_value[sub]}%)' + (self.roll_value[sub] < 100)*' ' if show_rv else ''
+            rv_num = f' ({int(self.roll_value[sub])}%)' + (self.roll_value[sub] < 100)*' ' if show_rv else ''
             print(f"{rv_num} - {sub}: {str(round(self.substats[sub], 1)) if is_percentage else round(self.substats[sub])}{f' {Fore.GREEN}(+){Style.RESET_ALL}' if sub == self.last_upgrade else ''}")
 
         self.last_upgrade = ""
@@ -151,7 +151,7 @@ class ArtifactEncoder(json.JSONEncoder):
                 artifact.level, artifact.set, artifact.last_upgrade, artifact.roll_value]
 
 
-def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False):
+def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False, what=('choice number', 'hint')):
     items_dict = dict(zip([str(ind) for ind in range(1, len(items)+1)], items))
     if isinstance(items_dict['1'], tuple) or isinstance(items_dict['1'], list):
         for item in items_dict.items():
@@ -164,6 +164,9 @@ def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False):
     print(f'\n (Type 0 to exit{skip})\n')
     while True:
         new1 = input(' Your pick: ').strip()
+        if what != ('choice number', 'hint') and new1.lower() in ('what', what[0], items_dict[what[0]].lower()):
+            print(f' {what[1]}\n')
+            continue
         if new1 in ('0', 'exit'):
             return 0
         if new1 == 'skip' and skip_ok:
@@ -1309,8 +1312,9 @@ while True:
                 print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
                 sub_stat_mode_options = ['Yes, I want to choose Sub Stats, ALL of which must be present in my artifact (max 4)',
                                          'Yes, I want to choose Sub Stats only to base the RV requirement off of',
-                                         "No, I don't want to choose Sub Stats"]
-                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the 3 options please. Try again", {}, True, True)
+                                         "No, I don't want to choose Sub Stats",
+                                         "WHAT DOES THE 2ND OPTION MEAN???"]
+                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", {}, True, True, what=('4', 'https://youtu.be/5vsiECFNxXU\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
                 sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
                 if not sub_stat_mode:
                     exited = True
