@@ -665,7 +665,7 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
         # even if highest_cv is supposed to be set to 0 it's set to 1
         highest_cv = art_cv + (art_cv == 0)
         if not silent:
-            print(f' Day {day}: {art_cv} CV - {artifact.short()} {artifact.subs()}')
+            print(f'\r Day {day}: {art_cv} CV - {artifact.short()} {artifact.subs()}')
 
     if silent:
         artifact.last_upgrade = ""
@@ -1315,7 +1315,8 @@ while True:
                                          "No, I don't want to choose Sub Stats",
                                          "WHAT DOES THE 2ND OPTION MEAN???"]
                 sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", {}, True, True, what=('4', 'https://youtu.be/5vsiECFNxXU\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
-                sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
+                if sub_stat_mode in sub_stat_mode_options:
+                    sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
                 if not sub_stat_mode:
                     exited = True
                     break
@@ -1553,7 +1554,7 @@ while True:
                 day += 1
 
                 if day % 10000 == 0:
-                    print(f' {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}')
+                    print(f'\r {Fore.MAGENTA}Day {day} - still going{Style.RESET_ALL}', end='')
 
                 if day % 30 == 0:  # 4 artifacts from abyss every 30 days
                     for k in range(4):
