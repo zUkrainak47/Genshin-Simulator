@@ -184,7 +184,7 @@ def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False, wh
         new1 = items_dict[new1]
     return new1
 
-
+# ADD NEW SETS HERE
 sets = ("Gladiator's Finale", "Wanderer's Troupe",                                                             # bosses
         "Noblesse Oblige", "Bloodstained Chivalry", "Maiden Beloved", "Viridescent Venerer", "Archaic Petra",  # 1.x
         "Retracing Bolide", "Thundersoother", "Thundering Fury", "Lavawalker", "Crimson Witch of Flames",
@@ -196,6 +196,15 @@ sets = ("Gladiator's Finale", "Wanderer's Troupe",                              
         "Marechaussee Hunter", "Golden Troupe", "Song of Days Past",                                           # 4.x
         "Nighttime Whispers in the Echoing Woods", "Fragment of Harmonic Whimsy", "Unfinished Reverie",
         "Scroll of the Hero of Cinder City", "Obsidian Codex", )                                               # 5.x
+set_images = ('glad.png', 'wt.png',
+              'nob.png', 'bs.png', 'maiden.png', 'vv.png', 'petra.png',
+              'bolide.png', 'ts.png', 'tf.png', 'lavawalker.png', 'cw.png',
+              'blizzard.png', 'hod.png', 'totm.png', 'pf.png',
+              'shime.png', 'eosf.png', 'husk.png', 'ohc.png', 'vh.png', 'echoes.png',
+              'deepwood.png', 'gd.png', 'dpc.png', 'fopl.png', 'nymph.png', 'vg.png',
+              'mh.png', 'gt.png', 'sodp.png', 'nwew.png', 'whimsy.png', 'reverie.png',
+              'scroll.png', 'obsidian.png', )
+set_to_image = {set_name: Path('assets', set_image) for set_name, set_image in zip(sets, set_images)}
 sort_order_sets = {set_name: len(sets)-number for number, set_name in enumerate(sets)}
 sets_short = ('    Glad    ', '   Troupe   ',
               '  Noblesse  ', 'Bloodstained',
@@ -293,7 +302,7 @@ goblet_main_stats = ('Pyro DMG% Bonus', 'Hydro DMG% Bonus', 'Cryo DMG% Bonus',
 circlet_main_stats = ('HP%', 'ATK%', 'DEF%', 'EM', 'CRIT DMG%', 'CRIT Rate%',
                       'Healing Bonus')
 substats = ('HP', 'ATK', 'DEF', 'HP%', 'ATK%', 'DEF%', 'ER%', 'EM', 'CRIT Rate%', 'CRIT DMG%')
-type_to_main_stats = dict(zip(artifact_types, (('HP'), ('ATK'), sands_main_stats, goblet_main_stats, circlet_main_stats)))
+type_to_main_stats = dict(zip(artifact_types, (('HP',), ('ATK',), sands_main_stats, goblet_main_stats, circlet_main_stats)))
 flower_stats = (717, 1530, 2342, 3155, 3967, 4780)
 feather_stats = (47, 100, 152, 205, 258, 311)
 hp_atk_dmg_stats = (7.0, 14.9, 22.8, 30.8, 38.7, 46.6)
@@ -1314,7 +1323,7 @@ while True:
                                          'Yes, I want to choose Sub Stats only to base the RV requirement off of',
                                          "No, I don't want to choose Sub Stats",
                                          "WHAT DOES THE 2ND OPTION MEAN???"]
-                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", {}, True, True, what=('4', 'https://youtu.be/aaj7lAzC4zs\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
+                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", blank_ok=True, skip_ok=True, what=('4', 'https://youtu.be/aaj7lAzC4zs\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
                 if sub_stat_mode in sub_stat_mode_options:
                     sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
                 if not sub_stat_mode:
