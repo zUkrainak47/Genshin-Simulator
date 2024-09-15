@@ -5,12 +5,23 @@ from artifact_simulator import transmute, sets, substats, artifact_types, type_t
 
 
 def update_button_state():
-    """Updates the state of the transmute button based on substat selection."""
+    """Updates the state of the transmute button and controls the enabling/disabling of substat checkboxes."""
     selected_substats = sum([var.get() for var in substat_vars])
+
+    # Enable/disable the transmute button based on the number of selected substats
     if selected_substats == 2:
         transmute_button.configure(state="normal")
+        # Disable all checkboxes that are not selected
+        for i, var in enumerate(substat_vars):
+            if not var.get():
+                substat_checkboxes[i].configure(state="disabled")
     else:
         transmute_button.configure(state="disabled")
+        # Enable all checkboxes
+        for i, var in enumerate(substat_vars):
+            # Only enable checkboxes that don't match the main stat
+            if substats[i] != main_stat_var.get():
+                substat_checkboxes[i].configure(state="normal")
 
 
 def on_transmute():
@@ -31,13 +42,13 @@ def update_main_stats(*args):
 
     # Update the Main Stat dropdown
     main_stat_menu.configure(values=new_main_stats)
-    main_stat_var.set(new_main_stats[0])
+    main_stat_var.set(new_main_stats[0])  # Set the first main stat in the list
 
     # Call the function to update substat checkboxes
     update_substat_checkboxes()
 
 
-def update_substat_checkboxes():
+def update_substat_checkboxes(*args):
     """Updates the substat checkboxes, disabling the ones that match the selected main stat."""
     main_stat = main_stat_var.get()
 
@@ -49,6 +60,9 @@ def update_substat_checkboxes():
         else:
             # Enable other substats
             substat_checkboxes[i].configure(state="normal")
+
+    # Check if more than two substats are selected
+    update_button_state()
 
 
 def choose_artifact_set(set_name, image):
