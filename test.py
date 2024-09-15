@@ -76,10 +76,10 @@ def open_artifact_set_dropdown():
     """Opens a scrollable dropdown to select an artifact set."""
     global dropdown_window
     dropdown_window = Toplevel(app)
-    dropdown_window.geometry("250x400")  # Adjust size as needed
+    dropdown_window.geometry("400x800")  # Adjust size as needed
 
     scrollable_frame = ctk.CTkScrollableFrame(dropdown_window, width=230, height=350)
-    scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
+    scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
 
     for artifact_set, image in set_to_image.items():
         btn_image = ctk.CTkImage(Image.open(image), size=(26, 26))
@@ -123,7 +123,7 @@ substat_label.grid(row=3, column=0, padx=10, pady=10)
 
 for i, substat in enumerate(substats):
     checkbox = ctk.CTkCheckBox(app, text=substat, variable=substat_vars[i], command=update_button_state)
-    checkbox.grid(row=4 + i, column=0, columnspan=2, padx=10, pady=5)
+    checkbox.grid(row=4 + i%5, column=i//5, columnspan=2, padx=100, pady=5)
     substat_checkboxes.append(checkbox)  # Keep track of checkboxes to enable/disable them later
 
 # Transmute Button (initially disabled)
