@@ -21,9 +21,11 @@ try:
     import customtkinter as ctk
     from PIL import Image
     from tkinter import Toplevel
+
 except ModuleNotFoundError:
-    print(' Exit the simulator and run `pip install numpy matplotlib colorama customtkinter`')
+    print(' Run `pip install numpy matplotlib colorama customtkinter` and launch the simulator again')
     exit()
+
 init()
 
 # File and folder paths
