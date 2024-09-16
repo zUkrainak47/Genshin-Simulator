@@ -1168,7 +1168,7 @@ def update_main_stats(*args):
     new_main_stats = type_to_main_stats.get(artifact_type, [])
 
     # Update the Main Stat dropdown
-    main_stat_menu.configure(values=new_main_stats)
+    main_stat_menu.configure(values=new_main_stats, state="disabled" if artifact_type in ('Flower', 'Feather') else "normal")
     main_stat_var.set(new_main_stats[0])  # Set the first main stat in the list
 
     # Call the function to update substat checkboxes
@@ -2287,7 +2287,7 @@ while True:
                                 update_substat_checkboxes)  # Track changes in main stat to update substat checkboxes
         main_stat_label = ctk.CTkLabel(app, text="Main Stat")
         main_stat_label.grid(row=2, column=0, padx=10, pady=10)
-        main_stat_menu = ctk.CTkOptionMenu(app, variable=main_stat_var, values=type_to_main_stats[artifact_types[0]])
+        main_stat_menu = ctk.CTkOptionMenu(app, variable=main_stat_var, values=type_to_main_stats[artifact_types[0]], state="disabled")
         main_stat_menu.grid(row=2, column=1, padx=10, pady=10)
 
         # Sub Stats Checkboxes
