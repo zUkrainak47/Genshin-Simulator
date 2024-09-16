@@ -21,10 +21,9 @@ try:
     import customtkinter as ctk
     from PIL import Image
     from tkinter import Toplevel
-    failed = False
 except ModuleNotFoundError:
-    print('Exit the simulator and run `pip install numpy matplotlib colorama customtkinter`')
-    failed = True
+    print(' Exit the simulator and run `pip install numpy matplotlib colorama customtkinter`')
+    exit()
 init()
 
 # File and folder paths
@@ -1258,7 +1257,7 @@ def print_log():
     print()
 
 
-while not failed:
+while True:
     user_command = input(' Command: ').lower().strip()
     if user_command in valid_help:
         print_help()
@@ -2455,6 +2454,5 @@ while not failed:
         print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
 if __name__ == '__main__':
-    if not failed:
-        print('\n==================================================================')
-        print('\n Thank you for using Artifact Simulator')
+    print('\n==================================================================')
+    print('\n Thank you for using Artifact Simulator')
