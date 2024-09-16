@@ -1149,7 +1149,13 @@ def on_transmute():
     preset = [artifact_type, main_stat] + selected_substats + [artifact_set]
     art, last = transmute(preset)
     art_update = True
-    app.destroy()
+    app.withdraw()
+    app.quit()
+
+
+def disable_close_button():
+    app.withdraw()
+    app.quit()
 
 
 def update_main_stats(*args):
@@ -2249,7 +2255,11 @@ while True:
         # art, last = transmute()
         art_update = False
         # Initialize the tkinter window
-        app = ctk.CTk()
+        if "app" not in globals():
+            app = ctk.CTk()
+            app.protocol("WM_DELETE_WINDOW", disable_close_button)
+        else:
+            app.deiconify()
         app.title("Artifact Transmutation")
 
         # Artifact Set Dropdown (Custom)
