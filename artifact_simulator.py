@@ -2268,6 +2268,8 @@ while True:
 
         # Artifact Set Dropdown (Custom)
         artifact_set_var = ctk.StringVar(value=sets[0])
+        artifact_set_label = ctk.CTkLabel(app, text="Artifact Set")
+        artifact_set_label.grid(row=0, column=0, padx=10, pady=10)
         button_image = ctk.CTkImage(Image.open(set_to_image[sets[0]]), size=(26, 26))
         artifact_set_button = ctk.CTkButton(app, text=sets[0], image=button_image,
                                             compound="left", command=open_artifact_set_dropdown)
