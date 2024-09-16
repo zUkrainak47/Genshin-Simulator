@@ -23,7 +23,7 @@ try:
     from tkinter import Toplevel
 
 except ModuleNotFoundError:
-    print(' Run `pip install numpy matplotlib colorama customtkinter` and launch the simulator again')
+    print(' Run `pip install colorama numpy matplotlib customtkinter` and launch the simulator again')
     exit()
 
 init()
@@ -1158,7 +1158,10 @@ def on_transmute():
 
 
 def disable_close_button():
-    dropdown_window.destroy()
+    try:
+        dropdown_window.destroy()
+    except:
+        pass
     app.withdraw()
     app.quit()
 
@@ -2303,7 +2306,7 @@ while True:
 
         for i, substat in enumerate(substats):
             checkbox = ctk.CTkCheckBox(app, text=substat, variable=substat_vars[i], command=update_button_state)
-            checkbox.grid(row=4 + i % 5, column=i // 5, columnspan=2, padx=100, pady=5)
+            checkbox.grid(row=3 + i % 5, column=i // 5, columnspan=2, padx=150, pady=5)
             substat_checkboxes.append(checkbox)  # Keep track of checkboxes to enable/disable them later
 
         # Transmute Button (initially disabled)
