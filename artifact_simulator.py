@@ -1158,6 +1158,7 @@ def on_transmute():
 
 
 def disable_close_button():
+    dropdown_window.destroy()
     app.withdraw()
     app.quit()
 
