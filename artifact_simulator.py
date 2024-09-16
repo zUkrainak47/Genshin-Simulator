@@ -6,22 +6,25 @@
 #     to find out how long that takes - in days and years (assuming all of your resin goes into artifact farming)
 #     You can also run multiple tests and find out the average amount of time that took!
 
+try:
+    import json
+    import time
+    import datetime
 
-import json
-import time
-import datetime
-
-import numpy as np
-import matplotlib.pyplot as plt
-from colorama import init, Fore, Style
-from operator import itemgetter
-from random import choice, choices
-from math import ceil
-from pathlib import Path
-import customtkinter as ctk
-from PIL import Image
-from tkinter import Toplevel
-
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from colorama import init, Fore, Style
+    from operator import itemgetter
+    from random import choice, choices
+    from math import ceil
+    from pathlib import Path
+    import customtkinter as ctk
+    from PIL import Image
+    from tkinter import Toplevel
+    failed = False
+except ModuleNotFoundError:
+    print('Exit the simulator and run `pip install numpy matplotlib colorama customtkinter`')
+    failed = True
 init()
 
 # File and folder paths
@@ -1255,7 +1258,7 @@ def print_log():
     print()
 
 
-while True:
+while not failed:
     user_command = input(' Command: ').lower().strip()
     if user_command in valid_help:
         print_help()
@@ -2452,5 +2455,6 @@ while True:
         print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
 if __name__ == '__main__':
-    print('\n==================================================================')
-    print('\n Thank you for using Artifact Simulator')
+    if not failed:
+        print('\n==================================================================')
+        print('\n Thank you for using Artifact Simulator')
