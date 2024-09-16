@@ -1203,7 +1203,7 @@ def open_artifact_set_dropdown():
     """Opens a scrollable dropdown to select an artifact set."""
     global dropdown_window
     dropdown_window = Toplevel(app)
-    dropdown_window.geometry("400x800")  # Adjust size as needed
+    dropdown_window.geometry("340x800")  # Adjust size as needed
 
     scrollable_frame = ctk.CTkScrollableFrame(dropdown_window, width=230, height=350)
     scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
@@ -1211,8 +1211,9 @@ def open_artifact_set_dropdown():
     for artifact_set, image in set_to_image.items():
         btn_image = ctk.CTkImage(Image.open(image), size=(26, 26))
         btn = ctk.CTkButton(scrollable_frame, text=artifact_set, image=btn_image, compound="left",
-                            command=lambda a_set=artifact_set, img=btn_image: choose_artifact_set(a_set, img))
-        btn.pack(padx=10, pady=5)
+                            command=lambda a_set=artifact_set, img=btn_image: choose_artifact_set(a_set, img),
+                            width=300, height=35)
+        btn.pack(padx=5, pady=5)
 
 
 print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ==================\n')
@@ -2272,7 +2273,8 @@ while True:
         artifact_set_label.grid(row=0, column=0, padx=10, pady=10)
         button_image = ctk.CTkImage(Image.open(set_to_image[sets[0]]), size=(26, 26))
         artifact_set_button = ctk.CTkButton(app, text=sets[0], image=button_image,
-                                            compound="left", command=open_artifact_set_dropdown)
+                                            compound="left", command=open_artifact_set_dropdown,
+                                            width=300, height=35)
         artifact_set_button.grid(row=0, column=1, padx=10, pady=10)
 
         # Artifact Type Dropdown
