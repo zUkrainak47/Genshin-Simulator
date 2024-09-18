@@ -1517,8 +1517,11 @@ def adjust_rv(*args):
     subs_requirement = [substats[i] for i, var in enumerate(substat_auto_vars) if var.get()]
     rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - (
                 "CRIT DMG%" not in subs_requirement or "CRIT Rate%" not in subs_requirement)) * 100, 0)
-    max_rv_for_given_stats = 900 - (4 - len(subs_requirement)) * 100 - rv_needed_for_cv_req * (
+    if len(subs_requirement):
+        max_rv_for_given_stats = 900 - (4 - len(subs_requirement)) * 100 - rv_needed_for_cv_req * (
                 'CRIT Rate%' not in subs_requirement and 'CRIT DMG%' not in subs_requirement)
+    else:
+        max_rv_for_given_stats = 0
     rv_label.configure(text=f"RV Requirement ({max_rv_for_given_stats} max)")
     if not rv_var.get().isnumeric():
         rv_entry.delete(0, END)
