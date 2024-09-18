@@ -31,13 +31,13 @@ last_mode = 2
 
 if __name__ == '__main__':
     print()
-    print('=' * 28 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '=' * 28)
+    print('=' * 53 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '=' * 54)
     print('\n Welcome to Genshin Simulator!', end='')
     while True:
         if last_mode:
             if last_mode == 1:
                 print()
-                print('='*28 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '='*28 + '\n')
+                print('='*53 + f' {Fore.LIGHTCYAN_EX}LAUNCHER{Style.RESET_ALL} ' + '='*54 + '\n')
             print_rules()
 
         print()
@@ -58,9 +58,7 @@ if __name__ == '__main__':
                 importlib.reload(wish_simulator)
 
         elif mode in ('0', 'exit'):
-            print(' Exiting Genshin Simulator...\n'
-                  '\n'
-                  '==================================================================')
+            print(' Exiting Genshin Simulator...\n\n' + '='*117)
             break
 
         else:

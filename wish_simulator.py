@@ -19,7 +19,8 @@ except KeyError:
     # print('\n Not running in replit!')
 
 
-print(f'\n===================== {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} =====================\n')
+print()
+print('='*46 + f' {Fore.LIGHTCYAN_EX}LOADING WISH SIMULATOR{Style.RESET_ALL} ' + '='*47 + '\n')
 init()
 
 if Path('banner_info').exists():
@@ -1240,14 +1241,14 @@ def print_history_page():  # no idea how this works anymore
     print_from = -((page - 1) * 25) - 1
     print_to = -(min(page * 25, len_history)) - 1
     # print(print_to)
-    print(Style.RESET_ALL + '    ' + '-' * 58)
+    print(Style.RESET_ALL + '    ' + '-' * 109)
     for cc, number in history[print_from:print_to:-1]:
         id_ = len_whole_history - cc
         # print(len_history - history[print_to][0])
         add_extra_space = len(str(len_whole_history - history[print_to+1][0])) - len(str(id_))  # WHAT DID I DO????
         print(color_map[number_to_item_dict[number].rarity] + f'    {id_}.{add_extra_space * " "}',
               number_to_item_dict[number].name)
-    print(Style.RESET_ALL + '    ' + '-' * 58)
+    print(Style.RESET_ALL + '    ' + '-' * 109)
     print(f'\n    (Page {page}/{num_of_pages})\n')
 
 
@@ -1557,7 +1558,8 @@ five_stars = '( ★ ★ ★ ★ ★ )'
 verbose_threshold = 3
 messaged = False  # has wish history limit warning been shown?
 
-print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH SIMULATOR{Style.RESET_ALL} =========================\n')
+print()
+print('='*50 + f' {Fore.LIGHTCYAN_EX}WISH SIMULATOR{Style.RESET_ALL} ' + '='*51 + '\n')
 print(f' Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 
 
@@ -1602,8 +1604,8 @@ while True:
         break
 
     if user_command in ['help', "'help'", '"help"']:
-        print('\n' +
-              '=' * 28 + f" {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} " + '=' * 28 + '\n'
+        print('\n\n' +
+              '=' * 53 + f" {Fore.LIGHTCYAN_EX}CONTROLS{Style.RESET_ALL} " + '=' * 54 + '\n'
               '\n'
               f' {Fore.BLUE}numbers in [] are optional{Style.RESET_ALL}\n\n'
               f' {Fore.LIGHTCYAN_EX}number{Style.RESET_ALL} = do a number of pulls\n'
@@ -1630,7 +1632,7 @@ while True:
               f'\n'
               f' {Fore.LIGHTCYAN_EX}0{Style.RESET_ALL} = exit Wish Simulator\n'
               f'\n' +
-              '=' * 66 +
+              '=' * 117 +
               '\n')
         continue
 
@@ -2382,9 +2384,9 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
         rarities = [3, 4, 5]
         history = list(enumerate(wish_history[banner_of_choice[0]]))
         if len(wish_history[banner_of_choice[0]]):
-            print(f'\n========================= {Fore.LIGHTCYAN_EX}WISH HISTORY{Style.RESET_ALL} ===========================\n')
+            print(f'\n\n=================================================== {Fore.LIGHTCYAN_EX}WISH HISTORY{Style.RESET_ALL} ====================================================\n')
             t = f'Total number of entries for {Fore.CYAN}{user_banner_input[0].capitalize()} Banner{Style.RESET_ALL}: {len(wish_history[user_banner_input[0]]):,}'
-            extra = (64 - len(t) + 10)//2  # +10 to account for the color change
+            extra = (115 - len(t) + 10)//2  # +10 to account for the color change
             print(" " + ' ' * extra + t + '\n')
             page = 1
             print_history_page()
@@ -2471,7 +2473,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
                 elif cmd in ('e', '0'):
                     print('    No longer viewing wish history!\n')
-                    print('==================================================================\n')
+                    print('='*117+'\n')
                     break
 
                 elif cmd.isnumeric():
@@ -2645,6 +2647,7 @@ YYPG#@@@@@@@@@@@&BBBGGB#&@@&&&&&@@@@@@@&GP#&BP?PBPB&###BPGP55JY5JYP5JJJJBG555Y??
 
     print()
 
+print()
 if __name__ == '__main__':
-    print('\n==================================================================')
+    print('\n' + '='*117)
     print('\n Thank you for using Wish Simulator')

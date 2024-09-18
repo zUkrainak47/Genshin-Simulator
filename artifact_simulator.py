@@ -1537,7 +1537,8 @@ def adjust_rv(*args):
         rv_entry.delete(0, 1)
 
 
-print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ==================\n')
+print()
+print('='*44 + f' {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ' + '='*45 + '\n')
 
 try:
     artifact_list = load_inventory()
@@ -1565,9 +1566,9 @@ print(f' {Fore.LIGHTGREEN_EX}Loaded settings successfully!{Style.RESET_ALL}')
 #
 #     print('Exiting...\n' if automate in ('0', 'exit') else '')
 print()
-print(f'======================== {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} ======================')
+print('='*48 + f' {Fore.LIGHTCYAN_EX}ARTIFACT SIMULATOR{Style.RESET_ALL} ' + '='*49 + '\n')
 
-print(f'\n Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
+print(f' Type {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL} for the list of commands\n')
 art = create_artifact(source)
 artifact_log = [art]
 art.print_stats()
