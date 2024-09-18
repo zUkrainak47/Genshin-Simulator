@@ -20,13 +20,14 @@ try:
     from pathlib import Path
     import customtkinter as ctk
     from PIL import Image
-    from tkinter import Toplevel
+    from tkinter import Toplevel, END
 
 except ModuleNotFoundError:
     print(' Run `pip install colorama numpy matplotlib customtkinter` and launch the simulator again')
     exit()
 
 init()
+ctk.set_default_color_theme("dark-blue")
 
 # File and folder paths
 file_to_move = Path('inventory.txt')
@@ -191,6 +192,7 @@ def choose_one(items, error_message, alias={}, blank_ok=False, skip_ok=False, wh
         new1 = items_dict[new1]
     return new1
 
+
 # ADD NEW SETS HERE
 sets = ("Gladiator's Finale", "Wanderer's Troupe",                                                             # bosses
         "Noblesse Oblige", "Bloodstained Chivalry", "Maiden Beloved", "Viridescent Venerer", "Archaic Petra",  # 1.x
@@ -203,15 +205,6 @@ sets = ("Gladiator's Finale", "Wanderer's Troupe",                              
         "Marechaussee Hunter", "Golden Troupe", "Song of Days Past",                                           # 4.x
         "Nighttime Whispers in the Echoing Woods", "Fragment of Harmonic Whimsy", "Unfinished Reverie",
         "Scroll of the Hero of Cinder City", "Obsidian Codex", )                                               # 5.x
-set_images = ('glad.png', 'wt.png',
-              'nob.png', 'bs.png', 'maiden.png', 'vv.png', 'petra.png',
-              'bolide.png', 'ts.png', 'tf.png', 'lavawalker.png', 'cw.png',
-              'blizzard.png', 'hod.png', 'totm.png', 'pf.png',
-              'shime.png', 'eosf.png', 'husk.png', 'ohc.png', 'vh.png', 'echoes.png',
-              'deepwood.png', 'gd.png', 'dpc.png', 'fopl.png', 'nymph.png', 'vg.png',
-              'mh.png', 'gt.png', 'sodp.png', 'nwew.png', 'whimsy.png', 'reverie.png',
-              'scroll.png', 'obsidian.png', )
-set_to_image = {set_name: Path('assets', set_image) for set_name, set_image in zip(sets, set_images)}
 sort_order_sets = {set_name: len(sets)-number for number, set_name in enumerate(sets)}
 sets_short = ('    Glad    ', '   Troupe   ',
               '  Noblesse  ', 'Bloodstained',
@@ -299,6 +292,25 @@ aliases_sets = {'glad': "Gladiator's Finale",
 
 sets_short_dict = dict(zip(sets, sets_short))
 domains = list(list(s) for s in (zip(sets[2::2], sets[3::2])))
+
+set_images = ('glad.png', 'wt.png',
+              'nob.png', 'bs.png', 'maiden.png', 'vv.png', 'petra.png',
+              'bolide.png', 'ts.png', 'tf.png', 'lavawalker.png', 'cw.png',
+              'blizzard.png', 'hod.png', 'totm.png', 'pf.png',
+              'shime.png', 'eosf.png', 'husk.png', 'ohc.png', 'vh.png', 'echoes.png',
+              'deepwood.png', 'gd.png', 'dpc.png', 'fopl.png', 'nymph.png', 'vg.png',
+              'mh.png', 'gt.png', 'sodp.png', 'nwew.png', 'whimsy.png', 'reverie.png',
+              'scroll.png', 'obsidian.png', )
+domain_images = ('nob_bs.png', 'maiden_vv.png', 'petra_bolide.png',
+                 'ts_tf.png', 'lw_cw.png', 'bliz_hod.png', 'totm_pf.png',
+                 'shime_eosf.png', 'husk_ohc.png', 'vh_echoes.png',
+                 'dw_gd.png', 'dpc_fopl.png', 'nymph_vg.png',
+                 'mh_gt.png', 'sodp_nwew.png', 'whimsy_reverie.png',
+                 'scroll_obsidian.png', )
+set_to_image = {'Random': Path('assets', 'random.png')}
+set_to_image.update({set_name: Path('assets', set_image) for set_name, set_image in zip(sets, set_images)})
+domain_to_image = {'Random': Path('assets', 'domains', 'random.png')}
+domain_to_image.update({f'{domain_name[0]}, {domain_name[1]}': Path('assets', 'domains', domain_image) for domain_name, domain_image in zip(domains, domain_images)})
 # print(domains)
 artifact_types = ('Flower', 'Feather', 'Sands', 'Goblet', 'Circlet')
 sands_main_stats = ('HP%', 'ATK%', 'DEF%', 'ER%', 'EM')
@@ -673,9 +685,9 @@ def create_and_roll_artifact(arti_source, highest_cv=0, silent=False):
             artifact.print_stats()
     art_cv = artifact.cv()
     if (highest_cv and art_cv > highest_cv and
-            (set_requirement == 'none' or artifact.set == set_requirement) and
-            (type_requirement == 'none' or artifact.type == type_requirement) and
-            (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
+            (set_requirement == 'None' or artifact.set == set_requirement) and
+            (type_requirement == 'None' or artifact.type == type_requirement) and
+            (main_stat_requirement == 'None' or artifact.mainstat == main_stat_requirement) and
             (sub_stat_mode != '0' or not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
             (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement)):
         # even if highest_cv is supposed to be set to 0 it's set to 1
@@ -750,9 +762,9 @@ def sort_daily(artifacts):
 def compare_to_wanted_cv(artifact, fastest, slowest, days_list, artifacts, day_number, artifact_number, cv_want,
                          only_one):
     new_winner = ((artifact.cv() >= min(54.5, cv_want)) and
-                  (set_requirement == 'none' or artifact.set == set_requirement) and
-                  (type_requirement == 'none' or artifact.type == type_requirement) and
-                  (main_stat_requirement == 'none' or artifact.mainstat == main_stat_requirement) and
+                  (set_requirement == 'None' or artifact.set == set_requirement) and
+                  (type_requirement == 'None' or artifact.type == type_requirement) and
+                  (main_stat_requirement == 'None' or artifact.mainstat == main_stat_requirement) and
                   (sub_stat_mode != '0' or not sub_stat_requirement or all(i in artifact.substats for i in sub_stat_requirement)) and
                   (not rv_requirement or sum([i[1] for i in artifact.roll_value.items() if i[0] in sub_stat_requirement]) >= rv_requirement))
     if new_winner:
@@ -1143,9 +1155,62 @@ def update_button_state():
                 substat_checkboxes[i].configure(state="normal")
 
 
+def update_sub_behavior(*args):
+    """Affects the behavior of checkboxes."""
+    selected_substats = sum([var.get() for var in substat_auto_vars])
+    selected_noncrit_substats = sum([var.get() for var in substat_auto_vars[:8]])
+    sub_stat_mode = str(sub_stat_mode_options.index(sub_mode_var.get()))
+    max_noncrit_subs = 4 - (cv_desired > 0) - (cv_desired > 46.6)
+    if ((selected_substats >= 4 or selected_noncrit_substats >= max_noncrit_subs) and sub_stat_mode == "0"):
+        count = 0
+        non_crit_count = 0
+        for i, var in enumerate(substat_auto_vars):
+            if non_crit_count == max_noncrit_subs:
+                if i not in (8, 9):
+                    substat_checkboxes[i].configure(state="disabled")
+                    substat_auto_vars[i].set(False)
+
+            elif count == 4:
+                substat_checkboxes[i].configure(state="disabled")
+                substat_auto_vars[i].set(False)
+
+            elif not var.get():
+                substat_checkboxes[i].configure(state="disabled")
+                substat_auto_vars[i].set(False)
+
+            else:
+                count += 1
+                if i not in (8, 9):
+                    non_crit_count += 1
+        automate_button.configure(state="normal")
+
+    elif sub_stat_mode == "2":
+        for i, var in enumerate(substat_auto_vars):
+            substat_checkboxes[i].configure(state="disabled")
+            substat_auto_vars[i].set(False)
+        automate_button.configure(state="normal")
+
+    elif sub_stat_mode == "3":
+        for i, var in enumerate(substat_auto_vars):
+            substat_checkboxes[i].configure(state="disabled")
+            substat_auto_vars[i].set(False)
+        sub_mode_var.set(sub_stat_mode_options[2])
+        print(' https://youtu.be/aaj7lAzC4zs\n'
+              ' https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png\n')
+
+    else:
+        # Enable all checkboxes
+        for i, var in enumerate(substat_auto_vars):
+            # Only enable checkboxes that don't match the main stat
+            if substats[i] != main_stat_var.get():
+                substat_checkboxes[i].configure(state="normal")
+        automate_button.configure(state="normal")
+    adjust_rv()
+
+
 def on_transmute():
-    global art, last, art_update
     """Handles the transmute button click event."""
+    global art, last, art_update
     artifact_set = artifact_set_var.get()
     artifact_type = artifact_type_var.get()
     main_stat = main_stat_var.get()
@@ -1157,9 +1222,46 @@ def on_transmute():
     app.quit()
 
 
+sub_stat_mode_options = ['Yes, I want to choose Sub Stats, ALL of which must be present in my artifact (max 4)',
+                         'Yes, I want to choose Sub Stats only to base the RV requirement off of',
+                         "No, I don't want to choose Sub Stats",
+                         "WHAT DOES THE 2ND OPTION MEAN??? (select this option and check the console)"]
+
+
+def on_automate():
+    """Handles the automate button click event."""
+    global auto_source, domain_use, strongbox_use, abyss_use, auto_domain, auto_strongbox, set_requirement
+    global type_requirement, main_stat_requirement, sub_stat_requirement, rv_requirement, sub_stat_mode, auto_yes
+    selected_sources = [['Domains', 'Strongbox', 'Abyss'][i] for i, var in enumerate(source_vars) if var.get()]
+    domain_use = 'Domains' in selected_sources
+    strongbox_use = 'Strongbox' in selected_sources
+    abyss_use = 'Abyss' in selected_sources
+    auto_source = ', '.join(selected_sources)
+    auto_domain = domain_var.get()
+    auto_strongbox = strongbox_var.get()
+    set_requirement = set_var.get()
+    type_requirement = type_var.get()
+    main_stat_requirement = main_stat_var.get()
+    sub_stat_requirement = [substats[i] for i, var in enumerate(substat_auto_vars) if var.get()]
+    rv_requirement = int(rv_var.get())
+    sub_stat_mode = str(sub_stat_mode_options.index(sub_mode_var.get()))
+    app.withdraw()
+    app.quit()
+    auto_yes = True
+
+
 def disable_close_button():
     try:
         dropdown_window.destroy()
+    except:
+        pass
+    app.withdraw()
+    app.quit()
+
+
+def disable_close_button_auto():
+    try:
+        dropdown_window_domain.destroy()
     except:
         pass
     app.withdraw()
@@ -1179,6 +1281,20 @@ def update_main_stats(*args):
     update_substat_checkboxes()
 
 
+def update_main_stats_auto(*args):
+    """Updates the list of available main stats based on artifact type and updates the substat checkboxes."""
+    artifact_type = type_var.get()
+    new_main_stats = list(type_to_main_stats.get(artifact_type, []))
+    if artifact_type == 'Circlet' and cv_desired > 46.6:
+        new_main_stats.remove('CRIT DMG%')
+        new_main_stats.remove('CRIT Rate%')
+    # Update the Main Stat dropdown
+    main_stat_menu.configure(values=['None']+list(new_main_stats) if artifact_type not in ('Flower', 'Feather') else new_main_stats, state="disabled" if artifact_type in ('Flower', 'Feather', 'None') else "normal")
+    main_stat_var.set('None') if artifact_type not in ('Flower', 'Feather') else main_stat_var.set(new_main_stats[0])
+    # Call the function to update substat checkboxes
+    update_substat_checkboxes_auto()
+
+
 def update_substat_checkboxes(*args):
     """Updates the substat checkboxes, disabling the ones that match the selected main stat."""
     main_stat = main_stat_var.get()
@@ -1196,11 +1312,51 @@ def update_substat_checkboxes(*args):
     update_button_state()
 
 
+def update_substat_checkboxes_auto(*args):
+    """Updates the substat checkboxes, disabling the ones that match the selected main stat."""
+    main_stat = main_stat_var.get()
+
+    for i, substat in enumerate(substats):
+        if substat == main_stat:
+            # Disable substat if it matches the main stat
+            substat_checkboxes[i].configure(state="disabled")
+            substat_auto_vars[i].set(False)  # Ensure it's unticked
+        else:
+            # Enable other substats
+            substat_checkboxes[i].configure(state="normal")
+
+    # Check if more than two substats are selected
+    update_sub_behavior()
+
+
 def choose_artifact_set(set_name, image):
     """Handles the selection of an artifact set from the dropdown."""
     artifact_set_var.set(set_name)
     artifact_set_button.configure(image=image, text=set_name)
     dropdown_window.destroy()
+
+
+def choose_domain(domain_name, image):
+    """Handles the selection of an artifact set from the dropdown."""
+    domain_var.set(domain_name)
+    domain_button.configure(image=image, text=domain_name)
+    enable_disable_set_button()
+    dropdown_window_domain.destroy()
+
+
+def choose_artifact_set_auto(set_name, image):
+    """Handles the selection of an artifact set from the dropdown."""
+    set_var.set(set_name)
+    set_button.configure(image=image, text=set_name)
+    dropdown_window_set.destroy()
+
+
+def choose_strongbox_auto(set_name, image):
+    """Handles the selection of an artifact set from the dropdown."""
+    strongbox_var.set(set_name)
+    strongbox_button.configure(image=image, text=set_name)
+    enable_disable_set_button()
+    dropdown_window_strongbox.destroy()
 
 
 def open_artifact_set_dropdown():
@@ -1212,12 +1368,150 @@ def open_artifact_set_dropdown():
     scrollable_frame = ctk.CTkScrollableFrame(dropdown_window, width=230, height=350)
     scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
 
-    for artifact_set, image in set_to_image.items():
+    for artifact_set, image in list(set_to_image.items())[1:]:
         btn_image = ctk.CTkImage(Image.open(image), size=(26, 26))
         btn = ctk.CTkButton(scrollable_frame, text=artifact_set, image=btn_image, compound="left",
                             command=lambda a_set=artifact_set, img=btn_image: choose_artifact_set(a_set, img),
                             width=300, height=35)
         btn.pack(padx=5, pady=5)
+
+
+def open_domain_dropdown():
+    """Opens a scrollable dropdown to select a domain."""
+    global dropdown_window_domain
+    dropdown_window_domain = Toplevel(app)
+    dropdown_window_domain.geometry("500x800")  # Adjust size as needed
+
+    scrollable_frame = ctk.CTkScrollableFrame(dropdown_window_domain)
+    scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
+
+    for domain, image in domain_to_image.items():
+        btn_image = ctk.CTkImage(Image.open(image), size=(52, 26))
+        btn = ctk.CTkButton(scrollable_frame, text=domain, image=btn_image, compound="left",
+                            command=lambda d=domain, img=btn_image: choose_domain(d, img),
+                            width=450, height=35)
+        btn.pack(padx=5, pady=5)
+
+
+def enable_disable_set_button(*args):
+    global possible_sets
+    selected_sources = [['Domains', 'Strongbox', 'Abyss'][i] for i, var in enumerate(source_vars) if var.get()]
+    possible_sets = ['None']
+    domain = domain_var.get().split(', ')
+
+    if not ((domain == ['Random'] and 'Domains' in selected_sources) or (strongbox_var.get() == 'Random' and 'Strongbox' in selected_sources)):
+        if 'Domains' in selected_sources:
+            possible_sets.append(domain[0])
+            possible_sets.append(domain[1])
+        if 'Strongbox' in selected_sources:
+            possible_sets.append(strongbox_var.get())
+        if 'Abyss' in selected_sources:
+            possible_sets.append(abyss_sets[0])
+            possible_sets.append(abyss_sets[1])
+    btn_image = ctk.CTkImage(Image.open(Path('assets', 'random.png')), size=(26, 26))
+    if len(set(possible_sets)) == 3:
+        if 'Strongbox' in selected_sources and ('Domains' in selected_sources or 'Abyss' in selected_sources):
+            possible_sets = ['None', strongbox_var.get()]
+            set_button.configure(state='normal', text='None', image=btn_image)
+        else:
+            set_button.configure(state='normal', text='None', image=btn_image)
+    elif len(set(possible_sets)) == 2:
+        btn_image = ctk.CTkImage(Image.open(set_to_image[strongbox_var.get()]), size=(26, 26))
+        set_button.configure(state='disabled', text=strongbox_var.get(), image=btn_image)
+    elif len(set(possible_sets)) not in (2, 3):
+        set_button.configure(state='disabled', text='None', image=btn_image)
+    # print(set(possible_sets))
+
+
+def enable_disable_choices(*args):
+    selected_sources = [['Domains', 'Strongbox', 'Abyss'][i] for i, var in enumerate(source_vars) if var.get()]
+    if 'Domains' in selected_sources:
+        if domain_button._text == 'Not used':
+            domain_button.configure(text='Random')
+            domain_var.set('Random')
+        domain_button.configure(state='normal')
+    else:
+        btn_image = ctk.CTkImage(Image.open(Path('assets', 'domains', 'random.png')), size=(52, 26))
+        domain_button.configure(state='disabled', text='Not used', image=btn_image)
+        # domain_var.set('Random')
+
+    if 'Strongbox' in selected_sources:
+        if strongbox_button._text == 'Not used':
+            strongbox_button.configure(text='Random')
+            strongbox_var.set('Random')
+        strongbox_button.configure(state='normal')
+    else:
+        btn_image = ctk.CTkImage(Image.open(Path('assets', 'random.png')), size=(26, 26))
+        strongbox_button.configure(state='disabled', text='Not used', image=btn_image)
+        # strongbox_var.set('Random')
+
+    if 'Abyss' in selected_sources:
+        btn_image = ctk.CTkImage(Image.open(domain_to_image[f'{domains[-1][0]}, {domains[-1][1]}']), size=(52, 26))
+        abyss_button.configure(text=f'{domains[-1][0]}, {domains[-1][1]}', image=btn_image)
+    else:
+        btn_image = ctk.CTkImage(Image.open(Path('assets', 'random.png')), size=(26, 26))
+        abyss_button.configure(state='disabled', text='Not used', image=btn_image)
+
+    if len(selected_sources) == 0:
+        automate_button.configure(state='disabled')
+    else:
+        automate_button.configure(state='normal')
+
+
+def open_set_dropdown():
+    """Opens a scrollable dropdown to select an artifact set."""
+    global dropdown_window_set
+    dropdown_window_set = Toplevel(app)
+    dropdown_window_set.geometry("340x800")  # Adjust size as needed
+
+    scrollable_frame = ctk.CTkScrollableFrame(dropdown_window_set, width=230, height=350)
+    scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
+
+    for artifact_set, image in [('None', Path('assets', 'random.png'))]+list(set_to_image.items()):
+        if artifact_set in possible_sets + ['None']:
+            btn_image = ctk.CTkImage(Image.open(image), size=(26, 26))
+            btn = ctk.CTkButton(scrollable_frame, text=artifact_set, image=btn_image, compound="left",
+                                command=lambda a_set=artifact_set, img=btn_image: choose_artifact_set_auto(a_set, img),
+                                width=300, height=35)
+            btn.pack(padx=5, pady=5)
+
+
+def open_strongbox_dropdown():
+    """Opens a scrollable dropdown to select an artifact set."""
+    global dropdown_window_strongbox
+    dropdown_window_strongbox = Toplevel(app)
+    dropdown_window_strongbox.geometry("340x800")  # Adjust size as needed
+
+    scrollable_frame = ctk.CTkScrollableFrame(dropdown_window_strongbox, width=230, height=350)
+    scrollable_frame.pack(fill="both", expand=True, padx=2, pady=2)
+
+    for artifact_set, image in set_to_image.items():
+        btn_image = ctk.CTkImage(Image.open(image), size=(26, 26))
+        btn = ctk.CTkButton(scrollable_frame, text=artifact_set, image=btn_image, compound="left",
+                            command=lambda a_set=artifact_set, img=btn_image: choose_strongbox_auto(a_set, img),
+                            width=300, height=35)
+        btn.pack(padx=5, pady=5)
+
+
+def adjust_rv(*args):
+    subs_requirement = [substats[i] for i, var in enumerate(substat_auto_vars) if var.get()]
+    rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - (
+                "CRIT DMG%" not in subs_requirement or "CRIT Rate%" not in subs_requirement)) * 100, 0)
+    max_rv_for_given_stats = 900 - (4 - len(subs_requirement)) * 100 - rv_needed_for_cv_req * (
+                'CRIT Rate%' not in subs_requirement and 'CRIT DMG%' not in subs_requirement)
+    rv_label.configure(text=f"RV Requirement ({max_rv_for_given_stats} max)")
+    if not rv_var.get().isnumeric():
+        rv_entry.delete(0, END)
+        rv_entry.insert(0, '0')
+        rv_var.set('0')
+
+    elif int(rv_var.get()) > max_rv_for_given_stats:
+        rv_entry.delete(0, END)
+        rv_entry.insert(0, str(max_rv_for_given_stats))
+        rv_var.set(str(max_rv_for_given_stats))
+
+    if len(rv_var.get()) > 1 and rv_var.get()[0] == '0' and max_rv_for_given_stats > 0:
+        rv_entry.delete(0, 1)
 
 
 print(f'\n==================== {Fore.LIGHTCYAN_EX}LOADING ARTIFACT SIMULATOR{Style.RESET_ALL} ==================\n')
@@ -1297,12 +1591,15 @@ while True:
             yesno = input(' Y/n: ').strip().lower()
             if not yesno or yesno == 'n':
                 advanced = False
+                auto_yes = True
                 print(' Ok, using defaults\n')
                 break
             if yesno == '0':
                 break
             if yesno == 'y':
+                print()
                 advanced = True
+                auto_yes = False
                 break
             else:
                 print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
@@ -1318,281 +1615,401 @@ while True:
         domain_use = 1
         strongbox_use = 1
         abyss_use = 1
-        auto_domain = 'random'
-        auto_strongbox = 'random'
-        set_requirement = 'none'
-        type_requirement = 'none'
-        main_stat_requirement = 'none'
+        auto_domain = 'Random'
+        auto_strongbox = 'Random'
+        abyss_sets = sets[-2:]
+        set_requirement = 'None'
+        type_requirement = 'None'
+        main_stat_requirement = 'None'
         sub_stat_requirement = []
         rv_requirement = 0
         sub_stat_mode = "2"
 
         exited = False
         if advanced:
-            skipped = False
-            print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (leave blank to use default)')
-            # ARTIFACT SOURCE CHOICE
-            auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True, True)
-
-            if not auto_source:  # user input 0
-                exited = True
-
-            elif auto_source == 'skip':
-                auto_source = 'Domains, Strongbox, Abyss'
-                print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                skipped = True
-
-            elif auto_source == 'blank':
-                auto_source = 'Domains, Strongbox, Abyss'
-                print(f' {Fore.LIGHTMAGENTA_EX}Setting default: Domains, Strongbox, Abyss{Style.RESET_ALL}\n')
-
+            if "app" not in globals():
+                app = ctk.CTk()
+                app.protocol("WM_DELETE_WINDOW", disable_close_button)
             else:
-                if auto_source == 'Only Domains':
-                    strongbox_use = 0
-                    abyss_use = 0
+                for ele in app.winfo_children():
+                    ele.destroy()
+                app.deiconify()
+            app.title("Advanced Settings (Automation)")
 
-                elif auto_source == 'Only Strongbox':
-                    domain_use = 0
-                    abyss_use = 0
+            # Auto Sources
+            source_vars = [ctk.BooleanVar() for _ in ['Domains', 'Strongbox', 'Abyss']]
+            source_checkboxes = []
+            source_label = ctk.CTkLabel(app, text="Source")
+            source_label.grid(row=0, column=0, padx=10, pady=10)
 
-                print(f' {Fore.LIGHTMAGENTA_EX}Source set to {auto_source}{Style.RESET_ALL}\n')
+            for i, source_ in enumerate(['Domains', 'Strongbox', 'Abyss']):
+                checkbox = ctk.CTkCheckBox(app, text=source_, variable=source_vars[i])
+                source_vars[i].set(True)
+                source_vars[i].trace_add("write", enable_disable_set_button)
+                source_vars[i].trace_add("write", enable_disable_choices)
+                checkbox.grid(row=0, column=i, columnspan=2, pady=5)
+                source_checkboxes.append(checkbox)  # Keep track of checkboxes to enable/disable them later
+            # Domain Dropdown (Custom)
+            domain_var = ctk.StringVar(value='Random')
+            domain_label = ctk.CTkLabel(app, text="Domain")
+            domain_label.grid(row=1, column=0, padx=10, pady=10)
+            button_image = ctk.CTkImage(Image.open(domain_to_image['Random']), size=(52, 26))
+            domain_button = ctk.CTkButton(app, text='Random', image=button_image,
+                                                compound="left", command=open_domain_dropdown,
+                                                width=600, height=35)
+            domain_button.grid(row=1, column=1, padx=10, pady=10)
 
-            everysim = ' for every simulation' if sample_size > 1 else ''
-            if not exited and not skipped and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
-                print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
-                auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True, True)
-                if auto_domain == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain{everysim}{Style.RESET_ALL}\n')
-                    auto_domain = 'random'
-                elif not auto_domain:
-                    exited = True
-                elif auto_domain == 'skip':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    auto_domain = 'random'
-                    skipped = True
-                else:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Domain: {auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}\n')
+            # Strongbox Set Dropdown (Custom)
+            strongbox_var = ctk.StringVar(value='Random')
+            strongbox_label = ctk.CTkLabel(app, text="Strongbox Set")
+            strongbox_label.grid(row=2, column=0, padx=10, pady=10)
+            button_image = ctk.CTkImage(Image.open(set_to_image['Random']), size=(26, 26))
+            strongbox_button = ctk.CTkButton(app, text='Random', image=button_image,
+                                                compound="left", command=open_strongbox_dropdown,
+                                                width=600, height=35)
+            strongbox_button.grid(row=2, column=1, padx=10, pady=10)
 
-            if not exited and not skipped and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
-                print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
-                auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True, True)
-                if auto_strongbox == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set{everysim}{Style.RESET_ALL}\n')
-                    auto_strongbox = 'random'
-                elif not auto_strongbox:
-                    exited = True
-                elif auto_strongbox == 'skip':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    auto_strongbox = 'random'
-                    skipped = True
-                else:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Strongbox set: {auto_strongbox}{Style.RESET_ALL}\n')
+            # Abyss Set Non-Button
+            abyss_label = ctk.CTkLabel(app, text="Abyss Sets")
+            abyss_label.grid(row=3, column=0, padx=10, pady=10)
+            button_image = ctk.CTkImage(Image.open(domain_to_image[f'{domains[-1][0]}, {domains[-1][1]}']), size=(52, 26))
+            abyss_button = ctk.CTkButton(app, text=f'{domains[-1][0]}, {domains[-1][1]}', image=button_image,
+                                                compound="left",
+                                                width=600, height=35, state='disabled')
+            abyss_button.grid(row=3, column=1, padx=10, pady=10)
 
-            if not exited and not skipped:
-                print(f' {Fore.CYAN}Do your artifacts need to be a specific type?{Style.RESET_ALL} (leave blank to set no requirements)')
-                type_requirement = choose_one(artifact_types, "That's not a type that is available! Try again", {}, True, True)
-                if type_requirement == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact type requirement{Style.RESET_ALL}\n')
-                    type_requirement = 'none'
-                elif not type_requirement:
-                    exited = True
-                elif type_requirement == 'skip':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    type_requirement = 'none'
-                    skipped = True
-                else:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {type_requirement}{Style.RESET_ALL}\n')
+            # Artifact Set Requirement Dropdown (Custom)
+            set_var = ctk.StringVar(value='None')
+            set_label = ctk.CTkLabel(app, text="Artifact Set Requirement")
+            set_label.grid(row=4, column=0, padx=10, pady=10)
+            button_image = ctk.CTkImage(Image.open(set_to_image['Random']), size=(26, 26))
+            set_button = ctk.CTkButton(app, text='None', image=button_image,
+                                                compound="left", command=open_set_dropdown,
+                                                width=600, height=35, state='disabled')
+            set_button.grid(row=4, column=1, padx=10, pady=10)
 
-            if not exited and not skipped and type_requirement not in ('none', 'Feather', 'Flower'):
-                print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
-                eligible_mains = list(type_to_main_stats[type_requirement])
-                if cv_desired > 46.6 and type_requirement == 'Circlet':
-                    eligible_mains.remove('CRIT Rate%')
-                    eligible_mains.remove('CRIT DMG%')
-                main_stat_requirement = choose_one(eligible_mains, "That's not a stat that is available! Try again", {}, True, True)
-                if main_stat_requirement == 'blank':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Main Stat requirement{Style.RESET_ALL}\n')
-                    main_stat_requirement = 'none'
-                elif not main_stat_requirement:
-                    exited = True
-                elif main_stat_requirement == 'skip':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    main_stat_requirement = 'none'
-                    skipped = True
-                else:
-                    print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {main_stat_requirement}{Style.RESET_ALL}\n')
+            # Artifact Type Dropdown
+            type_var = ctk.StringVar(value='None')
+            type_var.trace_add("write", update_main_stats_auto)
+            artifact_type_label = ctk.CTkLabel(app, text="Artifact Type Requirement")
+            artifact_type_label.grid(row=5, column=0, padx=10, pady=10)
+            artifact_type_menu = ctk.CTkOptionMenu(app, variable=type_var,
+                                                   values=['None']+list(artifact_types), width=200)
+            artifact_type_menu.grid(row=5, column=1, padx=10, pady=10)
 
-            if not exited and not skipped:
-                print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
-                sub_stat_mode_options = ['Yes, I want to choose Sub Stats, ALL of which must be present in my artifact (max 4)',
-                                         'Yes, I want to choose Sub Stats only to base the RV requirement off of',
-                                         "No, I don't want to choose Sub Stats",
-                                         "WHAT DOES THE 2ND OPTION MEAN???"]
-                sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", blank_ok=True, skip_ok=True, what=('4', 'https://youtu.be/aaj7lAzC4zs\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
-                if sub_stat_mode in sub_stat_mode_options:
-                    sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
-                if not sub_stat_mode:
-                    exited = True
-                    break
-                if sub_stat_mode in ('blank', "2"):
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
-                    sub_stat_mode = "2"
-                elif sub_stat_mode == 'skip':
-                    print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                    sub_stat_mode = "2"
-                    skipped = True
+            # Main Stat Dropdown
+            main_stat_var = ctk.StringVar(value='None')
+            main_stat_var.trace_add("write",
+                                    update_substat_checkboxes_auto)  # Track changes in main stat to update substat checkboxes
+            main_stat_label = ctk.CTkLabel(app, text="Main Stat Requirement")
+            main_stat_label.grid(row=6, column=0, padx=10, pady=10)
+            main_stat_menu = ctk.CTkOptionMenu(app, variable=main_stat_var,
+                                               values=['None']+list(type_to_main_stats[artifact_types[0]]), width=200,
+                                               state="disabled")
+            main_stat_menu.grid(row=6, column=1, padx=10, pady=10)
 
-            if not exited and not skipped and sub_stat_mode != "2":
-                print(f' {Fore.CYAN}Ok, choose the Sub Stats!{Style.RESET_ALL} (leave blank to set no requirements)')
-                eligible_subs = [x for x in substats if x != main_stat_requirement]
-                if type_requirement == 'Feather':
-                    eligible_subs.remove('ATK')
-                if type_requirement == 'Flower':
-                    eligible_subs.remove('HP')
-                subs_dict = dict(zip([str(ind) for ind in range(1, len(eligible_subs) + 1)], eligible_subs))
-                for item in subs_dict.items():
-                    print(f" {item[0]} = {item[1]}")
-                print('\n (Type 0 to exit or "skip" to skip all advanced settings)\n')
-                while True:
-                    sub_stat_requirement = input(' Your pick: ').split()
+            # Sub Stat Mode Dropdown
+            sub_mode_var = ctk.StringVar(value=sub_stat_mode_options[0])
+            sub_mode_label = ctk.CTkLabel(app, text="Sub Stat Mode")
+            sub_mode_label.grid(row=7, column=0, padx=10, pady=10)
+            sub_mode_menu = ctk.CTkOptionMenu(app, variable=sub_mode_var, values=sub_stat_mode_options, width=600,
+                                              command=update_sub_behavior)
+            sub_mode_menu.grid(row=7, column=1, padx=10, pady=10)
 
-                    if not sub_stat_requirement:
-                        sub_stat_requirement = []
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
-                        break
+            # Sub Stats Checkboxes
+            substat_auto_vars = [ctk.BooleanVar() for _ in substats]
+            substat_checkboxes = []
+            substat_label = ctk.CTkLabel(app, text="Sub Stat Requirement")
+            substat_label.grid(row=8, column=0, padx=10, pady=10)
 
-                    if sub_stat_requirement[0] in ('0', 'exit'):
-                        exited = True
-                        break
+            for i, substat in enumerate(substats):
+                checkbox = ctk.CTkCheckBox(app, text=substat, variable=substat_auto_vars[i], command=update_sub_behavior)
+                checkbox.grid(row=8 + i % 5, column=i // 5, columnspan=2, padx=200, pady=5)
+                substat_checkboxes.append(checkbox)  # Keep track of checkboxes to enable/disable them later
 
-                    elif sub_stat_requirement[0] == 'skip':
-                        sub_stat_requirement = []
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                        skipped = True
-                        break
+            # RV Requirement
+            rv_var = ctk.StringVar(value='0')
+            rv_var.trace_add("write", adjust_rv)  # Track changes in main stat to update substat checkboxes
+            rv_label = ctk.CTkLabel(app, text="RV Requirement (0 max)")
+            rv_label.grid(row=13, column=0, padx=10, pady=10)
 
-                    if len(sub_stat_requirement) > 4 and sub_stat_mode == "0":
-                        print(f' {Fore.RED}Please input up to 4 sub stats! Try again{Style.RESET_ALL}\n')
-                        continue
+            rv_entry = ctk.CTkEntry(app, textvariable=rv_var, width=600)
+            rv_entry.grid(row=13, column=1, padx=10, pady=10)
 
-                    if all((i in subs_dict) or (i in subs_dict.values()) for i in sub_stat_requirement):
-                        for i in range(len(sub_stat_requirement)):
-                            if sub_stat_requirement[i] in subs_dict:
-                                sub_stat_requirement[i] = subs_dict[sub_stat_requirement[i]]
-                        if len(set(sub_stat_requirement)) != len(sub_stat_requirement):
-                            print(f' {Fore.RED}Please input different sub stats :){Style.RESET_ALL}\n')
+            # Automate Button
+            automate_button = ctk.CTkButton(app, text="Automate", command=on_automate)
+            automate_button.grid(row=14 + len(substats), column=0, columnspan=2, padx=10, pady=20)
 
-                            '''
-                            impossible to hit cv requirement if
-                            atk hp atk% hp%    1 cv
-                            atk hp atk%       47 cv
-                            atk hp atk% crit  47 cv
-                            '''
-                        elif ((len(sub_stat_requirement) == 4 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 0) or
-                              (len(sub_stat_requirement) == 3 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 46.6) or
-                              (len(sub_stat_requirement) == 4 and ('CRIT DMG%' not in sub_stat_requirement or 'CRIT Rate%' not in sub_stat_requirement) and cv_desired > 46.6)):
-                            print(f' {Fore.RED}Impossible to hit CV requirement with the chosen Sub Stats.\n Choose a different set of Sub Stats or a different CV requirement{Style.RESET_ALL}\n')
-                        else:
-                            joined_subs_requirement = ', '.join(sub_stat_requirement)
-                            print(f' {Fore.LIGHTMAGENTA_EX}Sub Stat requirement: {joined_subs_requirement}{Style.RESET_ALL}\n')
-                            break
-                    else:
-                        print(f' {Fore.RED}Please input Sub Stats separated by space! Try again{Style.RESET_ALL}\n')
+            # Initialize by disabling substat checkboxes based on the initial main stat
+            update_substat_checkboxes_auto()
 
-            if not exited and not skipped and sub_stat_requirement:
-                print(f' {Fore.CYAN}Do you want to set a minimum combined RV requirement for the chosen Sub Stats?{Style.RESET_ALL} (leave blank to set no requirement)')
-                rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - ("CRIT DMG%" not in sub_stat_requirement or "CRIT Rate%" not in sub_stat_requirement)) * 100, 0)
-                # print(rv_needed_for_cv_req)
-                max_rv_for_given_stats = 900 - (4 - len(sub_stat_requirement))*100 - rv_needed_for_cv_req * ('CRIT Rate%' not in sub_stat_requirement and 'CRIT DMG%' not in sub_stat_requirement) #+ (cv_desired > 46.6) * ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * 100
-                # print(max_rv_for_given_stats)
-                # at_least_one_crit_required = ('CRIT Rate%' in sub_stat_requirement or 'CRIT DMG%' in sub_stat_requirement) * min(rv_needed_for_cv_req - 100, 0)
-                # both_crits_required = ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * (rv_needed_for_cv_req != 0) * 100
-                # max_possible_rv_requirement = remaining_rv_for_other_stats + at_least_one_crit_required + both_crits_required
-                max_possible_rv_requirement = max_rv_for_given_stats
-                rv_s = 's' if len(sub_stat_requirement) > 1 else ''
-                while True:
-                    rv_requirement = input(' Your pick: ')
-                    if not rv_requirement:
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no RV requirement{Style.RESET_ALL}\n')
-                        rv_requirement = 0
-                        break
+            # Run the application
+            app.mainloop()
 
-                    elif rv_requirement == '0':
-                        print(f' {Fore.LIGHTCYAN_EX}Really not sure how to treat this lmao, did you mean 0 RV or exit?{Style.RESET_ALL}\n'
-                              ' Type "exit" to exit. Type "zero" or leave blank to set 0 RV\n')
+            # skipped = False
+            # print(f'\n {Fore.CYAN}Where would you like your artifacts to come from?{Style.RESET_ALL} (leave blank to use default)')
+            # # ARTIFACT SOURCE CHOICE
+            # auto_source = choose_one(['Only Domains', 'Only Strongbox', 'Domains, Strongbox, Abyss'], 'Please choose a valid option (1, 2 or 3)!', {}, True, True)
+            #
+            # if not auto_source:  # user input 0
+            #     exited = True
+            #
+            # elif auto_source == 'skip':
+            #     auto_source = 'Domains, Strongbox, Abyss'
+            #     print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #     skipped = True
+            #
+            # elif auto_source == 'blank':
+            #     auto_source = 'Domains, Strongbox, Abyss'
+            #     print(f' {Fore.LIGHTMAGENTA_EX}Setting default: Domains, Strongbox, Abyss{Style.RESET_ALL}\n')
+            #
+            # else:
+            #     if auto_source == 'Only Domains':
+            #         strongbox_use = 0
+            #         abyss_use = 0
+            #
+            #     elif auto_source == 'Only Strongbox':
+            #         domain_use = 0
+            #         abyss_use = 0
+            #
+            #     print(f' {Fore.LIGHTMAGENTA_EX}Source set to {auto_source}{Style.RESET_ALL}\n')
+            #
+            # everysim = ' for every simulation' if sample_size > 1 else ''
+            # if not exited and not skipped and domain_use:  # DOMAIN CHOICE (IF DOMAINS ARE USED)
+            #     print(f' {Fore.CYAN}Choose a domain for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
+            #     auto_domain = choose_one(domains, "That's not a domain that is available!\n Please input a number corresponding to the domain of choice", aliases_domain, True, True)
+            #     if auto_domain == 'blank':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random domain{everysim}{Style.RESET_ALL}\n')
+            #         auto_domain = 'Random'
+            #     elif not auto_domain:
+            #         exited = True
+            #     elif auto_domain == 'skip':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #         auto_domain = 'Random'
+            #         skipped = True
+            #     else:
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Domain: {auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}\n')
+            #
+            # if not exited and not skipped and strongbox_use:  # STRONGBOX SET CHOICE (IF STRONGBOX IS USED)
+            #     print(f' {Fore.CYAN}Choose a strongbox set for your artifacts{Style.RESET_ALL} (leave blank to randomize)')
+            #     auto_strongbox = choose_one(sets, "That's not a set that is available! Try again", aliases_sets, True, True)
+            #     if auto_strongbox == 'blank':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, will choose a random strongbox set{everysim}{Style.RESET_ALL}\n')
+            #         auto_strongbox = 'Random'
+            #     elif not auto_strongbox:
+            #         exited = True
+            #     elif auto_strongbox == 'skip':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #         auto_strongbox = 'Random'
+            #         skipped = True
+            #     else:
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Strongbox set: {auto_strongbox}{Style.RESET_ALL}\n')
+            #
+            # if not exited and not skipped:
+            #     print(f' {Fore.CYAN}Do your artifacts need to be a specific type?{Style.RESET_ALL} (leave blank to set no requirements)')
+            #     type_requirement = choose_one(artifact_types, "That's not a type that is available! Try again", {}, True, True)
+            #     if type_requirement == 'blank':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact type requirement{Style.RESET_ALL}\n')
+            #         type_requirement = 'None'
+            #     elif not type_requirement:
+            #         exited = True
+            #     elif type_requirement == 'skip':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #         type_requirement = 'None'
+            #         skipped = True
+            #     else:
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {type_requirement}{Style.RESET_ALL}\n')
+            #
+            # if not exited and not skipped and type_requirement not in ('None', 'Feather', 'Flower'):
+            #     print(f' {Fore.CYAN}Do your artifacts need to have a specific Main Stat?{Style.RESET_ALL} (leave blank to set no requirements)')
+            #     eligible_mains = list(type_to_main_stats[type_requirement])
+            #     if cv_desired > 46.6 and type_requirement == 'Circlet':
+            #         eligible_mains.remove('CRIT Rate%')
+            #         eligible_mains.remove('CRIT DMG%')
+            #     main_stat_requirement = choose_one(eligible_mains, "That's not a stat that is available! Try again", {}, True, True)
+            #     if main_stat_requirement == 'blank':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Main Stat requirement{Style.RESET_ALL}\n')
+            #         main_stat_requirement = 'None'
+            #     elif not main_stat_requirement:
+            #         exited = True
+            #     elif main_stat_requirement == 'skip':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #         main_stat_requirement = 'None'
+            #         skipped = True
+            #     else:
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Artifact type requirement: {main_stat_requirement}{Style.RESET_ALL}\n')
+            #
+            # if not exited and not skipped:
+            #     print(f' {Fore.CYAN}Do your artifacts need to have specific Sub Stats?{Style.RESET_ALL} (leave blank to set no requirements)')
+            #     sub_stat_mode_options = ['Yes, I want to choose Sub Stats, ALL of which must be present in my artifact (max 4)',
+            #                              'Yes, I want to choose Sub Stats only to base the RV requirement off of',
+            #                              "No, I don't want to choose Sub Stats",
+            #                              "WHAT DOES THE 2ND OPTION MEAN???"]
+            #     sub_stat_mode = choose_one(sub_stat_mode_options, "Choose one of the options please. Try again", blank_ok=True, skip_ok=True, what=('4', 'https://youtu.be/aaj7lAzC4zs\n https://raw.githubusercontent.com/zUkrainak47/Genshin-Simulator/main/assets/explanation_by_keijo.png'))
+            #     if sub_stat_mode in sub_stat_mode_options:
+            #         sub_stat_mode = str(sub_stat_mode_options.index(sub_stat_mode))
+            #     if not sub_stat_mode:
+            #         exited = True
+            #         break
+            #     if sub_stat_mode in ('blank', "2"):
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
+            #         sub_stat_mode = "2"
+            #     elif sub_stat_mode == 'skip':
+            #         print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #         sub_stat_mode = "2"
+            #         skipped = True
+            #
+            # if not exited and not skipped and sub_stat_mode != "2":
+            #     print(f' {Fore.CYAN}Ok, choose the Sub Stats!{Style.RESET_ALL} (leave blank to set no requirements)')
+            #     eligible_subs = [x for x in substats if x != main_stat_requirement]
+            #     if type_requirement == 'Feather':
+            #         eligible_subs.remove('ATK')
+            #     if type_requirement == 'Flower':
+            #         eligible_subs.remove('HP')
+            #     subs_dict = dict(zip([str(ind) for ind in range(1, len(eligible_subs) + 1)], eligible_subs))
+            #     for item in subs_dict.items():
+            #         print(f" {item[0]} = {item[1]}")
+            #     print('\n (Type 0 to exit or "skip" to skip all advanced settings)\n')
+            #     while True:
+            #         sub_stat_requirement = input(' Your pick: ').split()
+            #
+            #         if not sub_stat_requirement:
+            #             sub_stat_requirement = []
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no Sub Stats requirement{Style.RESET_ALL}\n')
+            #             break
+            #
+            #         if sub_stat_requirement[0] in ('0', 'exit'):
+            #             exited = True
+            #             break
+            #
+            #         elif sub_stat_requirement[0] == 'skip':
+            #             sub_stat_requirement = []
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #             skipped = True
+            #             break
+            #
+            #         if len(sub_stat_requirement) > 4 and sub_stat_mode == "0":
+            #             print(f' {Fore.RED}Please input up to 4 sub stats! Try again{Style.RESET_ALL}\n')
+            #             continue
+            #
+            #         if all((i in subs_dict) or (i in subs_dict.values()) for i in sub_stat_requirement):
+            #             for i in range(len(sub_stat_requirement)):
+            #                 if sub_stat_requirement[i] in subs_dict:
+            #                     sub_stat_requirement[i] = subs_dict[sub_stat_requirement[i]]
+            #             if len(set(sub_stat_requirement)) != len(sub_stat_requirement):
+            #                 print(f' {Fore.RED}Please input different sub stats :){Style.RESET_ALL}\n')
+            #
+            #                 '''
+            #                 impossible to hit cv requirement if
+            #                 atk hp atk% hp%    1 cv
+            #                 atk hp atk%       47 cv
+            #                 atk hp atk% crit  47 cv
+            #                 '''
+            #             elif ((len(sub_stat_requirement) == 4 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 0) or
+            #                   (len(sub_stat_requirement) == 3 and 'CRIT DMG%' not in sub_stat_requirement and 'CRIT Rate%' not in sub_stat_requirement and cv_desired > 46.6) or
+            #                   (len(sub_stat_requirement) == 4 and ('CRIT DMG%' not in sub_stat_requirement or 'CRIT Rate%' not in sub_stat_requirement) and cv_desired > 46.6)):
+            #                 print(f' {Fore.RED}Impossible to hit CV requirement with the chosen Sub Stats.\n Choose a different set of Sub Stats or a different CV requirement{Style.RESET_ALL}\n')
+            #             else:
+            #                 joined_subs_requirement = ', '.join(sub_stat_requirement)
+            #                 print(f' {Fore.LIGHTMAGENTA_EX}Sub Stat requirement: {joined_subs_requirement}{Style.RESET_ALL}\n')
+            #                 break
+            #         else:
+            #             print(f' {Fore.RED}Please input Sub Stats separated by space! Try again{Style.RESET_ALL}\n')
+            #
+            # if not exited and not skipped and sub_stat_requirement:
+            #     print(f' {Fore.CYAN}Do you want to set a minimum combined RV requirement for the chosen Sub Stats?{Style.RESET_ALL} (leave blank to set no requirement)')
+            #     rv_needed_for_cv_req = max(ceil(cv_desired / 7.8 - 1 - ("CRIT DMG%" not in sub_stat_requirement or "CRIT Rate%" not in sub_stat_requirement)) * 100, 0)
+            #     # print(rv_needed_for_cv_req)
+            #     max_rv_for_given_stats = 900 - (4 - len(sub_stat_requirement))*100 - rv_needed_for_cv_req * ('CRIT Rate%' not in sub_stat_requirement and 'CRIT DMG%' not in sub_stat_requirement) #+ (cv_desired > 46.6) * ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * 100
+            #     # print(max_rv_for_given_stats)
+            #     # at_least_one_crit_required = ('CRIT Rate%' in sub_stat_requirement or 'CRIT DMG%' in sub_stat_requirement) * min(rv_needed_for_cv_req - 100, 0)
+            #     # both_crits_required = ('CRIT Rate%' in sub_stat_requirement and 'CRIT DMG%' in sub_stat_requirement) * (rv_needed_for_cv_req != 0) * 100
+            #     # max_possible_rv_requirement = remaining_rv_for_other_stats + at_least_one_crit_required + both_crits_required
+            #     max_possible_rv_requirement = max_rv_for_given_stats
+            #     rv_s = 's' if len(sub_stat_requirement) > 1 else ''
+            #     while True:
+            #         rv_requirement = input(' Your pick: ')
+            #         if not rv_requirement:
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no RV requirement{Style.RESET_ALL}\n')
+            #             rv_requirement = 0
+            #             break
+            #
+            #         elif rv_requirement == '0':
+            #             print(f' {Fore.LIGHTCYAN_EX}Really not sure how to treat this lmao, did you mean 0 RV or exit?{Style.RESET_ALL}\n'
+            #                   ' Type "exit" to exit. Type "zero" or leave blank to set 0 RV\n')
+            #
+            #         elif rv_requirement == 'zero':
+            #             print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: 0%{Style.RESET_ALL}\n')
+            #             rv_requirement = 0
+            #             break
+            #
+            #         elif rv_requirement == 'exit':
+            #             exited = True
+            #             break
+            #
+            #         elif rv_requirement == 'skip':
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #             rv_requirement = 0
+            #             skipped = True
+            #             break
+            #
+            #         elif rv_requirement.isnumeric():
+            #             rv_requirement = int(rv_requirement)
+            #             if rv_requirement > max_possible_rv_requirement:
+            #                 print(f' {Fore.RED}Max RV requirement for the chosen Sub Stat{rv_s} is {max_possible_rv_requirement}. Try again{Style.RESET_ALL}\n')
+            #             else:
+            #                 print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: {rv_requirement}%{Style.RESET_ALL}\n')
+            #                 break
+            #
+            #         else:
+            #             print(f' {Fore.RED}Please input a number! Try again{Style.RESET_ALL}\n')
+            #
+            # # ask for set requirement only if
+            # # - a domain is chosen
+            # # - source is not strongbox only
+            # if not exited and not skipped and auto_domain != 'Random' and auto_source != 'Only Strongbox':
+            #     # - either strongbox is not used
+            #     if not strongbox_use:
+            #         print(f' {Fore.CYAN}Does your artifact need to be from a specific set?{Style.RESET_ALL} (leave blank to set no requirements)')
+            #         set_requirement = choose_one(auto_domain, "That's not a set that is available! Try again", aliases_sets, True, True)
+            #         if set_requirement == 'blank':
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
+            #             set_requirement = 'None'
+            #         elif not set_requirement:
+            #             exited = True
+            #         elif set_requirement == 'skip':
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #             set_requirement = 'None'
+            #             skipped = True
+            #         else:
+            #             print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
+            #
+            #     # - or strongbox set is one of the domain sets
+            #     elif auto_strongbox in auto_domain:
+            #         print(f' {Fore.CYAN}Do you need your artifact to be a {auto_strongbox} piece?{Style.RESET_ALL} (leave blank to set no requirements)')
+            #
+            #         while True:
+            #             yesno = input(' Y/n: ').strip().lower()
+            #             if not yesno or yesno == 'n':
+            #                 set_requirement = 'None'
+            #                 print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
+            #                 break
+            #             if yesno == 'y':
+            #                 set_requirement = auto_strongbox
+            #                 print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
+            #                 break
+            #             if yesno in ('0', 'exit'):
+            #                 exited = True
+            #                 break
+            #             elif yesno == 'skip':
+            #                 set_requirement = 'None'
+            #                 skipped = True
+            #                 print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
+            #                 break
+            #             else:
+            #                 print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
 
-                    elif rv_requirement == 'zero':
-                        print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: 0%{Style.RESET_ALL}\n')
-                        rv_requirement = 0
-                        break
-
-                    elif rv_requirement == 'exit':
-                        exited = True
-                        break
-
-                    elif rv_requirement == 'skip':
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                        rv_requirement = 0
-                        skipped = True
-                        break
-
-                    elif rv_requirement.isnumeric():
-                        rv_requirement = int(rv_requirement)
-                        if rv_requirement > max_possible_rv_requirement:
-                            print(f' {Fore.RED}Max RV requirement for the chosen Sub Stat{rv_s} is {max_possible_rv_requirement}. Try again{Style.RESET_ALL}\n')
-                        else:
-                            print(f' {Fore.LIGHTMAGENTA_EX}RV requirement: {rv_requirement}%{Style.RESET_ALL}\n')
-                            break
-
-                    else:
-                        print(f' {Fore.RED}Please input a number! Try again{Style.RESET_ALL}\n')
-
-            # ask for set requirement only if
-            # - a domain is chosen
-            # - source is not strongbox only
-            if not exited and not skipped and auto_domain != 'random' and auto_source != 'Only Strongbox':
-                # - either strongbox is not used
-                if not strongbox_use:
-                    print(f' {Fore.CYAN}Does your artifact need to be from a specific set?{Style.RESET_ALL} (leave blank to set no requirements)')
-                    set_requirement = choose_one(auto_domain, "That's not a set that is available! Try again", aliases_sets, True, True)
-                    if set_requirement == 'blank':
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
-                        set_requirement = 'none'
-                    elif not set_requirement:
-                        exited = True
-                    elif set_requirement == 'skip':
-                        print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                        set_requirement = 'none'
-                        skipped = True
-                    else:
-                        print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
-
-                # - or strongbox set is one of the domain sets
-                elif auto_strongbox in auto_domain:
-                    print(f' {Fore.CYAN}Do you need your artifact to be a {auto_strongbox} piece?{Style.RESET_ALL} (leave blank to set no requirements)')
-
-                    while True:
-                        yesno = input(' Y/n: ').strip().lower()
-                        if not yesno or yesno == 'n':
-                            set_requirement = 'none'
-                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, no artifact set requirement{Style.RESET_ALL}\n')
-                            break
-                        if yesno == 'y':
-                            set_requirement = auto_strongbox
-                            print(f' {Fore.LIGHTMAGENTA_EX}Artifact set requirement: {set_requirement}{Style.RESET_ALL}\n')
-                            break
-                        if yesno in ('0', 'exit'):
-                            exited = True
-                            break
-                        elif yesno == 'skip':
-                            set_requirement = 'none'
-                            skipped = True
-                            print(f' {Fore.LIGHTMAGENTA_EX}Ok, skipping advanced settings. Using defaults for unset settings{Style.RESET_ALL}\n')
-                            break
-                        else:
-                            print(f' {Fore.RED}Please enter either y or n{Style.RESET_ALL}\n')
-
-        if exited:
+        if not auto_yes:
             print(" Going back to normal mode...")
             print()
             print('=' * 52 + f' {Fore.LIGHTCYAN_EX}NORMAL MODE{Style.RESET_ALL} ' + '=' * 52)
@@ -1604,25 +2021,26 @@ while True:
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
             information = f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}"
-            if sample_size > 1 or auto_domain == 'random':
+            if sample_size > 1 or auto_domain == 'Random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                    information += f'\n Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'random' else f'\n Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
-            if sample_size > 1 or auto_strongbox == 'random':
+                    information += f'\n Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'Random' else f'\n Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+            if sample_size > 1 or auto_strongbox == 'Random':
                 if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                    information += f'\n Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'random' else f'\n Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
-            color1 = Fore.LIGHTCYAN_EX if type_requirement != 'none' else Fore.CYAN
+                    information += f'\n Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'Random' else f'\n Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
+            color1 = Fore.LIGHTCYAN_EX if type_requirement != 'None' else Fore.CYAN
             information += f"\n Artifact type requirement: {color1}{type_requirement}{Style.RESET_ALL}"
-            if type_requirement not in ('none', 'Flower', 'Feather'):
-                color2 = Fore.LIGHTCYAN_EX if main_stat_requirement != 'none' else Fore.CYAN
+            if type_requirement not in ('None', 'Flower', 'Feather'):
+                color2 = Fore.LIGHTCYAN_EX if main_stat_requirement != 'None' else Fore.CYAN
                 information += f"\n Main Stat requirement: {color2}{main_stat_requirement}{Style.RESET_ALL}"
             color3 = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
-            joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'none'
-            information += f"\n Sub Stat requirements: {color3}{joined_subs_requirement}{Style.RESET_ALL}"
+            joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'None'
+            sub_mode = sub_stat_mode
+            information += f"\n Sub Stat requirements{sub_mode}: {color3}{joined_subs_requirement}{Style.RESET_ALL}"
             if sub_stat_requirement:
                 color4 = Fore.LIGHTCYAN_EX if rv_requirement else Fore.CYAN
                 information += f"\n Roll Value requirement for chosen Sub Stats: {color4}{rv_requirement}%{Style.RESET_ALL}"
-            if auto_domain != 'random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
-                information += f'\n {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'none' else f'\n Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
+            if auto_domain != 'Random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
+                information += f'\n {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'None' else f'\n Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
             print(information)
 
         days_it_took_to_reach_desired_cv = []
@@ -1637,14 +2055,13 @@ while True:
         high = (0, 0, Artifact('this', 'needs', 'to', 'be', 'done', 0, ''))
         start = time.perf_counter()
         sample_size_is_one = sample_size == 1
-        abyss_sets = sets[-2:]
-        if abyss_use and set_requirement != 'none' and set_requirement not in abyss_sets:
+        if abyss_use and set_requirement != 'None' and set_requirement not in abyss_sets:
             abyss_use = 0
             print(f" {Fore.RED}Abyss will be skipped since neither {abyss_sets[0]} nor {abyss_sets[1]} fit the artifact set requirement{Style.RESET_ALL}")
 
         for i in range(sample_size):
-            strongbox_set = choice(sets) if auto_strongbox == 'random' else auto_strongbox
-            domain_set = choice(domains) if auto_domain == 'random' else auto_domain
+            strongbox_set = choice(sets) if auto_strongbox == 'Random' else auto_strongbox
+            domain_set = choice(domains) if auto_domain == 'Random' else auto_domain
 
             joined_domain = ', '.join(domain_set)
             c = 0
@@ -1660,11 +2077,11 @@ while True:
             #     print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
             # if abyss_use:
             #     print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
-            if domain_use and auto_domain == 'random':
+            if domain_use and auto_domain == 'Random':
                 print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}')
-            if strongbox_use and auto_strongbox == 'random':
+            if strongbox_use and auto_strongbox == 'Random':
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
-            if (auto_domain == 'random') or (auto_strongbox == 'random'):
+            if (auto_domain == 'Random') or (auto_strongbox == 'Random'):
                 print()
 
             while not flag:
@@ -2264,10 +2681,16 @@ while True:
         # art, last = transmute()
         art_update = False
         # Initialize the tkinter window
+        # try:
+        #     app.destroy()  #FIXME
+        # except:
+        #     pass
         if "app" not in globals():
             app = ctk.CTk()
             app.protocol("WM_DELETE_WINDOW", disable_close_button)
         else:
+            for ele in app.winfo_children():
+                ele.destroy()
             app.deiconify()
         app.title("Artifact Transmutation")
 
@@ -2286,7 +2709,7 @@ while True:
         artifact_type_var.trace_add("write", update_main_stats)
         artifact_type_label = ctk.CTkLabel(app, text="Artifact Type")
         artifact_type_label.grid(row=1, column=0, padx=10, pady=10)
-        artifact_type_menu = ctk.CTkOptionMenu(app, variable=artifact_type_var, values=artifact_types)
+        artifact_type_menu = ctk.CTkOptionMenu(app, variable=artifact_type_var, values=artifact_types, width=250)
         artifact_type_menu.grid(row=1, column=1, padx=10, pady=10)
 
         # Main Stat Dropdown
@@ -2295,7 +2718,8 @@ while True:
                                 update_substat_checkboxes)  # Track changes in main stat to update substat checkboxes
         main_stat_label = ctk.CTkLabel(app, text="Main Stat")
         main_stat_label.grid(row=2, column=0, padx=10, pady=10)
-        main_stat_menu = ctk.CTkOptionMenu(app, variable=main_stat_var, values=type_to_main_stats[artifact_types[0]], state="disabled")
+        main_stat_menu = ctk.CTkOptionMenu(app, variable=main_stat_var, values=type_to_main_stats[artifact_types[0]],
+                                           width=250, state="disabled")
         main_stat_menu.grid(row=2, column=1, padx=10, pady=10)
 
         # Sub Stats Checkboxes
