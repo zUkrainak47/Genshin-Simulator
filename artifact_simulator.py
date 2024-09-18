@@ -1264,6 +1264,14 @@ def disable_close_button_auto():
         dropdown_window_domain.destroy()
     except:
         pass
+    try:
+        dropdown_window_set.destroy()
+    except:
+        pass
+    try:
+        dropdown_window_strongbox.destroy()
+    except:
+        pass
     app.withdraw()
     app.quit()
 
@@ -1419,6 +1427,10 @@ def enable_disable_set_button(*args):
         btn_image = ctk.CTkImage(Image.open(set_to_image[strongbox_var.get()]), size=(26, 26))
         set_button.configure(state='disabled', text=strongbox_var.get(), image=btn_image)
     elif len(set(possible_sets)) not in (2, 3):
+        try:
+            dropdown_window_set.destroy()
+        except:
+            pass
         set_button.configure(state='disabled', text='None', image=btn_image)
     # print(set(possible_sets))
 
@@ -1431,6 +1443,10 @@ def enable_disable_choices(*args):
             domain_var.set('Random')
         domain_button.configure(state='normal')
     else:
+        try:
+            dropdown_window_domain.destroy()
+        except:
+            pass
         btn_image = ctk.CTkImage(Image.open(Path('assets', 'domains', 'random.png')), size=(52, 26))
         domain_button.configure(state='disabled', text='Not used', image=btn_image)
         # domain_var.set('Random')
@@ -1441,6 +1457,10 @@ def enable_disable_choices(*args):
             strongbox_var.set('Random')
         strongbox_button.configure(state='normal')
     else:
+        try:
+            dropdown_window_strongbox.destroy()
+        except:
+            pass
         btn_image = ctk.CTkImage(Image.open(Path('assets', 'random.png')), size=(26, 26))
         strongbox_button.configure(state='disabled', text='Not used', image=btn_image)
         # strongbox_var.set('Random')
@@ -1629,7 +1649,7 @@ while True:
         if advanced:
             if "app" not in globals():
                 app = ctk.CTk()
-                app.protocol("WM_DELETE_WINDOW", disable_close_button)
+                app.protocol("WM_DELETE_WINDOW", disable_close_button_auto)
             else:
                 for ele in app.winfo_children():
                     ele.destroy()
@@ -2681,10 +2701,6 @@ while True:
         # art, last = transmute()
         art_update = False
         # Initialize the tkinter window
-        # try:
-        #     app.destroy()  #FIXME
-        # except:
-        #     pass
         if "app" not in globals():
             app = ctk.CTk()
             app.protocol("WM_DELETE_WINDOW", disable_close_button)
