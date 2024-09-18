@@ -2908,5 +2908,5 @@ while True:
         print(f' Try {Fore.LIGHTCYAN_EX}help{Style.RESET_ALL}\n')
 
 if __name__ == '__main__':
-    print('\n==================================================================')
+    print('\n' + '='*117)
     print('\n Thank you for using Artifact Simulator')
