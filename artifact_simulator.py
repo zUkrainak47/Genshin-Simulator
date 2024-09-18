@@ -1165,23 +1165,32 @@ def update_sub_behavior(*args):
         count = 0
         non_crit_count = 0
         for i, var in enumerate(substat_auto_vars):
-            if non_crit_count == max_noncrit_subs:
+            if not var.get() and selected_substats < 4 and i not in (8, 9):
+                substat_checkboxes[i].configure(state="disabled")
+                substat_auto_vars[i].set(False)
+            elif not var.get() and selected_substats >= 4:
+                substat_checkboxes[i].configure(state="disabled")
+                substat_auto_vars[i].set(False)
+
+            if count >= 4:
+                substat_checkboxes[i].configure(state="disabled")
+                substat_auto_vars[i].set(False)
+
+            if non_crit_count >= max_noncrit_subs:
                 if i not in (8, 9):
                     substat_checkboxes[i].configure(state="disabled")
                     substat_auto_vars[i].set(False)
 
-            elif count == 4:
-                substat_checkboxes[i].configure(state="disabled")
-                substat_auto_vars[i].set(False)
-
-            elif not var.get():
-                substat_checkboxes[i].configure(state="disabled")
-                substat_auto_vars[i].set(False)
-
-            else:
+            if var.get():
                 count += 1
                 if i not in (8, 9):
                     non_crit_count += 1
+        # print('1:', sum([var.get() for var in substat_auto_vars]))
+        # print('2:', max_noncrit_subs - sum([var.get() for var in substat_auto_vars[:8]]))
+        if sum([var.get() for var in substat_auto_vars]) < 4: #and (max_noncrit_subs - sum([var.get() for var in substat_auto_vars[:8]])) in (0, 1, 2):
+            for i in [8, 9]:
+                if substats[i] != main_stat_var.get():
+                    substat_checkboxes[i].configure(state="normal")
         automate_button.configure(state="normal")
 
     elif sub_stat_mode == "2":
