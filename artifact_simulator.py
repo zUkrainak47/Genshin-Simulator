@@ -1246,7 +1246,7 @@ def on_automate():
     strongbox_use = 'Strongbox' in selected_sources
     abyss_use = 'Abyss' in selected_sources
     auto_source = ', '.join(selected_sources)
-    auto_domain = domain_var.get()
+    auto_domain = domain_var.get().split(', ') if domain_var.get() != 'Random' else 'Random'
     auto_strongbox = strongbox_var.get()
     set_requirement = set_var.get()
     type_requirement = type_var.get()
@@ -1411,7 +1411,7 @@ def open_domain_dropdown():
 
 
 def enable_disable_set_button(*args):
-    global possible_sets
+    global possible_sets, print_set_requirement
     selected_sources = [['Domains', 'Strongbox', 'Abyss'][i] for i, var in enumerate(source_vars) if var.get()]
     possible_sets = ['None']
     domain = domain_var.get().split(', ')
@@ -1429,18 +1429,22 @@ def enable_disable_set_button(*args):
     if len(set(possible_sets)) == 3:
         if 'Strongbox' in selected_sources and ('Domains' in selected_sources or 'Abyss' in selected_sources):
             possible_sets = ['None', strongbox_var.get()]
-            set_button.configure(state='normal', text='None', image=btn_image)
-        else:
-            set_button.configure(state='normal', text='None', image=btn_image)
+        set_button.configure(state='normal', text='None', image=btn_image)
+        set_var.set('None')
+        print_set_requirement = True
     elif len(set(possible_sets)) == 2:
         btn_image = ctk.CTkImage(Image.open(set_to_image[strongbox_var.get()]), size=(26, 26))
         set_button.configure(state='disabled', text=strongbox_var.get(), image=btn_image)
+        set_var.set(strongbox_var.get())
+        print_set_requirement = True
     elif len(set(possible_sets)) not in (2, 3):
         try:
             dropdown_window_set.destroy()
         except:
             pass
         set_button.configure(state='disabled', text='None', image=btn_image)
+        set_var.set('None')
+        print_set_requirement = False
     # print(set(possible_sets))
 
 
@@ -1657,8 +1661,9 @@ while True:
         sub_stat_requirement = []
         rv_requirement = 0
         sub_stat_mode = "2"
+        print_set_requirement = False
 
-        exited = False
+        # exited = False
         if advanced:
             if "app" not in globals():
                 app = ctk.CTk()
@@ -2054,12 +2059,10 @@ while True:
         print(f" Running {Fore.LIGHTCYAN_EX}{int(sample_size)}{Style.RESET_ALL} simulation{'s' if int(sample_size) != 1 else ''}, looking for at least {Fore.LIGHTCYAN_EX}{min(54.5, float(cv_desired))}{Style.RESET_ALL} CV")
         if advanced:
             information = f" Source: {Fore.LIGHTCYAN_EX}{auto_source}{Style.RESET_ALL}"
-            if sample_size > 1 or auto_domain == 'Random':
-                if auto_source in ('Domains, Strongbox, Abyss', 'Only Domains'):
-                    information += f'\n Domains will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'Random' else f'\n Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
-            if sample_size > 1 or auto_strongbox == 'Random':
-                if auto_source in ('Domains, Strongbox, Abyss', 'Only Strongbox'):
-                    information += f'\n Strongbox set will be {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'Random' else f'\n Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
+            if 'Domains' in auto_source:
+                information += f'\n Domains are {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_domain == 'Random' else f'\n Domain: {Fore.LIGHTCYAN_EX}{auto_domain[0]}, {auto_domain[1]}{Style.RESET_ALL}'
+            if 'Strongbox' in auto_source:
+                information += f'\n Strongbox set is {Fore.CYAN}randomized{Style.RESET_ALL}' if auto_strongbox == 'Random' else f'\n Strongbox set: {Fore.LIGHTCYAN_EX}{auto_strongbox}{Style.RESET_ALL}'
             color1 = Fore.LIGHTCYAN_EX if type_requirement != 'None' else Fore.CYAN
             information += f"\n Artifact type requirement: {color1}{type_requirement}{Style.RESET_ALL}"
             if type_requirement not in ('None', 'Flower', 'Feather'):
@@ -2068,11 +2071,11 @@ while True:
             color3 = Fore.LIGHTCYAN_EX if sub_stat_requirement else Fore.CYAN
             joined_subs_requirement = ', '.join(sub_stat_requirement) if sub_stat_requirement else 'None'
             sub_mode = sub_stat_mode
-            information += f"\n Sub Stat requirements{sub_mode}: {color3}{joined_subs_requirement}{Style.RESET_ALL}"
+            information += f"\n Sub Stat requirements (Mode {sub_mode}): {color3}{joined_subs_requirement}{Style.RESET_ALL}"
             if sub_stat_requirement:
                 color4 = Fore.LIGHTCYAN_EX if rv_requirement else Fore.CYAN
                 information += f"\n Roll Value requirement for chosen Sub Stats: {color4}{rv_requirement}%{Style.RESET_ALL}"
-            if auto_domain != 'Random' and auto_source != 'Only Strongbox' and (auto_strongbox in auto_domain or not strongbox_use):
+            if print_set_requirement:
                 information += f'\n {Fore.CYAN}No{Style.RESET_ALL} artifact set requirement' if set_requirement == 'None' else f'\n Artifact set requirement: {Fore.LIGHTCYAN_EX}{set_requirement}{Style.RESET_ALL}'
             print(information)
 
@@ -2095,8 +2098,6 @@ while True:
         for i in range(sample_size):
             strongbox_set = choice(sets) if auto_strongbox == 'Random' else auto_strongbox
             domain_set = choice(domains) if auto_domain == 'Random' else auto_domain
-
-            joined_domain = ', '.join(domain_set)
             c = 0
             day = 0
             highest = -0.1
@@ -2111,10 +2112,11 @@ while True:
             # if abyss_use:
             #     print(f' Abyss sets: {Fore.MAGENTA}{abyss_sets[0]}, {abyss_sets[1]}{Style.RESET_ALL}')
             if domain_use and auto_domain == 'Random':
+                joined_domain = ', '.join(domain_set)
                 print(f' Domain: {Fore.MAGENTA}{joined_domain}{Style.RESET_ALL}')
             if strongbox_use and auto_strongbox == 'Random':
                 print(f' Strongbox set: {Fore.MAGENTA}{strongbox_set}{Style.RESET_ALL}')
-            if (auto_domain == 'Random') or (auto_strongbox == 'Random'):
+            if (domain_use and auto_domain == 'Random') or (strongbox_use and auto_strongbox == 'Random'):
                 print()
 
             while not flag:
