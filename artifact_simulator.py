@@ -6,25 +6,25 @@
 #     to find out how long that takes - in days and years (assuming all of your resin goes into artifact farming)
 #     You can also run multiple tests and find out the average amount of time that took!
 
-try:
-    import json
-    import time
-    import datetime
+# try:
+import json
+import time
+import datetime
 
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from colorama import init, Fore, Style
-    from operator import itemgetter
-    from random import choice, choices
-    from math import ceil
-    from pathlib import Path
-    import customtkinter as ctk
-    from PIL import Image
-    from tkinter import Toplevel, END
+import numpy as np
+import matplotlib.pyplot as plt
+from colorama import init, Fore, Style
+from operator import itemgetter
+from random import choice, choices
+from math import ceil
+from pathlib import Path
+import customtkinter as ctk
+from PIL import Image
+from tkinter import Toplevel, END
 
-except ModuleNotFoundError:
-    print(' Run `pip install colorama numpy matplotlib customtkinter` and launch the simulator again')
-    exit()
+# except ModuleNotFoundError:
+#     print(' Run `pip install colorama numpy matplotlib customtkinter` and launch the simulator again')
+#     exit()
 
 init()
 ctk.set_default_color_theme("dark-blue")
