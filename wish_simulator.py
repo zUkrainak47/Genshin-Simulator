@@ -536,7 +536,7 @@ weapons_dict = {
 
     "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
     "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 7),
-    "Hunter's Path": Weapon("Hunter's Path", "Bow", 4, 512),
+    "Hunter's Path": Weapon("Hunter's Path", "Bow", 5, 512),
 
     "Jadefall's Splendor": Weapon("Jadefall's Splendor", "Catalyst", 5, 570),
 
