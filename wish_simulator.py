@@ -484,7 +484,15 @@ characters_dict = {
     "Mualani": Character("Mualani", "Natlan", "Hydro", "Catalyst", 5.0, 5, 97),
     "Kachina": Character("Kachina", "Natlan", "Geo", "Polearm", 5.0, 4, 98),
     "Kinich": Character("Kinich", "Natlan", "Dendro", "Claymore", 5.0, 5, 99),
-    #"Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
+    "Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
+
+    # "Chasca": Character("Chasca", "Natlan", "Anemo", "Bow", 5.2, 5, 101),
+    # "Ororon": Character("Ororon", "Natlan", "Electro", "", , 4, ),
+    # "Mavuika": Character("Mavuika", "Natlan", "Pyro", "Claymore", 5.3, 5, ),
+    # "Citlali": Character("Citlali", "Natlan", "Cryo", "", , , ),
+    # "Iansan ": Character("Iansan ", "Natlan", "Electro", "", , 5, ),
+
+    # "": Character("", "", "", "", , , 106),
 }
 
 
@@ -548,13 +556,14 @@ weapons_dict = {
     "Mistsplitter Reforged": Weapon("Mistsplitter Reforged", "Sword", 5, 663),
     "Mitternachts Waltz": Weapon("Mitternachts Waltz", "Bow", 4, 664),
     "Mouun's Moon": Weapon("Mouun's Moon", "Bow", 4, 665),
+    "Mountain-Bracing Bolt": Weapon("Mountain-Bracing Bolt", "Polearm", 4, 666),
 
     "Polar Star": Weapon("Polar Star", "Bow", 5, 750),
     "Portable Power Saw": Weapon("Portable Power Saw", "Claymore", 4, 751),
     "Primordial Jade Cutter": Weapon("Primordial Jade Cutter", "Sword", 5, 752),
     "Primordial Jade Winged-Spear": Weapon("Primordial Jade Winged-Spear", "Polearm", 5, 753),
     "Prospector's Drill": Weapon("Prospector's Drill", "Polearm", 4, 754),
-    # "Peak Patrol Song": Weapon("Peak Patrol Song", "Sword", 5, 755),
+    "Peak Patrol Song": Weapon("Peak Patrol Song", "Sword", 5, 755),
 
     "Rainslasher": Weapon("Rainslasher", "Claymore", 4, 810),
     "Range Gauge": Weapon("Range Gauge", "Bow", 4, 811),
@@ -581,6 +590,7 @@ weapons_dict = {
     "Summit Shaper": Weapon("Summit Shaper", "Sword", 5, 856),
     "Silvershower Heartstrings": Weapon("Silvershower Heartstrings", "Bow", 5, 857),
     "Surf's Up": Weapon("Surf's Up", "Catalyst", 5, 858),
+    "Sturdy Bone": Weapon("Sturdy Bone", "Sword", 4, 859),
 
     "The Alley Flash": Weapon("The Alley Flash", "Sword", 4, 870),
     "The Bell": Weapon("The Bell", "Claymore", 4, 871),
@@ -780,8 +790,10 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "mualani-1": (["Mualani", "Bennett", "Xinyan", "Kachina"], 5.0),
     "shogun-5": (["Raiden Shogun", "Chevreuse", "Kujou Sara", "Thoma"], 5.0),
     "kinich-1": (["Kinich", "Chevreuse", "Kujou Sara", "Thoma"], 5.0),
-    # "": (["", "", "", ""], 5.1),
-    # "xilonen-1": (["Xilonen", "", "", ""], 5.1),
+    "xilonen-1": (["Xilonen", "Collei", "Candace", "Dori"], 5.1),
+    "chiori-2": (["Chiori", "Collei", "Candace", "Dori"], 5.1),
+    # "tao-5": (["Hu Tao", "Kuki Shinobu", "", ""], 5.1),
+    # "nahida-4": (["Nahida", "Kuki Shinobu", "", ""], 5.1),
 
     # "": (["", "", "", ""], ),
 }
@@ -859,6 +871,8 @@ weapon_banner_list = {
     "Aqua Simulacra - Lumidouce Elegy": (["Aqua Simulacra", "Lumidouce Elegy", "Favonius Warbow", "The Flute", "Favonius Lance", "Wandering Evenstar", "Makhaira Aquamarine"], 4.8),
     "Surf's Up - Freedom-Sworn": (["Surf's Up", "Freedom-Sworn", "Favonius Greatsword", "Favonius Sword", "The Stringless", "Sacrificial Fragments", "Dragon's Bane"], 5.0),
     "Fang of the Mountain King - Engulfing Lightning": (["Fang of the Mountain King", "Engulfing Lightning", "Sacrificial Sword", "Rainslasher", "Favonius Lance", "The Widsith", "Sacrificial Bow"], 5.0),
+    "Peak Patrol Song - Uraku Misugiri": (["Peak Patrol Song", "Uraku Misugiri", "Sturdy Bone", "Sacrificial Greatsword", "Mountain-Bracing Bolt", "Favonius Codex", "Rust"], 5.1),
+    # "Staff of Homa - A Thousand Floating Dreams": (["Staff of Homa", "A Thousand Floating Dreams", "", "", "", "", ""], 5.1),
     # "": (["", "", "", "", "", "", ""], ),
 }
 
@@ -1102,7 +1116,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
             t = f"{len(constellations)}/{len(characters_dict)} characters ({unique_five_char_count}/{amount_of_five_stars} {color_map[5]}5★{Style.RESET_ALL}, {len(constellations) - unique_five_char_count}/{amount_of_four_stars} {color_map[4]}4★{Style.RESET_ALL})\n"
         else:
             t = f"{len(refinements)}/{len(weapons_dict)} gacha weapons ({unique_five_weap_count}/{amount_of_five_star_weapons} {color_map[5]}5★{Style.RESET_ALL}, {unique_four_weap_count}/{amount_of_four_star_weapons} {color_map[4]}4★{Style.RESET_ALL}, {len(refinements) - unique_five_weap_count - unique_four_weap_count}/{amount_of_three_star_weapons} {color_map[3]}3★{Style.RESET_ALL})\n"
-        extra = (104 - len(t) + 18) // 2  # +10 to account for the color change
+        extra = (108 - len(t) + 18 + 9*(letter!='c')) // 2  # +18/27 to account for the color change
         out += (" " + ' ' * extra + t + '\n\n')
 
         # max_length = max(len(s) for s in strings)
@@ -1128,7 +1142,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                     placeholder = sorted_items[i * 5 + j][0].name.split()
                     counter_ = 0
                     for k in range(len(placeholder)):
-                        if counter_ + len(placeholder[k]) + 1 <= 16:
+                        if counter_ + len(placeholder[k]) + 1 <= 17:
                             counter_ += len(placeholder[k]) + 1
                         else:
                             to_print = k
@@ -1148,7 +1162,7 @@ def print_inventory_box_partial(ttt, extra_indent=False):
                     placeholder = sorted_items[i * 5 + j][0].name.split()
                     counter_ = 0
                     for k in range(len(placeholder)):
-                        if counter_ + len(placeholder[k]) + 1 <= 16:
+                        if counter_ + len(placeholder[k]) + 1 <= 17:
                             counter_ += len(placeholder[k]) + 1
                         else:
                             to_print = k
