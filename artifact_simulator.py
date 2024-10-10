@@ -2236,7 +2236,7 @@ while True:
         if f:
             print()
             cvs = {i: 0 for i in possible_cvs}
-            progress_bar_number = num//1000
+            progress_bar_number = max(num//1000, 1)
             for i in range(num):
                 art, _ = create_and_roll_artifact(source, silent=True)
                 cvs[art.cv_real()] += 1
