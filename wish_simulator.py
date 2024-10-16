@@ -487,13 +487,16 @@ characters_dict = {
     "Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
 
     # "Chasca": Character("Chasca", "Natlan", "Anemo", "Bow", 5.2, 5, 101),
-    # "Ororon": Character("Ororon", "Natlan", "Electro", "", , 4, ),
+    # "Ororon": Character("Ororon", "Natlan", "Electro", "Bow", 5.2, 4, 102),
     # "Mavuika": Character("Mavuika", "Natlan", "Pyro", "Claymore", 5.3, 5, ),
-    # "Citlali": Character("Citlali", "Natlan", "Cryo", "", , , ),
+    # "Citlali": Character("Citlali", "Natlan", "Cryo", "", 5.3, 5, ),
     # "Iansan ": Character("Iansan ", "Natlan", "Electro", "", , 5, ),
 
     # "": Character("", "", "", "", , , 106),
 }
+
+# for region_ in ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan']:
+#     print([i.name for i in characters_dict.values() if i.region == region_])
 
 
 # ADD NEW WEAPONS HERE
@@ -1790,7 +1793,7 @@ while True:
                 #         print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
                 #         break
 
-                if new3 in ('0', 'exit'):
+                if new3 == 0:
                     print(f' {Fore.LIGHTMAGENTA_EX}Ok, not choosing Chronicled Path anymore{Style.RESET_ALL}\n')
                     continue
                 print(f" Ok, {Fore.YELLOW}{new3}{Style.RESET_ALL} selected")
