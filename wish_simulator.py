@@ -536,6 +536,7 @@ weapons_dict = {
     "Ferrous Shadow": Weapon("Ferrous Shadow", "Claymore", 3, 6),
     "Freedom-Sworn": Weapon("Freedom-Sworn", "Sword", 5, 456),
     "Fang of the Mountain King": Weapon("Fang of the Mountain King", "Claymore", 5, 457),
+    "Fruitful Hook": Weapon("Fruitful Hook", "Claymore", 4, 458),
 
     "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
     "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 7),
@@ -795,8 +796,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "kinich-1": (["Kinich", "Chevreuse", "Kujou Sara", "Thoma"], 5.0),
     "xilonen-1": (["Xilonen", "Collei", "Candace", "Dori"], 5.1),
     "chiori-2": (["Chiori", "Collei", "Candace", "Dori"], 5.1),
-    # "tao-5": (["Hu Tao", "Kuki Shinobu", "", ""], 5.1),
-    # "nahida-4": (["Nahida", "Kuki Shinobu", "", ""], 5.1),
+    "tao-5": (["Hu Tao", "Kuki Shinobu", "Xingqiu", "Sethos"], 5.1),
+    "nahida-4": (["Nahida", "Kuki Shinobu", "Xingqiu", "Sethos"], 5.1),
 
     # "": (["", "", "", ""], ),
 }
@@ -875,7 +876,7 @@ weapon_banner_list = {
     "Surf's Up - Freedom-Sworn": (["Surf's Up", "Freedom-Sworn", "Favonius Greatsword", "Favonius Sword", "The Stringless", "Sacrificial Fragments", "Dragon's Bane"], 5.0),
     "Fang of the Mountain King - Engulfing Lightning": (["Fang of the Mountain King", "Engulfing Lightning", "Sacrificial Sword", "Rainslasher", "Favonius Lance", "The Widsith", "Sacrificial Bow"], 5.0),
     "Peak Patrol Song - Uraku Misugiri": (["Peak Patrol Song", "Uraku Misugiri", "Sturdy Bone", "Sacrificial Greatsword", "Mountain-Bracing Bolt", "Favonius Codex", "Rust"], 5.1),
-    # "Staff of Homa - A Thousand Floating Dreams": (["Staff of Homa", "A Thousand Floating Dreams", "", "", "", "", ""], 5.1),
+    "Staff of Homa - A Thousand Floating Dreams": (["Staff of Homa", "A Thousand Floating Dreams", "Favonius Warbow", "Lion's Roar", "Eye of Perception", "Dragon's Bane", "Fruitful Hook"], 5.1),
     # "": (["", "", "", "", "", "", ""], ),
 }
 
