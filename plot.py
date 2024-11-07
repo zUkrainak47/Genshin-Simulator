@@ -42,7 +42,7 @@ except:
     print('Invalid\n')
     sys.exit()
 
-Path('artifact_simulator_resources', "plots", f"sample size = {sample_size}").mkdir(parents=True, exist_ok=True)
+Path('artifact_simulator_resources', "plots", f"(Days distribution) {sample_size} sample size").mkdir(parents=True, exist_ok=True)
 
 cv_for_plotting = np.arange(len(days)) / 10
 
