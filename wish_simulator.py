@@ -485,11 +485,11 @@ characters_dict = {
     "Kachina": Character("Kachina", "Natlan", "Geo", "Polearm", 5.0, 4, 98),
     "Kinich": Character("Kinich", "Natlan", "Dendro", "Claymore", 5.0, 5, 99),
     "Xilonen": Character("Xilonen", "Natlan", "Geo", "Sword", 5.1, 5, 100),
-
-    # "Chasca": Character("Chasca", "Natlan", "Anemo", "Bow", 5.2, 5, 101),
-    # "Ororon": Character("Ororon", "Natlan", "Electro", "Bow", 5.2, 4, 102),
-    # "Mavuika": Character("Mavuika", "Natlan", "Pyro", "Claymore", 5.3, 5, ),
-    # "Citlali": Character("Citlali", "Natlan", "Cryo", "", 5.3, 5, ),
+    "Chasca": Character("Chasca", "Natlan", "Anemo", "Bow", 5.2, 5, 101),
+    "Ororon": Character("Ororon", "Natlan", "Electro", "Bow", 5.2, 4, 102),
+    "Mavuika": Character("Mavuika", "Natlan", "Pyro", "Claymore", 5.3, 5, 103),
+    "Citlali": Character("Citlali", "Natlan", "Cryo", "Catalyst", 5.3, 5, 104),
+    "Lan Yan": Character("Lan Yan", "Liyue", "Anemo", "Catalyst", 5.3, 4, 105),
     # "Iansan ": Character("Iansan ", "Natlan", "Electro", "", , 5, ),
 
     # "": Character("", "", "", "", , , 106),
@@ -508,6 +508,8 @@ weapons_dict = {
     "Aqua Simulacra": Weapon("Aqua Simulacra", "Bow", 5, 304),
     "Aquila Favonia": Weapon("Aquila Favonia", "Sword", 5, 305),
     "Absolution": Weapon("Absolution", "Sword", 5, 306),
+    "Astral Vulture's Crimson Plumage": Weapon("Astral Vulture's Crimson Plumage", "Bow", 5, 307),
+    "A Thousand Blazing Suns": Weapon("A Thousand Blazing Suns", "Claymore", 5, 308),
 
     "Beacon of the Reed Sea": Weapon("Beacon of the Reed Sea", "Claymore", 5, 330),
     "Black Tassel": Weapon("Black Tassel", "Polearm", 3, 1),
@@ -537,6 +539,7 @@ weapons_dict = {
     "Freedom-Sworn": Weapon("Freedom-Sworn", "Sword", 5, 456),
     "Fang of the Mountain King": Weapon("Fang of the Mountain King", "Claymore", 5, 457),
     "Fruitful Hook": Weapon("Fruitful Hook", "Claymore", 4, 458),
+    "Flower-Wreathed Feathers": Weapon("Flower-Wreathed Feathers", "Bow", 4, 459),
 
     "Haran Geppaku Futsu": Weapon("Haran Geppaku Futsu", "Sword", 5, 510),
     "Harbinger of Dawn": Weapon("Harbinger of Dawn", "Sword", 3, 7),
@@ -595,6 +598,7 @@ weapons_dict = {
     "Silvershower Heartstrings": Weapon("Silvershower Heartstrings", "Bow", 5, 857),
     "Surf's Up": Weapon("Surf's Up", "Catalyst", 5, 858),
     "Sturdy Bone": Weapon("Sturdy Bone", "Sword", 4, 859),
+    "Starcaller's Watch": Weapon("Starcaller's Watch", "Catalyst", 5, 860),
 
     "The Alley Flash": Weapon("The Alley Flash", "Sword", 4, 870),
     "The Bell": Weapon("The Bell", "Claymore", 4, 871),
@@ -618,6 +622,7 @@ weapons_dict = {
     "Wavebreaker's Fin": Weapon("Wavebreaker's Fin", "Polearm", 4, 961),
     "Wine and Song": Weapon("Wine and Song", "Catalyst", 4, 962),
     "Wolf's Gravestone": Weapon("Wolf's Gravestone", "Claymore", 5, 963),
+    "Waveriding Whirl": Weapon("Waveriding Whirl", "Catalyst", 4, 964),
 
     "Xiphos' Moonlight": Weapon("Xiphos' Moonlight", "Sword", 4, 990)
 }
@@ -798,6 +803,14 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "chiori-2": (["Chiori", "Collei", "Candace", "Dori"], 5.1),
     "tao-5": (["Hu Tao", "Kuki Shinobu", "Xingqiu", "Sethos"], 5.1),
     "nahida-4": (["Nahida", "Kuki Shinobu", "Xingqiu", "Sethos"], 5.1),
+    "chasca-1": (["Chasca", "Ororon", "Sucrose", "Barbara"], 5.2),
+    "lyney-3": (["Lyney", "Ororon", "Sucrose", "Barbara"], 5.2),
+    "neuvillette-3": (["Neuvillette", "Shikanoin Heizou", "Fischl", "Yaoyao"], 5.2),
+    "zhongli-6": (["Zhongli", "Shikanoin Heizou", "Fischl", "Yaoyao"], 5.2),
+    "mavuika-1": (["Mavuika", "Kachina", "Bennett", "Diona"], 5.3),
+    "citlali-1": (["Citlali", "Kachina", "Bennett", "Diona"], 5.3),
+    "arlecchino-2": (["Arlecchino", "Lan Yan", "Chevreuse", "Rosaria"], 5.3),
+    "clorinde-2": (["Clorinde", "Lan Yan", "Chevreuse", "Rosaria"], 5.3),
 
     # "": (["", "", "", ""], ),
 }
@@ -877,6 +890,10 @@ weapon_banner_list = {
     "Fang of the Mountain King - Engulfing Lightning": (["Fang of the Mountain King", "Engulfing Lightning", "Sacrificial Sword", "Rainslasher", "Favonius Lance", "The Widsith", "Sacrificial Bow"], 5.0),
     "Peak Patrol Song - Uraku Misugiri": (["Peak Patrol Song", "Uraku Misugiri", "Sturdy Bone", "Sacrificial Greatsword", "Mountain-Bracing Bolt", "Favonius Codex", "Rust"], 5.1),
     "Staff of Homa - A Thousand Floating Dreams": (["Staff of Homa", "A Thousand Floating Dreams", "Favonius Warbow", "Lion's Roar", "Eye of Perception", "Dragon's Bane", "Fruitful Hook"], 5.1),
+    "Astral Vulture's Crimson Plumage - The First Great Magic": (["Astral Vulture's Crimson Plumage", "The First Great Magic", "Waveriding Whirl", "Flower-Wreathed Feathers", "The Flute", "The Bell", "Favonius Lance"], 5.2),
+    "Tome of the Eternal Flow - Vortex Vanquisher": (["Tome of the Eternal Flow", "Vortex Vanquisher", "Mitternachts Waltz", "Favonius Sword", "Favonius Greatsword", "Dragon's Bane", "Sacrificial Fragments"], 5.2),
+    "A Thousand Blazing Suns - Starcaller's Watch": (["A Thousand Blazing Suns", "Starcaller's Watch", "Lithic Blade", "Sacrificial Sword", "Favonius Lance", "Favonius Codex", "The Stringless"], 5.3),
+    "Crimson Moon's Semblance - Absolution": (["Crimson Moon's Semblance", "Absolution", "Lion's Roar", "Rainslasher", "The Widsith", "Lithic Spear", "Sacrificial Bow"], 5.3),
     # "": (["", "", "", "", "", "", ""], ),
 }
 
@@ -901,6 +918,24 @@ chronicled_banner_list = {
                                                   "Sacrificial Fragments", "Sacrificial Greatsword",
                                                   "Sacrificial Sword", "The Alley Flash", "The Bell", "The Flute",
                                                   "The Stringless", "The Widsith", "Wine and Song"]]}
+    },
+    'liyue-1': {
+        'characters': {
+            '5-stars': [characters_dict[i] for i in ['Baizhu', 'Shenhe', 'Keqing', 'Ganyu', 'Qiqi', 'Tartaglia', 'Xiao']],
+            '4-stars': [characters_dict[i] for i in ['Beidou', 'Chongyun', 'Gaming', 'Ningguang', 'Xiangling', 'Xingqiu',
+                                                     'Xinyan', 'Yanfei', 'Yaoyao', 'Yun Jin']]},
+
+        'weapons': {
+            '5-stars': [weapons_dict[i] for i in ['Primordial Jade Cutter', 'Summit Shaper', "The Unforged",
+                                                  'Calamity Queller', 'Primordial Jade Winged-Spear', 'Memory of Dust',
+                                                  'Polar Star', "Amos' Bow"]],
+            '4-stars': [weapons_dict[i] for i in ["Dragon's Bane", "Eye of Perception",
+                                                  "Favonius Codex", "Favonius Greatsword", "Favonius Lance",
+                                                  "Favonius Sword", "Favonius Warbow", "Lion's Roar",
+                                                  "Lithic Blade", "Lithic Spear", "Rainslasher", "Rust", "Sacrificial Bow",
+                                                  "Sacrificial Fragments", "Sacrificial Greatsword",
+                                                  "Sacrificial Sword", "The Bell", "The Flute",
+                                                  "The Stringless", "The Widsith"]]}
     }
 }
 
@@ -1804,7 +1839,7 @@ while True:
                 m = {str(q): w for q, w in zip(range(1, len(weapon_banner_list)+1), weapon_banner_list.keys())}
                 for i in m.items():
                     first = f" {i[0]} = {i[1]}"
-                    print(" " + first + ' ' * (62-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
+                    print(" " + first + ' ' * (63-len(first)) + '(' + str(weapon_banner_list[i[1]][1]) + ')')
                     # just learned that ljust and rjust exist, leaving this comment here for later
 
                 # print('\n'.join(i for i in weapon_banner_list))
