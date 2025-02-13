@@ -490,9 +490,11 @@ characters_dict = {
     "Mavuika": Character("Mavuika", "Natlan", "Pyro", "Claymore", 5.3, 5, 103),
     "Citlali": Character("Citlali", "Natlan", "Cryo", "Catalyst", 5.3, 5, 104),
     "Lan Yan": Character("Lan Yan", "Liyue", "Anemo", "Catalyst", 5.3, 4, 105),
-    # "Iansan ": Character("Iansan ", "Natlan", "Electro", "", , 5, ),
+    "Yumemizuki Mizuki": Character("Yumemizuki Mizuki", "Inazuma", "Anemo", "Catalyst", 5.4, 5, 106),
+    # "Iansan ": Character("Iansan ", "Natlan", "Electro", "Polearm", , 5, ),
+    # "Skirk ": Character("Skirk ", "???", "Cryo", "", , 5, ),
 
-    # "": Character("", "", "", "", , , 106),
+    # "": Character("", "", "", "", , , ),
 }
 
 # for region_ in ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan']:
@@ -599,6 +601,7 @@ weapons_dict = {
     "Surf's Up": Weapon("Surf's Up", "Catalyst", 5, 858),
     "Sturdy Bone": Weapon("Sturdy Bone", "Sword", 4, 859),
     "Starcaller's Watch": Weapon("Starcaller's Watch", "Catalyst", 5, 860),
+    "Sunny Morning Sleep-In": Weapon("Sunny Morning Sleep-In", "Catalyst", 5, 861),
 
     "The Alley Flash": Weapon("The Alley Flash", "Sword", 4, 870),
     "The Bell": Weapon("The Bell", "Claymore", 4, 871),
@@ -645,7 +648,7 @@ amount_of_four_stars = len(characters_dict) - amount_of_five_stars
 # thank you chatgpt for helping me convert paimon moe to this
 
 # need to explicitly state, sometimes gets changed
-standard_5_star_characters = [characters_dict[char] for char in ("Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya")]
+standard_5_star_characters = [characters_dict[char] for char in ("Jean", "Qiqi", "Mona", "Diluc", "Keqing", "Tighnari", "Dehya", "Yumemizuki Mizuki")]
 standard_5_star_weapons = ["Primordial Jade Winged-Spear", "Skyward Blade", "Skyward Spine",  # always unchanged
                            "Skyward Harp", "Skyward Pride", "Skyward Atlas", "Aquila Favonia",
                            "Wolf's Gravestone", "Amos' Bow", "Lost Prayer to the Sacred Winds"]
@@ -811,6 +814,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "citlali-1": (["Citlali", "Kachina", "Bennett", "Diona"], 5.3),
     "arlecchino-2": (["Arlecchino", "Lan Yan", "Chevreuse", "Rosaria"], 5.3),
     "clorinde-2": (["Clorinde", "Lan Yan", "Chevreuse", "Rosaria"], 5.3),
+    "mizuki-1": (["Yumemizuki Mizuki", "Sayu", "Xiangling", "Gorou"], 5.4),
+    "sigewinne-2": (["Sigewinne", "Sayu", "Xiangling", "Gorou"], 5.4),
 
     # "": (["", "", "", ""], ),
 }
@@ -894,6 +899,7 @@ weapon_banner_list = {
     "Tome of the Eternal Flow - Vortex Vanquisher": (["Tome of the Eternal Flow", "Vortex Vanquisher", "Mitternachts Waltz", "Favonius Sword", "Favonius Greatsword", "Dragon's Bane", "Sacrificial Fragments"], 5.2),
     "A Thousand Blazing Suns - Starcaller's Watch": (["A Thousand Blazing Suns", "Starcaller's Watch", "Lithic Blade", "Sacrificial Sword", "Favonius Lance", "Favonius Codex", "The Stringless"], 5.3),
     "Crimson Moon's Semblance - Absolution": (["Crimson Moon's Semblance", "Absolution", "Lion's Roar", "Rainslasher", "The Widsith", "Lithic Spear", "Sacrificial Bow"], 5.3),
+    "Sunny Morning Sleep-In - Silvershower Heartstrings": (["Sunny Morning Sleep-In", "Silvershower Heartstrings", "Akuoumaru", "Wavebreaker's Fin", "Mouun's Moon", "The Flute", "Eye of Perception"], 5.4),
     # "": (["", "", "", "", "", "", ""], ),
 }
 
