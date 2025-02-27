@@ -816,6 +816,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "clorinde-2": (["Clorinde", "Lan Yan", "Chevreuse", "Rosaria"], 5.3),
     "mizuki-1": (["Yumemizuki Mizuki", "Sayu", "Xiangling", "Gorou"], 5.4),
     "sigewinne-2": (["Sigewinne", "Sayu", "Xiangling", "Gorou"], 5.4),
+    "furina-3": (["Furina", "Mika", "Chongyun", "Charlotte"], 5.4),
+    "wriothesley-2": (["Wriothesley", "Mika", "Chongyun", "Charlotte"], 5.4),
 
     # "": (["", "", "", ""], ),
 }
@@ -900,6 +902,8 @@ weapon_banner_list = {
     "A Thousand Blazing Suns - Starcaller's Watch": (["A Thousand Blazing Suns", "Starcaller's Watch", "Lithic Blade", "Sacrificial Sword", "Favonius Lance", "Favonius Codex", "The Stringless"], 5.3),
     "Crimson Moon's Semblance - Absolution": (["Crimson Moon's Semblance", "Absolution", "Lion's Roar", "Rainslasher", "The Widsith", "Lithic Spear", "Sacrificial Bow"], 5.3),
     "Sunny Morning Sleep-In - Silvershower Heartstrings": (["Sunny Morning Sleep-In", "Silvershower Heartstrings", "Akuoumaru", "Wavebreaker's Fin", "Mouun's Moon", "The Flute", "Eye of Perception"], 5.4),
+    "Splendor of Tranquil Waters - Cashflow Supervision": (["Splendor of Tranquil Waters", "Cashflow Supervision", "Rust", "Favonius Sword", "Sacrificial Fragments", "Dragon's Bane", "Sacrificial Greatsword"], 5.4),
+
     # "": (["", "", "", "", "", "", ""], ),
 }
 

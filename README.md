@@ -1,4 +1,4 @@
-# Genshin Impact Simulator (5.3)
+# Genshin Impact Simulator (5.4)
 Welcome to the ultimate (command-line interface) Genshin Impact simulator. \
 With this project, I did my best to replicate Genshin Impact's two major gacha systems: the Wish System and the Artifact System.
 
