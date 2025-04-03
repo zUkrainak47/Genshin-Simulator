@@ -491,8 +491,9 @@ characters_dict = {
     "Citlali": Character("Citlali", "Natlan", "Cryo", "Catalyst", 5.3, 5, 104),
     "Lan Yan": Character("Lan Yan", "Liyue", "Anemo", "Catalyst", 5.3, 4, 105),
     "Yumemizuki Mizuki": Character("Yumemizuki Mizuki", "Inazuma", "Anemo", "Catalyst", 5.4, 5, 106),
-    # "Iansan ": Character("Iansan ", "Natlan", "Electro", "Polearm", , 5, ),
-    # "Skirk ": Character("Skirk ", "???", "Cryo", "", , 5, ),
+    "Varesa": Character("Varesa", "Natlan", "Electro", "Catalyst", 5.5, 5, 107),
+    "Iansan": Character("Iansan", "Natlan", "Electro", "Polearm", 5.5, 4, 108),
+    # "Skirk ": Character("Skirk ", "???", "Cryo", "", , 5, 5.7),
 
     # "": Character("", "", "", "", , , ),
 }
@@ -620,6 +621,7 @@ weapons_dict = {
 
     "Verdict": Weapon("Verdict", "Claymore", 5, 930),
     "Vortex Vanquisher": Weapon("Vortex Vanquisher", "Polearm", 5, 931),
+    "Vivid Notions": Weapon("Vivid Notions", "Catalyst", 5, 932),
 
     "Wandering Evenstar": Weapon("Wandering Evenstar", "Catalyst", 4, 960),
     "Wavebreaker's Fin": Weapon("Wavebreaker's Fin", "Polearm", 4, 961),
@@ -818,6 +820,8 @@ character_banner_list = {  # thank you, @shilva on discord for typing this out B
     "sigewinne-2": (["Sigewinne", "Sayu", "Xiangling", "Gorou"], 5.4),
     "furina-3": (["Furina", "Mika", "Chongyun", "Charlotte"], 5.4),
     "wriothesley-2": (["Wriothesley", "Mika", "Chongyun", "Charlotte"], 5.4),
+    "varesa-1": (["Varesa", "Gaming", "Chevreuse", "Iansan"], 5.5),
+    "xianyun-2": (["Xianyun", "Gaming", "Chevreuse", "Iansan"], 5.5),
 
     # "": (["", "", "", ""], ),
 }
@@ -903,6 +907,7 @@ weapon_banner_list = {
     "Crimson Moon's Semblance - Absolution": (["Crimson Moon's Semblance", "Absolution", "Lion's Roar", "Rainslasher", "The Widsith", "Lithic Spear", "Sacrificial Bow"], 5.3),
     "Sunny Morning Sleep-In - Silvershower Heartstrings": (["Sunny Morning Sleep-In", "Silvershower Heartstrings", "Akuoumaru", "Wavebreaker's Fin", "Mouun's Moon", "The Flute", "Eye of Perception"], 5.4),
     "Splendor of Tranquil Waters - Cashflow Supervision": (["Splendor of Tranquil Waters", "Cashflow Supervision", "Rust", "Favonius Sword", "Sacrificial Fragments", "Dragon's Bane", "Sacrificial Greatsword"], 5.4),
+    "Vivid Notions - Crane's Echoing Call": (["Vivid Notions", "Crane's Echoing Call", "Sturdy Bone", "Fruitful Hook", "Mountain-Bracing Bolt", "Waveriding Whirl", "Flower-Wreathed Feathers"], 5.4),
 
     # "": (["", "", "", "", "", "", ""], ),
 }
